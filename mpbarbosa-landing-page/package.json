@@ -1,0 +1,21 @@
+{
+  "name": "mpbarbosa-landing-page",
+  "version": "1.0.0",
+  "description": "A personal landing page for showcasing curriculum and projects of MP Barbosa.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build step not defined yet.'"
+  },
+  "keywords": [
+    "landing page",
+    "personal website",
+    "portfolio"
+  ],
+  "author": "MP Barbosa",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

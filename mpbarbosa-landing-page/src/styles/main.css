@@ -1,0 +1,124 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    min-height: 100vh;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "header header"
+        "about curriculum"
+        "projects curriculum";
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: rgba(255,255,255,0.95);
+    border-radius: 2rem;
+    box-shadow: 0 8px 32px rgba(114,221,247,0.15), 0 2px 8px rgba(179,136,235,0.08);
+    backdrop-filter: blur(2px);
+    background-image: url("data:image/svg+xml;utf8,<svg width='1200' height='800' xmlns='http://www.w3.org/2000/svg'><rect width='1200' height='800' fill='%23fff'/><path d='M0 600 Q300 700 600 600 T1200 600 V800 H0 Z' fill='%2372DDF7'/><path d='M0 650 Q400 750 800 650 T1200 650 V800 H0 Z' fill='%238093F1' opacity='0.5'/><path d='M0 700 Q600 800 1200 700 V800 H0 Z' fill='%23B388EB' opacity='0.3'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #F7AEF8;
+    padding-bottom: 1.5rem;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #8093F1;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px #B388EB33;
+}
+
+.header nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.header nav a {
+    text-decoration: none;
+    color: #B388EB;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 1rem;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.header nav a:hover {
+    background: #FDC5F5;
+    color: #72DDF7;
+    box-shadow: 0 2px 8px #8093F133;
+}
+
+.about {
+    grid-area: about;
+    background: #72DDF7;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: #222;
+    box-shadow: 0 2px 8px #72DDF733;
+}
+
+.projects {
+    grid-area: projects;
+    background: #FDC5F5;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: #222;
+    box-shadow: 0 2px 8px #FDC5F533;
+}
+
+.curriculum {
+    grid-area: curriculum;
+    background: #B388EB;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: #fff;
+    box-shadow: 0 2px 8px #B388EB33;
+}
+
+/* Remove the contact card styles */
+.contact {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "about"
+            "curriculum"
+            "projects";
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+    .header h1 {
+        font-size: 2rem;
+    }
+    .header nav a {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+    }
+    .about, .projects, .curriculum {
+        padding: 1rem;
+        border-radius: 0.7rem;
+    }
+}
