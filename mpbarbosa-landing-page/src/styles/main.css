@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f5f5f5;
+    background: #fff;
     color: #222;
     min-height: 100vh;
 }
@@ -20,7 +20,10 @@ body {
     padding: 2.5rem;
     background: rgba(255,255,255,0.95);
     border-radius: 2rem;
-    box-shadow: 0 8px 32px rgba(114,221,247,0.15), 0 2px 8px rgba(179,136,235,0.08);
+    box-shadow:
+        0 20px 60px 0 rgba(114, 221, 247, 0.55),
+        0 8px 32px 0 rgba(179, 136, 235, 0.38),
+        0 2px 8px 0 rgba(0,0,0,0.25);
     backdrop-filter: blur(2px);
     background-image: url("data:image/svg+xml;utf8,<svg width='1200' height='800' xmlns='http://www.w3.org/2000/svg'><rect width='1200' height='800' fill='%23fff'/><path d='M0 600 Q300 700 600 600 T1200 600 V800 H0 Z' fill='%2372DDF7'/><path d='M0 650 Q400 750 800 650 T1200 650 V800 H0 Z' fill='%238093F1' opacity='0.5'/><path d='M0 700 Q600 800 1200 700 V800 H0 Z' fill='%23B388EB' opacity='0.3'/></svg>");
     background-repeat: no-repeat;
