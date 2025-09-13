@@ -1,3 +1,0 @@
-[submodule "submodules/music_in_numbers"]
-	path = src/submodules/music_in_numbers
-	url = git@github.com:mpbarbosa/music_in_numbers.git
