@@ -14,7 +14,11 @@
 </head>
 
 <body>
-<<<<<<< Updated upstream
+    <!-- Version box should be outside the main grid -->
+    <div id="page-version" class="versioning-numbering"
+        style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
+        <!-- Version will be rendered here -->
+    </div>
     <div class="mdc-layout-grid expressive-bg">
         <header class="mdc-top-app-bar m3-expressive-surface">
             <div class="mdc-top-app-bar__row">
@@ -53,57 +57,18 @@
                 <input class="mdc-text-field__input" type="email" name="email" placeholder="Your Email" required>
                 <textarea class="mdc-text-field__input" name="message" placeholder="Your Message" required></textarea>
                 <button class="mdc-button m3-expressive-primary" type="submit">Send</button>
-=======
-    <div id="page-version" class="versioning-numbering" style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
-        <!-- Version will be rendered here -->
-    </div>
-    <div class="grid-container">
-        <header class="header">
-            <h1>mpbarbosa.com (mpb)</h1>
-            <nav>
-                <a href="#about">About</a>
-                <a href="#projects">Projects</a>
-                <a href="#contact">Contact</a>
-            </nav>
-        </header>
-        <section id="about" class="about">
-            <h2>About Me</h2>
-        </section>
-        <section id="projects" class="projects">
-            <h2>Personal Projects</h2>
-            <ul>
-                <li><a href="pages/music_in_numbers.html">Music in Numbers</a> - A web app that generates music based on
-                    numerical input.</li>
-                <li><a href="pages/guia_turistico.html">Guia Turístico</a> - A travel guide application.</li>
-            </ul>
-        </section>
-        <aside class="curriculum">
-            <h2>Curriculum</h2>
-        </aside>
-        <footer id="contact" class="contact">
-            <h2>Contact</h2>
-            <form id="contact-form">
-                <input type="text" name="name" placeholder="Your Name" required>
-                <input type="email" name="email" placeholder="Your Email" required>
-                <textarea name="message" placeholder="Your Message" required></textarea>
-                <button type="submit">Send</button>
->>>>>>> Stashed changes
             </form>
             <p class="mdc-typography--caption">&copy; 2025 mpbarbosa. All rights reserved.</p>
         </footer>
     </div>
     <script src="scripts/main.js"></script>
-<<<<<<< Updated upstream
-    <!-- Material 3 JS (opcional para componentes interativos) -->
-    <script type="module" src="https://unpkg.com/material-web@latest/all.js"></script>
-=======
     <script>
         window.addEventListener('DOMContentLoaded', function () {
             // HTML page version object
             const pageVersion = {
                 major: 0,
                 minor: 3,
-                patch: 0,
+                patch: 1,
                 prerelease: 'alpha',
                 status: 'unstable, pre-release',
                 toString: function () {
@@ -114,12 +79,10 @@
             if (pageVersion && typeof pageVersion.toString === 'function') {
                 pageVerStr = pageVersion.toString();
             }
-            document.getElementById('page-version').innerHTML =
+            document.getElementById('page-version').textContent =
                 `HTML page ${pageVersion.toString()}`;
         });
     </script>
-
->>>>>>> Stashed changes
 </body>
 
 </html>
