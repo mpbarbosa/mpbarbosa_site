@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!DOCTYPE html  public "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- HTML5 doctype declaration -->
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MP Barbosa - Personal Website</title>
     <!-- Material 3 Roboto Font & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,7 +15,6 @@
 </head>
 
 <body>
-    <!-- Version box should be outside the main grid -->
     <div id="page-version" class="versioning-numbering"
         style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
         <!-- Version will be rendered here -->
@@ -67,23 +67,14 @@
             // HTML page version object
             const pageVersion = {
                 major: 0,
-<<<<<<< HEAD
                 minor: 4,
-                patch: 0,
-=======
-                minor: 3,
                 patch: 1,
->>>>>>> dev
                 prerelease: 'alpha',
                 status: 'unstable, pre-release',
                 toString: function () {
                     return `v${this.major}.${this.minor}.${this.patch}-${this.prerelease} (${this.status})`;
                 }
             };
-            let pageVerStr = '';
-            if (pageVersion && typeof pageVersion.toString === 'function') {
-                pageVerStr = pageVersion.toString();
-            }
             document.getElementById('page-version').textContent =
                 `HTML page ${pageVersion.toString()}`;
         });
