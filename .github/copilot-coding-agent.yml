@@ -13,7 +13,7 @@ rules:
   - Manter comentários claros e concisos no código.
   - Atualizar o README.md quando houver mudanças relevantes na estrutura ou funcionalidades.
   - Validar alterações com ferramentas de lint e testes, se disponíveis.
-- Seguir, sempre que possível, o padrão de desenvolvimento web HTML 5 Boilerplate 
+- Seguir, sempre que possível, o padrão de desenvolvimento web HTML 5 Boilerplate (https://html5boilerplate.com/) 
 
 # Restrições e áreas sensíveis.
 restrictions:
