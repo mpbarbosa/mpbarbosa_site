@@ -1,0 +1,31 @@
+# Instruções para o GitHub Copilot Coding Agent
+# Consulte https://gh.io/copilot-coding-agent-tips para mais detalhes e exemplos.
+
+# Descreva o propósito do repositório e orientações gerais para o agente.
+purpose: |
+  Este repositório contém o site pessoal de mpbarbosa, incluindo páginas de projetos, guia turístico e visualização musical.
+  O agente deve priorizar boas práticas de desenvolvimento web, organização de código e clareza na documentação.
+
+# Regras e preferências para contribuições automáticas.
+rules:
+  - Sempre seguir o padrão de organização dos diretórios existentes (src, components, pages, scripts, styles).
+  - Utilizar HTML5, CSS3 e JavaScript moderno (ES6+) para novas implementações.
+  - Manter comentários claros e concisos no código.
+  - Atualizar o README.md quando houver mudanças relevantes na estrutura ou funcionalidades.
+  - Validar alterações com ferramentas de lint e testes, se disponíveis.
+
+# Restrições e áreas sensíveis.
+restrictions:
+  - Não modificar arquivos em submodules sem autorização explícita.
+  - Não remover ou sobrescrever arquivos críticos como index.html sem aprovação.
+
+# Preferências de comunicação.
+communication:
+  - Sempre explicar o motivo das mudanças em pull requests.
+  - Referenciar issues ou tarefas relacionadas quando aplicável.
+
+# Exemplos de boas práticas para este repositório.
+examples:
+  - Adicionar novos componentes em src/components e atualizar src/index.html para incluí-los.
+  - Criar novas páginas em src/pages e garantir navegação adequada via links.
+  - Atualizar src/styles/main.css para estilos globais e criar arquivos separados para estilos específicos se necessário.
