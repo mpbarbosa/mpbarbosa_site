@@ -3,7 +3,7 @@
 
 # Descreva o propósito do repositório e orientações gerais para o agente.
 purpose: |
-  Este repositório contém o site pessoal de mpbarbosa, incluindo páginas de projetos, guia turístico e visualização musical.
+  Este repositório contém o site pessoal de Marcelo Rodrigues Pereira Barbosa, também conhecido pelo apelido de mpb, incluindo páginas de projetos, guia turístico e visualização musical.
   O agente deve priorizar boas práticas de desenvolvimento web, organização de código e clareza na documentação.
 
 # Regras e preferências para contribuições automáticas.
@@ -13,6 +13,7 @@ rules:
   - Manter comentários claros e concisos no código.
   - Atualizar o README.md quando houver mudanças relevantes na estrutura ou funcionalidades.
   - Validar alterações com ferramentas de lint e testes, se disponíveis.
+- Seguir, sempre que possível, o padrão de desenvolvimento web HTML 5 Boilerplate 
 
 # Restrições e áreas sensíveis.
 restrictions:
