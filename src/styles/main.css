@@ -75,8 +75,8 @@ body, .expressive-bg {
     --m3-outline: #cccccc;
     --m3-shadow: 0 4px 24px rgba(0,0,0,0.10);
     --m3-accent: #333333;
-    --m3-success: #000000;
-    --m3-danger: #000000;
+    --m3-success: #333333;
+    --m3-danger: #666666;
 }
     line-height: 1.6;
     min-height: 100vh;
