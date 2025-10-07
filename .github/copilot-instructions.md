@@ -118,8 +118,23 @@ mpbarbosa_site/
 ### package.json Scripts
 ```json
 {
-  "start": "live-server src",
-  "build": "echo 'Build step not defined yet.'"
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build step not defined yet.'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.js",
+      "**/?(*.)+(spec|test).js"
+    ],
+    "collectCoverageFrom": [
+      "submodules/guia_turistico/src/libs/guia_js/src/**/*.js"
+    ]
+  }
 }
 ```
 
