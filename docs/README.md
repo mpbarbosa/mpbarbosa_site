@@ -14,7 +14,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 ### Class Extraction Initiative
 
 #### **Phase 4: AddressDataExtractor Legacy Facade** ✅ **COMPLETED**
-- **[CLASS_EXTRACTION_PHASE_4.md](./CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
+- **[CLASS_EXTRACTION_PHASE_4.md](../src/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
 - **Status**: All 4 phases completed (October 16, 2025)
 - **Achievement**: 11 classes extracted with 100% backward compatibility
 
@@ -30,16 +30,16 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 Located in submodules (requires authentication):
 
 #### Core Architecture Documentation
-- **Class Extraction Summary** - Overview of all 4 phases
-- **JavaScript Async-Await Best Practices** - Async programming patterns
-- **Low Coupling Guide** - Architecture principles applied
-- **High Cohesion Guide** - Single responsibility patterns
-- **Referential Transparency Guide** - Immutability principles
+- **[Class Extraction Summary](../src/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_SUMMARY.md)** - Overview of all 4 phases
+- **[JavaScript Async-Await Best Practices](../src/submodules/guia_turistico/src/libs/guia_js/docs/javascript-async-await-best-practices.md)** - Async programming patterns
+- **[Low Coupling Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
+- **[High Cohesion Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/HIGH_COHESION_GUIDE.md)** - Single responsibility patterns
+- **[Referential Transparency Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
 
 #### Implementation Documentation
-- **AddressDataExtractor Module** - Legacy facade implementation
-- **Integration Tests** - Comprehensive test coverage
-- **Refactoring Summary** - Complete initiative overview
+- **[AddressDataExtractor Module](../src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
+- **[Integration Tests](../src/submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js)** - Comprehensive test coverage
+- **[Refactoring Summary](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFACTORING_SUMMARY.md)** - Complete initiative overview
 
 ## Project Architecture
 
@@ -47,8 +47,7 @@ Located in submodules (requires authentication):
 ```
 mpbarbosa_site/                    # Main repository
 ├── docs/                          # Documentation (this folder)
-│   ├── README.md                  # This file
-│   └── CLASS_EXTRACTION_PHASE_4.md # Phase 4 documentation
+│   └── README.md                  # This file (documentation index)
 ├── src/                           # Source code
 │   ├── index.html                 # Main landing page
 │   ├── package.json               # Dependencies and scripts
