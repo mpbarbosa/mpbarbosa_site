@@ -61,14 +61,17 @@
             <p class="mdc-typography--caption">&copy; 2025 mpbarbosa. All rights reserved.</p>
         </footer>
     </div>
-    <script src="scripts/main.js"></script>
+    <!-- Load the modular JavaScript as an ES6 module -->
+    <script type="module" src="scripts/main.mjs"></script>
+    <!-- Keep the legacy main.js for backward compatibility if needed -->
+    <script nomodule src="scripts/main.js"></script>
     <script>
         window.addEventListener('DOMContentLoaded', function () {
             // HTML page version object
             const pageVersion = {
                 major: 0,
                 minor: 5,
-                patch: 0,
+                patch: 1,
                 prerelease: 'alpha',
                 status: 'unstable, pre-release',
                 toString: function () {
