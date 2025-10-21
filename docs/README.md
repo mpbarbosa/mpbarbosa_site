@@ -11,6 +11,9 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Source Structure](../src/README.md)** - Source code organization
 - **[Development Guidelines](../.github/copilot-instructions.md)** - Coding standards and workflow
 
+### Advanced Architecture Patterns
+- **[Functional Core, Imperative Shell Guide](FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies
+
 ### Class Extraction Initiative
 
 #### **Phase 4: AddressDataExtractor Legacy Facade** ✅ **COMPLETED**
@@ -24,6 +27,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 3. **Modern Patterns**: Immutability, dependency injection, clean interfaces
 4. **Comprehensive Testing**: Integration tests for all modules
 5. **Enhanced Documentation**: Migration guidance and best practices
+6. **Enterprise Architecture**: Functional Core, Imperative Shell pattern implementation
 
 ### Related Technical Documentation
 
@@ -35,6 +39,11 @@ Located in submodules (requires authentication):
 - **[Low Coupling Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
 - **[High Cohesion Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/HIGH_COHESION_GUIDE.md)** - Single responsibility patterns
 - **[Referential Transparency Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
+
+#### Music in Numbers Project Documentation
+- **[JavaScript Modularization Report](../src/submodules/music_in_numbers/JAVASCRIPT_MODULARIZATION_COMPLETION_REPORT.md)** - Complete modularization achievements
+- **[Analytics API Extraction Report](../src/submodules/music_in_numbers/docs/ANALYTICS_API_EXTRACTION_COMPLETION_REPORT.md)** - Enterprise-grade analytics architecture
+- **[Modularization Achievements Summary](MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Overall project transformation results
 
 #### Implementation Documentation
 - **[AddressDataExtractor Module](../src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
@@ -111,6 +120,8 @@ Following the MP Barbosa development guidelines:
 ✅ **Dependency Injection**: Testable and flexible design  
 ✅ **Modern ES6**: Import/export modules with browser compatibility  
 ✅ **Comprehensive Documentation**: JSDoc and migration guidance  
+✅ **Enterprise Patterns**: Functional Core, Imperative Shell architecture  
+✅ **Professional Testing**: Property-based and integration testing strategies  
 
 ## Migration Guidance
 

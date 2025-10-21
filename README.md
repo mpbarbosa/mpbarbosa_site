@@ -88,5 +88,11 @@ The project demonstrates **professional-grade architecture** with:
 - **Performance Optimization**: Parallel loading and intelligent caching
 - **Development Efficiency**: Reusable components and established patterns
 - **Quality Assurance**: Comprehensive testing and validation
+- **Enterprise Patterns**: Functional Core, Imperative Shell architecture
 
-This represents a **significant architectural achievement** in modern web development, transforming monolithic code into a maintainable, scalable, and professional codebase.
+### 📚 Architecture Documentation
+- **[Functional Core, Imperative Shell Guide](docs/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
+- **[Complete Documentation](docs/README.md)** - Full technical documentation
+- **[Development Guidelines](.github/copilot-instructions.md)** - Coding standards and workflow
+
+This represents a **significant architectural achievement** in modern web development, transforming monolithic code into a maintainable, scalable, and professional codebase with proven enterprise patterns.
