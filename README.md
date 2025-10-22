@@ -73,6 +73,18 @@ npm start
 ```
 The development server runs at `http://localhost:8080` with live reload.
 
+### Selenium UI Tests
+
+The Music in Numbers submodule includes a Selenium WebDriver-based UI test suite. To run those tests:
+
+```bash
+cd src/submodules/music_in_numbers
+npm install
+HEADLESS=true npm run test:selenium
+```
+
+Run with `HEADLESS=false` for an interactive browser session when debugging locally.
+
 ### Architecture Highlights
 - **Static Site**: No build process required, direct browser execution
 - **Modern Standards**: HTML5, CSS Grid, ES6+ JavaScript
