@@ -108,6 +108,29 @@ mpbarbosa_site/
 - **External dependencies**: Uses CDN resources (Google Fonts, Material Web Components, unpkg.com)
 - **Browser compatibility**: Designed for modern browsers that support ES6+ and CSS Grid
 
+### Critical Path Resolution Guidelines (October 2025)
+**ALWAYS** follow these path resolution rules to prevent critical resource loading failures:
+
+1. **Submodule HTML Files**: Use relative paths only
+   ```html
+   <!-- ✅ CORRECT for submodule files -->
+   <link rel="stylesheet" href="styles/themes.css">
+   <script defer src="scripts/utils.js"></script>
+   
+   <!-- ❌ WRONG - causes 404 errors -->
+   <link rel="stylesheet" href="submodules/music_in_numbers/src/styles/themes.css">
+   ```
+
+2. **Access Method Testing**: Always test both access patterns:
+   - Direct submodule access: `http://127.0.0.1:8080/submodules/music_in_numbers/src/`
+   - Main site integration: Via redirect pages or navigation
+
+3. **Path Strategy Consistency**: Never mix relative and absolute server-root paths within the same HTML file
+
+4. **Resource Validation**: Verify no 404 errors in browser console and live-server logs show successful GET requests
+
+**Reference**: See `/docs/RESOURCE_PATH_GUIDE.md` for comprehensive path resolution documentation.
+
 ## Troubleshooting
 
 ### Common Issues
