@@ -4,3 +4,6 @@
 [submodule "src/submodules/guia_turistico"]
 	path = src/submodules/guia_turistico
 	url = git@github.com:mpbarbosa/guia_turistico.git
+[submodule "src/submodules/monitora_vagas"]
+	path = src/submodules/monitora_vagas
+	url = git@github.com:mpbarbosa/monitora_vagas.git
