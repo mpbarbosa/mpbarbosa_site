@@ -1,1 +1,3 @@
-Pull the origin repository and all its submodules.
+Pull the origin repository and all its submodules and do the same for the git submodules in a proper order.
+
+Push the last modified files to the origin repository and do the same in the git submodules in a proper order.
