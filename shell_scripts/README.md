@@ -1,6 +1,6 @@
-# Scripts Directory
+# Shell Scripts Directory
 
-This directory contains automation scripts for managing the MP Barbosa personal website project and its git submodules.
+This directory contains shell automation scripts for managing the MP Barbosa personal website project and its git submodules.
 
 ## Available Scripts
 
@@ -17,9 +17,9 @@ This directory contains automation scripts for managing the MP Barbosa personal 
 
 **Usage**:
 ```bash
-./scripts/pull_all_submodules.sh           # Pull everything
-./scripts/pull_all_submodules.sh --help    # Show help
-./scripts/pull_all_submodules.sh --dry-run # Preview operations
+./shell_scripts/pull_all_submodules.sh           # Pull everything
+./shell_scripts/pull_all_submodules.sh --help    # Show help
+./shell_scripts/pull_all_submodules.sh --dry-run # Preview operations
 ```
 
 **Order of Operations**:
@@ -45,10 +45,10 @@ This directory contains automation scripts for managing the MP Barbosa personal 
 
 **Usage**:
 ```bash
-./scripts/push_all_submodules.sh                  # Push all changes interactively
-./scripts/push_all_submodules.sh --handle-stash  # Include stashed modifications  
-./scripts/push_all_submodules.sh --dry-run       # Preview operations
-./scripts/push_all_submodules.sh --help          # Show help
+./shell_scripts/push_all_submodules.sh                  # Push all changes interactively
+./shell_scripts/push_all_submodules.sh --handle-stash  # Include stashed modifications  
+./shell_scripts/push_all_submodules.sh --dry-run       # Preview operations
+./shell_scripts/push_all_submodules.sh --help          # Show help
 ```
 
 **Push Order**:
@@ -87,7 +87,7 @@ These scripts are designed for the MP Barbosa personal website project structure
 
 ```
 mpbarbosa_site/ (main repository)
-├── scripts/                    # These automation scripts
+├── shell_scripts/              # These automation scripts
 ├── src/submodules/
 │   ├── guia_turistico/        # Travel guide project
 │   │   └── src/libs/
@@ -103,28 +103,28 @@ mpbarbosa_site/ (main repository)
 ### Daily Development Workflow
 ```bash
 # Start of day: pull all latest changes
-./scripts/pull_all_submodules.sh
+./shell_scripts/pull_all_submodules.sh
 
 # End of day: push all changes
-./scripts/push_all_submodules.sh
+./shell_scripts/push_all_submodules.sh
 
 # Handle accumulated stashes
-./scripts/push_all_submodules.sh --handle-stash
+./shell_scripts/push_all_submodules.sh --handle-stash
 ```
 
 ### Safe Operation Verification
 ```bash
 # Preview what would be pulled
-./scripts/pull_all_submodules.sh --dry-run
+./shell_scripts/pull_all_submodules.sh --dry-run
 
 # Preview what would be pushed  
-./scripts/push_all_submodules.sh --dry-run
+./shell_scripts/push_all_submodules.sh --dry-run
 ```
 
 ### Emergency Recovery
 ```bash
 # Pull with automatic stash handling
-./scripts/pull_all_submodules.sh  # Automatically stashes and restores
+./shell_scripts/pull_all_submodules.sh  # Automatically stashes and restores
 
 # Check repository status after operations
 git status
@@ -165,7 +165,7 @@ Add to `.vscode/tasks.json`:
 {
     "label": "Pull All Submodules",
     "type": "shell", 
-    "command": "./scripts/pull_all_submodules.sh",
+    "command": "./shell_scripts/pull_all_submodules.sh",
     "group": "build"
 }
 ```
@@ -173,8 +173,8 @@ Add to `.vscode/tasks.json`:
 ### Command Aliases
 Add to your shell profile (`.bashrc`, `.zshrc`):
 ```bash
-alias pullall='cd /path/to/mpbarbosa_site && ./scripts/pull_all_submodules.sh'
-alias pushall='cd /path/to/mpbarbosa_site && ./scripts/push_all_submodules.sh'
+alias pullall='cd /path/to/mpbarbosa_site && ./shell_scripts/pull_all_submodules.sh'
+alias pushall='cd /path/to/mpbarbosa_site && ./shell_scripts/push_all_submodules.sh'
 ```
 
 ## Contributing
