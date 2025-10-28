@@ -181,6 +181,29 @@ create_backup() {
 }
 
 # =============================================================================
+# CLEANUP FUNCTIONS
+# =============================================================================
+
+clean_destination() {
+    print_step "Cleaning destination directory for fresh deployment..."
+    
+    if [[ ! -d "$DEST_DIR" ]]; then
+        print_info "Destination directory doesn't exist, skipping cleanup"
+        return 0
+    fi
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        print_info "[DRY RUN] Would remove existing directory: $DEST_DIR"
+        return 0
+    fi
+    
+    # Remove the destination directory completely
+    rm -rf "$DEST_DIR"
+    
+    print_success "Destination directory cleaned: $DEST_DIR"
+}
+
+# =============================================================================
 # DEPLOYMENT FUNCTIONS
 # =============================================================================
 
@@ -433,6 +456,7 @@ main() {
     validate_environment
     validate_submodules
     create_backup
+    clean_destination
     deploy_files
     set_permissions
     validate_deployment
