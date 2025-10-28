@@ -204,6 +204,38 @@ clean_destination() {
 }
 
 # =============================================================================
+# DIRECTORY PREPARATION FUNCTIONS
+# =============================================================================
+
+create_target_directory() {
+    print_step "Creating target directory structure..."
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        print_info "[DRY RUN] Would create target directory: $DEST_DIR"
+        print_info "[DRY RUN] Would create backup directory: $BACKUP_DIR"
+        return 0
+    fi
+    
+    # Create destination directory with proper permissions
+    mkdir -p "$DEST_DIR"
+    
+    # Create backup directory if it doesn't exist
+    mkdir -p "$BACKUP_DIR"
+    
+    # Set initial ownership if running as root
+    if [[ $EUID -eq 0 ]]; then
+        chown www-data:www-data "$DEST_DIR"
+        chmod 755 "$DEST_DIR"
+        print_success "Target directory created with web server ownership: $DEST_DIR"
+    else
+        print_success "Target directory created: $DEST_DIR"
+        print_info "Run with sudo to set proper web server ownership"
+    fi
+    
+    print_success "Backup directory ready: $BACKUP_DIR"
+}
+
+# =============================================================================
 # DEPLOYMENT FUNCTIONS
 # =============================================================================
 
@@ -224,9 +256,6 @@ deploy_files() {
         fi
         return 0
     fi
-    
-    # Create destination directory if it doesn't exist
-    mkdir -p "$DEST_DIR"
     
     # Copy files, excluding git directories and shell scripts
     print_info "Copying source files..."
@@ -457,6 +486,7 @@ main() {
     validate_submodules
     create_backup
     clean_destination
+    create_target_directory
     deploy_files
     set_permissions
     validate_deployment
