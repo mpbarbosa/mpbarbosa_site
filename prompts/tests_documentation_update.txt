@@ -1,6 +1,27 @@
-1) Based on the last modifications, update the related documentation.
-2) Based on the last modifications, Keep the consistency among the documentation files.
-3) If needed (code modification), update the functional, integration and unit tests
-4) If needed (code modification and new code), generate comprehensive new functional, integration and unit tests
-5) Run all tests if needed
-6) Push the last modified files to the origin repository and do the same in the git submodules in a proper order.
+# 📋 Comprehensive Documentation & Test Update Checklist
+
+## 🔍 Pre-Analysis Phase
+0) **Analyze Recent Changes**: Run `git log --oneline -10` and `git status` to identify recent modifications and their scope
+
+## 📚 Documentation Updates
+1) **Update Related Documentation**: Based on the last modifications, update all affected documentation files in `/docs/` and root directory
+2) **Maintain Documentation Consistency**: Ensure consistency among all documentation files, verifying cross-references and project structure representations
+3) **Validate Links & References**: Check that all internal links, file references, and project structure diagrams remain accurate
+
+## 🧪 Test Management
+4) **Review Existing Tests**: If code modifications occurred, update existing functional, integration, and unit tests in `src/__tests__/`
+5) **Generate New Tests**: If new code was added, create comprehensive new functional, integration, and unit tests with proper coverage
+6) **Execute Test Suite**: Run all tests (`npm test`) and ensure 100% pass rate with proper error handling validation
+
+## 🚀 Repository Management  
+7) **Version Control Operations**: 
+   - Commit changes with descriptive messages following conventional commit format
+   - Push to origin repository (`git push origin main`)
+   - Update git submodules in proper dependency order if needed (`git submodule update --remote`)
+
+## ✅ Validation Checklist
+- [ ] All documentation files updated and consistent
+- [ ] Test coverage maintained or improved
+- [ ] All tests passing successfully
+- [ ] Git repository and submodules properly synchronized
+- [ ] Changes documented with clear commit messages
