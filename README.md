@@ -103,7 +103,9 @@ The project demonstrates **professional-grade architecture** with:
 - **Enterprise Patterns**: Functional Core, Imperative Shell architecture
 
 ### 📚 Architecture Documentation
+- **[Comprehensive UX Documentation](docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
 - **[Functional Core, Imperative Shell Guide](docs/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
+- **[Resource Path Guide](docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and deployment best practices
 - **[Complete Documentation](docs/README.md)** - Full technical documentation
 - **[Development Guidelines](.github/copilot-instructions.md)** - Coding standards and workflow
 

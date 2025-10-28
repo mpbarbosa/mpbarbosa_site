@@ -221,4 +221,13 @@ When working on the Music in Numbers project:
 4. **Use Defer Loading**: Scripts should load with defer attributes for performance
 5. **Document Changes**: Update completion reports and architecture documentation
 
+## 📖 Related Documentation References
+
+For comprehensive development guidance, consult these detailed documentation resources:
+
+- **[Comprehensive UX Documentation](../docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide covering navigation patterns, accessibility features, responsive design, and interaction design across all project components
+- **[Resource Path Guide](../docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and troubleshooting for submodule deployment
+- **[Path Resolution Fix Report](../docs/PATH_RESOLUTION_FIX_COMPLETION_REPORT.md)** - Technical incident report and lessons learned
+- **[Modularization Achievements](../docs/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Architecture improvements and code reduction metrics
+
 Always verify the development server starts successfully and the main page loads before making any modifications to the codebase.
