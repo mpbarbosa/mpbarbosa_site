@@ -59,6 +59,36 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 
 ---
 
+### 🌐 `deploy_to_webserver.sh`
+**Purpose**: Deploys the website to nginx web server directory for production hosting
+
+**Features**:
+- ✅ Recursive file copying with rsync (including submodules)
+- ✅ Automatic backup of existing deployment
+- ✅ Git submodule handling and validation
+- ✅ Web server permission setting (www-data)
+- ✅ nginx configuration validation
+- ✅ Comprehensive deployment validation
+- ✅ Colored output for better visibility
+
+**Usage**:
+```bash
+sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recommended)
+./shell_scripts/deploy_to_webserver.sh --dry-run       # Preview deployment
+./shell_scripts/deploy_to_webserver.sh --no-backup     # Deploy without backup
+./shell_scripts/deploy_to_webserver.sh --help          # Show help
+```
+
+**Deployment Process**:
+1. Validate environment and git submodules
+2. Create backup of existing deployment
+3. Copy files to /var/www/mpbarbosa.com (excluding .git and shell_scripts)
+4. Set proper web server permissions (www-data:www-data)
+5. Validate deployment structure
+6. Check nginx configuration
+
+---
+
 ## Git Best Practices Integration
 
 Both scripts follow the comprehensive git best practices established in `/docs/GIT_BEST_PRACTICES_GUIDE.md`:
@@ -88,6 +118,10 @@ These scripts are designed for the MP Barbosa personal website project structure
 ```
 mpbarbosa_site/ (main repository)
 ├── shell_scripts/              # These automation scripts
+│   ├── pull_all_submodules.sh  # Repository synchronization
+│   ├── push_all_submodules.sh  # Repository publishing
+│   ├── deploy_to_webserver.sh  # Production deployment
+│   └── README.md               # This documentation
 ├── src/submodules/
 │   ├── guia_turistico/        # Travel guide project
 │   │   └── src/libs/
@@ -110,6 +144,18 @@ mpbarbosa_site/ (main repository)
 
 # Handle accumulated stashes
 ./shell_scripts/push_all_submodules.sh --handle-stash
+```
+
+### Production Deployment Workflow
+```bash
+# Preview deployment (recommended first)
+./shell_scripts/deploy_to_webserver.sh --dry-run
+
+# Deploy to production web server
+sudo ./shell_scripts/deploy_to_webserver.sh
+
+# Deploy without backup (if needed)
+sudo ./shell_scripts/deploy_to_webserver.sh --no-backup
 ```
 
 ### Safe Operation Verification
@@ -175,6 +221,8 @@ Add to your shell profile (`.bashrc`, `.zshrc`):
 ```bash
 alias pullall='cd /path/to/mpbarbosa_site && ./shell_scripts/pull_all_submodules.sh'
 alias pushall='cd /path/to/mpbarbosa_site && ./shell_scripts/push_all_submodules.sh'
+alias deploysite='cd /path/to/mpbarbosa_site && sudo ./shell_scripts/deploy_to_webserver.sh'
+alias deploypreview='cd /path/to/mpbarbosa_site && ./shell_scripts/deploy_to_webserver.sh --dry-run'
 ```
 
 ## Contributing
