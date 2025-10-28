@@ -20,7 +20,8 @@ set -u  # Exit on undefined variables
 # =============================================================================
 
 # Source and destination paths
-SOURCE_DIR="/home/mpb/Documents/GitHub/mpbarbosa_site"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 DEST_DIR="/var/www/mpbarbosa.com"
 BACKUP_DIR="/var/www/backups/mpbarbosa.com"
 
@@ -76,6 +77,9 @@ print_info() {
 
 validate_environment() {
     print_step "Validating deployment environment..."
+    
+    # Show detected source directory
+    print_info "Detected source directory: $SOURCE_DIR"
     
     # Check if source directory exists
     if [[ ! -d "$SOURCE_DIR" ]]; then
@@ -422,7 +426,7 @@ EXAMPLES:
     $0 --no-backup             # Deploy without creating backup
 
 REQUIREMENTS:
-    • Source directory: $SOURCE_DIR
+    • Source directory: Auto-detected from script location ($SOURCE_DIR)
     • Destination directory: $DEST_DIR
     • Root/sudo access for web server permissions
     • rsync command available
