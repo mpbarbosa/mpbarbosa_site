@@ -33,17 +33,25 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 ```
 mpbarbosa_site/
-├── src/                           # Main source directory
-│   ├── index.html                # Landing page with Material Design
-│   ├── styles/main.css           # Material Design styling
-│   ├── scripts/main.js           # Contact form and interactions  
-│   ├── components/               # Individual HTML components
-│   ├── pages/                    # Project redirect pages
-│   └── submodules/               # Personal projects (Git submodules)
-│       ├── music_in_numbers/     # 🎵 Music analytics platform
-│       └── guia_turistico/       # 🗺️ Travel guide application
-├── docs/                         # Project documentation
-└── .github/                      # GitHub configuration
+├── shell_scripts/                # Automation and deployment scripts
+│   ├── deploy_to_webserver.sh    # Production deployment automation
+│   ├── pull_all_submodules.sh    # Submodule update automation
+│   └── push_all_submodules.sh    # Submodule deployment automation
+├── src/                          # Main source directory
+│   ├── index.html               # Landing page with Material Design
+│   ├── styles/main.css          # Material Design styling
+│   ├── scripts/main.js          # Contact form and interactions  
+│   ├── components/              # Individual HTML components
+│   ├── pages/                   # Project redirect pages
+│   │   ├── music_in_numbers.html  # Music in Numbers redirect
+│   │   ├── guia_turistico.html    # Guia Turístico redirect
+│   │   └── monitora_vagas.html    # Monitora Vagas redirect
+│   └── submodules/              # Personal projects (Git submodules)
+│       ├── music_in_numbers/    # 🎵 Music analytics platform
+│       ├── guia_turistico/      # 🗺️ Travel guide application
+│       └── monitora_vagas/      # 💼 Job monitoring application
+├── docs/                        # Project documentation
+└── .github/                     # GitHub configuration
 ```
 
 ## 🎵 Featured Projects
@@ -63,6 +71,13 @@ mpbarbosa_site/
 - Cultural insights and local attractions
 - **Status**: Active development
 
+### Monitora Vagas
+**Job Monitoring Application**
+- Automated job search and monitoring
+- Custom filtering and alert systems
+- Professional opportunity tracking
+- **Status**: Active development
+
 ## 🛠 Development
 
 ### Quick Start
@@ -72,6 +87,28 @@ npm install
 npm start
 ```
 The development server runs at `http://localhost:8080` with live reload.
+
+### Deployment and Automation
+
+The project includes comprehensive shell scripts for production deployment:
+
+```bash
+# Deploy to production web server (nginx)
+./shell_scripts/deploy_to_webserver.sh
+
+# Update all submodules from remote repositories
+./shell_scripts/pull_all_submodules.sh
+
+# Deploy changes to all submodules
+./shell_scripts/push_all_submodules.sh
+```
+
+**Deployment Features:**
+- Dynamic source directory detection
+- Automatic backup with 7-day retention
+- Comprehensive error handling with colored output
+- Dry-run mode for validation
+- Proper web server permissions
 
 ### Selenium UI Tests
 

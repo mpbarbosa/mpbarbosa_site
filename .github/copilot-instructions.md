@@ -30,10 +30,12 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 ### Git Submodules (REQUIRES AUTHENTICATION)
 - **WARNING**: Submodules require GitHub authentication and will fail in environments without proper credentials
-- Two submodules exist for personal projects:
-  - `src/submodules/music_in_numbers` → Music in Numbers project
+- Three submodules exist for personal projects:
+  - `src/submodules/music_in_numbers` → Music in Numbers (Spotify analytics) project
   - `src/submodules/guia_turistico` → Guia Turístico (Travel Guide) project
+  - `src/submodules/monitora_vagas` → Monitora Vagas (Job monitoring) project
 - To initialize submodules (when authenticated): `git submodule update --init --recursive`
+- Automated submodule management available: `./shell_scripts/pull_all_submodules.sh`
 - If submodules fail to initialize, the project links will show 404 errors but the main site will function normally
 
 ## Validation and Testing
@@ -57,9 +59,10 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
    - Verify form resets after submission
 
 4. **Project Links**: 
-   - Click "Music in Numbers" and "Guia Turístico" project links
+   - Click "Music in Numbers", "Guia Turístico", and "Monitora Vagas" project links
    - **Expected behavior**: These will show 404 errors unless submodules are properly initialized
    - This is normal and documented behavior in environments without authentication
+   - All project links follow consistent submodule navigation pattern
 
 ### Performance and Layout
 - Take screenshots to verify visual layout and Material Design components render correctly
@@ -73,6 +76,11 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 mpbarbosa_site/
 ├── .github/                    # GitHub configuration and workflows
 │   └── copilot-instructions.md # These instructions
+├── shell_scripts/              # Automation and deployment scripts
+│   ├── deploy_to_webserver.sh  # Production deployment to nginx
+│   ├── pull_all_submodules.sh  # Update all submodules
+│   ├── push_all_submodules.sh  # Deploy submodule changes
+│   └── README.md               # Shell scripts documentation
 ├── src/                        # Main source directory 
 │   ├── index.html             # Main landing page (entry point)
 │   ├── package.json           # Node.js dependencies and scripts
@@ -87,7 +95,8 @@ mpbarbosa_site/
 │   │   └── projects.html     # Standalone projects page
 │   ├── pages/                 # Redirect pages for projects
 │   │   ├── music_in_numbers.html    # Redirects to submodule
-│   │   └── guia_turistico.html      # Redirects to submodule
+│   │   ├── guia_turistico.html      # Redirects to submodule
+│   │   └── monitora_vagas.html      # Redirects to submodule
 │   └── submodules/            # Git submodules for projects (may be empty)
 ├── .gitmodules               # Git submodule configuration
 ├── index.html               # Simple redirect to mpbarbosa.com
@@ -100,6 +109,31 @@ mpbarbosa_site/
 3. **Test changes**: Live-server automatically reloads the browser
 4. **Validate**: Run through the manual validation scenarios above
 5. **No build step**: This is a static site, no compilation required
+
+### Deployment and Automation
+The project includes comprehensive shell scripts for deployment and maintenance:
+
+#### Production Deployment
+```bash
+# Deploy to production web server (nginx)
+./shell_scripts/deploy_to_webserver.sh
+
+# Features:
+# - Automatic backup with cleanup (7-day retention)
+# - Dynamic source directory detection
+# - Comprehensive error handling with colored output
+# - Dry-run mode for validation
+# - Proper web server permissions
+```
+
+#### Submodule Management
+```bash
+# Update all submodules from remote repositories
+./shell_scripts/pull_all_submodules.sh
+
+# Deploy changes to all submodules
+./shell_scripts/push_all_submodules.sh
+```
 
 ### Important Notes
 - **No linting tools configured**: There are no ESLint, HTMLHint, or other linting tools set up

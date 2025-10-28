@@ -57,12 +57,22 @@ Located in submodules (requires authentication):
 mpbarbosa_site/                    # Main repository
 ├── docs/                          # Documentation (this folder)
 │   └── README.md                  # This file (documentation index)
+├── shell_scripts/                 # Automation and deployment scripts
+│   ├── deploy_to_webserver.sh     # Production deployment automation
+│   ├── pull_all_submodules.sh     # Submodule update automation
+│   ├── push_all_submodules.sh     # Submodule deployment automation
+│   └── README.md                  # Shell scripts documentation
 ├── src/                           # Source code
 │   ├── index.html                 # Main landing page
 │   ├── package.json               # Dependencies and scripts
+│   ├── pages/                     # Project redirect pages
+│   │   ├── music_in_numbers.html  # Music in Numbers redirect
+│   │   ├── guia_turistico.html    # Guia Turístico redirect
+│   │   └── monitora_vagas.html    # Monitora Vagas redirect
 │   └── submodules/                # Git submodules (require auth)
 │       ├── music_in_numbers/      # Music analysis project
-│       └── guia_turistico/        # Travel guide with extracted classes
+│       ├── guia_turistico/        # Travel guide with extracted classes
+│       └── monitora_vagas/        # Job monitoring project
 └── .github/                       # GitHub configuration
     └── copilot-instructions.md    # Development guidelines
 ```
@@ -95,7 +105,25 @@ Following the MP Barbosa development guidelines:
 1. **Homepage Loading**: Verify version badge shows "HTML page v0.4.1-alpha"
 2. **Navigation Testing**: Test smooth scrolling to sections
 3. **Contact Form**: Validate form submission and reset functionality
-4. **Project Links**: May show 404 without submodule authentication (expected behavior)
+4. **Project Links**: Access three featured projects:
+   - **Music in Numbers**: Spotify analytics with advanced modular architecture
+   - **Guia Turístico**: Travel guide with extracted class architecture
+   - **Monitora Vagas**: Job monitoring application
+   - May show 404 without submodule authentication (expected behavior)
+
+### Deployment and Automation
+The project includes comprehensive shell scripts for production deployment:
+
+```bash
+# Production deployment to nginx web server
+./shell_scripts/deploy_to_webserver.sh
+
+# Update all submodules
+./shell_scripts/pull_all_submodules.sh
+
+# Deploy submodule changes
+./shell_scripts/push_all_submodules.sh
+```
 
 ## Class Extraction Achievement Summary
 
