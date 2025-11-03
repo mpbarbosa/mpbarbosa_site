@@ -1,0 +1,383 @@
+#!/bin/bash
+
+# copilot_with_enhanced_prompt.sh - Execute Copilot with an enhanced prompt
+# Usage: ./copilot_with_enhanced_prompt.sh "your prompt here"
+
+set -euo pipefail
+
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENHANCE_SCRIPT="$SCRIPT_DIR/enhance_prompt.sh"
+
+# Function to display usage
+usage() {
+    cat << EOF
+Usage: $(basename "$0") [OPTIONS] "PROMPT"
+
+Enhance a prompt and execute it with GitHub Copilot CLI in two stages:
+  1. Enhance the prompt (better English, context, technical language)
+  2. Execute the enhanced prompt with Copilot CLI
+
+Arguments:
+    PROMPT              The original prompt to enhance and execute (required)
+
+Options:
+    -h, --help          Show this help message
+    -m, --model MODEL   Specify AI model for both enhancement and execution
+    --enhance-model M   Specify AI model only for enhancement step
+    --exec-model M      Specify AI model only for execution step
+    -s, --save FILE     Save enhanced prompt to file before execution
+    -v, --verbose       Show detailed processing information
+    --show-enhanced     Display the enhanced prompt before execution
+    --dry-run           Only enhance the prompt, don't execute it
+    --timeout SECONDS   Timeout for enhancement step (default: 120 seconds)
+
+Examples:
+    $(basename "$0") "Fix the login"
+    $(basename "$0") -m claude-sonnet-4.5 "Add validation to form"
+    $(basename "$0") --show-enhanced "Optimize database queries"
+    $(basename "$0") --dry-run -s enhanced.txt "Debug authentication"
+
+EOF
+    exit 0
+}
+
+# Function to print colored messages
+print_status() {
+    local color=$1
+    shift
+    echo -e "${color}$*${NC}" >&2
+}
+
+# Function to print section headers
+print_section() {
+    echo "" >&2
+    print_status "$CYAN" "═══════════════════════════════════════════════════════════"
+    print_status "$CYAN" "$1"
+    print_status "$CYAN" "═══════════════════════════════════════════════════════════"
+}
+
+# Parse command line arguments
+MODEL=""
+ENHANCE_MODEL=""
+EXEC_MODEL=""
+SAVE_FILE=""
+VERBOSE=false
+SHOW_ENHANCED=false
+DRY_RUN=false
+PROMPT=""
+ENHANCE_TIMEOUT=120  # Default timeout: 2 minutes
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            usage
+            ;;
+        -m|--model)
+            MODEL="$2"
+            shift 2
+            ;;
+        --enhance-model)
+            ENHANCE_MODEL="$2"
+            shift 2
+            ;;
+        --exec-model)
+            EXEC_MODEL="$2"
+            shift 2
+            ;;
+        -s|--save)
+            SAVE_FILE="$2"
+            shift 2
+            ;;
+        -v|--verbose)
+            VERBOSE=true
+            shift
+            ;;
+        --show-enhanced)
+            SHOW_ENHANCED=true
+            shift
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        --timeout)
+            ENHANCE_TIMEOUT="$2"
+            shift 2
+            ;;
+        -*)
+            print_status "$RED" "Error: Unknown option: $1"
+            usage
+            ;;
+        *)
+            PROMPT="$1"
+            shift
+            ;;
+    esac
+done
+
+# Validate prompt argument
+if [[ -z "$PROMPT" ]]; then
+    print_status "$RED" "Error: Prompt is required"
+    usage
+fi
+
+# Check if enhance_prompt.sh exists
+if [[ ! -f "$ENHANCE_SCRIPT" ]]; then
+    print_status "$RED" "Error: Enhancement script not found at: $ENHANCE_SCRIPT"
+    exit 1
+fi
+
+if [[ ! -x "$ENHANCE_SCRIPT" ]]; then
+    print_status "$RED" "Error: Enhancement script is not executable: $ENHANCE_SCRIPT"
+    print_status "$YELLOW" "Fix with: chmod +x $ENHANCE_SCRIPT"
+    exit 1
+fi
+
+# Check if copilot CLI is available
+if ! command -v copilot &> /dev/null; then
+    print_status "$RED" "Error: GitHub Copilot CLI not found"
+    print_status "$YELLOW" "Install it with: npm install -g @githubnext/github-copilot-cli"
+    exit 1
+fi
+
+# Determine models to use
+FINAL_ENHANCE_MODEL="${ENHANCE_MODEL:-$MODEL}"
+FINAL_EXEC_MODEL="${EXEC_MODEL:-$MODEL}"
+
+# Show configuration if verbose
+if [[ "$VERBOSE" = true ]]; then
+    print_section "Configuration"
+    print_status "$BLUE" "Original Prompt: $PROMPT"
+    [[ -n "$FINAL_ENHANCE_MODEL" ]] && print_status "$BLUE" "Enhancement Model: $FINAL_ENHANCE_MODEL"
+    [[ -n "$FINAL_EXEC_MODEL" ]] && print_status "$BLUE" "Execution Model: $FINAL_EXEC_MODEL"
+    [[ -n "$SAVE_FILE" ]] && print_status "$BLUE" "Save Enhanced To: $SAVE_FILE"
+    print_status "$BLUE" "Enhancement Timeout: ${ENHANCE_TIMEOUT}s"
+    [[ "$DRY_RUN" = true ]] && print_status "$BLUE" "Mode: Dry Run (enhancement only)"
+fi
+
+# Step 1: Enhance the prompt using Agent Mode
+print_section "Step 1: Enhancing Prompt (Agent Mode)"
+
+# Create temporary files for agent mode execution
+AGENT_OUTPUT=$(mktemp /tmp/agent_output.XXXXXX)
+AGENT_LOG=$(mktemp /tmp/agent_log.XXXXXX)
+AGENT_PID_FILE=$(mktemp /tmp/agent_pid.XXXXXX)
+
+# Cleanup function
+cleanup_agent_files() {
+    rm -f "$AGENT_OUTPUT" "$AGENT_LOG" "$AGENT_PID_FILE"
+}
+trap cleanup_agent_files EXIT
+
+# Display step-by-step execution
+print_status "$BLUE" "→ Initializing agent mode execution..."
+print_status "$BLUE" "→ Timeout configured: ${ENHANCE_TIMEOUT}s"
+print_status "$BLUE" "→ Original prompt: $PROMPT"
+echo ""
+
+# Build copilot agent command for enhancement
+AGENT_PROMPT="You are a prompt enhancement specialist. Enhance the following prompt by improving English grammar, adding technical context, and using professional technical language. Return ONLY the enhanced prompt without any explanation or metadata.
+
+Original prompt: $PROMPT"
+
+print_status "$YELLOW" "Step 1.1: Starting Copilot Agent for prompt enhancement..."
+
+# Execute copilot in agent mode with timeout
+(
+    copilot --allow-all-tools --agent ${FINAL_ENHANCE_MODEL:+--model "$FINAL_ENHANCE_MODEL"} --prompt "$AGENT_PROMPT" > "$AGENT_OUTPUT" 2> "$AGENT_LOG" &
+    echo $! > "$AGENT_PID_FILE"
+) &
+
+# Wait for PID file to be created
+sleep 1
+AGENT_PID=$(cat "$AGENT_PID_FILE" 2>/dev/null)
+
+if [[ -z "$AGENT_PID" ]]; then
+    print_status "$RED" "✗ Failed to start agent process"
+    exit 1
+fi
+
+print_status "$GREEN" "✓ Agent process started (PID: $AGENT_PID)"
+print_status "$YELLOW" "Step 1.2: Processing enhancement with AI agent..."
+
+# Monitor execution with timeout
+ELAPSED=0
+STEP_INTERVAL=5
+SPINNER=( '⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏' )
+SPINNER_IDX=0
+
+while [[ $ELAPSED -lt $ENHANCE_TIMEOUT ]]; do
+    if ! kill -0 "$AGENT_PID" 2>/dev/null; then
+        # Process completed - exit code will be checked after loop
+        ENHANCE_EXIT_CODE=0
+        break
+    fi
+    
+    # Display spinner and progress
+    printf "\r${BLUE}  ${SPINNER[$SPINNER_IDX]} Processing... (${ELAPSED}s / ${ENHANCE_TIMEOUT}s)${NC}" >&2
+    SPINNER_IDX=$(( (SPINNER_IDX + 1) % ${#SPINNER[@]} ))
+    
+    sleep 1
+    ELAPSED=$((ELAPSED + 1))
+done
+
+printf "\r" >&2  # Clear spinner line
+
+# Check if timeout occurred
+if [[ $ELAPSED -ge $ENHANCE_TIMEOUT ]] && kill -0 "$AGENT_PID" 2>/dev/null; then
+    print_status "$RED" "✗ Enhancement timed out after ${ENHANCE_TIMEOUT}s"
+    print_status "$YELLOW" "  Terminating agent process..."
+    kill -TERM "$AGENT_PID" 2>/dev/null
+    sleep 2
+    kill -KILL "$AGENT_PID" 2>/dev/null
+    print_status "$RED" "Error: Prompt enhancement exceeded timeout"
+    exit 124  # Standard timeout exit code
+fi
+
+print_status "$YELLOW" "Step 1.3: Validating agent output..."
+
+# Check exit code
+if [[ $ENHANCE_EXIT_CODE -ne 0 ]]; then
+    print_status "$RED" "✗ Agent execution failed with exit code $ENHANCE_EXIT_CODE"
+    if [[ -s "$AGENT_LOG" ]]; then
+        print_status "$YELLOW" "Agent error log:"
+        cat "$AGENT_LOG" >&2
+    fi
+    exit $ENHANCE_EXIT_CODE
+fi
+
+# Extract enhanced prompt from agent output
+ENHANCED_PROMPT=$(cat "$AGENT_OUTPUT")
+
+# Validate output
+if [[ -z "$ENHANCED_PROMPT" ]] || [[ ${#ENHANCED_PROMPT} -lt 10 ]]; then
+    print_status "$RED" "✗ Agent returned invalid or empty response"
+    print_status "$YELLOW" "Agent output:"
+    cat "$AGENT_OUTPUT" >&2
+    exit 1
+fi
+
+print_status "$GREEN" "✓ Enhancement completed successfully"
+print_status "$YELLOW" "Step 1.4: Finalizing enhanced prompt..."
+
+# Save to file if requested
+if [[ -n "$SAVE_FILE" ]]; then
+    echo "$ENHANCED_PROMPT" > "$SAVE_FILE"
+    print_status "$GREEN" "✓ Enhanced prompt saved to: $SAVE_FILE"
+fi
+
+print_status "$GREEN" "✓ Step 1 completed (Duration: ${ELAPSED}s)"
+
+# Always show enhanced prompt before confirmation
+print_section "Enhanced Prompt"
+echo "$ENHANCED_PROMPT"
+
+# Exit if dry-run
+if [[ "$DRY_RUN" = true ]]; then
+    print_status "$GREEN" "✓ Dry run completed - enhanced prompt shown above"
+    exit 0
+fi
+
+# Interactive options before execution
+while true; do
+    echo "" >&2
+    print_status "$CYAN" "═══ Options Before Execution ═══"
+    print_status "$YELLOW" "1) Edit the enhanced prompt"
+    print_status "$YELLOW" "2) Save the enhanced prompt to file"
+    print_status "$YELLOW" "3) Proceed with execution"
+    print_status "$YELLOW" "4) Cancel execution"
+    echo "" >&2
+    print_status "$YELLOW" "Select an option (1-4): "
+    read -r OPTION
+
+    case "$OPTION" in
+        1)
+            # Edit enhanced prompt
+            print_status "$BLUE" "Opening enhanced prompt in editor..."
+            
+            # Create temporary file with enhanced prompt
+            TEMP_PROMPT_FILE=$(mktemp /tmp/enhanced_prompt.XXXXXX)
+            echo "$ENHANCED_PROMPT" > "$TEMP_PROMPT_FILE"
+            
+            # Detect default editor
+            EDITOR="${EDITOR:-${VISUAL:-nano}}"
+            
+            # Open in new terminal with editor
+            if command -v gnome-terminal &> /dev/null; then
+                gnome-terminal -- bash -c "$EDITOR '$TEMP_PROMPT_FILE'; echo 'Press Enter to continue...'; read"
+            elif command -v xterm &> /dev/null; then
+                xterm -e bash -c "$EDITOR '$TEMP_PROMPT_FILE'; echo 'Press Enter to continue...'; read"
+            else
+                # Fallback: open in current terminal
+                $EDITOR "$TEMP_PROMPT_FILE"
+            fi
+            
+            # Read modified prompt
+            ENHANCED_PROMPT=$(cat "$TEMP_PROMPT_FILE")
+            rm -f "$TEMP_PROMPT_FILE"
+            
+            print_status "$GREEN" "✓ Enhanced prompt updated"
+            print_section "Updated Enhanced Prompt"
+            echo "$ENHANCED_PROMPT"
+            ;;
+        2)
+            # Save enhanced prompt
+            PROMPT_HISTORY_DIR="$SCRIPT_DIR/.prompt_history"
+            mkdir -p "$PROMPT_HISTORY_DIR"
+            
+            TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+            SAVE_PATH="$PROMPT_HISTORY_DIR/enhanced_prompt_$TIMESTAMP.txt"
+            
+            echo "$ENHANCED_PROMPT" > "$SAVE_PATH"
+            
+            if [[ $? -eq 0 ]]; then
+                print_status "$GREEN" "✓ Enhanced prompt saved to: $SAVE_PATH"
+            else
+                print_status "$RED" "✗ Failed to save enhanced prompt"
+            fi
+            ;;
+        3)
+            # Proceed with execution
+            print_status "$GREEN" "✓ Proceeding with execution..."
+            break
+            ;;
+        4)
+            # Cancel execution
+            print_status "$BLUE" "Execution cancelled by user."
+            exit 0
+            ;;
+        *)
+            print_status "$RED" "Invalid option. Please select 1-4."
+            ;;
+    esac
+done
+
+# Step 2: Execute with Copilot CLI
+print_section "Step 2: Executing Enhanced Prompt with Copilot"
+
+# Build copilot execution command
+COPILOT_CMD="copilot --allow-all-tools --prompt"
+[[ -n "$FINAL_EXEC_MODEL" ]] && COPILOT_CMD="$COPILOT_CMD --model $FINAL_EXEC_MODEL"
+
+# Execute the enhanced prompt
+$COPILOT_CMD "$ENHANCED_PROMPT"
+EXEC_EXIT_CODE=$?
+
+if [[ $EXEC_EXIT_CODE -ne 0 ]]; then
+    print_status "$RED" "Error: Copilot execution failed with exit code $EXEC_EXIT_CODE"
+    exit $EXEC_EXIT_CODE
+fi
+
+print_section "Completed Successfully"
+print_status "$GREEN" "✓ Prompt enhanced and executed"
+
+exit 0

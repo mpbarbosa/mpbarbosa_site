@@ -33,25 +33,39 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 ```
 mpbarbosa_site/
-├── shell_scripts/                # Automation and deployment scripts
-│   ├── deploy_to_webserver.sh    # Production deployment automation
-│   ├── pull_all_submodules.sh    # Submodule update automation
-│   └── push_all_submodules.sh    # Submodule deployment automation
-├── src/                          # Main source directory
-│   ├── index.html               # Landing page with Material Design
-│   ├── styles/main.css          # Material Design styling
-│   ├── scripts/main.js          # Contact form and interactions  
-│   ├── components/              # Individual HTML components
-│   ├── pages/                   # Project redirect pages
-│   │   ├── music_in_numbers.html  # Music in Numbers redirect
-│   │   ├── guia_turistico.html    # Guia Turístico redirect
-│   │   └── monitora_vagas.html    # Monitora Vagas redirect
-│   └── submodules/              # Personal projects (Git submodules)
-│       ├── music_in_numbers/    # 🎵 Music analytics platform
-│       ├── guia_turistico/      # 🗺️ Travel guide application
-│       └── monitora_vagas/      # 💼 Job monitoring application
-├── docs/                        # Project documentation
-└── .github/                     # GitHub configuration
+├── shell_scripts/                     # Automation and deployment scripts
+│   ├── deploy_to_webserver.sh         # Production deployment automation
+│   ├── pull_all_submodules.sh         # Submodule update automation
+│   ├── push_all_submodules.sh         # Submodule deployment automation
+│   ├── validate_external_links.sh     # External links security validator
+│   ├── enhance_prompt.sh              # AI prompt enhancement utility
+│   └── copilot_with_enhanced_prompt.sh # GitHub Copilot with enhanced prompts
+├── src/                               # Main source directory
+│   ├── index.html                    # Landing page with Material Design
+│   ├── assets/                       # HTML5 UP Dimension template assets
+│   │   ├── css/                      # Compiled stylesheets
+│   │   ├── js/                       # JavaScript utilities
+│   │   ├── sass/                     # SASS source files
+│   │   └── webfonts/                 # Font Awesome web fonts
+│   ├── styles/main.css               # Material Design styling
+│   ├── scripts/main.js               # Contact form and interactions  
+│   ├── components/                   # Individual HTML components
+│   ├── pages/                        # Project redirect pages
+│   │   ├── music_in_numbers.html     # Music in Numbers redirect
+│   │   ├── guia_turistico.html       # Guia Turístico redirect
+│   │   └── monitora_vagas.html       # Monitora Vagas redirect
+│   └── submodules/                   # Personal projects (Git submodules)
+│       ├── music_in_numbers/         # 🎵 Music analytics platform
+│       ├── guia_turistico/           # 🗺️ Travel guide application
+│       └── monitora_vagas/           # 💼 Job monitoring application
+├── docs/                             # Project documentation
+│   ├── EXTERNAL_LINKS_POLICY.md      # Security standards for external links
+│   ├── GIT_BEST_PRACTICES_GUIDE.md   # Version control workflow guide
+│   └── [other documentation files]
+├── prompts/                          # AI workflow templates
+│   └── tests_documentation_update_enhanced.txt
+└── .github/                          # GitHub configuration
+    └── copilot-instructions.md       # Development guidelines
 ```
 
 ## 🎵 Featured Projects
@@ -96,11 +110,17 @@ The project includes comprehensive shell scripts for production deployment:
 # Deploy to production web server (nginx)
 ./shell_scripts/deploy_to_webserver.sh
 
+# Validate external links security compliance
+./shell_scripts/validate_external_links.sh
+
 # Update all submodules from remote repositories
 ./shell_scripts/pull_all_submodules.sh
 
 # Deploy changes to all submodules
 ./shell_scripts/push_all_submodules.sh
+
+# AI-assisted development
+./shell_scripts/copilot_with_enhanced_prompt.sh "your task description"
 ```
 
 **Deployment Features:**
@@ -141,8 +161,10 @@ The project demonstrates **professional-grade architecture** with:
 
 ### 📚 Architecture Documentation
 - **[Comprehensive UX Documentation](docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
+- **[External Links Policy](docs/EXTERNAL_LINKS_POLICY.md)** - Security and UX standards for external hyperlinks with tabnapping prevention
 - **[Functional Core, Imperative Shell Guide](docs/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
 - **[Resource Path Guide](docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and deployment best practices
+- **[Git Best Practices](docs/GIT_BEST_PRACTICES_GUIDE.md)** - Comprehensive version control workflow guide
 - **[Complete Documentation](docs/README.md)** - Full technical documentation
 - **[Development Guidelines](.github/copilot-instructions.md)** - Coding standards and workflow
 

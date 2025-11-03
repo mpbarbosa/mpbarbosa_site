@@ -6,6 +6,12 @@
 
 This is a static HTML personal portfolio website for MP Barbosa featuring Material Design components. The site showcases personal projects, provides an about section, curriculum information, and includes a contact form with JavaScript interactivity.
 
+**Architecture Highlights**:
+- **Multi-project structure**: Main site + 3 specialized submodules (Music in Numbers, Guia Turístico, Monitora Vagas)
+- **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
+- **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
+- **Professional deployment**: Automated shell scripts for production nginx deployment
+
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
 The Music in Numbers subproject has achieved **outstanding architectural transformation**:
 - **Overall Code Reduction**: 85.8% (2,161 → 306 lines across major pages)
@@ -137,7 +143,8 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 
 ### Important Notes
 - **No linting tools configured**: There are no ESLint, HTMLHint, or other linting tools set up
-- **No tests**: No automated test suite exists
+- **Jest Testing Framework**: Comprehensive test suite exists in `src/__tests__/` with coverage reporting
+- **ES Modules**: Project uses `"type": "module"` with `.mjs` files for modern JavaScript
 - **No CI/CD**: No GitHub Actions or other continuous integration configured
 - **External dependencies**: Uses CDN resources (Google Fonts, Material Web Components, unpkg.com)
 - **Browser compatibility**: Designed for modern browsers that support ES6+ and CSS Grid
@@ -184,20 +191,23 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 ```json
 {
   "scripts": {
-    "start": "live-server src",
+    "start": "live-server .",
     "build": "echo 'Build step not defined yet.'",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "jest": {
-    "testEnvironment": "node",
+    "testEnvironment": "jsdom",
+    "transform": {},
     "testMatch": [
       "**/__tests__/**/*.test.js",
       "**/?(*.)+(spec|test).js"
     ],
     "collectCoverageFrom": [
-      "submodules/guia_turistico/src/libs/guia_js/src/**/*.js"
+      "scripts/**/*.{js,mjs}",
+      "submodules/guia_turistico/src/libs/guia_js/src/**/*.js",
+      "submodules/music_in_numbers/src/**/*.js"
     ]
   }
 }
@@ -255,6 +265,78 @@ When working on the Music in Numbers project:
 4. **Use Defer Loading**: Scripts should load with defer attributes for performance
 5. **Document Changes**: Update completion reports and architecture documentation
 
+### Testing and ES Module Patterns
+This project uses modern ES modules with Jest testing:
+
+#### ES Module Structure
+- **Main files**: Use `.mjs` extension (e.g., `scripts/main.mjs`)
+- **Exports**: Use named exports for testability
+- **Imports**: Use ES6 import syntax consistently
+- **Type**: `package.json` includes `"type": "module"`
+
+#### Testing Approach
+```javascript
+// Example: Testable function with named export
+export function setupSmoothScrolling() {
+    const links = document.querySelectorAll('a[href^="#"]');
+    // ... implementation
+    return links.length; // Return value for testing
+}
+
+// Test structure in __tests__/
+import { setupSmoothScrolling } from '../scripts/main.mjs';
+test('should set up smooth scrolling', () => {
+    const linkCount = setupSmoothScrolling();
+    expect(linkCount).toBe(3);
+});
+```
+
+#### Key Testing Commands
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+
+# Test specific file
+npm test -- main.test.js
+```
+
+## 🏗️ Advanced Architecture Patterns
+
+### Dependency Injection & "Functional Core, Imperative Shell"
+The Music in Numbers subproject demonstrates enterprise-grade patterns:
+
+- **API Class Extraction**: Professional 5-class architectures with dependency injection
+- **Separation Pattern**: Pure functions in Core/Processors, side effects in Shell/Utilities
+- **Example Structure**:
+  ```
+  scripts/analytics/
+  ├── AnalyticsValidators.js    # Pure validation functions
+  ├── AnalyticsProcessors.js    # Pure data processing
+  ├── AnalyticsUIBuilders.js    # Pure UI building functions
+  ├── AnalyticsCore.js          # Orchestration with injected dependencies
+  └── AnalyticsUtilities.js     # DI factory with environment detection
+  ```
+
+### Shell Script Automation
+Critical deployment and maintenance patterns:
+
+```bash
+# Hierarchical submodule management (bottom-up)
+./shell_scripts/pull_all_submodules.sh --dry-run
+./shell_scripts/push_all_submodules.sh --handle-stash
+
+# Production deployment with nginx integration
+sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
+```
+
+**Key Pattern**: Always use `--dry-run` first to preview operations before executing.
+
 ## 📖 Related Documentation References
 
 For comprehensive development guidance, consult these detailed documentation resources:
@@ -263,5 +345,6 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Resource Path Guide](../docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and troubleshooting for submodule deployment
 - **[Path Resolution Fix Report](../docs/PATH_RESOLUTION_FIX_COMPLETION_REPORT.md)** - Technical incident report and lessons learned
 - **[Modularization Achievements](../docs/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Architecture improvements and code reduction metrics
+- **[Dependency Injection Best Practices](../docs/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 Always verify the development server starts successfully and the main page loads before making any modifications to the codebase.

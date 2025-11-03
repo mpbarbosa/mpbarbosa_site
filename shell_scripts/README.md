@@ -89,6 +89,82 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recom
 
 ---
 
+### ✅ `validate_external_links.sh`
+**Purpose**: Validates that all external links follow the security policy of opening in new tabs with proper attributes
+
+**Features**:
+- ✅ Scans all HTML files across main site and submodules
+- ✅ Identifies external links (http/https URLs)
+- ✅ Validates `target="_blank"` attribute presence
+- ✅ Validates `rel="noopener noreferrer"` security attributes
+- ✅ Colored output showing compliant and non-compliant links
+- ✅ Comprehensive validation summary
+
+**Usage**:
+```bash
+./shell_scripts/validate_external_links.sh      # Validate all external links
+```
+
+**Validation Criteria**:
+- All `<a>` tags with external URLs must have `target="_blank"`
+- All external links must include `rel="noopener noreferrer"` for security
+- Excludes `<link>` tags (stylesheets/fonts don't need these attributes)
+
+**Security Note**: The `rel="noopener noreferrer"` attribute prevents tabnapping attacks and protects user privacy. See `/docs/EXTERNAL_LINKS_POLICY.md` for complete details.
+
+---
+
+### 🤖 `enhance_prompt.sh`
+**Purpose**: Enhances user prompts using GitHub Copilot CLI for improved clarity and technical language
+
+**Features**:
+- ✅ Improves English grammar and technical terminology
+- ✅ Adds relevant context and technical details
+- ✅ Preserves original intent while clarifying requirements
+- ✅ Optimized for software development and technical tasks
+- ✅ Colored output for better readability
+
+**Usage**:
+```bash
+./shell_scripts/enhance_prompt.sh "your prompt here"
+./shell_scripts/enhance_prompt.sh --help    # Show help
+```
+
+**Example**:
+```bash
+# Original: "fix the bug in the script"
+# Enhanced: "Debug and resolve the logical error in the shell script, ensuring proper error handling and exit codes"
+```
+
+---
+
+### 🚀 `copilot_with_enhanced_prompt.sh`
+**Purpose**: Executes GitHub Copilot CLI with automatically enhanced prompts for better results
+
+**Features**:
+- ✅ Automatically enhances prompts using `enhance_prompt.sh`
+- ✅ Shows both original and enhanced prompts for transparency
+- ✅ Interactive confirmation before execution
+- ✅ Seamless integration with GitHub Copilot CLI
+- ✅ Colored output with clear formatting
+
+**Usage**:
+```bash
+./shell_scripts/copilot_with_enhanced_prompt.sh "your prompt here"
+./shell_scripts/copilot_with_enhanced_prompt.sh --help    # Show help
+```
+
+**Workflow**:
+1. User provides natural language prompt
+2. Script enhances prompt for clarity and context
+3. Displays both original and enhanced versions
+4. Prompts for confirmation
+5. Executes GitHub Copilot with enhanced prompt
+
+**Dependencies**: Requires `enhance_prompt.sh` in the same directory
+
+---
+
 ## Git Best Practices Integration
 
 Both scripts follow the comprehensive git best practices established in `/docs/GIT_BEST_PRACTICES_GUIDE.md`:
@@ -138,6 +214,9 @@ mpbarbosa_site/ (main repository)
 ```bash
 # Start of day: pull all latest changes
 ./shell_scripts/pull_all_submodules.sh
+
+# Validate external links policy compliance
+./shell_scripts/validate_external_links.sh
 
 # End of day: push all changes
 ./shell_scripts/push_all_submodules.sh
