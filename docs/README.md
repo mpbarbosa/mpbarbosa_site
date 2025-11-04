@@ -11,8 +11,14 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Source Structure](../src/README.md)** - Source code organization
 - **[Development Guidelines](../.github/copilot-instructions.md)** - Coding standards and workflow
 
+### Shell Scripts and Deployment
+- **[Shell Scripts Documentation](../shell_scripts/README.md)** - Automation and deployment script documentation
+- **[Sync to Public - Functional Documentation](SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Website synchronization workflow and process documentation
+- **[Sync to Public - Technical Documentation](SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details and architecture
+
 ### Advanced Architecture Patterns
 - **[Functional Core, Imperative Shell Guide](FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies
+- **[Python Migration Plan](PYTHON_MIGRATION_PLAN.md)** - Strategic migration from shell to Python for enhanced functionality
 
 ### Class Extraction Initiative
 

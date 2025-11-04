@@ -1,0 +1,3 @@
+List directory shell_scripts (15 files)
+Read shell_scripts/enhance_prompt.sh (177 lines)
+Analyze and categorize the operational responsibilities and functional capabilities of the `./shell_scripts/enhance_prompt.sh` Bash shell script located in the project repository, identifying its purpose, technical implementation patterns, integration points with external tools (such as GitHub Copilot CLI), command-line argument handling mechanisms, output processing strategies, and overall role within the project's automation infrastructure.

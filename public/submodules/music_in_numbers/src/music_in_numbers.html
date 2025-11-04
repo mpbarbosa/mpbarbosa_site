@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music in Numbers - Redirecting...</title>
+    <meta http-equiv="refresh" content="0;url=index.html">
+    <link rel="canonical" href="index.html">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1db954, #191414);
+            color: white;
+            text-align: center;
+        }
+        .redirect-container {
+            padding: 2rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #1db954;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 {
+            margin: 0 0 1rem;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+        p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        a {
+            color: #1db954;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="spinner"></div>
+        <h1>🎵 Music in Numbers</h1>
+        <p>Redirecting to Spotify Analytics...</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            If you're not redirected automatically, 
+            <a href="index.html">click here</a>
+        </p>
+    </div>
+    
+    <script>
+        // JavaScript redirect as backup
+        setTimeout(() => {
+            if (!document.hidden) {
+                window.location.href = 'index.html';
+            }
+        }, 1000);
+        
+        // Immediate redirect for users with JavaScript disabled fallback
+        if (window.location.href.includes('music_in_numbers.html')) {
+            console.log('Redirecting to Music in Numbers main application...');
+        }
+    </script>
+</body>
+</html>

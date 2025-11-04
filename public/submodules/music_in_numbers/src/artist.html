@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!--
+    ================================================================================
+    ARTIST PAGE - MUSIC IN NUMBERS
+    ================================================================================
+    
+    ARCHITECTURE: Self-Contained HTML
+    This file follows a self-contained architecture where all dependencies
+    (CSS, JavaScript) are embedded inline within a single HTML file.
+    
+    SEPARATION OF CONCERNS:
+    Despite being in one file, this page maintains proper separation:
+    
+    📄 HTML (Structure & Content)
+       - Semantic HTML5 elements (<header>, <nav>, <main>, <article>, etc.)
+       - Accessibility features (ARIA attributes, semantic markup)
+       - NO inline styles (no style="" attributes)
+       - NO inline event handlers (no onclick="" attributes)
+       - Content is purely structural
+    
+    🎨 CSS (Presentation & Styling)
+       - All styles in a single <style> block in <head>
+       - Organized by component/feature with clear comments
+       - Class-based selectors (no inline styles)
+       - Responsive design with media queries
+       - Follows Spotify design language (#1DB954 green, dark theme)
+    
+    ⚡ JavaScript (Behavior & Interactivity)
+       - All code in a single <script> block at end of <body>
+       - Organized into pure functions and impure functions
+       - Event listeners attached via addEventListener (not inline)
+       - Clear separation between data transformation and side effects
+       - Follows functional programming principles
+    
+    WHY THIS APPROACH?
+    - Simplifies deployment (single file per page, no build process)
+    - Reduces HTTP requests for local resources
+    - Maintains separation of concerns within a single file
+    - Follows project conventions (see .github/copilot-instructions.md)
+    
+    EXTERNAL DEPENDENCIES:
+    - Font Awesome 6.5.2 (icons)
+    - Google Fonts (Montserrat)
+    - styles.css (linked but not required - has fallback embedded styles)
+    
+    See documentation:
+    - .github/HTML_BEST_PRACTICES.md
+    - .github/HTML_CSS_JS_SEPARATION.md
+    - .github/JAVASCRIPT_BEST_PRACTICES.md
+    ================================================================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View detailed artist information from Spotify API">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="submodules/music_in_numbers/src/images/logo.png">
+    <title>Artista - Music in Numbers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- External CSS Files -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/artist-components.css">
+</head>
+<body>
+    <div class="main">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" role="navigation" aria-label="Main navigation">
+            <nav class="nav">
+                <div class="nav-option active">
+                    <i class="fa-solid fa-house" aria-hidden="true"></i>
+                    <a href="submodules/music_in_numbers/src/index.html" aria-label="Go to home page">Home</a>
+                </div>
+                <div class="nav-option">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <a href="#search" aria-label="Search for artists">Search</a>
+                </div>
+            </nav>
+            <section class="library">
+                <div class="options">
+                    <div class="lib-option nav-option">
+                        <img src="submodules/music_in_numbers/src/images/library_icon.png" alt="Library icon">
+                        <a href="#library">Your Library</a>
+                    </div>
+                    <div class="icons">
+                        <i class="fa-solid fa-plus" aria-label="Add to library"></i>
+                        <i class="fa-solid fa-arrow-right" aria-label="Expand library"></i>
+                    </div>
+                </div>
+                <div class="lib-box">
+                    <div class="box">
+                        <p class="box-p1">Create your first playlist</p>
+                        <p class="box-p2">It's easy, we'll help you</p>
+                        <button class="badge" aria-label="Create a new playlist">Create playlist</button>
+                    </div>
+                    <div class="box">
+                        <p class="box-p1">Let's find some podcasts to follow</p>
+                        <p class="box-p2">We'll keep you updated on new episodes</p>
+                        <button class="badge" aria-label="Browse available podcasts">Browse podcasts</button>
+                    </div>
+                </div>
+                
+                <!-- Spotify Profile Button -->
+                <div class="spotify-profile-btn-container">
+                    <button 
+                        id="spotifyProfileBtn" 
+                        class="spotify-profile-btn"
+                        aria-label="Open your Spotify profile">
+                        <i class="fa-brands fa-spotify" aria-hidden="true"></i>
+                        Open My Profile
+                    </button>
+                </div>
+            </section>
+        </aside>
+        
+        <!-- Main Content -->
+        <main id="artist-info" class="main-content" role="main" aria-live="polite" aria-busy="true"></main>
+    </div>
+    
+    <!-- External JavaScript Modules with defer attributes for optimal loading -->
+    <script defer src="scripts/utils.js"></script>
+    <!-- Spotify API modules (order is important for dependencies) -->
+    <script defer src="scripts/spotify-api/SpotifyApiValidators.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiRequestBuilders.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiResponseProcessors.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiUtilities.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiCore.js"></script>
+    <script defer src="scripts/spotify-api/SpotifySessionDetector.js"></script>
+    <script defer src="scripts/spotify-api.js"></script>
+    <script defer src="scripts/artist-api.js"></script>
+    <script defer src="scripts/artist-ui.js"></script>
+    <script defer src="scripts/artist-page.js"></script>
+</body>
+</html>

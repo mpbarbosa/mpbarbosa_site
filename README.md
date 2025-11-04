@@ -35,6 +35,7 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 mpbarbosa_site/
 ├── shell_scripts/                     # Automation and deployment scripts
 │   ├── deploy_to_webserver.sh         # Production deployment automation
+│   ├── sync_to_public.sh              # Website sync and deployment script
 │   ├── pull_all_submodules.sh         # Submodule update automation
 │   ├── push_all_submodules.sh         # Submodule deployment automation
 │   ├── validate_external_links.sh     # External links security validator
@@ -64,6 +65,11 @@ mpbarbosa_site/
 │   └── [other documentation files]
 ├── prompts/                          # AI workflow templates
 │   └── tests_documentation_update_enhanced.txt
+├── public/                           # Generated deployment directory (sync_to_public.sh output)
+│   ├── index.html                    # Synchronized main page
+│   ├── assets/                       # HTML5 UP Dimension template assets
+│   ├── submodules/                   # Synchronized subproject content
+│   └── [other synchronized files]
 └── .github/                          # GitHub configuration
     └── copilot-instructions.md       # Development guidelines
 ```
@@ -109,6 +115,9 @@ The project includes comprehensive shell scripts for production deployment:
 ```bash
 # Deploy to production web server (nginx)
 ./shell_scripts/deploy_to_webserver.sh
+
+# Sync website content to public directory
+./shell_scripts/sync_to_public.sh
 
 # Validate external links security compliance
 ./shell_scripts/validate_external_links.sh

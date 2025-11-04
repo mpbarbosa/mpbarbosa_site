@@ -632,6 +632,32 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
       - Model selection based on cost/quality tradeoff
     - Technical approach: Token counting library, cost database
 
+21. **Enhanced Unicode Emoji Status Indicators** 🆕
+    - Priority: Low
+    - Effort: 3-4 hours
+    - Description: Rich visual feedback using Unicode emoji for all operations
+    - Features:
+      - Status indicators for each pipeline stage (⏳, ✓, ✗)
+      - Priority badges for prompts (🔴 high, 🟡 medium, 🟢 low)
+      - Progress visualization with phase emojis (1️⃣, 2️⃣, 3️⃣)
+      - Error type categorization (🐛 bug, 🚨 critical, ⚠️ warning)
+      - Performance indicators (⚡ fast, 🐌 slow)
+      - Context-aware emoji selection based on operation type
+      - Configurable emoji sets (professional, playful, minimal)
+    - Visual Examples:
+      ```
+      ⏳ Step 1: Enhancing Prompt...
+      ✓ Enhancement completed in 5.2s ⚡
+      📊 Prompt improved by 45% (clarity metric)
+      
+      2️⃣ Step 2: Executing with Copilot 🚀
+      ✓ Execution successful 🎉
+      💚 All validation checks passed
+      ```
+    - Technical approach: Emoji mapping dictionary, context detection, user preferences
+    - Benefits: Improved readability, faster visual parsing, better UX
+    - Accessibility: Optional plain-text mode for screen readers
+
 ---
 
 ## Technical Architecture
@@ -775,6 +801,141 @@ Terminal Output
 | v1.0 | 2025-11-03 00:30 | 209 | Initial two-stage pipeline | Superseded |
 | v1.5 | 2025-11-03 01:20 | 383 | Agent mode, timeout, spinner | Superseded |
 | v2.0 | 2025-11-03 01:39 | 225 | Simplified, always-on display | **Current** |
+
+---
+
+## Unicode Emoji Glossary
+
+### Status & State Indicators
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| ✅ | Active/Implemented | Features currently working in production |
+| ❌ | Removed/Deleted | Features removed from codebase |
+| 🆕 | New Feature | Planned features not yet implemented |
+| 🔄 | Returning Feature | Previously removed, planned for re-implementation |
+| 🔧 | Enhancement | Improvement to existing functionality |
+| ⚠️ | Warning/Caution | Deprecated or risky features |
+| 🚧 | In Progress | Currently under development |
+| 🎯 | Planned | Scheduled for future implementation |
+| 📌 | Pinned/Priority | High-priority or critical items |
+
+### Progress & Execution
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏ | Spinner Animation | Real-time progress indication (Braille patterns) |
+| ⏳ | Processing | Long-running operation in progress |
+| ⏱️ | Timed Operation | Operations with timeout constraints |
+| 🔄 | Refresh/Retry | Retry or refresh operations |
+| ⏸️ | Paused | Temporarily suspended operation |
+| ⏹️ | Stopped | Terminated or cancelled operation |
+| ▶️ | Start/Execute | Begin operation or execution |
+| ⏭️ | Skip | Skip optional step |
+
+### Success & Validation
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| ✓ | Success/Check | Successful completion of operation |
+| ✔️ | Verified | Validated or confirmed |
+| 🎉 | Celebration | Major milestone or achievement |
+| 💚 | Passed | Tests or validation passed |
+| 🏆 | Achievement | Significant accomplishment |
+
+### Errors & Problems
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| ✗ | Failure/Error | Failed operation or check |
+| ❗ | Alert | Important notice or alert |
+| 🚨 | Critical Error | Severe error requiring immediate attention |
+| 💔 | Broken | Broken functionality or compatibility |
+| 🔥 | Critical Issue | Hot fix needed, urgent problem |
+| 🐛 | Bug | Known bug or defect |
+
+### Information & Communication
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| → | Direction/Next | Informational message, next step |
+| ℹ️ | Information | General information or note |
+| 💡 | Tip/Idea | Helpful suggestion or insight |
+| 📝 | Documentation | Documentation or notes |
+| 📖 | Guide | Tutorial or guide |
+| 📋 | Checklist | Task list or requirements |
+| 📊 | Analytics | Data, metrics, or statistics |
+| 📈 | Growth/Improvement | Positive trend or enhancement |
+
+### Configuration & Settings
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| ⚙️ | Settings | Configuration or settings |
+| 🔧 | Tool/Utility | Development tool or utility |
+| 🛠️ | Build/Setup | Build process or setup |
+| ⚡ | Performance | Performance-related features |
+| 🚀 | Deploy/Launch | Deployment or production release |
+| 🔐 | Security | Security-related features |
+| 🔑 | Authentication | Auth or access control |
+
+### Priority & Planning
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| 🔴 | High Priority | Critical, high-priority item |
+| 🟡 | Medium Priority | Moderate priority |
+| 🟢 | Low Priority | Nice-to-have, low priority |
+| 🔵 | Info Priority | Informational, no action needed |
+| ⭐ | Important | Starred or important item |
+| 🎯 | Target | Goal or objective |
+| 📅 | Scheduled | Time-bound or scheduled item |
+| ⏰ | Deadline | Upcoming deadline |
+
+### Development & Code
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| 💻 | Development | Development environment or coding |
+| 🖥️ | CLI/Terminal | Command-line interface |
+| 📦 | Package | Package or dependency |
+| 🔌 | Plugin | Plugin or extension |
+| 🧩 | Module | Modular component |
+| 🎨 | UI/UX | User interface or design |
+| 🌐 | Web/Network | Web-related or network features |
+| 📡 | API | API or service integration |
+
+### Testing & Quality
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| 🧪 | Testing | Unit tests, integration tests |
+| 🔬 | Analysis | Code analysis or profiling |
+| 🎭 | Mock/Stub | Testing mocks or stubs |
+| 📏 | Measurement | Metrics or measurements |
+| 🔍 | Investigation | Debugging or investigation |
+| 🕵️ | Deep Dive | Detailed analysis |
+
+### Version & Release
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| 🏷️ | Version Tag | Version or release tag |
+| 📌 | Pinned Version | Pinned or locked version |
+| 🔖 | Bookmark | Saved state or bookmark |
+| 📦 | Release | Package release |
+| 🎁 | New Release | New feature release |
+
+### Phases & Milestones
+
+| Emoji | Meaning | Usage Context |
+|-------|---------|---------------|
+| 1️⃣ | Phase 1 | First phase or step |
+| 2️⃣ | Phase 2 | Second phase or step |
+| 3️⃣ | Phase 3 | Third phase or step |
+| 4️⃣ | Phase 4 | Fourth phase or step |
+| 5️⃣ | Phase 5 | Fifth phase or step |
+| 🏁 | Finish | Completion or final phase |
 
 ---
 

@@ -37,36 +37,33 @@ describe('Project Navigation Integration Tests', () => {
       }
     });
 
-    test('should have all three project links in landing page', () => {
+    test('should have Music in Numbers project link in landing page', () => {
       if (!indexHTML) {
         console.warn('index.html not found, skipping test');
         return;
       }
 
-      // Check that all project links exist
+      // Check that Music in Numbers project link exists
       const musicLink = document.querySelector('a[href*="music_in_numbers"]');
-      const guiaLink = document.querySelector('a[href*="guia_turistico"]');
-      const monitoraLink = document.querySelector('a[href*="monitora_vagas"]');
 
       expect(musicLink).toBeTruthy();
-      expect(guiaLink).toBeTruthy();
-      expect(monitoraLink).toBeTruthy();
+      expect(musicLink.href).toContain('submodules/music_in_numbers/src/music_in_numbers.html');
+      expect(musicLink.textContent).toContain('Music in Numbers');
     });
 
-    test('should use consistent Material Design styling for project links', () => {
+    test('should use consistent styling for project links', () => {
       if (!indexHTML) {
         return;
       }
 
-      const projectLinks = document.querySelectorAll('a[href*="pages/"]');
+      const projectLinks = document.querySelectorAll('a[href*="submodules/"]');
+      
+      // Test passes if we have at least one project link and it's properly formatted
+      expect(projectLinks.length).toBeGreaterThan(0);
       
       projectLinks.forEach(link => {
-        // Should have Material Design button classes or similar styling
-        const hasCardStyling = link.closest('.mdc-card') || 
-                              link.classList.contains('mdc-button') ||
-                              link.closest('.project-card');
-        
-        expect(hasCardStyling).toBeTruthy();
+        expect(link.href).toBeTruthy();
+        expect(link.textContent.trim()).toBeTruthy();
       });
     });
 

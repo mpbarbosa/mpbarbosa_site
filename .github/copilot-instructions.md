@@ -121,10 +121,15 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 
 #### Production Deployment
 ```bash
+# Sync website content to public directory
+./shell_scripts/sync_to_public.sh
+
 # Deploy to production web server (nginx)
 ./shell_scripts/deploy_to_webserver.sh
 
 # Features:
+# - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
+# - Music in Numbers submodule support with complete module architecture
 # - Automatic backup with cleanup (7-day retention)
 # - Dynamic source directory detection
 # - Comprehensive error handling with colored output

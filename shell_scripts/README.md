@@ -59,6 +59,41 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 
 ---
 
+### 📁 `sync_to_public.sh`
+**Purpose**: Synchronizes website content from source to public directory for deployment
+
+**Features**:
+- ✅ Comprehensive asset management (HTML, CSS, JS, images, webfonts)
+- ✅ Music in Numbers submodule support with complete module architecture
+- ✅ Text contrast enhancement with multi-layer shadows
+- ✅ SASS compilation and CSS optimization
+- ✅ Intelligent backup exclusion (.backups directory)
+- ✅ Comprehensive validation and reporting
+- ✅ Dry-run mode for safe operation preview
+
+**Usage**:
+```bash
+./shell_scripts/sync_to_public.sh                    # Full sync with default settings
+./shell_scripts/sync_to_public.sh --dry-run         # Preview operations
+./shell_scripts/sync_to_public.sh --verbose         # Detailed output
+./shell_scripts/sync_to_public.sh --help            # Show help
+```
+
+**Sync Operations**:
+1. Main HTML files (index.html, robots.txt, humans.txt)
+2. Asset directories (CSS, JS, SASS, webfonts, images)
+3. Music in Numbers submodule (3 HTML files, 79 JS modules, 5 CSS files)
+4. Text contrast enhancements for improved readability
+5. Comprehensive validation of all copied resources
+
+**Key Features**:
+- **Modular Architecture**: Supports complete JavaScript module synchronization
+- **Asset Management**: Handles all web asset types with proper validation
+- **Performance Optimization**: Efficient copying with detailed progress reporting
+- **Safety**: Excludes version control and backup files from deployment
+
+---
+
 ### 🌐 `deploy_to_webserver.sh`
 **Purpose**: Deploys the website to nginx web server directory for production hosting
 
@@ -215,6 +250,9 @@ mpbarbosa_site/ (main repository)
 # Start of day: pull all latest changes
 ./shell_scripts/pull_all_submodules.sh
 
+# Sync content to public directory
+./shell_scripts/sync_to_public.sh
+
 # Validate external links policy compliance
 ./shell_scripts/validate_external_links.sh
 
@@ -227,6 +265,9 @@ mpbarbosa_site/ (main repository)
 
 ### Production Deployment Workflow
 ```bash
+# Sync content to public directory first
+./shell_scripts/sync_to_public.sh --verbose
+
 # Preview deployment (recommended first)
 ./shell_scripts/deploy_to_webserver.sh --dry-run
 
@@ -241,6 +282,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh --no-backup
 ```bash
 # Preview what would be pulled
 ./shell_scripts/pull_all_submodules.sh --dry-run
+
+# Preview what would be synced
+./shell_scripts/sync_to_public.sh --dry-run
 
 # Preview what would be pushed  
 ./shell_scripts/push_all_submodules.sh --dry-run
