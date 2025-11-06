@@ -1,15 +1,18 @@
 #!/bin/bash
 
 # =============================================================================
-# MP Barbosa Site - Public Folder Sync Script
+# MP Barbosa Site - Two-Step Deployment Script
 # =============================================================================
-# Description: Copies necessary resources from /src to /public for web serving
+# Description: Two-step deployment process for web serving
 # Author: MP Barbosa
 # Created: November 4, 2025
-# Version: 1.0.0
+# Version: 2.0.0
 #
-# This script copies selected resources from the source directory to the public
-# folder, making them ready for web server deployment and internet exposure.
+# Step 1: Copy resources from /src to /public folder (staging)
+# Step 2: Copy resources from /public to production web server directory
+#
+# This script enables flexible deployment workflows with staging and production
+# phases, supporting both individual step execution and full deployment pipeline.
 # =============================================================================
 
 set -e  # Exit on any error
@@ -24,6 +27,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/src"
 PUBLIC_DIR="$PROJECT_ROOT/public"
+PRODUCTION_DIR="/var/www/html"  # Default production directory (can be overridden)
+
+# Execution steps control
+STEP_SOURCE_TO_PUBLIC=false
+STEP_PUBLIC_TO_PRODUCTION=false
 
 # Script settings
 DRY_RUN=false
@@ -300,30 +308,40 @@ validate_path() {
 # Show help information
 show_help() {
     cat << EOF
-MP Barbosa Site - Public Folder Sync Script
+MP Barbosa Site - Two-Step Deployment Script
 
 USAGE:
-    $0 [OPTIONS]
+    $0 [STEP_OPTIONS] [OPTIONS]
 
 DESCRIPTION:
-    Copies necessary resources from /src to /public folder for web serving.
-    Initially copies /src/index.html and can be extended for additional resources.
+    Two-step deployment process for MP Barbosa site:
+    Step 1: Copy resources from /src to /public folder for staging
+    Step 2: Copy resources from /public to production web server directory
 
-OPTIONS:
+STEP OPTIONS (at least one required):
+    --step1             Execute Step 1: Source → Public folder
+    --step2             Execute Step 2: Public → Production folder
+    --both-steps        Execute both steps sequentially
+    --production-dir    Set custom production directory (default: /var/www/html)
+
+GENERAL OPTIONS:
     --dry-run           Preview operations without making changes
     --verbose           Show detailed output
     --no-backup         Skip creating backup of existing files
     --help              Show this help message
 
 EXAMPLES:
-    $0                          # Standard sync operation
-    $0 --dry-run               # Preview what would be copied
-    $0 --verbose               # Show detailed information
-    $0 --no-backup --verbose   # Sync without backup, with details
+    $0 --step1                              # Copy source to public only
+    $0 --step2                              # Copy public to production only
+    $0 --both-steps                         # Execute both steps
+    $0 --step1 --dry-run --verbose          # Preview step 1 with details
+    $0 --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
+    $0 --both-steps --no-backup --verbose   # Both steps without backup
 
 DIRECTORIES:
     Source:      $SOURCE_DIR
     Public:      $PUBLIC_DIR
+    Production:  $PRODUCTION_DIR (configurable)
 
 FILES TO SYNC:
     - index.html (main landing page)
@@ -880,63 +898,341 @@ validate_sync() {
 
 # Show summary of operations
 show_summary() {
-    print_header "SYNC SUMMARY"
+    print_header "DEPLOYMENT SUMMARY"
     
-    echo -e "${WHITE}Project:${NC}     MP Barbosa Personal Website"
-    echo -e "${WHITE}Source:${NC}      $SOURCE_DIR"
-    echo -e "${WHITE}Public:${NC}      $PUBLIC_DIR"
-    echo -e "${WHITE}Operation:${NC}   $(if [[ "$DRY_RUN" == "true" ]]; then echo "DRY RUN (preview only)"; else echo "SYNC COMPLETED"; fi)"
+    echo -e "${WHITE}Project:${NC}      MP Barbosa Personal Website"
+    echo -e "${WHITE}Source:${NC}       $SOURCE_DIR"
+    echo -e "${WHITE}Public:${NC}       $PUBLIC_DIR"
+    echo -e "${WHITE}Production:${NC}   $PRODUCTION_DIR"
+    echo -e "${WHITE}Operation:${NC}    $(if [[ "$DRY_RUN" == "true" ]]; then echo "DRY RUN (preview only)"; else echo "DEPLOYMENT COMPLETED"; fi)"
+    echo ""
+    
+    # Show which steps were executed
+    echo -e "${WHITE}Steps Executed:${NC}"
+    if [[ "$STEP_SOURCE_TO_PUBLIC" == "true" ]]; then
+        echo -e "  ✓ Step 1: Source → Public"
+    fi
+    if [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+        echo -e "  ✓ Step 2: Public → Production"
+    fi
     echo ""
     
     if [[ "$DRY_RUN" == "false" ]]; then
-        echo -e "${WHITE}Files Synchronized:${NC}"
-        echo -e "  ✓ index.html"
-        if [[ -f "$PUBLIC_DIR/robots.txt" ]]; then
-            echo -e "  ✓ robots.txt"
+        # Show Step 1 results if executed
+        if [[ "$STEP_SOURCE_TO_PUBLIC" == "true" ]]; then
+            echo -e "${WHITE}Step 1 - Files in Public Folder:${NC}"
+            if [[ -f "$PUBLIC_DIR/index.html" ]]; then
+                echo -e "  ✓ index.html"
+            fi
+            if [[ -f "$PUBLIC_DIR/robots.txt" ]]; then
+                echo -e "  ✓ robots.txt"
+            fi
+            if [[ -f "$PUBLIC_DIR/humans.txt" ]]; then
+                echo -e "  ✓ humans.txt"
+            fi
+            if [[ -d "$PUBLIC_DIR/assets/css" ]]; then
+                local css_count=$(find "$PUBLIC_DIR/assets/css" -name "*.css" | wc -l)
+                echo -e "  ✓ CSS assets ($css_count files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/assets/js" ]]; then
+                local js_count=$(find "$PUBLIC_DIR/assets/js" -name "*.js" | wc -l)
+                echo -e "  ✓ JavaScript assets ($js_count files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/assets/sass" ]]; then
+                local sass_count=$(find "$PUBLIC_DIR/assets/sass" -name "*.scss" | wc -l)
+                echo -e "  ✓ SASS assets ($sass_count files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/assets/webfonts" ]]; then
+                local font_count=$(find "$PUBLIC_DIR/assets/webfonts" -type f \( -name "*.eot" -o -name "*.svg" -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.otf" \) | wc -l)
+                echo -e "  ✓ Webfonts ($font_count files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/images" ]]; then
+                local image_count=$(find "$PUBLIC_DIR/images" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
+                echo -e "  ✓ Images ($image_count files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src" ]]; then
+                local html_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src" -maxdepth 1 -name "*.html" | wc -l)
+                echo -e "  ✓ Music in Numbers submodule ($html_count HTML files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" ]]; then
+                local js_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
+                local dirs_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -mindepth 1 -type d | wc -l)
+                echo -e "  ✓ Music in Numbers scripts ($js_count JS files, $dirs_count API architectures)"
+            fi
+            echo ""
         fi
-        if [[ -f "$PUBLIC_DIR/humans.txt" ]]; then
-            echo -e "  ✓ humans.txt"
-        fi
-        if [[ -d "$PUBLIC_DIR/assets/css" ]]; then
-            local css_count=$(find "$PUBLIC_DIR/assets/css" -name "*.css" | wc -l)
-            echo -e "  ✓ CSS assets ($css_count files)"
-        fi
-        if [[ -d "$PUBLIC_DIR/assets/js" ]]; then
-            local js_count=$(find "$PUBLIC_DIR/assets/js" -name "*.js" | wc -l)
-            echo -e "  ✓ JavaScript assets ($js_count files)"
-        fi
-        if [[ -d "$PUBLIC_DIR/assets/sass" ]]; then
-            local sass_count=$(find "$PUBLIC_DIR/assets/sass" -name "*.scss" | wc -l)
-            echo -e "  ✓ SASS assets ($sass_count files)"
-        fi
-        if [[ -d "$PUBLIC_DIR/assets/webfonts" ]]; then
-            local font_count=$(find "$PUBLIC_DIR/assets/webfonts" -type f \( -name "*.eot" -o -name "*.svg" -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.otf" \) | wc -l)
-            echo -e "  ✓ Webfonts ($font_count files)"
-        fi
-        if [[ -d "$PUBLIC_DIR/images" ]]; then
-            local image_count=$(find "$PUBLIC_DIR/images" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
-            echo -e "  ✓ Images ($image_count files)"
-        fi
-        if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src" ]]; then
-            local html_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src" -maxdepth 1 -name "*.html" | wc -l)
-            echo -e "  ✓ Music in Numbers submodule ($html_count HTML files)"
-        fi
-        if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" ]]; then
-            local js_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
-            local dirs_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -mindepth 1 -type d | wc -l)
-            echo -e "  ✓ Music in Numbers scripts ($js_count JS files, $dirs_count API architectures)"
-        fi
-        echo ""
         
-        echo -e "${WHITE}Public Folder Contents:${NC}"
-        if command -v tree >/dev/null 2>&1; then
-            tree "$PUBLIC_DIR" -a -I ".backups"
-        else
-            find "$PUBLIC_DIR" -not -path "*/.backups/*" -type f | sort | sed 's|^'"$PUBLIC_DIR"'||' | sed 's|^/||'
+        # Show Step 2 results if executed
+        if [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" && -d "$PRODUCTION_DIR" ]]; then
+            echo -e "${WHITE}Step 2 - Files in Production:${NC}"
+            local production_files=$(find "$PRODUCTION_DIR" -type f ! -path "*/.backups/*" | wc -l)
+            local production_size=$(du -sh "$PRODUCTION_DIR" --exclude=".backups" 2>/dev/null | cut -f1 || echo "Unknown")
+            echo -e "  ✓ Total files deployed: $production_files"
+            echo -e "  ✓ Total size: $production_size"
+            
+            # Show critical files status
+            if [[ -f "$PRODUCTION_DIR/index.html" ]]; then
+                echo -e "  ✓ index.html deployed"
+            fi
+            if [[ -d "$PRODUCTION_DIR/submodules/music_in_numbers" ]]; then
+                echo -e "  ✓ Music in Numbers submodule deployed"
+            fi
+            echo ""
+        fi
+        
+        # Show directory contents if verbose or single step
+        if [[ "$VERBOSE" == "true" || ("$STEP_SOURCE_TO_PUBLIC" == "true" && "$STEP_PUBLIC_TO_PRODUCTION" == "false") ]]; then
+            echo -e "${WHITE}Public Folder Contents:${NC}"
+            if command -v tree >/dev/null 2>&1; then
+                tree "$PUBLIC_DIR" -a -I ".backups"
+            else
+                find "$PUBLIC_DIR" -not -path "*/.backups/*" -type f | sort | sed 's|^'"$PUBLIC_DIR"'||' | sed 's|^/||'
+            fi
+            echo ""
+        fi
+        
+        if [[ "$VERBOSE" == "true" || ("$STEP_PUBLIC_TO_PRODUCTION" == "true" && "$STEP_SOURCE_TO_PUBLIC" == "false") ]]; then
+            echo -e "${WHITE}Production Folder Contents:${NC}"
+            if command -v tree >/dev/null 2>&1; then
+                tree "$PRODUCTION_DIR" -a -I ".backups"
+            else
+                find "$PRODUCTION_DIR" -not -path "*/.backups/*" -type f | sort | sed 's|^'"$PRODUCTION_DIR"'||' | sed 's|^/||'
+            fi
         fi
     else
-        echo -e "${WHITE}Preview Mode:${NC} Use without --dry-run to perform actual sync"
+        echo -e "${WHITE}Preview Mode:${NC} Use without --dry-run to perform actual deployment"
+        
+        if [[ "$STEP_SOURCE_TO_PUBLIC" == "true" ]]; then
+            echo -e "  → Step 1 would copy files from source to public folder"
+        fi
+        if [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+            echo -e "  → Step 2 would deploy files from public to production"
+        fi
     fi
+}
+
+# =============================================================================
+# STEP 2 FUNCTIONS - PUBLIC TO PRODUCTION
+# =============================================================================
+
+# Validate production environment and directories
+validate_production_environment() {
+    print_step "Validating production environment"
+    
+    # Check if public directory exists (required for step 2)
+    if [[ ! -d "$PUBLIC_DIR" ]]; then
+        print_error "Public directory not found: $PUBLIC_DIR"
+        print_info "Run Step 1 first to populate the public directory"
+        exit 1
+    fi
+    
+    # Check if public directory has content
+    if [[ ! "$(ls -A "$PUBLIC_DIR" 2>/dev/null)" ]]; then
+        print_error "Public directory is empty: $PUBLIC_DIR"
+        print_info "Run Step 1 first to populate the public directory"
+        exit 1
+    fi
+    
+    # Check if production directory exists, create if needed and has permissions
+    if [[ ! -d "$PRODUCTION_DIR" ]]; then
+        print_warning "Production directory not found: $PRODUCTION_DIR"
+        if [[ "$DRY_RUN" == "false" ]]; then
+            if mkdir -p "$PRODUCTION_DIR" 2>/dev/null; then
+                print_success "Created production directory: $PRODUCTION_DIR"
+            else
+                print_error "Cannot create production directory: $PRODUCTION_DIR"
+                print_info "Check permissions or run with sudo for system directories"
+                exit 1
+            fi
+        else
+            print_info "[DRY RUN] Would create production directory: $PRODUCTION_DIR"
+        fi
+    fi
+    
+    # Test write permissions to production directory
+    if [[ "$DRY_RUN" == "false" ]]; then
+        if [[ ! -w "$PRODUCTION_DIR" ]]; then
+            print_error "No write permission to production directory: $PRODUCTION_DIR"
+            print_info "Check permissions or run with sudo for system directories"
+            exit 1
+        fi
+    fi
+    
+    print_success "Production environment validation complete"
+}
+
+# Create backup of existing production files
+create_production_backup() {
+    if [[ "$CREATE_BACKUP" == "false" ]]; then
+        return 0
+    fi
+    
+    print_step "Creating backup of existing production files"
+    
+    local backup_timestamp=$(date +"%Y%m%d_%H%M%S")
+    local backup_path="$PRODUCTION_DIR/.backups/backup_$backup_timestamp"
+    
+    if [[ -d "$PRODUCTION_DIR" ]] && [[ "$(ls -A "$PRODUCTION_DIR" 2>/dev/null)" ]]; then
+        if [[ "$DRY_RUN" == "false" ]]; then
+            mkdir -p "$backup_path"
+            
+            # Copy existing production files to backup (excluding .backups directory)
+            find "$PRODUCTION_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" -exec cp -r {} "$backup_path/" \;
+            
+            print_success "Production backup created: $backup_path"
+            
+            # Clean up old backups (keep only last 7)
+            local backup_count=$(find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
+            if [[ $backup_count -gt 7 ]]; then
+                find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - 7)) | xargs rm -rf
+                print_info "Cleaned up old production backups (keeping last 7)"
+            fi
+        else
+            print_info "[DRY RUN] Would create production backup: $backup_path"
+        fi
+    else
+        print_info "No existing production files to backup"
+    fi
+}
+
+# Copy files from public to production directory
+copy_public_to_production() {
+    print_step "Copying files from public to production directory"
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Use rsync for efficient synchronization if available, otherwise use cp
+        if command -v rsync >/dev/null 2>&1; then
+            local rsync_options="-av --delete"
+            if [[ "$VERBOSE" == "false" ]]; then
+                rsync_options+=" --quiet"
+            fi
+            
+            rsync $rsync_options "$PUBLIC_DIR/" "$PRODUCTION_DIR/"
+            print_success "Files synchronized using rsync"
+        else
+            # Remove existing files in production (except .backups)
+            find "$PRODUCTION_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" -exec rm -rf {} +
+            
+            # Copy all files from public to production
+            cp -r "$PUBLIC_DIR"/* "$PRODUCTION_DIR/"
+            print_success "Files copied using cp"
+        fi
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $PUBLIC_DIR"
+            print_info "  Destination: $PRODUCTION_DIR"
+            
+            # Count files in production
+            local total_files=$(find "$PRODUCTION_DIR" -type f ! -path "*/.backups/*" | wc -l)
+            local total_size=$(du -sh "$PRODUCTION_DIR" --exclude=".backups" | cut -f1)
+            print_info "  Total files deployed: $total_files"
+            print_info "  Total size: $total_size"
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $PUBLIC_DIR → $PRODUCTION_DIR"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            local total_files=$(find "$PUBLIC_DIR" -type f | wc -l)
+            local total_size=$(du -sh "$PUBLIC_DIR" | cut -f1)
+            print_info "  Files to deploy: $total_files"
+            print_info "  Total size: $total_size"
+        fi
+    fi
+}
+
+# Validate production deployment
+validate_production_deployment() {
+    print_step "Validating production deployment"
+    
+    local validation_errors=0
+    
+    # Check critical files exist in production
+    local critical_files=(
+        "index.html"
+    )
+    
+    for file in "${critical_files[@]}"; do
+        if [[ -f "$PRODUCTION_DIR/$file" ]]; then
+            print_success "$file deployed successfully"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                local file_size=$(du -h "$PRODUCTION_DIR/$file" | cut -f1)
+                local file_modified=$(stat -c %y "$PRODUCTION_DIR/$file" 2>/dev/null || stat -f %Sm "$PRODUCTION_DIR/$file" 2>/dev/null)
+                print_info "  Size: $file_size"
+                print_info "  Modified: $file_modified"
+            fi
+        else
+            print_error "$file not found in production directory"
+            validation_errors=$((validation_errors + 1))
+        fi
+    done
+    
+    # Check that production directory has expected structure
+    if [[ -d "$PRODUCTION_DIR" ]]; then
+        local deployed_files=$(find "$PRODUCTION_DIR" -type f ! -path "*/.backups/*" | wc -l)
+        local public_files=$(find "$PUBLIC_DIR" -type f | wc -l)
+        
+        print_info "Production files: $deployed_files (expected: $public_files)"
+        
+        if [[ $deployed_files -eq $public_files ]]; then
+            print_success "File count matches public directory"
+        elif [[ $deployed_files -lt $public_files ]]; then
+            print_warning "Production has fewer files than public directory"
+        fi
+    fi
+    
+    if [[ $validation_errors -eq 0 ]]; then
+        print_success "Production deployment validation complete"
+        return 0
+    else
+        print_error "Production validation failed with $validation_errors errors"
+        return 1
+    fi
+}
+
+# =============================================================================
+# EXECUTION STEP FUNCTIONS
+# =============================================================================
+
+# Execute Step 1: Source to Public
+execute_step_1() {
+    print_header "STEP 1: SOURCE → PUBLIC FOLDER"
+    
+    validate_environment
+    create_backup
+    copy_index_html
+    copy_robots_txt
+    copy_humans_txt
+    copy_css_assets
+    copy_js_assets
+    copy_sass_assets
+    copy_webfonts
+    copy_images
+    copy_music_in_numbers_submodule
+    copy_music_in_numbers_scripts
+    copy_music_in_numbers_styles
+    copy_additional_resources
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        validate_sync
+    fi
+    
+    print_success "Step 1 completed: Files copied from source to public folder"
+}
+
+# Execute Step 2: Public to Production
+execute_step_2() {
+    print_header "STEP 2: PUBLIC → PRODUCTION FOLDER"
+    
+    validate_production_environment
+    create_production_backup
+    copy_public_to_production
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        validate_production_deployment
+    fi
+    
+    print_success "Step 2 completed: Files deployed from public to production"
 }
 
 # =============================================================================
@@ -947,6 +1243,28 @@ main() {
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
+            --step1)
+                STEP_SOURCE_TO_PUBLIC=true
+                shift
+                ;;
+            --step2)
+                STEP_PUBLIC_TO_PRODUCTION=true
+                shift
+                ;;
+            --both-steps)
+                STEP_SOURCE_TO_PUBLIC=true
+                STEP_PUBLIC_TO_PRODUCTION=true
+                shift
+                ;;
+            --production-dir)
+                if [[ -n "${2:-}" ]]; then
+                    PRODUCTION_DIR="$2"
+                    shift 2
+                else
+                    print_error "--production-dir requires a directory path"
+                    exit 1
+                fi
+                ;;
             --dry-run)
                 DRY_RUN=true
                 shift
@@ -971,39 +1289,56 @@ main() {
         esac
     done
     
+    # Validate that at least one step is specified
+    if [[ "$STEP_SOURCE_TO_PUBLIC" == "false" && "$STEP_PUBLIC_TO_PRODUCTION" == "false" ]]; then
+        print_error "At least one step must be specified"
+        print_info "Use --step1, --step2, or --both-steps"
+        print_info "Use --help for complete usage information"
+        exit 1
+    fi
+    
     # Main execution flow
-    print_header "MP BARBOSA SITE - PUBLIC FOLDER SYNC"
+    print_header "MP BARBOSA SITE - TWO-STEP DEPLOYMENT"
     
     if [[ "$DRY_RUN" == "true" ]]; then
         print_warning "DRY RUN MODE - No changes will be made"
     fi
     
-    validate_environment
-    create_backup
-    copy_index_html
-    copy_robots_txt
-    copy_humans_txt
-    copy_css_assets
-    copy_js_assets
-    copy_sass_assets
-    copy_webfonts
-    copy_images
-    copy_music_in_numbers_submodule
-    copy_music_in_numbers_scripts
-    copy_music_in_numbers_styles
-    copy_additional_resources
+    # Execute selected steps
+    if [[ "$STEP_SOURCE_TO_PUBLIC" == "true" ]]; then
+        execute_step_1
+        
+        if [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+            echo ""  # Add spacing between steps
+        fi
+    fi
     
-    if [[ "$DRY_RUN" == "false" ]]; then
-        validate_sync
+    if [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+        execute_step_2
     fi
     
     show_summary
     
+    # Final status messages
     if [[ "$DRY_RUN" == "false" ]]; then
-        print_success "Public folder sync completed successfully!"
-        print_info "Files are ready for web server deployment"
+        if [[ "$STEP_SOURCE_TO_PUBLIC" == "true" && "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+            print_success "Two-step deployment completed successfully!"
+            print_info "Files deployed from source to production via public staging"
+        elif [[ "$STEP_SOURCE_TO_PUBLIC" == "true" ]]; then
+            print_success "Step 1 completed successfully!"
+            print_info "Files are ready in public folder for production deployment"
+        elif [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+            print_success "Step 2 completed successfully!"
+            print_info "Files deployed to production web server"
+        fi
     else
-        print_info "Dry run completed. Use without --dry-run to perform actual sync"
+        if [[ "$STEP_SOURCE_TO_PUBLIC" == "true" && "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+            print_info "Dry run completed for both steps. Use without --dry-run to execute"
+        elif [[ "$STEP_SOURCE_TO_PUBLIC" == "true" ]]; then
+            print_info "Dry run completed for Step 1. Use without --dry-run to execute"
+        elif [[ "$STEP_PUBLIC_TO_PRODUCTION" == "true" ]]; then
+            print_info "Dry run completed for Step 2. Use without --dry-run to execute"
+        fi
     fi
 }
 

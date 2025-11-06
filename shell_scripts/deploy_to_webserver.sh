@@ -21,7 +21,8 @@ set -u  # Exit on undefined variables
 
 # Source and destination paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SOURCE_DIR="$PROJECT_ROOT/public"
 DEST_DIR="/var/www/mpbarbosa.com"
 BACKUP_DIR="/var/www/backups/mpbarbosa.com"
 
@@ -87,9 +88,16 @@ validate_environment() {
         exit 1
     fi
     
-    # Check if source is a git repository
-    if [[ ! -d "$SOURCE_DIR/.git" ]]; then
-        print_error "Source directory is not a git repository: $SOURCE_DIR"
+    # Check if project root is a git repository
+    if [[ ! -d "$PROJECT_ROOT/.git" ]]; then
+        print_error "Project root is not a git repository: $PROJECT_ROOT"
+        exit 1
+    fi
+    
+    # Check if public directory exists
+    if [[ ! -d "$SOURCE_DIR" ]]; then
+        print_error "Public directory does not exist: $SOURCE_DIR"
+        print_info "Run sync_to_public.sh first to prepare deployment files"
         exit 1
     fi
     
@@ -116,7 +124,7 @@ validate_submodules() {
     
     print_step "Validating git submodules..."
     
-    cd "$SOURCE_DIR"
+    cd "$PROJECT_ROOT"
     
     # Check if submodules are initialized
     if [[ -f ".gitmodules" ]]; then
@@ -254,23 +262,16 @@ deploy_files() {
         
         # Show what would be copied
         print_info "[DRY RUN] Files and directories that would be copied:"
-        find . -type f -not -path './.git/*' -not -path './shell_scripts/*' | head -20
-        if [[ $(find . -type f -not -path './.git/*' -not -path './shell_scripts/*' | wc -l) -gt 20 ]]; then
-            print_info "[DRY RUN] ... and $(( $(find . -type f -not -path './.git/*' -not -path './shell_scripts/*' | wc -l) - 20 )) more files"
+        find . -type f | head -20
+        if [[ $(find . -type f | wc -l) -gt 20 ]]; then
+            print_info "[DRY RUN] ... and $(( $(find . -type f | wc -l) - 20 )) more files"
         fi
         return 0
     fi
     
-    # Copy files, excluding git directories and shell scripts
-    print_info "Copying source files..."
+    # Copy all files from public directory (already prepared by sync_to_public.sh)
+    print_info "Copying deployment-ready files from public directory..."
     rsync -av \
-        --exclude='.git/' \
-        --exclude='shell_scripts/' \
-        --exclude='*.log' \
-        --exclude='node_modules/' \
-        --exclude='.vscode/' \
-        --exclude='coverage/' \
-        --exclude='__tests__/' \
         --delete \
         "$SOURCE_DIR/" "$DEST_DIR/"
     
@@ -299,8 +300,8 @@ set_permissions() {
     find "$DEST_DIR" -type f -exec chmod 644 {} \;
     
     # Make specific files executable if needed
-    if [[ -f "$DEST_DIR/src/submodules/guia_turistico/src/andarilho.js" ]]; then
-        chmod 755 "$DEST_DIR/src/submodules/guia_turistico/src/andarilho.js"
+    if [[ -f "$DEST_DIR/submodules/guia_turistico/src/andarilho.js" ]]; then
+        chmod 755 "$DEST_DIR/submodules/guia_turistico/src/andarilho.js"
     fi
     
     print_success "Permissions set successfully"
@@ -320,9 +321,9 @@ validate_deployment() {
     
     # Check if main files exist
     local required_files=(
-        "$DEST_DIR/src/index.html"
-        "$DEST_DIR/src/styles/main.css"
-        "$DEST_DIR/src/scripts/main.js"
+        "$DEST_DIR/index.html"
+        "$DEST_DIR/assets/css/main.css"
+        "$DEST_DIR/assets/js/main.js"
     )
     
     for file in "${required_files[@]}"; do
@@ -334,15 +335,15 @@ validate_deployment() {
     done
     
     # Check if submodules are present
-    if [[ -d "$DEST_DIR/src/submodules/music_in_numbers" ]]; then
+    if [[ -d "$DEST_DIR/submodules/music_in_numbers" ]]; then
         print_success "Music in Numbers submodule deployed"
     fi
     
-    if [[ -d "$DEST_DIR/src/submodules/guia_turistico" ]]; then
+    if [[ -d "$DEST_DIR/submodules/guia_turistico" ]]; then
         print_success "Guia Turístico submodule deployed"
     fi
     
-    if [[ -d "$DEST_DIR/src/submodules/monitora_vagas" ]]; then
+    if [[ -d "$DEST_DIR/submodules/monitora_vagas" ]]; then
         print_success "Monitora Vagas submodule deployed"
     fi
     
@@ -397,7 +398,8 @@ MP Barbosa Site - Web Server Deployment Script
 
 DESCRIPTION:
     Deploys the mpbarbosa_site project to nginx web server directory.
-    Copies all files recursively including git submodules to /var/www/mpbarbosa.com.
+    Copies all deployment-ready files from /public directory to /var/www/mpbarbosa.com.
+    Use sync_to_public.sh first to prepare files in the public directory.
 
 USAGE:
     $0 [OPTIONS]
@@ -426,11 +428,15 @@ EXAMPLES:
     $0 --no-backup             # Deploy without creating backup
 
 REQUIREMENTS:
-    • Source directory: Auto-detected from script location ($SOURCE_DIR)
+    • Public directory: $SOURCE_DIR (prepared by sync_to_public.sh)
     • Destination directory: $DEST_DIR
     • Root/sudo access for web server permissions
     • rsync command available
     • nginx server (optional, for config validation)
+    
+WORKFLOW:
+    1. Run: ./shell_scripts/sync_to_public.sh
+    2. Run: sudo ./shell_scripts/deploy_to_webserver.sh
 
 AUTHOR:
     MP Barbosa - 2025
