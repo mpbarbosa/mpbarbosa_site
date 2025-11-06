@@ -59,38 +59,53 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 
 ---
 
-### 📁 `sync_to_public.sh`
-**Purpose**: Synchronizes website content from source to public directory for deployment
+### 📁 `sync_to_public.sh` (Two-Step Deployment Architecture v2.0.0)
+**Purpose**: Two-step deployment process for MP Barbosa site with parametrized step control
 
 **Features**:
+- ✅ **Step 1**: Copy resources from /src to /public folder for staging
+- ✅ **Step 2**: Copy resources from /public to production web server directory
+- ✅ Parametrized execution (step1, step2, or both-steps)
+- ✅ Production directory configuration support
 - ✅ Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - ✅ Music in Numbers submodule support with complete module architecture
-- ✅ Text contrast enhancement with multi-layer shadows
-- ✅ SASS compilation and CSS optimization
-- ✅ Intelligent backup exclusion (.backups directory)
-- ✅ Comprehensive validation and reporting
+- ✅ Enhanced backup system for both public and production deployments
+- ✅ Comprehensive validation and reporting for each step
 - ✅ Dry-run mode for safe operation preview
 
 **Usage**:
 ```bash
-./shell_scripts/sync_to_public.sh                    # Full sync with default settings
-./shell_scripts/sync_to_public.sh --dry-run         # Preview operations
-./shell_scripts/sync_to_public.sh --verbose         # Detailed output
-./shell_scripts/sync_to_public.sh --help            # Show help
+# Step Options (at least one required)
+./shell_scripts/sync_to_public.sh --step1                              # Copy source to public only
+./shell_scripts/sync_to_public.sh --step2                              # Copy public to production only  
+./shell_scripts/sync_to_public.sh --both-steps                         # Execute both steps
+./shell_scripts/sync_to_public.sh --step1 --dry-run --verbose          # Preview step 1 with details
+./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
+./shell_scripts/sync_to_public.sh --both-steps --no-backup --verbose   # Both steps without backup
+./shell_scripts/sync_to_public.sh --help                               # Show help
 ```
 
-**Sync Operations**:
-1. Main HTML files (index.html, robots.txt, humans.txt)
-2. Asset directories (CSS, JS, SASS, webfonts, images)
-3. Music in Numbers submodule (3 HTML files, 79 JS modules, 5 CSS files)
-4. Text contrast enhancements for improved readability
+**Two-Step Process**:
+**Step 1 (Source → Public)**:
+1. Environment validation and backup creation
+2. Main HTML files (index.html, robots.txt, humans.txt)
+3. Asset directories (CSS, JS, SASS, webfonts, images)  
+4. Music in Numbers submodule (3 HTML files, 15+ JS modules, 4 CSS files)
 5. Comprehensive validation of all copied resources
 
-**Key Features**:
-- **Modular Architecture**: Supports complete JavaScript module synchronization
-- **Asset Management**: Handles all web asset types with proper validation
-- **Performance Optimization**: Efficient copying with detailed progress reporting
-- **Safety**: Excludes version control and backup files from deployment
+**Step 2 (Public → Production)**:
+1. Production environment validation and permission checks
+2. Production backup creation with 7-day retention
+3. Efficient file synchronization using rsync/cp
+4. Production deployment validation
+5. Web server ready file structure
+
+**Key Architecture Benefits**:
+- **Flexible Deployment**: Independent or combined step execution
+- **Staging Environment**: Public folder acts as staging area for validation
+- **Production Safety**: Separate production deployment with comprehensive validation
+- **Parametrized Control**: Choose exactly which deployment steps to execute
+- **Enhanced Backup**: Separate backup systems for public and production environments
 
 ---
 
@@ -250,11 +265,14 @@ mpbarbosa_site/ (main repository)
 # Start of day: pull all latest changes
 ./shell_scripts/pull_all_submodules.sh
 
-# Sync content to public directory
-./shell_scripts/sync_to_public.sh
+# Stage content in public directory for validation
+./shell_scripts/sync_to_public.sh --step1 --verbose
 
 # Validate external links policy compliance
 ./shell_scripts/validate_external_links.sh
+
+# Deploy to production when ready
+./shell_scripts/sync_to_public.sh --step2
 
 # End of day: push all changes
 ./shell_scripts/push_all_submodules.sh
@@ -263,19 +281,24 @@ mpbarbosa_site/ (main repository)
 ./shell_scripts/push_all_submodules.sh --handle-stash
 ```
 
-### Production Deployment Workflow
+### Production Deployment Workflow (Two-Step Process)
 ```bash
-# Sync content to public directory first
-./shell_scripts/sync_to_public.sh --verbose
+# Option 1: Two-step process (recommended for staging validation)
+./shell_scripts/sync_to_public.sh --step1 --verbose        # Stage files in public folder
+# Validate staged files, then deploy to production
+./shell_scripts/sync_to_public.sh --step2 --dry-run        # Preview production deployment
+./shell_scripts/sync_to_public.sh --step2                  # Deploy to production
 
-# Preview deployment (recommended first)
-./shell_scripts/deploy_to_webserver.sh --dry-run
+# Option 2: Combined deployment (direct source to production)
+./shell_scripts/sync_to_public.sh --both-steps --verbose   # Execute both steps
+./shell_scripts/sync_to_public.sh --both-steps --dry-run   # Preview entire workflow
 
-# Deploy to production web server
-sudo ./shell_scripts/deploy_to_webserver.sh
+# Option 3: Custom production directory
+./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa
 
-# Deploy without backup (if needed)
-sudo ./shell_scripts/deploy_to_webserver.sh --no-backup
+# Legacy deployment script (still available)
+./shell_scripts/deploy_to_webserver.sh --dry-run           # Preview deployment
+sudo ./shell_scripts/deploy_to_webserver.sh                # Deploy to production
 ```
 
 ### Safe Operation Verification
@@ -283,8 +306,10 @@ sudo ./shell_scripts/deploy_to_webserver.sh --no-backup
 # Preview what would be pulled
 ./shell_scripts/pull_all_submodules.sh --dry-run
 
-# Preview what would be synced
-./shell_scripts/sync_to_public.sh --dry-run
+# Preview two-step deployment process
+./shell_scripts/sync_to_public.sh --step1 --dry-run        # Preview step 1 (source to public)
+./shell_scripts/sync_to_public.sh --step2 --dry-run        # Preview step 2 (public to production)
+./shell_scripts/sync_to_public.sh --both-steps --dry-run   # Preview entire workflow
 
 # Preview what would be pushed  
 ./shell_scripts/push_all_submodules.sh --dry-run

@@ -1,16 +1,17 @@
 # 📋 Sync to Public - Functional Documentation
 
 **Script:** `shell_scripts/sync_to_public.sh`  
-**Version:** 1.0.0  
+**Version:** 2.0.0  
 **Author:** MP Barbosa  
 **Created:** November 4, 2025  
+**Updated:** November 4, 2025 (Two-Step Deployment Architecture)  
 **Purpose:** Website deployment preparation and asset synchronization
 
 ---
 
 ## 📖 Overview
 
-The `sync_to_public.sh` script is a comprehensive asset synchronization tool designed for the MP Barbosa Personal Website project. It automates the process of copying selected resources from the development source directory (`/src`) to a public deployment directory (`/public`), making them ready for web server deployment and internet exposure.
+The `sync_to_public.sh` script is a comprehensive asset synchronization tool designed for the MP Barbosa Personal Website project. Version 2.0.0 introduces the **Two-Step Deployment Architecture** featuring parametrized step control and flexible production directory configuration. It automates the process of copying selected resources from the development source directory (`/src`) to a public deployment directory (`/public`), with optional second-step deployment to production web servers, making them ready for internet exposure.
 
 ### 🎯 Primary Functions
 
@@ -240,13 +241,17 @@ copy_other_submodule() {
 | `--dry-run` | Preview operations without making changes | `false` |
 | `--verbose` | Show detailed output including file sizes and paths | `false` |
 | `--no-backup` | Skip creating backup of existing files | `false` (backups enabled) |
+| `--step1` | Execute only Step 1 (Source → Public staging) | `false` |
+| `--step2` | Execute only Step 2 (Public → Production deployment) | `false` |
+| `--both-steps` | Execute both steps sequentially | `false` |
+| `--production-dir` | Specify production directory path for Step 2 | `/var/www/html` |
 | `--help` | Show help message and usage examples | N/A |
 
 ### Usage Examples
 
 #### Basic Operations
 ```bash
-# Standard sync operation
+# Standard sync operation (legacy - both steps)
 ./sync_to_public.sh
 
 # Preview what would be copied
@@ -257,6 +262,21 @@ copy_other_submodule() {
 
 # Fast sync without backup
 ./sync_to_public.sh --no-backup
+```
+
+#### Two-Step Deployment Architecture (v2.0.0)
+```bash
+# Step 1: Source → Public (staging)
+./sync_to_public.sh --step1 --verbose
+
+# Step 2: Public → Production (deployment) 
+./sync_to_public.sh --step2 --production-dir /var/www/html
+
+# Combined deployment (both steps)
+./sync_to_public.sh --both-steps
+
+# Custom production directory
+./sync_to_public.sh --step2 --production-dir /custom/web/root
 ```
 
 #### Combined Options

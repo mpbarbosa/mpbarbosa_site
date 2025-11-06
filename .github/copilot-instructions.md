@@ -119,21 +119,30 @@ mpbarbosa_site/
 ### Deployment and Automation
 The project includes comprehensive shell scripts for deployment and maintenance:
 
-#### Production Deployment
+#### Production Deployment (Two-Step Architecture v2.0.0)
 ```bash
-# Sync website content to public directory
-./shell_scripts/sync_to_public.sh
+# Two-Step Deployment Process:
+# Step 1: Source → Public (staging)
+./shell_scripts/sync_to_public.sh --step1 --verbose
 
-# Deploy to production web server (nginx)
+# Step 2: Public → Production (deployment) 
+./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/html
+
+# Combined deployment (both steps)
+./shell_scripts/sync_to_public.sh --both-steps
+
+# Legacy deployment script (still available)
 ./shell_scripts/deploy_to_webserver.sh
 
 # Features:
+# - Parametrized step control (--step1, --step2, --both-steps)
+# - Flexible production directory configuration
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers submodule support with complete module architecture
-# - Automatic backup with cleanup (7-day retention)
-# - Dynamic source directory detection
+# - Enhanced backup system for both public and production
+# - Production environment validation with permission checks  
 # - Comprehensive error handling with colored output
-# - Dry-run mode for validation
+# - Dry-run mode for safe operation preview
 # - Proper web server permissions
 ```
 

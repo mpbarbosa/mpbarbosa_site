@@ -1,16 +1,17 @@
 # 🔧 Sync to Public - Technical Documentation
 
 **Script:** `shell_scripts/sync_to_public.sh`  
-**Version:** 1.0.0  
+**Version:** 2.0.0  
 **Language:** Bash (Shell Script)  
 **Target Shell:** `/bin/bash`  
-**Created:** November 4, 2025
+**Created:** November 4, 2025  
+**Updated:** November 4, 2025 (Two-Step Deployment Architecture)
 
 ---
 
 ## 📋 Technical Overview
 
-The `sync_to_public.sh` script is a modular Bash application implementing advanced shell scripting patterns including generic function design, error handling, and comprehensive validation systems. The script demonstrates professional-grade code organization with 85% code reduction through reusable components.
+The `sync_to_public.sh` script is a modular Bash application implementing advanced shell scripting patterns including generic function design, error handling, and comprehensive validation systems. Version 2.0.0 introduces the **Two-Step Deployment Architecture** with parametrized step control (--step1, --step2, --both-steps) and flexible production directory configuration. The script demonstrates professional-grade code organization with 85% code reduction through reusable components.
 
 ---
 
@@ -253,7 +254,7 @@ create_backup() {
 
 ## 📊 Command-Line Argument Processing
 
-### Argument Parsing Implementation
+### Argument Parsing Implementation (v2.0.0 - Two-Step Architecture)
 ```bash
 main() {
     while [[ $# -gt 0 ]]; do
@@ -269,6 +270,22 @@ main() {
             --no-backup)
                 CREATE_BACKUP=false
                 shift
+                ;;
+            --step1)
+                STEP1_ONLY=true
+                shift
+                ;;
+            --step2)
+                STEP2_ONLY=true
+                shift
+                ;;
+            --both-steps)
+                BOTH_STEPS=true
+                shift
+                ;;
+            --production-dir)
+                PRODUCTION_DIR="$2"
+                shift 2
                 ;;
             --help)
                 show_help

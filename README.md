@@ -33,9 +33,11 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 ```
 mpbarbosa_site/
+├── .gitmodules                        # Git submodules configuration
+├── index.html                         # Simple redirect to mpbarbosa.com
 ├── shell_scripts/                     # Automation and deployment scripts
 │   ├── deploy_to_webserver.sh         # Production deployment automation
-│   ├── sync_to_public.sh              # Website sync and deployment script
+│   ├── sync_to_public.sh              # Two-step deployment script (v2.0.0)
 │   ├── pull_all_submodules.sh         # Submodule update automation
 │   ├── push_all_submodules.sh         # Submodule deployment automation
 │   ├── validate_external_links.sh     # External links security validator
@@ -65,6 +67,7 @@ mpbarbosa_site/
 │   └── [other documentation files]
 ├── prompts/                          # AI workflow templates
 │   └── tests_documentation_update_enhanced.txt
+├── html5up-dimension/                # HTML5 UP Dimension template source
 ├── public/                           # Generated deployment directory (sync_to_public.sh output)
 │   ├── index.html                    # Synchronized main page
 │   ├── assets/                       # HTML5 UP Dimension template assets
@@ -113,11 +116,13 @@ The development server runs at `http://localhost:8080` with live reload.
 The project includes comprehensive shell scripts for production deployment:
 
 ```bash
-# Deploy to production web server (nginx)
-./shell_scripts/deploy_to_webserver.sh
+# Two-step deployment process (v2.0.0)
+./shell_scripts/sync_to_public.sh --step1          # Stage files in public folder
+./shell_scripts/sync_to_public.sh --step2          # Deploy to production
+./shell_scripts/sync_to_public.sh --both-steps     # Execute both steps
 
-# Sync website content to public directory
-./shell_scripts/sync_to_public.sh
+# Legacy production deployment (nginx)
+./shell_scripts/deploy_to_webserver.sh
 
 # Validate external links security compliance
 ./shell_scripts/validate_external_links.sh
