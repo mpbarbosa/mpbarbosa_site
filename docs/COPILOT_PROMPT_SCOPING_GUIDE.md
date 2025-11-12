@@ -1,5 +1,11 @@
 # GitHub Copilot Prompt Scoping Guide
 
+> **📋 Document Distribution: Canonical Reference (Duplicated in Submodules)**  
+> This is the **canonical version** maintained in the main repository.  
+> **Duplicates**: Identical copies exist in Music in Numbers and Monitora Vagas submodules for developer convenience.  
+> **Sync Strategy**: Manual - update this canonical version first, then copy to submodules when needed.  
+> **Last Synchronized**: 2025-11-09
+
 ## Overview
 
 This guide provides best practices for creating well-defined, scoped prompts when working with GitHub Copilot to ensure the AI assistant implements only what you intend, without overstepping the specified boundaries.

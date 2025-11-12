@@ -4,6 +4,10 @@
 
 This documentation covers the MP Barbosa personal portfolio website and its associated projects, with a focus on the class extraction initiative completed for the JavaScript Travel Guide library.
 
+## 📋 Documentation Standards
+
+- **[Documentation Style Guide](DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure best practices
+
 ## Documentation Structure
 
 ### Main Project Documentation
@@ -13,12 +17,23 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Shell Scripts and Deployment
 - **[Shell Scripts Documentation](../shell_scripts/README.md)** - Automation and deployment script documentation
+- **[Two-Step Deployment Architecture v2.0.0](TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive guide to parametrized deployment workflow
 - **[Sync to Public - Functional Documentation](SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Website synchronization workflow and process documentation
 - **[Sync to Public - Technical Documentation](SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details and architecture
+
+### Workflow Automation
+- **[Workflow Automation Version Evolution](WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
+- **[Tests & Documentation Workflow Plan](TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for automated workflow script (13 steps)
+- **[Workflow Automation Phase 2 Completion](WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+- **[Workflow Performance Optimization](WORKFLOW_PERFORMANCE_OPTIMIZATION.md)** - Performance analysis and optimization strategy (v1.4.0 → v1.5.0)
+- **[Workflow Performance Implementation](WORKFLOW_PERFORMANCE_OPTIMIZATION_IMPLEMENTATION.md)** - Completed git caching implementation (v1.5.0)
+- **[Step 11 Git Finalization Enhancement](STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation best practices
+- **[Workflow Execution Context Analysis](WORKFLOW_EXECUTION_CONTEXT_ANALYSIS.md)** - Execution context patterns and best practices
 
 ### Advanced Architecture Patterns
 - **[Functional Core, Imperative Shell Guide](FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies
 - **[Python Migration Plan](PYTHON_MIGRATION_PLAN.md)** - Strategic migration from shell to Python for enhanced functionality
+- **[Dependency Injection Best Practices](DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 ### Class Extraction Initiative
 
@@ -64,7 +79,8 @@ mpbarbosa_site/                    # Main repository
 ├── docs/                          # Documentation (this folder)
 │   └── README.md                  # This file (documentation index)
 ├── shell_scripts/                 # Automation and deployment scripts
-│   ├── deploy_to_webserver.sh     # Production deployment automation
+│   ├── sync_to_public.sh          # Two-step deployment script (v2.0.0)
+│   ├── deploy_to_webserver.sh     # Legacy production deployment automation
 │   ├── pull_all_submodules.sh     # Submodule update automation
 │   ├── push_all_submodules.sh     # Submodule deployment automation
 │   └── README.md                  # Shell scripts documentation
@@ -84,11 +100,13 @@ mpbarbosa_site/                    # Main repository
 ```
 
 ### Technology Stack
-- **Frontend**: Static HTML with Material Design components
-- **JavaScript**: ES6 modules with modern async patterns
+- **Frontend**: HTML5 UP Dimension responsive template with Font Awesome icons
+- **JavaScript**: ES6 modules with modern async patterns, jQuery 3.x utilities
+- **Styling**: SASS with compiled CSS, responsive design with breakpoints
 - **Development**: Live-server with hot reloading
 - **Testing**: Jest with integration test coverage
 - **Version Control**: Git with authenticated submodules
+- **Template License**: Creative Commons Attribution 3.0 (HTML5 UP)
 
 ## Quick Start
 
@@ -108,9 +126,9 @@ npm start
 ### Validation Scenarios
 Following the MP Barbosa development guidelines:
 
-1. **Homepage Loading**: Verify version badge shows "HTML page v0.4.1-alpha"
-2. **Navigation Testing**: Test smooth scrolling to sections
-3. **Contact Form**: Validate form submission and reset functionality
+1. **Homepage Loading**: Verify HTML5 UP Dimension template loads correctly with Font Awesome icons
+2. **Navigation Testing**: Test modal-style article navigation and smooth transitions
+3. **Responsive Design**: Verify template breakpoints work correctly across viewport sizes
 4. **Project Links**: Access three featured projects:
    - **Music in Numbers**: Spotify analytics with advanced modular architecture
    - **Guia Turístico**: Travel guide with extracted class architecture
@@ -121,15 +139,43 @@ Following the MP Barbosa development guidelines:
 The project includes comprehensive shell scripts for production deployment:
 
 ```bash
-# Production deployment to nginx web server
-./shell_scripts/deploy_to_webserver.sh
+# Two-step deployment architecture (v2.0.0)
+./shell_scripts/sync_to_public.sh --step1           # Stage to public folder
+./shell_scripts/sync_to_public.sh --step2           # Deploy to production
+./shell_scripts/sync_to_public.sh --both-steps      # Execute both steps
+
+# Custom production directory
+./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa
+
+# Legacy production deployment to nginx (requires step1 preparation)
+./shell_scripts/sync_to_public.sh --step1           # Prepare public directory first
+./shell_scripts/deploy_to_webserver.sh               # Deploy to nginx
+
+# Tests & documentation workflow automation (v1.5.0)
+./shell_scripts/execute_tests_docs_workflow.sh
 
 # Update all submodules
 ./shell_scripts/pull_all_submodules.sh
 
 # Deploy submodule changes
-./shell_scripts/push_all_submodules.sh
+./shell_scripts/push_all_submodules.sh --handle-stash
 ```
+
+**Two-Step Deployment Features** (v2.0.0):
+- **Flexible workflow**: Independent or combined step execution
+- **Staging environment**: Public folder acts as validation area
+- **Parametrized control**: --step1, --step2, or --both-steps options
+- **Production configuration**: Configurable production directory (default: /var/www/html)
+- **Enhanced backups**: Separate backup systems for public and production
+- **Comprehensive validation**: Asset verification and permission checks
+- **Test coverage**: 849 lines of Jest tests across 12 test suites (55 tests, 96% passing)
+
+**Workflow Automation Features** (v1.5.0):
+- **13-step comprehensive workflow**: Analysis → Documentation → Testing → Git finalization
+- **AI-powered with Copilot CLI**: 11 steps enhanced with specialized AI personas
+- **Conventional commit generation**: Automated professional commit messages
+- **Smart execution modes**: Interactive, Auto (CI/CD), and Dry-run
+- **Two-phase validation**: Automated checks + AI-powered deep analysis
 
 ## Class Extraction Achievement Summary
 
@@ -194,7 +240,8 @@ Follow the established MP Barbosa coding standards:
 - **Low Coupling**: Clear module boundaries with dependency injection  
 - **High Cohesion**: Single responsibility per module
 - **Comprehensive Testing**: Integration tests for all modules
-- **Material Design**: Brazilian Portuguese user experience
+- **HTML5 UP Dimension**: Responsive template with Font Awesome integration (main site)
+- **Material Design**: Brazilian Portuguese user experience (Guia Turístico subproject)
 
 ### Validation Requirements
 - All tests must pass (maintain 94%+ pass rate)

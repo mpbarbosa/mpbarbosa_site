@@ -1,12 +1,13 @@
 # MP Barbosa Personal Website
 
-Static HTML personal portfolio website featuring Material Design components and showcasing personal projects.
+Static HTML personal portfolio website built on the **HTML5 UP Dimension** responsive template, showcasing personal projects with modern design and smooth transitions.
 
 ## 🎯 Project Overview
 
 This is a professional portfolio website built with modern web standards, featuring:
-- **Material Design UI** components and theming
-- **Responsive Design** for all devices
+- **HTML5 UP Dimension Template** - Fully responsive design with smooth modal transitions
+- **Font Awesome Integration** - Professional iconography with brands, regular, and solid icon sets
+- **Responsive Design** for all devices with breakpoint optimization
 - **Personal Projects** showcase via Git submodules
 - **Contact Form** with JavaScript interactivity
 - **Clean Architecture** with separation of concerns
@@ -36,35 +37,52 @@ mpbarbosa_site/
 ├── .gitmodules                        # Git submodules configuration
 ├── index.html                         # Simple redirect to mpbarbosa.com
 ├── shell_scripts/                     # Automation and deployment scripts
-│   ├── deploy_to_webserver.sh         # Production deployment automation
 │   ├── sync_to_public.sh              # Two-step deployment script (v2.0.0)
+│   ├── deploy_to_webserver.sh         # Legacy production deployment (v2.0.0 - requires sync_to_public.sh step1)
+│   ├── execute_tests_docs_workflow.sh # Tests & docs workflow automation (v1.5.0)
 │   ├── pull_all_submodules.sh         # Submodule update automation
 │   ├── push_all_submodules.sh         # Submodule deployment automation
 │   ├── validate_external_links.sh     # External links security validator
 │   ├── enhance_prompt.sh              # AI prompt enhancement utility
 │   └── copilot_with_enhanced_prompt.sh # GitHub Copilot with enhanced prompts
 ├── src/                               # Main source directory
-│   ├── index.html                    # Landing page with Material Design
+│   ├── index.html                    # Landing page with HTML5 UP Dimension template
 │   ├── assets/                       # HTML5 UP Dimension template assets
 │   │   ├── css/                      # Compiled stylesheets
 │   │   ├── js/                       # JavaScript utilities
 │   │   ├── sass/                     # SASS source files
 │   │   └── webfonts/                 # Font Awesome web fonts
-│   ├── styles/main.css               # Material Design styling
-│   ├── scripts/main.js               # Contact form and interactions  
+│   ├── styles/main.css               # DEPRECATED: Legacy Material Design stylesheet (unused)
+│   ├── scripts/main.js               # DEPRECATED: Legacy JavaScript (unused, template uses assets/js/)
 │   ├── components/                   # Individual HTML components
 │   ├── pages/                        # Project redirect pages
 │   │   ├── music_in_numbers.html     # Music in Numbers redirect
 │   │   ├── guia_turistico.html       # Guia Turístico redirect
 │   │   └── monitora_vagas.html       # Monitora Vagas redirect
-│   └── submodules/                   # Personal projects (Git submodules)
-│       ├── music_in_numbers/         # 🎵 Music analytics platform
-│       ├── guia_turistico/           # 🗺️ Travel guide application
-│       └── monitora_vagas/           # 💼 Job monitoring application
+│   ├── submodules/                   # Personal projects (Git submodules)
+│   │   ├── music_in_numbers/         # 🎵 Music analytics platform
+│   │   ├── guia_turistico/           # 🗺️ Travel guide application
+│   │   └── monitora_vagas/           # 💼 Job monitoring application
+│   └── __tests__/                    # Jest test suites
+│       ├── main.test.js              # Main site functionality tests (495 lines)
+│       ├── documentation.test.js     # Documentation consistency tests (184 lines)
+│       ├── InitializationUtilities.test.js # Initialization logic tests (869 lines)
+│       ├── project_navigation.test.js # Project navigation tests (293 lines)
+│       ├── shell_scripts.test.js     # Shell script integration tests (849 lines)
+│       └── sync_to_public.test.js    # Deployment script tests (713 lines)
 ├── docs/                             # Project documentation
 │   ├── EXTERNAL_LINKS_POLICY.md      # Security standards for external links
 │   ├── GIT_BEST_PRACTICES_GUIDE.md   # Version control workflow guide
+│   ├── TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md # v2.0.0 deployment guide
+│   ├── TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md # Workflow automation plan
 │   └── [other documentation files]
+├── backlog/                          # Workflow execution backlog (v1.3.0)
+│   ├── README.md                     # Backlog management documentation
+│   └── workflow_YYYYMMDD_HHMMSS/    # Timestamped workflow runs
+├── summaries/                        # Workflow step summaries (v1.4.0)
+│   ├── README.md                     # Summary documentation
+│   └── workflow_YYYYMMDD_HHMMSS/    # Timestamped summary runs
+├── logs/                             # Workflow execution logs (v1.5.0)
 ├── prompts/                          # AI workflow templates
 │   └── tests_documentation_update_enhanced.txt
 ├── html5up-dimension/                # HTML5 UP Dimension template source
@@ -121,28 +139,53 @@ The project includes comprehensive shell scripts for production deployment:
 ./shell_scripts/sync_to_public.sh --step2          # Deploy to production
 ./shell_scripts/sync_to_public.sh --both-steps     # Execute both steps
 
-# Legacy production deployment (nginx)
-./shell_scripts/deploy_to_webserver.sh
+# Custom production directory
+./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa
 
-# Validate external links security compliance
+# Legacy production deployment (nginx v2.0.0 - requires step1 first)
+./shell_scripts/sync_to_public.sh --step1          # Prepare public directory
+sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
+
+# Validate external links security compliance (manual review required)
 ./shell_scripts/validate_external_links.sh
 
 # Update all submodules from remote repositories
 ./shell_scripts/pull_all_submodules.sh
 
 # Deploy changes to all submodules
-./shell_scripts/push_all_submodules.sh
+./shell_scripts/push_all_submodules.sh --handle-stash
+
+# Tests & documentation workflow automation (v1.5.0)
+./shell_scripts/execute_tests_docs_workflow.sh                # Full 13-step workflow
+./shell_scripts/execute_tests_docs_workflow.sh --auto         # CI/CD mode (no prompts)
+./shell_scripts/execute_tests_docs_workflow.sh --dry-run      # Preview workflow
 
 # AI-assisted development
 ./shell_scripts/copilot_with_enhanced_prompt.sh "your task description"
 ```
 
-**Deployment Features:**
-- Dynamic source directory detection
-- Automatic backup with 7-day retention
+**Deployment Features (v2.0.0):**
+- Two-step deployment architecture (staging → production)
+- Parametrized step control for flexible workflows
+- Configurable production directory (default: /var/www/html)
+- Automatic backup with 7-day retention for both public and production
+- Comprehensive asset management (HTML, CSS, JS, images, webfonts)
+- Music in Numbers submodule support with complete module architecture
+- Production environment validation with permission checks
 - Comprehensive error handling with colored output
 - Dry-run mode for validation
-- Proper web server permissions
+- Proper web server permissions (755/644)
+- **Comprehensive test coverage**: 3,403 lines of Jest tests across 6 test suites (1,520 passing tests)
+
+**Workflow Automation Features (v1.5.0):**
+- 13-step comprehensive workflow (analysis → documentation → testing → git finalization)
+- AI-powered with GitHub Copilot CLI (11 enhanced steps with specialized personas)
+- Conventional commit message generation with comprehensive git context
+- Smart execution modes: Interactive (default), Auto (CI/CD), Dry-run (preview)
+- Two-phase validation: Automated detection + AI-powered deep analysis
+- Backlog tracking with timestamped workflow runs
+- Summary generation with status indicators (✅ ⚠️ ❌)
+- Performance optimized with git state caching (v1.5.0)
 
 ### Selenium UI Tests
 
@@ -159,7 +202,7 @@ Run with `HEADLESS=false` for an interactive browser session when debugging loca
 ### Architecture Highlights
 - **Static Site**: No build process required, direct browser execution
 - **Modern Standards**: HTML5, CSS Grid, ES6+ JavaScript
-- **Material Design**: Google Material Web Components
+- **HTML5 UP Dimension Template**: Responsive design with Font Awesome 5.x integration
 - **Accessibility**: WCAG 2.1 AA compliance
 - **Performance**: Optimized loading with defer attributes and caching
 
@@ -175,6 +218,8 @@ The project demonstrates **professional-grade architecture** with:
 
 ### 📚 Architecture Documentation
 - **[Comprehensive UX Documentation](docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
+- **[Two-Step Deployment Architecture v2.0.0](docs/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive parametrized deployment workflow guide
+- **[Tests & Docs Workflow Automation](docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - AI-powered 13-step automation workflow
 - **[External Links Policy](docs/EXTERNAL_LINKS_POLICY.md)** - Security and UX standards for external hyperlinks with tabnapping prevention
 - **[Functional Core, Imperative Shell Guide](docs/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
 - **[Resource Path Guide](docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and deployment best practices
@@ -183,3 +228,38 @@ The project demonstrates **professional-grade architecture** with:
 - **[Development Guidelines](.github/copilot-instructions.md)** - Coding standards and workflow
 
 This represents a **significant architectural achievement** in modern web development, transforming monolithic code into a maintainable, scalable, and professional codebase with proven enterprise patterns.
+
+## ⚠️ Legacy Files and Deprecation Notice
+
+The following files are **DEPRECATED** and no longer used by the current HTML5 UP Dimension template implementation:
+
+### Main Site (src/)
+- **`src/styles/main.css`** - Legacy Material Design stylesheet
+  - **Status**: DEPRECATED - Template uses `src/assets/css/main.css` instead
+  - **Reason**: Project migrated from Material Design to HTML5 UP Dimension template
+  - **Action**: Retained for historical reference only
+
+- **`src/scripts/main.js`** - Legacy JavaScript
+  - **Status**: DEPRECATED - Template uses `src/assets/js/` utilities instead
+  - **Reason**: HTML5 UP Dimension includes its own JavaScript framework
+  - **Action**: Retained for historical reference only
+
+- **`src/components/`** - Standalone HTML components
+  - **Status**: DEPRECATED - Template uses inline article-based navigation
+  - **Reason**: HTML5 UP Dimension uses modal-style articles instead of separate component files
+  - **Files**: `about.html`, `contact.html`, `header.html`, `projects.html`
+  - **Action**: Retained for historical reference only
+
+### Current Template Stack
+The site now uses the **HTML5 UP Dimension** template with:
+- ✅ Responsive design with breakpoint optimization
+- ✅ Font Awesome 5.x integration (brands, regular, solid icons)
+- ✅ jQuery 3.x and custom utilities
+- ✅ SASS source files in `assets/sass/`
+- ✅ Compiled CSS in `assets/css/main.css`
+- ✅ Modal-style article navigation with smooth transitions
+
+**Note**: Subprojects may use different design systems:
+- **Music in Numbers**: Custom Material Design implementation with theme switching
+- **Guia Turístico**: Brazilian Portuguese Material Design UX
+- **Monitora Vagas**: Custom design

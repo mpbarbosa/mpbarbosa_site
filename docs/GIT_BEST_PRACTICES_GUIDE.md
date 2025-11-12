@@ -1,5 +1,10 @@
 # Git Best Practices Guide
 
+> **📋 Document Scope: MP Barbosa Projects - Canonical Reference**  
+> This is the **canonical version** of Git best practices for all MP Barbosa projects.  
+> **Submodule Versions**: Each submodule may have a project-specific customization in their repository.  
+> **See Also**: [src/submodules/README.md](/src/submodules/README.md) for submodule-specific guidance.
+
 ## Overview
 
 This guide establishes best practices for Git operations in MP Barbosa projects, ensuring proper version control, file history preservation, and clear change tracking across all repositories and submodules.

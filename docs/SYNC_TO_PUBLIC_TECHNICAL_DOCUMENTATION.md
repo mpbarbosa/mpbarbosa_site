@@ -5,7 +5,7 @@
 **Language:** Bash (Shell Script)  
 **Target Shell:** `/bin/bash`  
 **Created:** November 4, 2025  
-**Updated:** November 4, 2025 (Two-Step Deployment Architecture)
+**Updated:** November 9, 2025 (Two-Step Deployment Architecture with Comprehensive Test Coverage)
 
 ---
 
@@ -19,13 +19,15 @@ The `sync_to_public.sh` script is a modular Bash application implementing advanc
 
 ### Code Structure
 ```
-sync_to_public.sh (600+ lines)
-├── Configuration Section (40 lines)
-├── Utility Functions (60 lines)
-├── Generic Copy Functions (280 lines)
-├── Specific Copy Functions (120 lines)  
-├── Validation Functions (80 lines)
-└── Main Execution (60 lines)
+sync_to_public.sh (1,345 lines)
+├── Configuration Section (50 lines)
+├── Utility Functions (100 lines)
+├── Generic Copy Functions (350 lines)
+├── Specific Copy Functions (200 lines)
+├── Step 1 Functions (250 lines)
+├── Step 2 Functions (200 lines)
+├── Validation Functions (150 lines)
+└── Main Execution (45 lines)
 ```
 
 ### Design Patterns Implemented
@@ -57,6 +59,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/src"
 PUBLIC_DIR="$PROJECT_ROOT/public"
+PRODUCTION_DIR="/var/www/html"  # Default production directory (configurable)
+
+# Execution steps control
+STEP_SOURCE_TO_PUBLIC=false
+STEP_PUBLIC_TO_PRODUCTION=false
 
 # Runtime configuration
 DRY_RUN=false
@@ -67,6 +74,8 @@ CREATE_BACKUP=true
 **Technical Features:**
 - **Relative Path Independence**: Works from any execution directory
 - **Configuration Variables**: Runtime behavior modification
+- **Step Control**: Parametrized execution of deployment phases
+- **Production Directory**: Configurable via --production-dir parameter
 - **BASH_SOURCE[0]** usage for reliable script location detection
 
 ### 3. Color System Implementation
@@ -411,11 +420,44 @@ main()
 ### Testing Strategies
 ```bash
 # Dry-run testing
-./sync_to_public.sh --dry-run --verbose
+./sync_to_public.sh --step1 --dry-run --verbose
+./sync_to_public.sh --step2 --dry-run --verbose
+./sync_to_public.sh --both-steps --dry-run
 
 # Component testing
 source sync_to_public.sh
 copy_single_file "/test/source" "/test/dest" "test file" "false"
+```
+
+### Automated Test Coverage
+The script is backed by a comprehensive Jest test suite:
+- **Test File**: `src/__tests__/shell_scripts.test.js` (849 lines)
+- **Test Coverage**: 53 tests total, 52/53 passing (98.1% pass rate)
+- **Test Categories**:
+  - Directory structure validation
+  - Deployment script functionality
+  - Dry-run mode verification
+  - Error handling validation
+  - Version information checks
+  - Backup system verification
+  - Permission validation
+  - Help documentation completeness
+  - Step control parametrization
+  - Production directory configuration
+
+**Key Test Scenarios**:
+```javascript
+// Step 1 execution validation
+test('should support --step1 parameter for source to public sync')
+
+// Step 2 execution validation  
+test('should support --step2 parameter for public to production sync')
+
+// Combined execution validation
+test('should support --both-steps parameter for complete deployment')
+
+// Production directory configuration
+test('should support --production-dir parameter')
 ```
 
 ### Performance Monitoring
@@ -469,11 +511,13 @@ The `sync_to_public.sh` script demonstrates **enterprise-grade shell scripting**
 - **User Experience**: Color-coded output and detailed progress reporting
 - **Maintainability**: Clear code structure and extension points
 - **Documentation**: Comprehensive inline and external documentation
+- **Test Coverage**: 849-line Jest test suite with 53 tests, 52/53 passing (98.1% pass rate)
+- **Automated Validation**: Comprehensive test scenarios for all deployment steps
 
 This technical implementation serves as a **reference example** for professional shell script development, demonstrating advanced bash programming techniques and software engineering best practices.
 
 ---
 
-**Last Updated**: November 4, 2025  
+**Last Updated**: November 9, 2025  
 **Documentation Type**: Technical Implementation  
-**Script Version**: 1.0.0
+**Script Version**: 2.0.0

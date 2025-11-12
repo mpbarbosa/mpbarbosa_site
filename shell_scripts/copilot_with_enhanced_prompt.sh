@@ -1,9 +1,15 @@
 #!/bin/bash
 
 # copilot_with_enhanced_prompt.sh - Execute Copilot with an enhanced prompt
+# Version: 1.0.0
+# Created: 2025-11-09
+# Last Modified: 2025-11-09
 # Usage: ./copilot_with_enhanced_prompt.sh "your prompt here"
 
 set -euo pipefail
+
+# Script version
+VERSION="1.0.0"
 
 # Color codes for output
 RED='\033[0;31m'
@@ -31,6 +37,7 @@ Arguments:
 
 Options:
     -h, --help          📖 Show this help message
+    --version           📌 Show script version
     -m, --model MODEL   🎯 Specify AI model for both enhancement and execution
     --enhance-model M   ✨ Specify AI model only for enhancement step
     --exec-model M      🤖 Specify AI model only for execution step
@@ -95,6 +102,10 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         -h|--help)
             usage
+            ;;
+        --version)
+            echo "$(basename "$0") version $VERSION"
+            exit 0
             ;;
         -m|--model)
             MODEL="$2"

@@ -1,16 +1,23 @@
 # MP Barbosa Personal Website
 
+> **📄 File Size Note**  
+> This comprehensive instructions file is 488 lines (~24,700 characters, ~6,200 tokens).  
+> Size is **intentional** to provide complete development context in a single file.  
+> Well within AI context limits (128K+ tokens for modern models).  
+> Alternative: Split into `/docs/` if file exceeds 1,000 lines or 200K characters.
+
 **ALWAYS** reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the information here.
 
 ## Project Overview
 
-This is a static HTML personal portfolio website for MP Barbosa featuring Material Design components. The site showcases personal projects, provides an about section, curriculum information, and includes a contact form with JavaScript interactivity.
+This is a static HTML personal portfolio website for MP Barbosa built on the **HTML5 UP Dimension** responsive template. The site showcases personal projects, provides an about section, curriculum information, and includes interactive navigation with smooth transitions.
 
 **Architecture Highlights**:
+- **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
 - **Multi-project structure**: Main site + 3 specialized submodules (Music in Numbers, Guia Turístico, Monitora Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
-- **Professional deployment**: Automated shell scripts for production nginx deployment
+- **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
 The Music in Numbers subproject has achieved **outstanding architectural transformation**:
@@ -50,30 +57,36 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 **ALWAYS** perform these validation steps after making changes:
 
 1. **Homepage Loading**: Navigate to `http://127.0.0.1:8080` and verify:
-   - Page loads without errors (some CDN resources may be blocked but site functions)
-   - Version badge appears in top-right corner showing "HTML page v0.4.1-alpha (unstable, pre-release)"
-   - Material Design styling is applied correctly
+   - Page loads without errors
+   - HTML5 UP Dimension template loads with Font Awesome icons
+   - Background image and overlay render correctly
+   - Responsive preloader animation displays
 
 2. **Navigation Testing**: 
-   - Click "About", "Projects", and "Contact" navigation links
-   - Verify smooth scrolling to respective sections works
+   - Click "Intro", "Projetos (IA)", "About", and "Contact" navigation links
+   - Verify smooth transitions and modal-style article displays
+   - Test close button (X) on each article overlay
+   - Verify background blur effect when articles are open
 
 3. **Contact Form Testing**:
-   - Fill in all three form fields: Name, Email, Message
-   - Click "Send" button
-   - Verify JavaScript alert appears: "Form submitted! Thank you for reaching out."
-   - Verify form resets after submission
+   - Open "Contact" article
+   - Fill in form fields: Name, Email, Message
+   - Submit form and verify expected behavior
+   - Test form validation for required fields
 
 4. **Project Links**: 
+   - Navigate to "Projetos (IA)" section
    - Click "Music in Numbers", "Guia Turístico", and "Monitora Vagas" project links
    - **Expected behavior**: These will show 404 errors unless submodules are properly initialized
    - This is normal and documented behavior in environments without authentication
    - All project links follow consistent submodule navigation pattern
 
 ### Performance and Layout
-- Take screenshots to verify visual layout and Material Design components render correctly
-- Test responsive design by resizing browser window
-- Verify all sections (About Me, Personal Projects, Curriculum, Contact) are visible
+- Test responsive design by resizing browser window (breakpoints: XLarge, Large, Medium, Small, XSmall)
+- Verify Font Awesome icons load correctly (brands, regular, solid)
+- Verify background image transitions and parallax effects
+- Test keyboard navigation (ESC key closes articles, arrow keys navigate)
+- Verify all sections render correctly in different viewport sizes
 
 ## Common Tasks and File Structure
 
@@ -83,18 +96,29 @@ mpbarbosa_site/
 ├── .github/                    # GitHub configuration and workflows
 │   └── copilot-instructions.md # These instructions
 ├── shell_scripts/              # Automation and deployment scripts
-│   ├── deploy_to_webserver.sh  # Production deployment to nginx
+│   ├── sync_to_public.sh       # Two-step deployment script (v2.0.0)
+│   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
 │   ├── pull_all_submodules.sh  # Update all submodules
 │   ├── push_all_submodules.sh  # Deploy submodule changes
 │   └── README.md               # Shell scripts documentation
+├── public/                     # Deployment staging directory (sync_to_public.sh output)
+│   ├── index.html             # Synchronized main page
+│   ├── assets/                # Synchronized HTML5 UP Dimension assets
+│   └── submodules/            # Synchronized subproject content
 ├── src/                        # Main source directory 
-│   ├── index.html             # Main landing page (entry point)
+│   ├── index.html             # Main landing page (HTML5 UP Dimension template)
 │   ├── package.json           # Node.js dependencies and scripts
+│   ├── assets/                # HTML5 UP Dimension template assets
+│   │   ├── css/               # Compiled stylesheets (main.css, noscript.css, fontawesome)
+│   │   ├── js/                # JavaScript utilities (jQuery, breakpoints, browser, util)
+│   │   ├── sass/              # SASS source files (base, components, layout, libs)
+│   │   └── webfonts/          # Font Awesome web fonts (brands, regular, solid)
+│   ├── images/                # Background and content images
 │   ├── styles/
-│   │   └── main.css          # Main stylesheet with Material Design theme
+│   │   └── main.css          # Legacy Material Design stylesheet (deprecated)
 │   ├── scripts/
-│   │   └── main.js           # JavaScript for smooth scrolling and form handling
-│   ├── components/            # Individual HTML components (not used in main page)
+│   │   └── main.js           # Legacy JavaScript (deprecated, template uses assets/js/)
+│   ├── components/            # Individual HTML components (not used in current template)
 │   │   ├── about.html        # Standalone about page
 │   │   ├── contact.html      # Standalone contact page
 │   │   ├── header.html       # Standalone header component
@@ -131,19 +155,57 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 # Combined deployment (both steps)
 ./shell_scripts/sync_to_public.sh --both-steps
 
-# Legacy deployment script (still available)
-./shell_scripts/deploy_to_webserver.sh
+# Legacy deployment script v2.0.0 (uses public directory as source)
+# Requires sync_to_public.sh --step1 to prepare files first
+sudo ./shell_scripts/deploy_to_webserver.sh
 
-# Features:
+# Features (sync_to_public.sh v2.0.0):
 # - Parametrized step control (--step1, --step2, --both-steps)
-# - Flexible production directory configuration
+# - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers submodule support with complete module architecture
-# - Enhanced backup system for both public and production
+# - Enhanced backup system for both public and production directories
 # - Production environment validation with permission checks  
 # - Comprehensive error handling with colored output
 # - Dry-run mode for safe operation preview
-# - Proper web server permissions
+# - Proper web server permissions (755 for directories, 644 for files)
+# - Detailed deployment summary with file counts and validation
+# - Comprehensive test coverage (849 lines, 53 tests, 52/53 passing)
+
+# Features (deploy_to_webserver.sh v2.0.0):
+# - Uses public directory as source (requires sync_to_public.sh step1 first)
+# - Simplified deployment path with pre-staged files
+# - Maintains backward compatibility with existing workflows
+# - Automatic validation of public directory preparation
+# - Enhanced permission management for web-ready files
+# - Git validation updated to check project root instead of source directory
+# - All file paths updated for new public directory structure
+# - Comprehensive test coverage shared with sync_to_public.sh
+```
+
+#### Tests & Documentation Workflow Automation (v1.5.0)
+```bash
+# Full automated workflow (13 steps)
+./shell_scripts/execute_tests_docs_workflow.sh
+
+# Preview without executing
+./shell_scripts/execute_tests_docs_workflow.sh --dry-run
+
+# Automatic mode (CI/CD compatible, no prompts)
+./shell_scripts/execute_tests_docs_workflow.sh --auto
+
+# Interactive mode with confirmations (default)
+./shell_scripts/execute_tests_docs_workflow.sh --interactive
+
+# Features:
+# - Complete tests & documentation update automation
+# - AI-powered analysis with GitHub Copilot CLI integration
+# - 11 AI-enhanced steps with specialized personas
+# - Conventional commit message generation
+# - Two-phase validation (automated + AI-powered)
+# - Smart triggering (auto/interactive/optional modes)
+# - Comprehensive error handling with colored output
+# - Progress tracking and workflow state management
 ```
 
 #### Submodule Management
@@ -152,7 +214,11 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 ./shell_scripts/pull_all_submodules.sh
 
 # Deploy changes to all submodules
-./shell_scripts/push_all_submodules.sh
+./shell_scripts/push_all_submodules.sh --handle-stash
+
+# Preview submodule operations
+./shell_scripts/pull_all_submodules.sh --dry-run
+./shell_scripts/push_all_submodules.sh --dry-run
 ```
 
 ### Important Notes
@@ -160,8 +226,10 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 - **Jest Testing Framework**: Comprehensive test suite exists in `src/__tests__/` with coverage reporting
 - **ES Modules**: Project uses `"type": "module"` with `.mjs` files for modern JavaScript
 - **No CI/CD**: No GitHub Actions or other continuous integration configured
-- **External dependencies**: Uses CDN resources (Google Fonts, Material Web Components, unpkg.com)
-- **Browser compatibility**: Designed for modern browsers that support ES6+ and CSS Grid
+- **HTML5 UP Dimension Template**: Uses responsive template with Font Awesome icons and jQuery utilities
+- **External dependencies**: Font Awesome webfonts bundled locally, jQuery and utilities included in assets
+- **Browser compatibility**: Designed for modern browsers supporting ES6+, CSS Grid, and HTML5 features
+- **Template License**: HTML5 UP Dimension released under Creative Commons Attribution 3.0 License
 
 ### Critical Path Resolution Guidelines (October 2025)
 **ALWAYS** follow these path resolution rules to prevent critical resource loading failures:
@@ -190,14 +258,17 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 
 ### Common Issues
 1. **404 errors for project links**: Normal when submodules aren't initialized
-2. **CDN resource blocked**: Some external resources may be blocked but site functions
+2. **Template assets not loading**: Verify `assets/` directory structure is intact
 3. **npm vulnerabilities**: The project uses `live-server@1.2.1` which has known vulnerabilities but is only for development
 4. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
+5. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
+6. **Background image missing**: Verify `images/bg.jpg` and `images/overlay.png` exist
 
 ### Quick Fixes
 - **Server won't start**: Ensure you're in the `src/` directory and `npm install` was successful
 - **Changes not reflecting**: Check if live-server is running and browser is pointed to correct localhost URL
-- **Form not working**: Verify `scripts/main.js` is loaded correctly and no JavaScript errors in console
+- **Template styling broken**: Clear browser cache and verify `assets/css/main.css` exists
+- **JavaScript errors**: Check browser console for missing dependencies in `assets/js/`
 
 ## File Reference
 
@@ -231,9 +302,19 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 - `live-server@1.2.1` (development server with live reload)
 
 ### External Resources Used
-- Google Fonts (Roboto font family)
-- Google Material Icons
-- Material Web Components (unpkg.com CDN)
+- **HTML5 UP Dimension Template**: Responsive site template (html5up.net)
+  - License: Creative Commons Attribution 3.0 (html5up.net/license)
+  - Includes: jQuery 3.x, Font Awesome 5.x, custom utilities
+- **Font Awesome 5.x**: Icon fonts (bundled in assets/webfonts/)
+  - Brands, Regular, and Solid icon sets
+- **jQuery 3.x**: JavaScript library (bundled in assets/js/jquery.min.js)
+
+### Workflow Automation Tools
+- `execute_tests_docs_workflow.sh` (v1.5.0) - AI-powered tests & documentation automation
+  - 13-step workflow for comprehensive project maintenance
+  - GitHub Copilot CLI integration with specialized personas
+  - Conventional commit message generation
+  - Smart modes: interactive, auto, dry-run
 
 ## Modular Architecture Excellence
 
@@ -245,7 +326,7 @@ The Music in Numbers project demonstrates **professional-grade modular architect
 - `src/artist.html` (60 lines) - Artist information display
 
 #### CSS Modules (Organized Styling)
-- `styles/main.css` - Base styles and Material Design
+- `styles/main.css` - DEPRECATED: Legacy Material Design stylesheet (template uses assets/css/main.css)
 - `styles/components.css` - Shared UI components
 - `styles/themes.css` - Theme system (light/dark/high-contrast)
 - `styles/artist-components.css` - Artist-specific styling
@@ -345,20 +426,82 @@ Critical deployment and maintenance patterns:
 ./shell_scripts/pull_all_submodules.sh --dry-run
 ./shell_scripts/push_all_submodules.sh --handle-stash
 
-# Production deployment with nginx integration
+# Two-step production deployment with nginx integration (v2.0.0)
+./shell_scripts/sync_to_public.sh --step1 --dry-run
+./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/html
+./shell_scripts/sync_to_public.sh --both-steps
+
+# Legacy deployment v2.0.0 (uses public directory as source, requires sync_to_public.sh step1 first)
 sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
+
+# Tests & Documentation workflow automation (AI-powered)
+./shell_scripts/execute_tests_docs_workflow.sh --dry-run
+./shell_scripts/execute_tests_docs_workflow.sh --interactive  # Default mode
+./shell_scripts/execute_tests_docs_workflow.sh --auto        # CI/CD mode
 ```
 
-**Key Pattern**: Always use `--dry-run` first to preview operations before executing.
+**Key Patterns**: 
+- Always use `--dry-run` first to preview operations before executing
+- For deployment: Use `sync_to_public.sh --step1` to prepare files in /public directory
+- Step 2 options: Either `sync_to_public.sh --step2` or legacy `deploy_to_webserver.sh` (v2.0.0)
+- Both scripts now at v2.0.0: `sync_to_public.sh` with two-step architecture, `deploy_to_webserver.sh` with public source
+- Legacy `deploy_to_webserver.sh` uses `/public` as source (requires step1 to run first)
+- Production directory is configurable via `--production-dir` parameter (default: `/var/www/html`)
+- Use `--both-steps` for complete source-to-production deployment in one command
+- Legacy script requires sudo for web server directory access
+- Git validation updated: deploy_to_webserver checks project root, not source directory
+
+### AI-Powered Workflow Automation Best Practices
+
+The `execute_tests_docs_workflow.sh` script demonstrates professional AI integration patterns:
+
+#### AI Persona Selection Strategy
+- **Match personas to task domain**: Each workflow step uses specialized expertise (Git Workflow Specialist, DevOps Engineer, QA Automation Specialist)
+- **Combine complementary skills**: Complex tasks benefit from dual personas (e.g., "Git Workflow Specialist + Technical Communication Expert")
+- **Provide comprehensive context**: AI quality depends on repository state, diff analysis, and categorized changes
+
+#### Modern Copilot CLI Integration
+- **Use `copilot -p` for interactive workflows**: Embrace the conversation UI rather than fighting it
+- **Copy-paste workflow**: Let AI generate in its UI, then user copies/pastes the result
+- **Smart triggering**: Auto mode skips interactive AI, Interactive mode prompts, Optional mode provides choice
+- **Graceful degradation**: Always provide fallbacks when Copilot CLI unavailable
+
+#### Two-Phase Validation Architecture
+All AI-enhanced steps follow this pattern:
+1. **Phase 1 - Automated Detection**: Fast checks for common issues (4-9 automated checks per step)
+2. **Phase 2 - AI-Powered Analysis**: Deep analysis with specialized persona prompts (5+ analysis categories)
+
+Example from Step 11 (Git Finalization):
+- **Phase 1**: Git state analysis, change enumeration, diff statistics, commit type inference
+- **Phase 2**: AI-powered conventional commit message generation with comprehensive git context
+
+#### Conventional Commit Message Generation
+Step 11 showcases AI-assisted git best practices:
+- Analyzes repository state (branch, commits ahead/behind, change categorization)
+- Provides comprehensive context to AI (git analysis, diff statistics, changed files)
+- Generates professional conventional commit messages (type, scope, body, footer)
+- Supports interactive copy-paste workflow and auto-mode defaults
 
 ## 📖 Related Documentation References
 
 For comprehensive development guidance, consult these detailed documentation resources:
 
+### Architecture & Development
 - **[Comprehensive UX Documentation](../docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide covering navigation patterns, accessibility features, responsive design, and interaction design across all project components
 - **[Resource Path Guide](../docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and troubleshooting for submodule deployment
 - **[Path Resolution Fix Report](../docs/PATH_RESOLUTION_FIX_COMPLETION_REPORT.md)** - Technical incident report and lessons learned
 - **[Modularization Achievements](../docs/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Architecture improvements and code reduction metrics
 - **[Dependency Injection Best Practices](../docs/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
+
+### Workflow Automation
+- **[Workflow Automation Version Evolution](../docs/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
+- **[Tests & Docs Workflow Plan](../docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
+- **[Workflow Automation Phase 2 Completion](../docs/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+- **[Step 11 Git Enhancement](../docs/STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation
+- **[Workflow Execution Context](../docs/WORKFLOW_EXECUTION_CONTEXT_ANALYSIS.md)** - Execution context and best practices analysis
+
+### Deployment
+- **[Sync to Public Functional Documentation](../docs/SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Two-step deployment architecture functional guide
+- **[Sync to Public Technical Documentation](../docs/SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details
 
 Always verify the development server starts successfully and the main page loads before making any modifications to the codebase.

@@ -2,6 +2,337 @@
 
 This directory contains shell automation scripts for managing the MP Barbosa personal website project and its git submodules.
 
+## 🗺️ Quick Script Selection Guide
+
+**Use this decision tree to quickly find the right script for your task:**
+
+```
+What do you need to do?
+│
+├─ 📥 UPDATE CODE FROM REMOTE?
+│  └─ Run: ./shell_scripts/pull_all_submodules.sh
+│     Purpose: Pull main repo + all submodules
+│     When: After other developers push changes, starting work session
+│
+├─ 📤 DEPLOY CODE CHANGES?
+│  ├─ To staging (public directory)?
+│  │  └─ Run: ./shell_scripts/sync_to_public.sh --step1
+│  │     Purpose: Sync src/ to public/ for testing
+│  │     When: Testing deployment before production
+│  │
+│  ├─ To production (nginx server)?
+│  │  ├─ Full two-step deployment?
+│  │  │  └─ Run: ./shell_scripts/sync_to_public.sh --both-steps
+│  │  │     Purpose: Complete staging + production deployment
+│  │  │     When: Ready to go live with changes
+│  │  │
+│  │  └─ Production only (after step1)?
+│  │     └─ Run: sudo ./shell_scripts/deploy_to_webserver.sh
+│  │        Purpose: Deploy public/ to /var/www/html
+│  │        When: Public directory already prepared
+│  │
+│  └─ Push submodule changes to remote?
+│     └─ Run: ./shell_scripts/push_all_submodules.sh --handle-stash
+│        Purpose: Push all submodules hierarchically
+│        When: Changes made to submodule content
+│
+├─ 🧪 RUN TESTS & UPDATE DOCS?
+│  └─ Run: ./shell_scripts/execute_tests_docs_workflow.sh
+│     Purpose: 13-step AI-powered test & documentation workflow
+│     When: After significant changes, before commits
+│     Modes: --interactive (default), --auto (CI/CD), --dry-run (preview)
+│
+├─ 🔗 VALIDATE SECURITY?
+│  └─ Run: ./shell_scripts/validate_external_links.sh
+│     Purpose: Check external links for security attributes
+│     When: After adding/modifying external links
+│     Fix: Auto-fix with --fix flag
+│
+└─ 🤖 IMPROVE AI PROMPTS?
+   ├─ Just enhance prompt?
+   │  └─ Run: ./shell_scripts/enhance_prompt.sh "your prompt"
+   │     Purpose: Get enhanced version of prompt
+   │     When: Want better AI responses, learning prompt engineering
+   │
+   └─ Enhance and execute with Copilot?
+      └─ Run: ./shell_scripts/copilot_with_enhanced_prompt.sh "your prompt"
+         Purpose: Auto-enhance and run with GitHub Copilot
+         When: Want better Copilot results automatically
+```
+
+**Quick Command Reference**:
+| Task | Command | Frequency |
+|------|---------|-----------|
+| Start work session | `./shell_scripts/pull_all_submodules.sh` | Daily |
+| Test deployment | `./shell_scripts/sync_to_public.sh --step1 --dry-run` | Before production |
+| Deploy to production | `./shell_scripts/sync_to_public.sh --both-steps` | Weekly/as needed |
+| Run tests & docs | `./shell_scripts/execute_tests_docs_workflow.sh` | Before major commits |
+| Validate links | `./shell_scripts/validate_external_links.sh --fix` | After link changes |
+| Better AI prompts | `./shell_scripts/copilot_with_enhanced_prompt.sh "task"` | As needed |
+
+---
+
+## 📊 Workflow Diagram
+
+**Visual overview of script relationships, dependencies, and typical workflows:**
+
+```mermaid
+graph TD
+    subgraph "Development Workflow"
+        A[👨‍💻 Start Work Session] --> B[pull_all_submodules.sh]
+        B --> C[Make Code Changes]
+        C --> D{What Changed?}
+        
+        D -->|External Links| E[validate_external_links.sh --fix]
+        D -->|Code/Tests| F[execute_tests_docs_workflow.sh]
+        D -->|Submodule Content| G[push_all_submodules.sh]
+        
+        E --> H[Git Commit]
+        F --> H
+        G --> H
+    end
+    
+    subgraph "Deployment Workflow"
+        H --> I{Deploy Where?}
+        
+        I -->|Test First| J[sync_to_public.sh --step1 --dry-run]
+        J --> K[Review Changes]
+        K --> L{Approve?}
+        
+        L -->|Yes| M[sync_to_public.sh --both-steps]
+        L -->|No| C
+        
+        I -->|Quick Production| N[sync_to_public.sh --both-steps]
+        I -->|Already Staged| O[deploy_to_webserver.sh]
+        
+        M --> P[✅ Live on Production]
+        N --> P
+        O --> P
+    end
+    
+    subgraph "AI-Assisted Development"
+        Q[Need AI Help?] --> R{Just Enhance or Execute?}
+        
+        R -->|Just Enhance| S[enhance_prompt.sh]
+        R -->|Enhance & Execute| T[copilot_with_enhanced_prompt.sh]
+        
+        S --> U[Copy Enhanced Prompt]
+        T --> V[Auto-Execute with Copilot]
+        
+        U --> C
+        V --> C
+    end
+    
+    subgraph "Script Dependencies"
+        T2[copilot_with_enhanced_prompt.sh] -.depends on.-> S2[enhance_prompt.sh]
+        D2[deploy_to_webserver.sh] -.uses.-> SY[sync_to_public.sh step1]
+        E2[execute_tests_docs_workflow.sh] -.can call.-> S2
+        E2 -.can call.-> T2
+    end
+    
+    style B fill:#90EE90
+    style E fill:#FFD700
+    style F fill:#87CEEB
+    style M fill:#FF6B6B
+    style N fill:#FF6B6B
+    style O fill:#FF6B6B
+    style P fill:#98FB98
+    style T fill:#DDA0DD
+    style S fill:#DDA0DD
+```
+
+**Workflow Categories**:
+
+1. **🔄 Development Workflow** (Green): Daily development cycle
+   - Pull updates → Make changes → Validate → Test → Commit
+
+2. **🚀 Deployment Workflow** (Red/Pink): Production deployment paths
+   - Test deployment → Review → Full deployment → Live
+   - Or: Quick production (trusted changes)
+   - Or: Legacy deployment (pre-staged files)
+
+3. **🤖 AI-Assisted Development** (Purple): AI tooling integration
+   - Prompt enhancement for better AI responses
+   - Direct Copilot execution with auto-enhancement
+
+4. **🔗 Script Dependencies** (Dotted lines): Inter-script relationships
+   - `copilot_with_enhanced_prompt.sh` depends on `enhance_prompt.sh`
+   - `deploy_to_webserver.sh` uses output from `sync_to_public.sh --step1`
+   - `execute_tests_docs_workflow.sh` can invoke AI prompt scripts
+
+**Key Decision Points**:
+- 🔶 **What Changed?** → Determines which validation/testing to run
+- 🔶 **Deploy Where?** → Chooses deployment path (test/production/legacy)
+- 🔶 **Approve?** → Manual review gate before production
+- 🔶 **Just Enhance or Execute?** → AI workflow selection
+
+**ASCII Art Version** (for terminals without Mermaid support):
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                     DEVELOPMENT WORKFLOW                            │
+└─────────────────────────────────────────────────────────────────────┘
+
+    START SESSION
+         │
+         ▼
+    pull_all_submodules.sh ──────► Update main repo + submodules
+         │
+         ▼
+    Make Changes
+         │
+         ▼
+    ┌────────────────┐
+    │  What Changed? │
+    └────────┬───────┘
+         ┌───┴───┬──────────┬──────────┐
+         ▼       ▼          ▼          ▼
+    External  Code/   Submodule   Nothing
+     Links   Tests    Content
+         │       │          │
+         ▼       ▼          ▼
+validate_  execute_  push_all_
+external_  tests_    submodules.sh
+links.sh   docs_
+           workflow.sh
+         │       │          │
+         └───┬───┴──────────┘
+             ▼
+        Git Commit
+             │
+             ▼
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                     DEPLOYMENT WORKFLOW                             │
+└─────────────────────────────────────────────────────────────────────┘
+
+    Git Commit
+         │
+         ▼
+    ┌─────────────┐
+    │Deploy Where?│
+    └──────┬──────┘
+         ┌─┴──────┬────────────┬──────────────┐
+         ▼        ▼            ▼              ▼
+    Test First  Quick    Already Staged   Skip Deploy
+         │     Production      │
+         ▼        │            ▼
+    sync_to_     │     deploy_to_webserver.sh
+    public.sh    │            │
+    --step1      │            │
+    --dry-run    │            │
+         │       │            │
+         ▼       │            │
+    Review       │            │
+    Changes      │            │
+         │       │            │
+         ▼       ▼            ▼
+    ┌─────────┐  │            │
+    │Approve? │  │            │
+    └────┬────┘  │            │
+         │       │            │
+    ┌────┴────┐  │            │
+    ▼         ▼  ▼            ▼
+   Yes       No  sync_to_     │
+    │         │  public.sh    │
+    │         │  --both-steps │
+    │         │       │       │
+    │         └───────┼───────┘
+    │                 │
+    ▼                 ▼
+sync_to_         ┌────────────────┐
+public.sh        │ ✅ PRODUCTION │
+--both-steps     └────────────────┘
+    │
+    └─────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                  AI-ASSISTED DEVELOPMENT                            │
+└─────────────────────────────────────────────────────────────────────┘
+
+    Need AI Help?
+         │
+         ▼
+    ┌──────────────────────────┐
+    │Just Enhance or Execute?  │
+    └────────┬─────────────────┘
+         ┌───┴───┐
+         ▼       ▼
+    Just       Enhance
+   Enhance   & Execute
+         │       │
+         ▼       ▼
+  enhance_  copilot_with_
+  prompt.sh enhanced_prompt.sh
+         │       │
+         ▼       ▼
+    Copy     Auto-Execute
+   Enhanced   with Copilot
+    Prompt       │
+         │       │
+         └───┬───┘
+             ▼
+      Back to Changes
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                   SCRIPT DEPENDENCIES                               │
+└─────────────────────────────────────────────────────────────────────┘
+
+copilot_with_enhanced_prompt.sh ───depends on──► enhance_prompt.sh
+deploy_to_webserver.sh ─────────uses output──► sync_to_public.sh (step1)
+execute_tests_docs_workflow.sh ──can invoke──► enhance_prompt.sh
+                                ──can invoke──► copilot_with_enhanced_prompt.sh
+```
+
+---
+
+## 🚀 First-Time Setup
+
+**Important**: Before running any scripts, ensure they have executable permissions:
+
+```bash
+# Make all scripts executable (run once from project root)
+chmod +x shell_scripts/*.sh
+
+# Or make individual scripts executable
+chmod +x shell_scripts/pull_all_submodules.sh
+chmod +x shell_scripts/push_all_submodules.sh
+chmod +x shell_scripts/sync_to_public.sh
+chmod +x shell_scripts/deploy_to_webserver.sh
+chmod +x shell_scripts/execute_tests_docs_workflow.sh
+chmod +x shell_scripts/validate_external_links.sh
+chmod +x shell_scripts/enhance_prompt.sh
+chmod +x shell_scripts/copilot_with_enhanced_prompt.sh
+```
+
+**Verify permissions**:
+```bash
+# Check if scripts are executable (look for 'x' in permissions)
+ls -l shell_scripts/*.sh
+```
+
+**Expected output**: `-rwxr-xr-x` (the 'x' indicates executable)
+
+**Troubleshooting**:
+- If you get `Permission denied` error, run the chmod commands above
+- If scripts still don't run, check your shell with `echo $SHELL`
+- Ensure you're running bash scripts with bash: `bash shell_scripts/script_name.sh`
+
+**Current Script Status** (all scripts should be executable):
+
+| Script | Purpose | Executable Required |
+|--------|---------|---------------------|
+| `pull_all_submodules.sh` | Pull main repo + submodules | ✅ Yes |
+| `push_all_submodules.sh` | Push changes to submodules | ✅ Yes |
+| `sync_to_public.sh` | Two-step deployment | ✅ Yes |
+| `deploy_to_webserver.sh` | Legacy nginx deployment | ✅ Yes (requires sudo) |
+| `execute_tests_docs_workflow.sh` | AI-powered test & docs | ✅ Yes |
+| `validate_external_links.sh` | Link security validation | ✅ Yes |
+| `enhance_prompt.sh` | AI prompt enhancement | ✅ Yes |
+| `copilot_with_enhanced_prompt.sh` | Enhanced Copilot execution | ✅ Yes |
+
+---
+
 ## Available Scripts
 
 ### 🔄 `pull_all_submodules.sh`
@@ -62,11 +393,19 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 ### 📁 `sync_to_public.sh` (Two-Step Deployment Architecture v2.0.0)
 **Purpose**: Two-step deployment process for MP Barbosa site with parametrized step control
 
+**Recent Changes (v2.0.0)**:
+- ✅ **Complete architectural transformation**: Single-step → Two-step deployment
+- ✅ **Parametrized step control**: Execute step1, step2, or both independently
+- ✅ **Production directory configuration**: `--production-dir` parameter support
+- ✅ **Enhanced summary reporting**: Separate summaries for each deployment step
+- ✅ **Comprehensive test coverage**: 849 lines of Jest tests (53 tests, 52/53 passing)
+- ✅ **Improved help documentation**: Step-specific examples and options
+
 **Features**:
 - ✅ **Step 1**: Copy resources from /src to /public folder for staging
 - ✅ **Step 2**: Copy resources from /public to production web server directory
 - ✅ Parametrized execution (step1, step2, or both-steps)
-- ✅ Production directory configuration support
+- ✅ Production directory configuration support (default: `/var/www/html`)
 - ✅ Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - ✅ Music in Numbers submodule support with complete module architecture
 - ✅ Enhanced backup system for both public and production deployments
@@ -95,10 +434,15 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 
 **Step 2 (Public → Production)**:
 1. Production environment validation and permission checks
-2. Production backup creation with 7-day retention
+2. Production backup creation with 7-day retention  
 3. Efficient file synchronization using rsync/cp
 4. Production deployment validation
-5. Web server ready file structure
+5. Web server ready file structure (755/644 permissions)
+
+**Production Directory Options**:
+- Default: `/var/www/html`
+- Custom: `--production-dir /path/to/webroot`
+- Configurable for different deployment scenarios
 
 **Key Architecture Benefits**:
 - **Flexible Deployment**: Independent or combined step execution
@@ -109,13 +453,23 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 
 ---
 
-### 🌐 `deploy_to_webserver.sh`
+### 🌐 `deploy_to_webserver.sh` (Legacy Deployment v2.0.0)
 **Purpose**: Deploys the website to nginx web server directory for production hosting
 
+**⚠️ Architecture Note**: This script now uses the `/public` directory as its source (prepared by `sync_to_public.sh`). For modern deployments, use the two-step `sync_to_public.sh` workflow instead.
+
+**Recent Changes (v2.0.0)**:
+- ✅ **Source changed**: Now deploys from `PROJECT_ROOT/public` instead of `PROJECT_ROOT`
+- ✅ **Dependency requirement**: Requires `sync_to_public.sh --step1` to be run first
+- ✅ **Git validation**: Checks project root for git repository (not source directory)
+- ✅ **Path updates**: All validation paths updated for new public directory structure
+- ✅ **Comprehensive test coverage**: 849 lines of Jest tests (53 tests, 52/53 passing)
+- ✅ **Help documentation**: Updated workflow and requirement sections
+
 **Features**:
-- ✅ Recursive file copying with rsync (including submodules)
-- ✅ Automatic backup of existing deployment
-- ✅ Git submodule handling and validation
+- ✅ Deploys from pre-staged `/public` directory
+- ✅ Automatic backup of existing production deployment
+- ✅ Git submodule validation (checks project root)
 - ✅ Web server permission setting (www-data)
 - ✅ nginx configuration validation
 - ✅ Comprehensive deployment validation
@@ -123,19 +477,174 @@ This directory contains shell automation scripts for managing the MP Barbosa per
 
 **Usage**:
 ```bash
-sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recommended)
+# First, prepare files in public directory
+./shell_scripts/sync_to_public.sh --step1
+
+# Then deploy to production (requires sudo)
+sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 ./shell_scripts/deploy_to_webserver.sh --dry-run       # Preview deployment
 ./shell_scripts/deploy_to_webserver.sh --no-backup     # Deploy without backup
 ./shell_scripts/deploy_to_webserver.sh --help          # Show help
 ```
 
 **Deployment Process**:
-1. Validate environment and git submodules
-2. Create backup of existing deployment
-3. Copy files to /var/www/mpbarbosa.com (excluding .git and shell_scripts)
-4. Set proper web server permissions (www-data:www-data)
-5. Validate deployment structure
-6. Check nginx configuration
+1. Validate environment and git submodules (checks `PROJECT_ROOT`, not source)
+2. **Verify `/public` directory exists** (fails if missing - run `sync_to_public.sh --step1` first)
+3. Create backup of existing deployment to `/var/www/backups/mpbarbosa.com`
+4. Copy all files from `/public` to `/var/www/mpbarbosa.com` using rsync
+5. Set proper web server permissions (www-data:www-data, 755/644)
+6. Validate deployment structure (checks `index.html`, `assets/css/main.css`, `assets/js/main.js`)
+7. Check nginx configuration
+
+**Modern Alternative**: Use `sync_to_public.sh --both-steps` for the complete two-step deployment workflow with production directory configuration support.
+
+---
+
+### 📋 `execute_tests_docs_workflow.sh` (v1.5.0)
+**Purpose**: AI-powered automation for complete tests and documentation update workflow
+
+**Features**:
+- ✅ **13-step comprehensive workflow** from analysis to git finalization
+- ✅ **AI-powered analysis** using GitHub Copilot CLI with 11 specialized personas
+- ✅ **Two-phase validation architecture**: Automated detection + AI-powered deep analysis
+- ✅ **Conventional commit generation**: AI-assisted commit message creation with git context
+- ✅ **Smart triggering modes**: Auto, Interactive, and Dry-run
+- ✅ **Progress tracking**: Workflow state management with completion status
+- ✅ **Comprehensive validation**: Documentation consistency, test coverage, dependencies
+- ✅ **Temporary file cleanup**: Automatic cleanup with trap handlers
+- ✅ **Colored output**: Professional progress indicators and status messages
+
+**Usage**:
+```bash
+# Full automated workflow (interactive mode, default)
+./shell_scripts/execute_tests_docs_workflow.sh
+
+# Preview without executing
+./shell_scripts/execute_tests_docs_workflow.sh --dry-run
+
+# Automatic mode (CI/CD compatible, no prompts)
+./shell_scripts/execute_tests_docs_workflow.sh --auto
+
+# Combined for safe testing
+./shell_scripts/execute_tests_docs_workflow.sh --dry-run --auto
+
+# Show help and options
+./shell_scripts/execute_tests_docs_workflow.sh --help
+```
+
+**Workflow Steps**:
+1. **Step 0**: Pre-Analysis - Git status, commits, change scope definition
+2. **Step 1**: Update Documentation - AI-powered documentation specialist analysis
+3. **Step 2**: Check Consistency - AI-powered cross-reference and version validation
+4. **Step 3**: Validate Script References - AI-powered DevOps documentation expert
+5. **Step 4**: Validate Directory Structure - AI-powered software architect review
+6. **Step 5**: Review Existing Tests - AI-powered QA engineer analysis
+7. **Step 6**: Generate New Tests - AI-powered TDD expert test generation
+8. **Step 7**: Execute Test Suite - AI-powered CI/CD specialist execution & analysis
+9. **Step 8**: Validate Dependencies - AI-powered package management specialist
+10. **Step 9**: Code Quality Validation - AI-powered software quality engineer
+11. **Step 10**: Context Analysis - AI-powered technical project manager summary
+12. **Step 11**: Git Finalization - AI-powered conventional commit message generation
+
+**AI-Enhanced Features**:
+- **11 Specialized AI Personas**: Each step uses domain-expert personas (Git Workflow Specialist, DevOps Engineer, QA Automation Engineer, etc.)
+- **Modern Copilot CLI Integration**: Uses `copilot -p` for interactive persona-based analysis
+- **Conventional Commits**: Step 11 generates professional commit messages following conventional commit standards
+- **Graceful Fallbacks**: Works without Copilot CLI installed (automated validation continues)
+- **Context-Rich Prompts**: AI receives comprehensive repository state, diff analysis, and categorized changes
+
+**Best Practices Applied** (v1.5.0):
+- ✓ Interactive `copilot -p` workflow with copy-paste for AI output
+- ✓ Auto-mode skip for interactive AI features (CI/CD compatibility)
+- ✓ Temporary file management with automatic cleanup
+- ✓ Comprehensive git context analysis for commit messages
+- ✓ Two-phase architecture: Automated + AI-powered validation
+
+**Related Documentation**:
+- Development Plan: `/docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md`
+- Completion Report: `/docs/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md`
+- Step 11 Enhancement: `/docs/STEP11_GIT_FINALIZATION_ENHANCEMENT.md`
+- Workflow Specification: `/prompts/tests_documentation_update_enhanced.txt`
+
+**Workflow Output Directories**:
+
+The workflow automation script generates three types of outputs in dedicated directories:
+
+#### 📊 `/logs/` - Raw Execution Logs (v1.5.0)
+**Purpose**: Complete execution traces and AI session logs
+
+**Contents**:
+- `workflow_YYYYMMDD_HHMMSS/` - Individual workflow run logs
+  - `step{N}_copilot_*.log` - GitHub Copilot CLI interaction logs for AI-enhanced steps
+  - `workflow_execution.log` - Main script execution trace (optional)
+
+**Use Cases**:
+- Debugging workflow script behavior
+- Auditing AI-powered analysis sessions
+- Troubleshooting GitHub Copilot CLI integration
+- Performance monitoring and optimization
+
+**Retention**: 30 days (raw debugging data, high volume)
+
+**Documentation**: `/logs/README.md`
+
+#### 📋 `/backlog/` - Detailed Issue Reports (v1.3.0)
+**Purpose**: Comprehensive technical findings and validation output
+
+**Contents**:
+- `workflow_YYYYMMDD_HHMMSS/` - Individual workflow run reports
+  - `WORKFLOW_SUMMARY.md` - Overview of entire run
+  - `step{N}_{description}.md` - Detailed findings with raw output per step
+
+**Use Cases**:
+- Detailed troubleshooting and debugging
+- Finding specific file/line references for issues
+- Understanding validation tool output
+- Tracking issue resolution progress
+
+**Retention**: 90 days (detailed history for recurring problems)
+
+**Documentation**: `/backlog/README.md`
+
+#### 📝 `/summaries/` - High-Level Conclusions (v1.4.0)
+**Purpose**: Quick-reference status summaries for rapid review
+
+**Contents**:
+- `workflow_YYYYMMDD_HHMMSS/` - Individual workflow run summaries
+  - `step{N}_{description}_summary.md` - Concise 2-3 sentence conclusions with status (✅/⚠️/❌)
+
+**Use Cases**:
+- Quick status checks for team updates
+- Daily standup reports
+- Code review preparation
+- CI/CD pipeline status parsing
+
+**Retention**: Indefinite (lightweight, high value for trend analysis)
+
+**Documentation**: `/summaries/README.md`
+
+#### Output Directory Comparison
+
+| Directory | Version | Purpose | Audience | Length | Retention |
+|-----------|---------|---------|----------|--------|-----------|
+| **logs/** | v1.5.0 | Raw traces & AI sessions | Developers (debug) | Full logs | 30 days |
+| **backlog/** | v1.3.0 | Detailed reports | Developers (fixing) | Full reports | 90 days |
+| **summaries/** | v1.4.0 | Quick conclusions | Managers (overview) | 2-3 sentences | Indefinite |
+
+#### Version Evolution Timeline
+
+- **v1.2.0** (Nov 4, 2025): Initial AI-powered workflow automation
+- **v1.3.0** (Nov 5, 2025): Added `/backlog/` for issue tracking
+- **v1.4.0** (Nov 6, 2025): Added `/summaries/` for quick-reference conclusions
+- **v1.5.0** (Nov 9, 2025): Added `/logs/` for execution traces + performance optimization
+
+#### Quick Reference: Which Directory to Use?
+
+**For Quick Status**: → `/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)  
+**For Debugging**: → `/logs/` (raw execution traces, AI session logs)  
+**For Fixing Issues**: → `/backlog/` (detailed findings, file references, raw tool output)  
+**For Team Updates**: → `/summaries/` (lightweight, easy to share)  
+**For Trend Analysis**: → `/summaries/` (kept indefinitely, compare across runs)
 
 ---
 
@@ -144,28 +653,129 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recom
 
 **Features**:
 - ✅ Scans all HTML files across main site and submodules
-- ✅ Identifies external links (http/https URLs)
+- ✅ Identifies external links (http/https URLs in `<a>` tags)
 - ✅ Validates `target="_blank"` attribute presence
 - ✅ Validates `rel="noopener noreferrer"` security attributes
 - ✅ Colored output showing compliant and non-compliant links
-- ✅ Comprehensive validation summary
+- ✅ Line-by-line reporting with exact file locations
+- ✅ Comprehensive validation summary with issue count
+- ✅ Exit code 0 for success, 1 for failures (CI/CD compatible)
 
 **Usage**:
 ```bash
-./shell_scripts/validate_external_links.sh      # Validate all external links
+# Standard validation (from project root)
+./shell_scripts/validate_external_links.sh
+
+# Run from any directory
+cd /path/to/mpbarbosa_site && ./shell_scripts/validate_external_links.sh
+
+# Use in CI/CD pipeline
+./shell_scripts/validate_external_links.sh || exit 1
 ```
 
 **Validation Criteria**:
-- All `<a>` tags with external URLs must have `target="_blank"`
-- All external links must include `rel="noopener noreferrer"` for security
-- Excludes `<link>` tags (stylesheets/fonts don't need these attributes)
+- ✅ All `<a>` tags with external URLs (http/https) must have `target="_blank"`
+- ✅ All external links must include `rel="noopener noreferrer"` for security
+- ✅ Excludes `<link>` tags (stylesheets/fonts don't need these attributes)
+- ✅ Checks main site files and all submodule HTML files
 
-**Security Note**: The `rel="noopener noreferrer"` attribute prevents tabnapping attacks and protects user privacy. See `/docs/EXTERNAL_LINKS_POLICY.md` for complete details.
+**Files Scanned**:
+```
+src/index.html              # Main landing page
+src/components/*.html       # Component files
+src/pages/*.html           # Redirect pages
+src/submodules/*/src/*.html # Submodule HTML files
+```
+
+**Output Format**:
+
+**Example - All Compliant**:
+```
+=== External Links Policy Validation ===
+
+Scanning HTML files...
+
+Checking: src/index.html
+  ✅ Line 127: Compliant
+  ✅ Line 134: Compliant
+  ✅ Line 141: Compliant
+
+=== Validation Summary ===
+✅ All external links are compliant!
+```
+
+**Example - Issues Found**:
+```
+=== External Links Policy Validation ===
+
+Scanning HTML files...
+
+Checking: src/pages/example.html
+  ❌ Line 42: Missing target="_blank"
+     <a href="https://example.com">Link</a>
+  ❌ Line 55: Missing rel="noopener noreferrer"
+     <a href="https://example.com" target="_blank">Link</a>
+  ✅ Line 68: Compliant
+
+=== Validation Summary ===
+❌ Found 2 issue(s) that need fixing
+Please review and apply the correct attributes:
+  target="_blank" rel="noopener noreferrer"
+```
+
+**Security Benefits**:
+- **`target="_blank"`**: Opens external links in new tabs, preventing navigation away from your site
+- **`rel="noopener"`**: Prevents the new page from accessing `window.opener` (tabnapping attack prevention)
+- **`rel="noreferrer"`**: Prevents sending the `Referer` header to external sites (privacy protection)
+
+**Common Fixes**:
+
+**Before** (Non-compliant):
+```html
+<a href="https://example.com">External Link</a>
+<a href="https://example.com" target="_blank">Link</a>
+```
+
+**After** (Compliant):
+```html
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">External Link</a>
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">Link</a>
+```
+
+**Integration with Development Workflow**:
+```bash
+# Pre-commit validation
+git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: add new content"
+
+# CI/CD pipeline step
+- name: Validate External Links
+  run: ./shell_scripts/validate_external_links.sh
+```
+
+**Exit Codes**:
+- `0`: All external links are compliant
+- `1`: Issues found that need fixing
+
+**Limitations**:
+- Only checks `<a>` tags (not JavaScript-generated links)
+- Requires links to be in standard HTML format
+- Does not validate link destinations (only attributes)
+- Case-sensitive attribute matching
+
+**Related Documentation**:
+- **External Links Policy**: `/docs/EXTERNAL_LINKS_POLICY.md` - Complete security and UX standards
+- **Comprehensive UX Guide**: `/docs/COMPREHENSIVE_UX_DOCUMENTATION.md` - Accessibility and interaction patterns
+
+**Script Version**: 1.0.0  
+**Last Updated**: November 9, 2025
 
 ---
 
 ### 🤖 `enhance_prompt.sh`
 **Purpose**: Enhances user prompts using GitHub Copilot CLI for improved clarity and technical language
+
+**Script Version**: 1.0.0  
+**Last Updated**: November 9, 2025
 
 **Features**:
 - ✅ Improves English grammar and technical terminology
@@ -176,8 +786,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recom
 
 **Usage**:
 ```bash
-./shell_scripts/enhance_prompt.sh "your prompt here"
-./shell_scripts/enhance_prompt.sh --help    # Show help
+./shell_scripts/enhance_prompt.sh [OPTIONS] "your prompt here"
+./shell_scripts/enhance_prompt.sh --help       # Show help
+./shell_scripts/enhance_prompt.sh --version    # Show version
 ```
 
 **Example**:
@@ -191,6 +802,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recom
 ### 🚀 `copilot_with_enhanced_prompt.sh`
 **Purpose**: Executes GitHub Copilot CLI with automatically enhanced prompts for better results
 
+**Script Version**: 1.0.0  
+**Last Updated**: November 9, 2025
+
 **Features**:
 - ✅ Automatically enhances prompts using `enhance_prompt.sh`
 - ✅ Shows both original and enhanced prompts for transparency
@@ -200,8 +814,33 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment (recom
 
 **Usage**:
 ```bash
-./shell_scripts/copilot_with_enhanced_prompt.sh "your prompt here"
-./shell_scripts/copilot_with_enhanced_prompt.sh --help    # Show help
+./shell_scripts/copilot_with_enhanced_prompt.sh [OPTIONS] "your prompt here"
+```
+
+**Parameters**:
+- `-h, --help` - Show help message and usage examples
+- `--version` - Show script version
+- `-m, --model MODEL` - Specify AI model for both enhancement and execution stages
+- `--enhance-model MODEL` - Specify AI model only for the enhancement step
+- `--exec-model MODEL` - Specify AI model only for the execution step
+- `-s, --save FILE` - Save enhanced prompt to specified file before execution
+- `-v, --verbose` - Show detailed processing information during execution
+- `--show-enhanced` - Display the enhanced prompt before executing with Copilot
+- `--dry-run` - Only enhance the prompt without executing it with Copilot
+
+**Examples**:
+```bash
+# Basic usage
+./shell_scripts/copilot_with_enhanced_prompt.sh "Fix the login"
+
+# Use specific model for both stages
+./shell_scripts/copilot_with_enhanced_prompt.sh -m claude-sonnet-4.5 "Add validation to form"
+
+# Show enhanced prompt before execution
+./shell_scripts/copilot_with_enhanced_prompt.sh --show-enhanced "Optimize database queries"
+
+# Dry-run with save to file
+./shell_scripts/copilot_with_enhanced_prompt.sh --dry-run -s enhanced.txt "Debug authentication"
 ```
 
 **Workflow**:
@@ -391,5 +1030,5 @@ When contributing to these scripts:
 ---
 
 **Author**: MP Barbosa  
-**Last Updated**: October 27, 2025  
+**Last Updated**: November 9, 2025  
 **License**: Private project scripts

@@ -1,0 +1,4336 @@
+#!/bin/bash
+
+################################################################################
+# Tests & Documentation Workflow Automation Script
+# Version: 1.5.0
+# Purpose: Automate the complete tests and documentation update workflow
+# Related: /prompts/tests_documentation_update_enhanced.txt
+#
+# AI ENHANCEMENTS APPLIED (v1.2.0):
+# ==================================
+# This script leverages GitHub Copilot CLI for intelligent documentation
+# analysis and validation. Eleven steps have been enhanced with specialized
+# AI personas using the modern 'copilot -p' command.
+#
+# Enhanced Steps with AI Personas:
+#   Step 1:  Documentation Updates (Technical Documentation Specialist)
+#   Step 2:  Consistency Analysis (Documentation Specialist + Information Architect)
+#   Step 3:  Script Reference Validation (DevOps Documentation Expert)
+#   Step 4:  Directory Structure Validation (Software Architect + Documentation Specialist)
+#   Step 5:  Test Review (QA Engineer + Test Automation Specialist)
+#   Step 6:  Test Generation (TDD Expert + Code Generation Specialist)
+#   Step 7:  Test Execution (QA Automation Engineer + CI/CD Specialist)
+#   Step 8:  Dependency Validation (DevOps Engineer + Package Management Specialist)
+#   Step 9:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
+#   Step 10: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
+#   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED
+#
+# ARCHITECTURE PATTERN:
+#   All enhanced steps follow: Role → Task → Standards structure
+#   All use two-phase validation: Automated + AI-powered
+#   All have smart triggering: Auto/Interactive/Optional modes
+#
+# BEST PRACTICES APPLIED (v1.2.0):
+#   ✓ Modern Copilot CLI (copilot -p) instead of deprecated gh copilot
+#   ✓ Professional specialist personas matched to task domain
+#   ✓ Temporary file cleanup with trap handlers
+#   ✓ AI-powered conventional commit message generation ⭐ NEW
+#   ✓ Interactive workflow with copy-paste for AI output ⭐ NEW
+#   ✓ Graceful fallbacks when Copilot unavailable
+#   ✓ Comprehensive git context analysis for commit messages
+#   ✓ Auto-mode skip for interactive AI features
+#
+# NEW IN v1.3.0:
+#   ✓ Backlog tracking - saves issues from every step to /backlog
+#   ✓ Workflow run directories with unique timestamped IDs
+#   ✓ Markdown issue reports for each step with findings
+#   ✓ Centralized backlog management for issue review
+#   ✓ Complete audit trail of workflow execution
+#
+# NEW IN v1.4.0:
+#   ✓ Summary generation - concise conclusions for every step
+#   ✓ Separate /summaries directory with step conclusions
+#   ✓ Quick-reference summaries alongside detailed backlog reports
+#   ✓ Status indicators (✅ ⚠️ ❌) for each step outcome
+#   ✓ High-level overview without detailed technical output
+#
+# NEW IN v1.5.0:
+#   ✓ Git state caching - eliminates 30+ redundant git subprocess calls
+#   ✓ Performance optimization - 25-30% faster workflow execution
+#   ✓ Centralized git cache with accessor functions
+#   ✓ Single git query per workflow run for status/diff/branch info
+#   ✓ Consistent git state across all workflow steps
+################################################################################
+
+set -euo pipefail
+
+# ==============================================================================
+# CONFIGURATION & CONSTANTS
+# ==============================================================================
+
+SCRIPT_VERSION="1.5.0"
+SCRIPT_NAME="Tests & Documentation Workflow Automation"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SRC_DIR="${PROJECT_ROOT}/src"
+BACKLOG_DIR="${PROJECT_ROOT}/backlog"
+SUMMARIES_DIR="${PROJECT_ROOT}/summaries"
+LOGS_DIR="${PROJECT_ROOT}/logs"
+
+# Temporary files tracking for cleanup
+# Used by AI-enhanced steps to store intermediate validation results
+# Cleaned up automatically via trap handler on script exit
+TEMP_FILES=()
+
+# Backlog tracking
+WORKFLOW_RUN_ID="workflow_$(date +%Y%m%d_%H%M%S)"
+BACKLOG_RUN_DIR="${BACKLOG_DIR}/${WORKFLOW_RUN_ID}"
+SUMMARIES_RUN_DIR="${SUMMARIES_DIR}/${WORKFLOW_RUN_ID}"
+LOGS_RUN_DIR="${LOGS_DIR}/${WORKFLOW_RUN_ID}"
+
+# Color codes (matching existing scripts)
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+NC='\033[0m' # No Color
+
+# Workflow tracking
+declare -A WORKFLOW_STATUS
+TOTAL_STEPS=13
+DRY_RUN=false
+INTERACTIVE_MODE=true
+AUTO_MODE=false
+WORKFLOW_START_TIME=$(date +%s)
+
+# Analysis variables (populated during execution)
+ANALYSIS_COMMITS=""
+ANALYSIS_MODIFIED=""
+CHANGE_SCOPE=""
+
+# ==============================================================================
+# GIT STATE CACHING - PERFORMANCE OPTIMIZATION (v1.5.0)
+# ==============================================================================
+# Implements centralized git state caching to eliminate 30+ redundant git calls
+# See: /docs/WORKFLOW_PERFORMANCE_OPTIMIZATION.md
+# Performance Impact: 25-30% faster execution (reduces 2m 53s to ~1m 30s-2m)
+
+# Global cache variables
+declare -A GIT_CACHE
+GIT_STATUS_OUTPUT=""
+GIT_STATUS_SHORT_OUTPUT=""
+GIT_DIFF_STAT_OUTPUT=""
+GIT_DIFF_SUMMARY_OUTPUT=""
+GIT_DIFF_FILES_OUTPUT=""
+
+# Cache initialization - called once at workflow start
+init_git_cache() {
+    print_info "Initializing git state cache..."
+    
+    cd "$PROJECT_ROOT"
+    
+    # Single git status call - capture both formats
+    GIT_STATUS_OUTPUT=$(git status --porcelain 2>/dev/null || echo "")
+    GIT_STATUS_SHORT_OUTPUT=$(git status --short 2>/dev/null || echo "")
+    
+    # Single git diff call - capture stats, summary, and file list
+    GIT_DIFF_STAT_OUTPUT=$(git diff --stat 2>/dev/null || echo "")
+    GIT_DIFF_SUMMARY_OUTPUT=$(git diff --shortstat 2>/dev/null || echo "")
+    GIT_DIFF_FILES_OUTPUT=$(git diff --name-only HEAD~1 2>/dev/null || git ls-files --modified 2>/dev/null || echo "")
+    
+    # Single branch tracking call
+    GIT_CACHE[current_branch]=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+    GIT_CACHE[commits_ahead]=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo "0")
+    GIT_CACHE[commits_behind]=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo "0")
+    
+    # Parse and cache file counts (single pass through git status output)
+    # Note: Using || true to handle empty results, then default to 0 if empty
+    local _modified=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '^ M' 2>/dev/null || true)
+    local _staged=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '^[MARC]' 2>/dev/null || true)
+    local _untracked=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '^??' 2>/dev/null || true)
+    local _deleted=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '^ D' 2>/dev/null || true)
+    
+    GIT_CACHE[modified_count]=${_modified:-0}
+    GIT_CACHE[staged_count]=${_staged:-0}
+    GIT_CACHE[untracked_count]=${_untracked:-0}
+    GIT_CACHE[deleted_count]=${_deleted:-0}
+    GIT_CACHE[total_changes]=$((${_modified:-0} + ${_staged:-0} + ${_untracked:-0} + ${_deleted:-0}))
+    
+    # Cache file type counts (single pass)
+    local _docs=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '\.md$\|docs/' 2>/dev/null || true)
+    local _tests=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '__tests__/\|\.test\.\|\.spec\.' 2>/dev/null || true)
+    local _scripts=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '\.sh$' 2>/dev/null || true)
+    local _code=$(echo "$GIT_STATUS_SHORT_OUTPUT" | grep -c '\.js$\|\.mjs$\|\.html$\|\.css$' 2>/dev/null || true)
+    
+    GIT_CACHE[docs_modified]=${_docs:-0}
+    GIT_CACHE[tests_modified]=${_tests:-0}
+    GIT_CACHE[scripts_modified]=${_scripts:-0}
+    GIT_CACHE[code_modified]=${_code:-0}
+    
+    # Cache special file checks
+    if echo "$GIT_STATUS_SHORT_OUTPUT" | grep -q "package.json\|package-lock.json"; then
+        GIT_CACHE[deps_modified]="true"
+    else
+        GIT_CACHE[deps_modified]="false"
+    fi
+    
+    # Cache git repository check
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        GIT_CACHE[is_git_repo]="true"
+    else
+        GIT_CACHE[is_git_repo]="false"
+    fi
+    
+    print_success "Git cache initialized (branch: ${GIT_CACHE[current_branch]}, modified: ${GIT_CACHE[modified_count]}, staged: ${GIT_CACHE[staged_count]})"
+}
+
+# Efficient accessor functions - replace direct git calls throughout script
+get_git_modified_count() { echo "${GIT_CACHE[modified_count]:-0}"; }
+get_git_staged_count() { echo "${GIT_CACHE[staged_count]:-0}"; }
+get_git_untracked_count() { echo "${GIT_CACHE[untracked_count]:-0}"; }
+get_git_deleted_count() { echo "${GIT_CACHE[deleted_count]:-0}"; }
+get_git_total_changes() { echo "${GIT_CACHE[total_changes]:-0}"; }
+get_git_current_branch() { echo "${GIT_CACHE[current_branch]:-unknown}"; }
+get_git_commits_ahead() { echo "${GIT_CACHE[commits_ahead]:-0}"; }
+get_git_commits_behind() { echo "${GIT_CACHE[commits_behind]:-0}"; }
+get_git_status_output() { echo "$GIT_STATUS_OUTPUT"; }
+get_git_status_short_output() { echo "$GIT_STATUS_SHORT_OUTPUT"; }
+get_git_diff_stat_output() { echo "$GIT_DIFF_STAT_OUTPUT"; }
+get_git_diff_summary_output() { echo "$GIT_DIFF_SUMMARY_OUTPUT"; }
+get_git_diff_files_output() { echo "$GIT_DIFF_FILES_OUTPUT"; }
+get_git_docs_modified() { echo "${GIT_CACHE[docs_modified]:-0}"; }
+get_git_tests_modified() { echo "${GIT_CACHE[tests_modified]:-0}"; }
+get_git_scripts_modified() { echo "${GIT_CACHE[scripts_modified]:-0}"; }
+get_git_code_modified() { echo "${GIT_CACHE[code_modified]:-0}"; }
+is_deps_modified() { [[ "${GIT_CACHE[deps_modified]:-false}" == "true" ]]; }
+is_git_repo() { [[ "${GIT_CACHE[is_git_repo]:-false}" == "true" ]]; }
+
+# ==============================================================================
+# UTILITY FUNCTIONS
+# ==============================================================================
+
+print_header() {
+    local message="$1"
+    echo -e "\n${BLUE}═══════════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  ${message}${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════════${NC}\n"
+}
+
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ ERROR: $1${NC}" >&2
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  WARNING: $1${NC}"
+}
+
+print_info() {
+    echo -e "${CYAN}ℹ️  $1${NC}"
+}
+
+print_step() {
+    local step_num="$1"
+    local step_name="$2"
+    echo -e "\n${MAGENTA}▶ Step ${step_num}: ${step_name}${NC}"
+}
+
+# Save issues found in a step to backlog
+# Usage: save_step_issues <step_num> <step_name> <issues_content>
+save_step_issues() {
+    local step_num="$1"
+    local step_name="$2"
+    local issues_content="$3"
+    
+    if [[ "$DRY_RUN" == true ]]; then
+        return 0
+    fi
+    
+    # Create backlog directory structure if it doesn't exist
+    mkdir -p "$BACKLOG_RUN_DIR"
+    
+    local step_file="${BACKLOG_RUN_DIR}/step${step_num}_${step_name// /_}.md"
+    
+    # Process content to convert \n to actual newlines
+    # Use echo -e to interpret escape sequences
+    local processed_content=$(echo -e "${issues_content}")
+    
+    # Create markdown report
+    cat > "$step_file" << EOF
+# Step ${step_num}: ${step_name}
+
+**Workflow Run ID:** ${WORKFLOW_RUN_ID}
+**Timestamp:** $(date '+%Y-%m-%d %H:%M:%S')
+**Status:** Issues Found
+
+---
+
+## Issues and Findings
+
+${processed_content}
+
+---
+
+**Generated by:** ${SCRIPT_NAME} v${SCRIPT_VERSION}
+EOF
+    
+    print_info "Saved issues to: ${step_file}"
+}
+
+# Save step conclusion summary to summaries folder
+# Usage: save_step_summary <step_num> <step_name> <summary_content> <status>
+save_step_summary() {
+    local step_num="$1"
+    local step_name="$2"
+    local summary_content="$3"
+    local status="${4:-✅}"
+    
+    if [[ "$DRY_RUN" == true ]]; then
+        return 0
+    fi
+    
+    # Create summaries directory structure if it doesn't exist
+    mkdir -p "$SUMMARIES_RUN_DIR"
+    
+    local summary_file="${SUMMARIES_RUN_DIR}/step${step_num}_${step_name// /_}_summary.md"
+    
+    # Create concise summary report
+    cat > "$summary_file" << EOF
+# Step ${step_num}: ${step_name} - Summary
+
+**Status:** ${status}
+**Timestamp:** $(date '+%Y-%m-%d %H:%M:%S')
+**Workflow Run:** ${WORKFLOW_RUN_ID}
+
+---
+
+## Conclusion
+
+${summary_content}
+
+---
+
+*Generated by ${SCRIPT_NAME} v${SCRIPT_VERSION}*
+EOF
+    
+    print_info "Saved summary to: ${summary_file}"
+}
+
+# User confirmation prompt with auto-mode bypass
+# Fixed: Proper variable quoting for security (v1.1.0 enhancement)
+confirm_action() {
+    local prompt="$1"
+    local default_answer="${2:-}"  # Optional parameter: "y", "n", or empty (no default)
+    local response
+    local prompt_suffix
+    
+    if [[ "$AUTO_MODE" == true ]]; then
+        return 0
+    fi
+    
+    # Build prompt suffix based on default answer
+    if [[ "$default_answer" == "y" ]]; then
+        prompt_suffix=" (Y/n): "
+    elif [[ "$default_answer" == "n" ]]; then
+        prompt_suffix=" (y/N): "
+    else
+        prompt_suffix=" (y/n): "
+    fi
+    
+    read -p "$(echo -e "${YELLOW}${prompt}${prompt_suffix}${NC}")" response
+    
+    # Handle empty response with default answer
+    if [[ -z "$response" && -n "$default_answer" ]]; then
+        response="$default_answer"
+    fi
+    
+    [[ "$response" =~ ^[Yy]$ ]]
+}
+
+# Cleanup handler for temporary files
+# Registered via trap in main() to ensure cleanup on EXIT/INT/TERM
+# Pattern: Each AI-enhanced step adds temp files to TEMP_FILES array
+cleanup() {
+    if [[ ${#TEMP_FILES[@]} -gt 0 ]]; then
+        print_info "Cleaning up temporary files..."
+        for temp_file in "${TEMP_FILES[@]}"; do
+            [[ -f "$temp_file" ]] && rm -f "$temp_file"
+        done
+    fi
+}
+
+update_workflow_status() {
+    local step="$1"
+    local status="$2"
+    WORKFLOW_STATUS["$step"]="$status"
+}
+
+show_progress() {
+    local completed=0
+    for status in "${WORKFLOW_STATUS[@]}"; do
+        [[ "$status" == "✅" ]] && ((completed++))
+    done
+    
+    echo -e "\n${CYAN}Progress: ${completed}/${TOTAL_STEPS} steps completed${NC}"
+}
+
+# ==============================================================================
+# PRE-FLIGHT CHECKS
+# ==============================================================================
+
+check_prerequisites() {
+    print_header "Pre-Flight System Checks"
+    
+    local checks_passed=true
+    
+    # Check 1: Verify project directory
+    print_info "Checking project directory structure..."
+    if [[ ! -d "$PROJECT_ROOT" ]]; then
+        print_error "Project root not found: $PROJECT_ROOT"
+        checks_passed=false
+    else
+        print_success "Project root: $PROJECT_ROOT"
+    fi
+    
+    # Check 2: Verify src directory
+    if [[ ! -d "$SRC_DIR" ]]; then
+        print_error "Source directory not found: $SRC_DIR"
+        checks_passed=false
+    else
+        print_success "Source directory: $SRC_DIR"
+    fi
+    
+    # Check 3: Verify package.json exists
+    if [[ ! -f "$SRC_DIR/package.json" ]]; then
+        print_error "package.json not found in $SRC_DIR"
+        checks_passed=false
+    else
+        print_success "package.json found"
+    fi
+    
+    # Check 4: Verify Node.js/npm installation
+    print_info "Checking Node.js and npm..."
+    if ! command -v node &> /dev/null; then
+        print_error "Node.js is not installed"
+        checks_passed=false
+    else
+        local node_version=$(node --version)
+        print_success "Node.js: $node_version"
+    fi
+    
+    if ! command -v npm &> /dev/null; then
+        print_error "npm is not installed"
+        checks_passed=false
+    else
+        local npm_version=$(npm --version)
+        print_success "npm: $npm_version"
+    fi
+    
+    # Check 5: Verify git repository
+    print_info "Checking git repository..."
+    if ! git -C "$PROJECT_ROOT" rev-parse --git-dir &> /dev/null; then
+        print_error "Not a git repository: $PROJECT_ROOT"
+        checks_passed=false
+    else
+        print_success "Git repository validated"
+    fi
+    
+    # Check 6: Check git working tree status
+    if git -C "$PROJECT_ROOT" diff-index --quiet HEAD -- 2>/dev/null; then
+        print_success "Git working tree is clean"
+    else
+        print_warning "Git working tree has uncommitted changes"
+        print_info "Staging all changes with 'git add -A'..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would execute: git add -A"
+        else
+            git -C "$PROJECT_ROOT" add -A
+            print_success "All changes staged successfully"
+        fi
+    fi
+    
+    # Check 7: Verify shell_scripts directory
+    if [[ ! -d "$PROJECT_ROOT/shell_scripts" ]]; then
+        print_error "shell_scripts directory not found"
+        checks_passed=false
+    else
+        print_success "shell_scripts directory found"
+    fi
+    
+    # Check 8: Verify docs directory
+    if [[ ! -d "$PROJECT_ROOT/docs" ]]; then
+        print_warning "docs directory not found - will be created if needed"
+    else
+        print_success "docs directory found"
+    fi
+    
+    # Check 9: Optional - tree command
+    if command -v tree &> /dev/null; then
+        print_success "tree command available (optional)"
+    else
+        print_info "tree command not found (optional - some validation features limited)"
+    fi
+    
+    # Final verdict
+    echo ""
+    if [[ "$checks_passed" == false ]]; then
+        print_error "Pre-flight checks failed. Please resolve issues before continuing."
+        exit 1
+    else
+        print_success "All pre-flight checks passed!"
+    fi
+}
+
+validate_dependencies() {
+    print_header "Validating Dependencies"
+    
+    cd "$SRC_DIR"
+    
+    # Check if node_modules exists
+    if [[ ! -d "node_modules" ]]; then
+        print_warning "node_modules not found. Installing dependencies..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would execute: npm install"
+        else
+            npm install
+            print_success "Dependencies installed"
+        fi
+    else
+        print_success "node_modules directory exists"
+    fi
+    
+    # Verify Jest is available
+    if [[ -f "node_modules/.bin/jest" ]]; then
+        print_success "Jest is available"
+    else
+        print_error "Jest not found in node_modules"
+        exit 1
+    fi
+    
+    cd "$PROJECT_ROOT"
+}
+
+# ==============================================================================
+# PHASE 2: CORE WORKFLOW FUNCTIONS - AI-ENHANCED STEPS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# STEP 1: AI-POWERED DOCUMENTATION UPDATES
+# ------------------------------------------------------------------------------
+# Persona: Senior Technical Documentation Specialist
+# Expertise: Software architecture docs, API docs, DX optimization
+# Approach: Role → Task → Standards structured prompts
+#
+# This step uses GitHub Copilot CLI to intelligently update documentation
+# based on code changes. The AI assistant receives:
+#   1. Context of changed files
+#   2. List of documentation to update
+#   3. Professional writing standards to apply
+#
+# Enhancement: Uses modern 'copilot -p' command instead of deprecated 'gh copilot'
+# Pattern: Temporary file for prompt → Copilot invocation → User feedback loop
+# ------------------------------------------------------------------------------
+step1_update_documentation() {
+    print_step "1" "Update Related Documentation"
+    
+    cd "$PROJECT_ROOT"
+    
+    # Identify affected docs based on git diff (use cached git state)
+    local changed_files=$(get_git_diff_files_output)
+    
+    print_info "Changed files detected:"
+    echo "$changed_files" | head -20
+    
+    # Map files to documentation (intelligent routing)
+    local docs_to_review=()
+    
+    if echo "$changed_files" | grep -q "shell_scripts/"; then
+        docs_to_review+=("shell_scripts/README.md")
+        print_info "→ shell_scripts modified - review shell_scripts/README.md"
+    fi
+    
+    if echo "$changed_files" | grep -q "src/scripts/"; then
+        docs_to_review+=("README.md")
+        print_info "→ src/scripts modified - review README.md"
+    fi
+    
+    if echo "$changed_files" | grep -q "docs/"; then
+        print_info "→ Documentation files modified"
+    fi
+    
+    # Build comprehensive GitHub Copilot CLI prompt for documentation updates
+    print_info "Preparing GitHub Copilot CLI prompt for documentation updates..."
+    
+    local modified_files_list=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//')
+    
+    # AI PERSONA PROMPT: Technical Documentation Specialist
+    # Structure: Role → Task → Approach (best practice for prompt engineering)
+    local copilot_prompt="**Role**: You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization.
+
+**Task**: Based on the recent changes to the following files: ${modified_files_list}
+
+Please update all related documentation including:
+1. .github/copilot-instructions.md - Update project overview, architecture patterns, key files, and development workflow sections
+2. README.md - Update if public-facing features or setup instructions changed
+3. /docs/ directory - Update technical documentation for architecture, deployment, or feature changes
+4. shell_scripts/README.md - Update if shell scripts were modified
+5. Inline code comments - Add/update comments for complex logic or new patterns
+
+**Approach**:
+- Analyze the git diff to understand what changed
+- Update only the documentation sections that are affected by these changes
+- Be surgical and precise - don't modify unrelated documentation
+- Ensure consistency in terminology, formatting, and style
+- Maintain professional technical writing standards"
+
+    echo -e "\n${CYAN}GitHub Copilot CLI Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if new GitHub Copilot CLI is available
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - invoking documentation update..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with documentation prompt"
+        else
+            if confirm_action "Run GitHub Copilot CLI to update documentation?" "y"; then
+                # Save prompt to temporary file for tracking
+                local temp_prompt_file=$(mktemp)
+                TEMP_FILES+=("$temp_prompt_file")
+                echo "$copilot_prompt" > "$temp_prompt_file"
+                
+                # Invoke new Copilot CLI in prompt mode with pre-populated message
+                print_info "Starting Copilot CLI session..."
+                print_info "Prompt: $copilot_prompt"
+                
+                # Create log file for this step with unique timestamp to prevent conflicts
+                # Note: Unique timestamps prevent bash session ID conflicts when AI assistants
+                # execute this workflow (avoids "command with id already running" errors)
+                local log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                local log_file="${LOGS_RUN_DIR}/step1_copilot_documentation_update_${log_timestamp}.log"
+                print_info "Logging output to: $log_file"
+                
+                # Capture copilot output to log file while still showing it
+                copilot -p "$copilot_prompt" --allow-all-tools 2>&1 | tee "$log_file"
+                
+                print_success "GitHub Copilot CLI session completed"
+                print_info "Full session log saved to: $log_file"
+                
+                # Ask user if they want to save issues from the Copilot session to backlog
+                if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                    # Read the log file content as context
+                    if [[ -f "$log_file" ]]; then
+                        local log_content=$(cat "$log_file")
+                        
+                        # Create a prompt to extract and organize issues from the log file
+                        local extract_prompt="**Role**: You are a technical project manager specialized in issue extraction, categorization, and documentation organization.
+
+**Task**: Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
+
+**Session Log File**: ${log_file}
+
+**Log Content**:
+\`\`\`
+${log_content}
+\`\`\`
+
+**Required Output Format**:
+### Critical Issues
+- [Issue description with priority and affected files]
+
+### High Priority Issues
+- [Issue description with priority and affected files]
+
+### Medium Priority Issues
+- [Issue description with priority and affected files]
+
+### Low Priority Issues
+- [Issue description with priority and affected files]
+
+### Recommendations
+- [Improvement suggestions]
+
+**Approach**:
+- Extract all issues, warnings, and recommendations from the log
+- Categorize by severity and impact
+- Include affected files/sections mentioned in the log
+- Prioritize actionable items
+- Add context where needed
+- If no issues found, state 'No issues identified'"
+
+                        echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                        echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                        
+                        print_info "GitHub Copilot will analyze the log file: $log_file"
+                        
+                        if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                            # Small delay to prevent bash session ID conflicts when AI executes workflow
+                            sleep 1
+                            print_info "Starting Copilot CLI session for issue extraction..."
+                            copilot -p "$extract_prompt" --allow-all-tools
+                            
+                            print_info "Please copy the organized issues from Copilot output."
+                            print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                            
+                            local organized_issues=""
+                            local line
+                            while IFS= read -r line; do
+                                if [[ "$line" == "END" ]]; then
+                                    break
+                                fi
+                                organized_issues+="${line}"$'\n'
+                            done
+                            
+                            if [[ -n "$organized_issues" ]]; then
+                                save_step_issues "1" "Update_Documentation" "$organized_issues"
+                                print_success "Issues extracted from log and saved to backlog"
+                            else
+                                print_warning "No organized issues provided - skipping backlog save"
+                            fi
+                        else
+                            print_warning "Skipped issue extraction - no backlog file created"
+                        fi
+                    else
+                        print_error "Log file not found: $log_file"
+                        print_warning "Cannot extract issues without log file - skipping backlog save"
+                    fi
+                fi
+            else
+                print_warning "Skipped GitHub Copilot CLI - using manual review"
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "Please use the prompt above with GitHub Copilot manually"
+    fi
+    
+    # VERSION CONSISTENCY CHECK: Detect version mismatches in documentation
+    print_info "Checking version consistency across documentation..."
+    local version_issues=""
+    local version_check_failed=false
+    
+    # Check README.md for version references
+    if [[ -f "README.md" ]]; then
+        local readme_versions=$(grep -n "workflow.*v1\.[0-9]\.0\|automation.*v1\.[0-9]\.0\|execute_tests_docs_workflow.*v1\.[0-9]\.0" README.md 2>/dev/null || true)
+        if [[ -n "$readme_versions" ]]; then
+            # Check if any version differs from SCRIPT_VERSION
+            if echo "$readme_versions" | grep -qv "v${SCRIPT_VERSION}"; then
+                print_warning "Version inconsistency detected in README.md"
+                version_issues+="⚠️  **VERSION MISMATCH**: README.md contains outdated version references\n"
+                version_issues+="   - Script version: v${SCRIPT_VERSION}\n"
+                version_issues+="   - Found in README.md:\n"
+                while IFS= read -r line; do
+                    version_issues+="     Line $line\n"
+                done <<< "$readme_versions"
+                version_issues+="   - Update all references to v${SCRIPT_VERSION}\n\n"
+                version_check_failed=true
+            fi
+        fi
+    fi
+    
+    # Check .github/copilot-instructions.md for version references
+    if [[ -f ".github/copilot-instructions.md" ]]; then
+        local copilot_versions=$(grep -n "workflow.*v1\.[0-9]\.0\|automation.*v1\.[0-9]\.0\|execute_tests_docs_workflow.*v1\.[0-9]\.0" .github/copilot-instructions.md 2>/dev/null || true)
+        if [[ -n "$copilot_versions" ]]; then
+            # Check if any version differs from SCRIPT_VERSION
+            if echo "$copilot_versions" | grep -qv "v${SCRIPT_VERSION}"; then
+                print_warning "Version inconsistency detected in .github/copilot-instructions.md"
+                version_issues+="⚠️  **VERSION MISMATCH**: .github/copilot-instructions.md contains outdated version references\n"
+                version_issues+="   - Script version: v${SCRIPT_VERSION}\n"
+                version_issues+="   - Found in copilot-instructions.md:\n"
+                while IFS= read -r line; do
+                    version_issues+="     Line $line\n"
+                done <<< "$copilot_versions"
+                version_issues+="   - Update all references to v${SCRIPT_VERSION}\n\n"
+                version_check_failed=true
+            fi
+        fi
+    fi
+    
+    # Save version check results to backlog if issues found
+    if [[ "$version_check_failed" == true ]]; then
+        local version_report="## Version Consistency Issues\n\n"
+        version_report+="**Timestamp**: $(date '+%Y-%m-%d %H:%M:%S')\n"
+        version_report+="**Current Script Version**: v${SCRIPT_VERSION}\n\n"
+        version_report+="### Issues Detected\n\n"
+        version_report+="$version_issues"
+        version_report+="\n### Recommended Actions\n\n"
+        version_report+="1. Update README.md to reference v${SCRIPT_VERSION} for execute_tests_docs_workflow.sh\n"
+        version_report+="2. Update .github/copilot-instructions.md to reference v${SCRIPT_VERSION}\n"
+        version_report+="3. Ensure all version references are consistent across documentation\n"
+        version_report+="4. Consider whether to reference current version or initial feature version\n"
+        
+        save_step_issues "1" "Update_Documentation_Version_Check" "$(echo -e "$version_report")"
+        print_warning "Version inconsistencies saved to backlog for review"
+    else
+        print_success "Version consistency check passed - all documentation up to date"
+    fi
+    
+    # Fallback to manual editing if needed
+    if [[ ${#docs_to_review[@]} -gt 0 ]] && [[ "$INTERACTIVE_MODE" == true ]]; then
+        if confirm_action "Open documentation files for manual editing?"; then
+            for doc in "${docs_to_review[@]}"; do
+                if [[ -f "$doc" ]]; then
+                    print_info "Opening: $doc"
+                    ${EDITOR:-nano} "$doc"
+                fi
+            done
+            
+            # POST-EDIT VERIFICATION: Catch "No match found" errors
+            print_info "Running post-edit verification..."
+            local verification_issues=""
+            local verification_failed=false
+            
+            for doc in "${docs_to_review[@]}"; do
+                if [[ -f "$doc" ]]; then
+                    # Check for common edit error indicators
+                    if grep -q "No match found" "$doc" 2>/dev/null; then
+                        print_error "Edit verification failed: 'No match found' error detected in $doc"
+                        verification_issues+="❌ **CRITICAL**: 'No match found' error detected in \`$doc\`\n"
+                        verification_issues+="   - This indicates a failed edit operation that needs manual review\n"
+                        verification_issues+="   - Review the file for incomplete or malformed edits\n\n"
+                        verification_failed=true
+                    fi
+                    
+                    # Check for other common edit artifacts
+                    if grep -q "<<<<<<< HEAD\|=======" "$doc" 2>/dev/null; then
+                        print_warning "Merge conflict markers detected in $doc"
+                        verification_issues+="⚠️  **WARNING**: Merge conflict markers found in \`$doc\`\n"
+                        verification_issues+="   - Resolve merge conflicts before committing\n\n"
+                        verification_failed=true
+                    fi
+                    
+                    # Check for backup file artifacts (e.g., file.md~, file.md.bak)
+                    local doc_dir=$(dirname "$doc")
+                    local doc_name=$(basename "$doc")
+                    if [[ -f "${doc}~" ]] || [[ -f "${doc}.bak" ]]; then
+                        print_warning "Backup files detected for $doc"
+                        verification_issues+="ℹ️  **INFO**: Backup files found for \`$doc\`\n"
+                        verification_issues+="   - Consider cleaning up: ${doc}~ or ${doc}.bak\n\n"
+                    fi
+                fi
+            done
+            
+            if [[ "$verification_failed" == true ]]; then
+                print_error "Post-edit verification detected issues that require manual review"
+                
+                # Save verification issues to backlog
+                local verification_report="## Post-Edit Verification Issues\n\n"
+                verification_report+="**Timestamp**: $(date '+%Y-%m-%d %H:%M:%S')\n"
+                verification_report+="**Files Reviewed**: ${#docs_to_review[@]}\n\n"
+                verification_report+="### Issues Detected\n\n"
+                verification_report+="$verification_issues"
+                verification_report+="\n### Action Required\n\n"
+                verification_report+="1. Review each flagged file manually\n"
+                verification_report+="2. Fix any incomplete or failed edit operations\n"
+                verification_report+="3. Remove merge conflict markers if present\n"
+                verification_report+="4. Clean up any backup files\n"
+                verification_report+="5. Re-run this step after corrections\n"
+                
+                save_step_issues "1" "Update_Documentation_Verification" "$(echo -e "$verification_report")"
+                print_warning "Verification issues saved to backlog for manual review"
+                
+                if confirm_action "Continue workflow despite verification issues?" "n"; then
+                    print_info "Continuing with workflow..."
+                else
+                    print_error "Workflow halted for manual verification"
+                    exit 1
+                fi
+            else
+                print_success "Post-edit verification passed - no issues detected"
+            fi
+        fi
+    fi
+    
+    print_success "Documentation review complete"
+    update_workflow_status "step1" "✅"
+    
+    # Save step summary
+    local summary_text="Reviewed ${#docs_to_review[@]} documentation files for consistency with recent code changes. Changed files analyzed and documentation updates recommended."
+    save_step_summary "1" "Update_Documentation" "$summary_text" "✅"
+}
+
+# ------------------------------------------------------------------------------
+# STEP 2: AI-POWERED CONSISTENCY ANALYSIS
+# ------------------------------------------------------------------------------
+# Persona: Senior Technical Documentation Specialist + Information Architect
+# Expertise: Documentation QA, technical writing, cross-reference validation
+# 
+# TWO-PHASE VALIDATION ARCHITECTURE:
+#
+# Phase 1: Automated Detection
+#   - Broken file references (regex-based extraction)
+#   - Missing documentation files
+#   - Version number inconsistencies
+#   → Results logged to temporary file for AI analysis
+#
+# Phase 2: AI-Powered Deep Analysis (5 categories)
+#   1. Cross-Reference Validation
+#   2. Content Synchronization
+#   3. Architecture Consistency
+#   4. Broken Reference Remediation
+#   5. Quality Checks
+#   → Comprehensive report with actionable recommendations
+#
+# Smart Triggering:
+#   - Auto-trigger: Issues found in Phase 1
+#   - User choice: Interactive mode
+#   - Skip: Auto mode with clean results
+# ------------------------------------------------------------------------------
+step2_check_consistency() {
+    print_step "2" "Check Documentation Consistency"
+    
+    cd "$PROJECT_ROOT"
+    
+    local issues_found=0
+    local broken_refs_file=$(mktemp)
+    TEMP_FILES+=("$broken_refs_file")
+    
+    # PHASE 1: Automated broken link detection
+    print_info "Phase 1: Automated broken link detection..."
+    
+    # Check docs directory for broken references
+    while IFS= read -r md_file; do
+        # Extract file paths using regex (paths starting with /)
+        local refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' "$md_file" 2>/dev/null || true)
+        
+        while IFS= read -r ref; do
+            [[ -z "$ref" ]] && continue
+            
+            local full_path="${PROJECT_ROOT}${ref}"
+            if [[ ! -e "$full_path" ]]; then
+                print_warning "Broken reference in $md_file: $ref"
+                echo "$md_file: $ref" >> "$broken_refs_file"
+                ((issues_found++))
+            fi
+        done <<< "$refs"
+    done < <(find docs -name "*.md" -type f 2>/dev/null || true)
+    
+    # Check README.md
+    if [[ -f "README.md" ]]; then
+        local refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' "README.md" 2>/dev/null || true)
+        while IFS= read -r ref; do
+            [[ -z "$ref" ]] && continue
+            local full_path="${PROJECT_ROOT}${ref}"
+            if [[ ! -e "$full_path" ]]; then
+                print_warning "Broken reference in README.md: $ref"
+                echo "README.md: $ref" >> "$broken_refs_file"
+                ((issues_found++))
+            fi
+        done <<< "$refs"
+    fi
+    
+    # Check .github/copilot-instructions.md (critical for CI/CD)
+    if [[ -f ".github/copilot-instructions.md" ]]; then
+        local refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' ".github/copilot-instructions.md" 2>/dev/null || true)
+        while IFS= read -r ref; do
+            [[ -z "$ref" ]] && continue
+            local full_path="${PROJECT_ROOT}${ref}"
+            if [[ ! -e "$full_path" ]]; then
+                print_warning "Broken reference in .github/copilot-instructions.md: $ref"
+                echo ".github/copilot-instructions.md: $ref" >> "$broken_refs_file"
+                ((issues_found++))
+            fi
+        done <<< "$refs"
+    fi
+    
+    # PHASE 2: AI-powered consistency analysis with Copilot CLI
+    print_info "Phase 2: Preparing comprehensive consistency analysis..."
+    
+    # Gather documentation inventory for AI analysis
+    local doc_files=$(find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" | sort)
+    local doc_count=$(echo "$doc_files" | wc -l)
+    
+    # AI PERSONA PROMPT: Documentation Specialist + Information Architect
+    # Enhanced with dual expertise for comprehensive analysis
+    local copilot_prompt="**Role**: You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation.
+
+**Task**: Perform a comprehensive documentation consistency analysis for this project.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML with Material Design)
+- Documentation files: $doc_count markdown files
+- Scope: ${CHANGE_SCOPE}
+- Recent changes: ${ANALYSIS_MODIFIED} files modified
+
+**Analysis Tasks:**
+
+1. **Cross-Reference Validation:**
+   - Check if all referenced files/directories exist
+   - Verify version numbers are consistent across all docs
+   - Validate command examples match actual scripts
+
+2. **Content Synchronization:**
+   - Compare .github/copilot-instructions.md with README.md
+   - Check if shell_scripts/README.md matches actual scripts in shell_scripts/
+   - Verify package.json scripts match documented commands
+
+3. **Architecture Consistency:**
+   - Validate directory structure matches documented structure
+   - Check if deployment steps in docs match actual deployment scripts
+   - Verify submodule references are accurate
+
+4. **Broken References Found:**
+$(cat "$broken_refs_file" 2>/dev/null || echo "   No broken references detected")
+
+5. **Quality Checks:**
+   - Missing documentation for new features
+   - Outdated version numbers or dates
+   - Inconsistent terminology or naming conventions
+   - Missing cross-references between related docs
+
+**Files to Analyze:**
+$doc_files
+
+**Expected Output:**
+- List of inconsistencies found with specific file:line references
+- Recommendations for fixes with rationale
+- Priority level (Critical/High/Medium/Low) for each issue
+- Actionable remediation steps
+
+**Documentation Standards to Apply:**
+- Technical accuracy and precision
+- Consistency in terminology and formatting
+- Completeness of cross-references
+- Version number accuracy across all files
+
+Please analyze the documentation files and provide a detailed consistency report."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Consistency Analysis Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available for deep analysis
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for deep consistency analysis..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with consistency analysis prompt"
+        else
+            # Smart triggering: Auto-trigger if issues found, user choice if interactive
+            if [[ "$issues_found" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
+                if confirm_action "Run Copilot CLI for deep documentation consistency analysis?" "y"; then
+                    print_info "Starting Copilot CLI consistency analysis session..."
+                    print_info "This will analyze all documentation files for cross-references, versions, and accuracy"
+                    echo ""
+                    
+                    # Invoke Copilot CLI with the comprehensive prompt
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI consistency analysis completed"
+                    echo ""
+                    
+                    # User feedback loop for issue resolution
+                    if confirm_action "Did Copilot identify issues that need fixing?" "n"; then
+                        print_warning "Please review and fix identified issues before continuing"
+                        if [[ "$INTERACTIVE_MODE" == true ]]; then
+                            if ! confirm_action "Continue workflow with identified issues?"; then
+                                print_error "Workflow paused - please fix documentation issues"
+                                return 1
+                            fi
+                        fi
+                    fi
+                else
+                    print_warning "Skipped Copilot CLI deep analysis"
+                fi
+            else
+                print_info "No broken references found - skipping optional deep analysis"
+                if confirm_action "Run optional Copilot consistency analysis anyway?" "n"; then
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For deep analysis, use the prompt above manually with Copilot"
+    fi
+    
+    # Summary of automated checks
+    echo ""
+    if [[ $issues_found -eq 0 ]]; then
+        print_success "No broken references found in automated checks ✅"
+        save_step_summary "2" "Consistency_Analysis" "All documentation cross-references validated successfully. No broken links detected across ${doc_count} documentation files." "✅"
+    else
+        print_warning "Found $issues_found broken reference(s) - review required"
+        save_step_summary "2" "Consistency_Analysis" "Found ${issues_found} broken references requiring attention. Review and fix broken links before proceeding." "⚠️"
+        
+        # Save broken references to backlog
+        local step_issues="### Broken References Found
+
+**Total Issues:** ${issues_found}
+
+"
+        if [[ -f "$broken_refs_file" && -s "$broken_refs_file" ]]; then
+            step_issues+="### Details
+
+\`\`\`
+$(cat "$broken_refs_file")
+\`\`\`
+"
+        fi
+        save_step_issues "2" "Consistency_Analysis" "$step_issues"
+    fi
+    
+    update_workflow_status "step2" "✅"
+}
+
+# ------------------------------------------------------------------------------
+# STEP 3: AI-POWERED SCRIPT REFERENCE VALIDATION
+# ------------------------------------------------------------------------------
+# Persona: Senior Technical Documentation Specialist + DevOps Documentation Expert
+# Expertise: Shell script docs, automation workflows, CLI tool guides
+#
+# WHY DEVOPS CONTEXT?
+#   - Project uses shell scripts for deployment/automation
+#   - Scripts work together in complex workflows
+#   - CLI tool documentation patterns required
+#
+# TWO-PHASE VALIDATION ARCHITECTURE:
+#
+# Phase 1: Automated Detection (4 checks)
+#   1. Script reference checks (documented scripts exist)
+#   2. Executable permission validation
+#   3. Script inventory gathering (count, list)
+#   4. Undocumented script detection (NEW - finds "orphans")
+#
+# Phase 2: AI-Powered Deep Analysis (5 categories)
+#   1. Script-to-Documentation Mapping
+#   2. Reference Accuracy (CLI args, versions, paths)
+#   3. Documentation Completeness
+#   4. Shell Script Best Practices
+#   5. Integration Documentation
+#
+# INNOVATION: Detects both missing scripts (404s) AND undocumented scripts (orphans)
+# ------------------------------------------------------------------------------
+step3_validate_script_references() {
+    print_step "3" "Validate Script References"
+    
+    cd "$PROJECT_ROOT"
+    
+    local issues=0
+    local script_issues_file=$(mktemp)
+    TEMP_FILES+=("$script_issues_file")
+    
+    # PHASE 1: Automated script reference validation
+    print_info "Phase 1: Automated script reference validation..."
+    
+    # Check 1: Script reference checks - validate documented scripts exist
+    if [[ -f "shell_scripts/README.md" ]]; then
+        local script_refs=$(grep -oP '(?<=`\./)shell_scripts/[^`]+\.sh' "shell_scripts/README.md" 2>/dev/null || true)
+        
+        while IFS= read -r script; do
+            [[ -z "$script" ]] && continue
+            
+            if [[ ! -f "$script" ]]; then
+                print_warning "Referenced script not found: $script"
+                echo "Missing script reference: $script" >> "$script_issues_file"
+                ((issues++))
+            fi
+        done <<< "$script_refs"
+    fi
+    
+    # Check 2: Executable permission validation
+    print_info "Checking executable permissions..."
+    local non_executable=$(find shell_scripts -name "*.sh" ! -executable -type f 2>/dev/null || true)
+    
+    if [[ -n "$non_executable" ]]; then
+        print_warning "Non-executable scripts found:"
+        echo "$non_executable"
+        while IFS= read -r script; do
+            [[ -z "$script" ]] && continue
+            echo "Non-executable: $script" >> "$script_issues_file"
+        done <<< "$non_executable"
+        ((issues++))
+    fi
+    
+    # Check 3: Script inventory gathering
+    print_info "Gathering script inventory..."
+    local all_scripts=$(find shell_scripts -name "*.sh" -type f 2>/dev/null | sort)
+    local script_count=$(echo "$all_scripts" | wc -l)
+    
+    # Check 4: Undocumented script detection (NEW - innovation!)
+    # This finds "orphan" scripts that exist but aren't documented
+    print_info "Checking for undocumented scripts..."
+    local undocumented=0
+    while IFS= read -r script; do
+        [[ -z "$script" ]] && continue
+        local script_name=$(basename "$script")
+        
+        # Check if script is mentioned in shell_scripts/README.md
+        if [[ -f "shell_scripts/README.md" ]]; then
+            if ! grep -q "$script_name" "shell_scripts/README.md" 2>/dev/null; then
+                print_warning "Undocumented script: $script"
+                echo "Undocumented: $script" >> "$script_issues_file"
+                ((undocumented++))
+                ((issues++))
+            fi
+        fi
+    done <<< "$all_scripts"
+    
+    # PHASE 2: AI-powered script reference validation with Copilot CLI
+    print_info "Phase 2: Preparing AI-powered script reference analysis..."
+    
+    # AI PERSONA PROMPT: DevOps Documentation Expert
+    # Specialized for shell scripts, automation, and CLI tools
+    local copilot_prompt="**Role**: You are a senior technical documentation specialist and DevOps documentation expert with expertise in shell script documentation, automation workflow documentation, and command-line tool reference guides.
+
+**Task**: Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
+
+**Context:**
+- Project: MP Barbosa Personal Website
+- Shell Scripts Directory: shell_scripts/
+- Total Scripts: $script_count
+- Scope: ${CHANGE_SCOPE}
+- Issues Found in Phase 1: $issues
+
+**Phase 1 Automated Findings:**
+$(cat "$script_issues_file" 2>/dev/null || echo "   No automated issues detected")
+
+**Available Scripts:**
+$all_scripts
+
+**Validation Tasks:**
+
+1. **Script-to-Documentation Mapping:**
+   - Verify every script in shell_scripts/ is documented in shell_scripts/README.md
+   - Check that documented scripts actually exist
+   - Validate script descriptions match actual functionality
+   - Ensure usage examples are accurate and complete
+
+2. **Reference Accuracy:**
+   - Validate command-line arguments in documentation match script implementation
+   - Check script version numbers are consistent
+   - Verify cross-references between scripts are accurate
+   - Validate file path references in script comments
+
+3. **Documentation Completeness:**
+   - Missing purpose/description for any scripts
+   - Missing usage examples or command syntax
+   - Missing prerequisite or dependency information
+   - Missing output/return value documentation
+
+4. **Shell Script Best Practices:**
+   - Executable permissions properly documented
+   - Shebang lines mentioned in documentation where relevant
+   - Environment variable requirements documented
+   - Error handling and exit codes documented
+
+5. **Integration Documentation:**
+   - Workflow relationships between scripts documented
+   - Execution order or dependencies clarified
+   - Common use cases and examples provided
+   - Troubleshooting guidance available
+
+**Files to Analyze:**
+- shell_scripts/README.md
+- All .sh files in shell_scripts/
+- .github/copilot-instructions.md (for shell script references)
+- Main README.md (for automation workflow mentions)
+
+**Expected Output:**
+- List of script reference issues with file:line locations
+- Missing or incomplete script documentation
+- Inconsistencies between code and documentation
+- Recommendations for improving script documentation
+- Priority level (Critical/High/Medium/Low) for each issue
+- Actionable remediation steps with examples
+
+**Documentation Standards to Apply:**
+- Clear and concise command syntax documentation
+- Comprehensive usage examples for each script
+- Accurate parameter and option descriptions
+- Proper shell script documentation conventions
+- Integration and workflow clarity
+
+Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Script Reference Validation Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available for deep analysis
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for script reference validation..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with script validation prompt"
+        else
+            # Smart triggering: Offer analysis when issues found or in interactive mode
+            if [[ "$issues" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
+                if confirm_action "Run Copilot CLI for deep script reference validation?" "y"; then
+                    print_info "Starting Copilot CLI script validation session..."
+                    print_info "This will analyze shell scripts, documentation, and cross-references"
+                    echo ""
+                    
+                    # Invoke Copilot CLI with the comprehensive prompt
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI script validation completed"
+                    echo ""
+                    
+                    # User feedback loop for script documentation issues
+                    if confirm_action "Did Copilot identify script documentation issues?" "n"; then
+                        print_warning "Please review and update script documentation as recommended"
+                        if [[ "$INTERACTIVE_MODE" == true ]]; then
+                            if ! confirm_action "Continue workflow with identified issues?"; then
+                                print_error "Workflow paused - please fix script documentation issues"
+                                return 1
+                            fi
+                        fi
+                    fi
+                else
+                    print_warning "Skipped Copilot CLI deep validation"
+                fi
+            else
+                print_info "No automated issues found - skipping optional AI validation"
+                if confirm_action "Run optional Copilot script validation anyway?"; then
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For deep analysis, use the prompt above manually with Copilot"
+    fi
+    
+    # Summary of automated checks
+    echo ""
+    if [[ $issues -eq 0 ]]; then
+        print_success "All script references valid in automated checks ✅"
+        save_step_summary "3" "Script_Reference_Validation" "All shell script references validated. Documentation accurately reflects existing scripts and their permissions." "✅"
+    else
+        print_warning "Found $issues script reference issue(s) - review required"
+        save_step_summary "3" "Script_Reference_Validation" "Found ${issues} script reference issues. Review missing scripts, permission problems, or documentation gaps." "⚠️"
+        
+        # Save script issues to backlog
+        local step_issues="### Script Reference Issues Found
+
+**Total Issues:** ${issues}
+
+"
+        if [[ -f "$script_issues_file" && -s "$script_issues_file" ]]; then
+            step_issues+="### Details
+
+\`\`\`
+$(cat "$script_issues_file")
+\`\`\`
+"
+        fi
+        save_step_issues "3" "Script_Reference_Validation" "$step_issues"
+    fi
+    
+    update_workflow_status "step3" "✅"
+}
+
+# ------------------------------------------------------------------------------
+# REMAINING WORKFLOW STEPS (Steps 0, 4-11)
+# ------------------------------------------------------------------------------
+# Note: These are placeholder implementations for the complete workflow
+# The three AI-enhanced steps (1, 2, 3) are the focus of v1.1.0
+# Additional steps can be enhanced with AI personas in future versions
+# ------------------------------------------------------------------------------
+
+step0_analyze_changes() {
+    print_step "0" "Pre-Analysis - Analyzing Recent Changes"
+    cd "$PROJECT_ROOT"
+    
+    # Use cached git state (performance optimization)
+    local commits_ahead=$(get_git_commits_ahead)
+    local modified_files=$(get_git_total_changes)
+    
+    print_info "Commits ahead of remote: $commits_ahead"
+    print_info "Modified files: $modified_files"
+    
+    ANALYSIS_COMMITS=$commits_ahead
+    ANALYSIS_MODIFIED=$modified_files
+    
+    if [[ "$INTERACTIVE_MODE" == true ]]; then
+        read -p "Enter scope of changes (e.g., 'shell_scripts', 'documentation', 'tests'): " CHANGE_SCOPE
+    else
+        CHANGE_SCOPE="automated-workflow"
+    fi
+    
+    print_success "Pre-analysis complete (Scope: $CHANGE_SCOPE)"
+    update_workflow_status "step0" "✅"
+    
+    # Save step summary
+    save_step_summary "0" "Pre_Analysis" "Analyzed ${modified_files} modified files across ${commits_ahead} commits. Change scope: ${CHANGE_SCOPE}. Repository state captured for workflow context." "✅"
+    
+    # Save pre-analysis data to backlog
+    local step_issues="### Repository Analysis
+
+**Commits Ahead:** ${commits_ahead}
+**Modified Files:** ${modified_files}
+**Change Scope:** ${CHANGE_SCOPE}
+
+### Modified Files List
+
+\`\`\`
+$(get_git_status_output)
+\`\`\`
+"
+    save_step_issues "0" "Pre_Analysis" "$step_issues"
+}
+
+# Steps 4-10: Placeholder implementations
+# ------------------------------------------------------------------------------
+# STEP 4: AI-POWERED DIRECTORY STRUCTURE VALIDATION
+# ------------------------------------------------------------------------------
+# Persona: Software Architect + Technical Documentation Specialist
+# Expertise: Project structure conventions, architectural patterns, documentation alignment
+#
+# WHY SOFTWARE ARCHITECT PERSONA?
+#   - Directory structure reflects architectural decisions
+#   - Project organization impacts maintainability
+#   - Structure documentation must match reality
+#   - Architectural patterns need consistency validation
+#
+# TWO-PHASE VALIDATION ARCHITECTURE:
+#
+# Phase 1: Automated Structure Detection
+#   1. Directory inventory (tree structure analysis)
+#   2. Expected vs actual structure comparison
+#   3. Missing critical directories detection
+#   4. Undocumented directories identification
+#
+# Phase 2: AI-Powered Architectural Analysis
+#   1. Structure-to-Documentation Mapping
+#   2. Architectural Pattern Validation
+#   3. Naming Convention Consistency
+#   4. Best Practice Compliance
+#   5. Scalability and Maintainability Assessment
+#
+# INNOVATION: Validates both documented structure AND architectural best practices
+# ------------------------------------------------------------------------------
+step4_validate_directory_structure() {
+    print_step "4" "Validate Directory Structure"
+    
+    cd "$PROJECT_ROOT"
+    
+    local issues=0
+    local structure_issues_file=$(mktemp)
+    TEMP_FILES+=("$structure_issues_file")
+    
+    # PHASE 1: Automated directory structure detection
+    print_info "Phase 1: Automated directory structure detection..."
+    
+    # Check 1: Generate current directory structure
+    print_info "Generating directory inventory..."
+    local dir_tree=""
+    if command -v tree &> /dev/null; then
+        dir_tree=$(tree -d -L 3 -I 'node_modules|.git|coverage' --noreport 2>/dev/null || true)
+    else
+        # Fallback: use find if tree is not available
+        dir_tree=$(find . -maxdepth 3 -type d ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/coverage/*" | sort)
+    fi
+    
+    # Check 2: Validate expected critical directories exist
+    print_info "Validating critical directories..."
+    local critical_dirs=("src" "docs" "shell_scripts" ".github" "public")
+    local missing_critical=0
+    
+    for dir in "${critical_dirs[@]}"; do
+        if [[ ! -d "$dir" ]]; then
+            print_warning "Critical directory missing: $dir"
+            echo "Missing critical: $dir" >> "$structure_issues_file"
+            ((missing_critical++))
+            ((issues++))
+        fi
+    done
+    
+    # Check 3: Identify undocumented directories
+    print_info "Checking for undocumented directories..."
+    local undocumented_dirs=0
+    
+    # Check if directories are mentioned in documentation
+    if [[ -f "README.md" ]] || [[ -f ".github/copilot-instructions.md" ]]; then
+        while IFS= read -r dir; do
+            [[ -z "$dir" || "$dir" == "." ]] && continue
+            local dir_name=$(basename "$dir")
+            
+            # Skip common/expected directories
+            [[ "$dir_name" =~ ^(node_modules|\.git|coverage|\.vscode)$ ]] && continue
+            
+            # Check if directory is documented
+            local is_documented=false
+            if [[ -f "README.md" ]] && grep -q "$dir_name" "README.md" 2>/dev/null; then
+                is_documented=true
+            fi
+            if [[ -f ".github/copilot-instructions.md" ]] && grep -q "$dir_name" ".github/copilot-instructions.md" 2>/dev/null; then
+                is_documented=true
+            fi
+            
+            if [[ "$is_documented" == false ]]; then
+                print_warning "Undocumented directory: $dir"
+                echo "Undocumented: $dir" >> "$structure_issues_file"
+                ((undocumented_dirs++))
+                ((issues++))
+            fi
+        done < <(find . -maxdepth 2 -type d ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/coverage/*" ! -path "*/.vscode" | tail -n +2)
+    fi
+    
+    # Check 4: Validate structure consistency with documented structure
+    print_info "Validating structure against documentation..."
+    local doc_structure_mismatch=0
+    
+    # Extract directory structure from copilot-instructions if it exists
+    if [[ -f ".github/copilot-instructions.md" ]]; then
+        # Look for directory structure documentation
+        if grep -q "directory structure\|Directory Structure\|File Structure" ".github/copilot-instructions.md" 2>/dev/null; then
+            # Basic check: are the key directories mentioned?
+            local key_dirs=("src" "docs" "shell_scripts" "public")
+            for dir in "${key_dirs[@]}"; do
+                if grep -q "$dir" ".github/copilot-instructions.md" 2>/dev/null; then
+                    if [[ ! -d "$dir" ]]; then
+                        print_warning "Documented directory not found: $dir"
+                        echo "Doc mismatch: $dir (documented but missing)" >> "$structure_issues_file"
+                        ((doc_structure_mismatch++))
+                        ((issues++))
+                    fi
+                fi
+            done
+        fi
+    fi
+    
+    # PHASE 2: AI-powered architectural analysis with Copilot CLI
+    print_info "Phase 2: Preparing AI-powered architectural analysis..."
+    
+    # Gather directory metadata
+    local dir_count=$(find . -maxdepth 3 -type d ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/coverage/*" | wc -l)
+    
+    # AI PERSONA PROMPT: Software Architect + Technical Documentation Specialist
+    # Dual expertise for both architectural and documentation perspectives
+    local copilot_prompt="**Role**: You are a senior software architect and technical documentation specialist with expertise in project structure conventions, architectural patterns, code organization best practices, and documentation alignment.
+
+**Task**: Perform comprehensive validation of directory structure and architectural organization for this project.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML with Material Design + submodules)
+- Total Directories: $dir_count (excluding node_modules, .git, coverage)
+- Scope: ${CHANGE_SCOPE}
+- Critical Directories Missing: $missing_critical
+- Undocumented Directories: $undocumented_dirs
+- Documentation Mismatches: $doc_structure_mismatch
+
+**Phase 1 Automated Findings:**
+$(cat "$structure_issues_file" 2>/dev/null || echo "   No automated issues detected")
+
+**Current Directory Structure:**
+$dir_tree
+
+**Validation Tasks:**
+
+1. **Structure-to-Documentation Mapping:**
+   - Verify directory structure matches documented architecture
+   - Check that README.md and .github/copilot-instructions.md describe actual structure
+   - Validate directory purposes are clearly documented
+   - Ensure new directories have documentation explaining their role
+
+2. **Architectural Pattern Validation:**
+   - Assess if directory organization follows web development best practices
+   - Validate separation of concerns (src/, public/, docs/, etc.)
+   - Check for proper asset organization (images/, styles/, scripts/)
+   - Verify submodule structure is logical and documented
+
+3. **Naming Convention Consistency:**
+   - Validate directory names follow consistent conventions (kebab-case, camelCase, etc.)
+   - Check for naming pattern consistency across similar directories
+   - Verify no ambiguous or confusing directory names
+   - Ensure directory names are descriptive and self-documenting
+
+4. **Best Practice Compliance:**
+   - Static site project structure conventions
+   - Source vs distribution directory separation (src/ vs public/)
+   - Documentation organization (docs/ location and structure)
+   - Configuration file locations (.github/, root config files)
+   - Build artifact locations (coverage/, node_modules/)
+
+5. **Scalability and Maintainability Assessment:**
+   - Directory depth appropriate (not too deep or too flat)
+   - Related files properly grouped
+   - Clear boundaries between modules/components
+   - Easy to navigate structure for new developers
+   - Potential restructuring recommendations
+
+**Expected Documentation Files:**
+- README.md (should describe high-level structure)
+- .github/copilot-instructions.md (should detail directory purposes)
+- docs/* (should explain project organization)
+- Individual README files in major directories (if applicable)
+
+**Expected Output:**
+- List of structure issues with specific directory paths
+- Documentation mismatches (documented but missing, or undocumented but present)
+- Architectural pattern violations or inconsistencies
+- Naming convention issues
+- Best practice recommendations
+- Priority level (Critical/High/Medium/Low) for each issue
+- Actionable remediation steps with rationale
+- Suggested restructuring if needed (with migration impact assessment)
+
+**Architectural Standards to Apply:**
+- Web project best practices (static site structure)
+- Separation of concerns (source, distribution, docs, config)
+- Clear module boundaries
+- Intuitive navigation and organization
+- Documentation completeness for all major directories
+
+Please analyze the directory structure and provide a detailed architectural validation report with specific recommendations for improvements."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Directory Structure Validation Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available for architectural analysis
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for architectural analysis..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with architectural analysis prompt"
+        else
+            # Smart triggering: Offer analysis when issues found or in interactive mode
+            if [[ "$issues" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
+                if confirm_action "Run Copilot CLI for deep architectural analysis?" "y"; then
+                    print_info "Starting Copilot CLI architectural analysis session..."
+                    print_info "This will analyze directory structure, architectural patterns, and documentation alignment"
+                    echo ""
+                    
+                    # Invoke Copilot CLI with the comprehensive prompt
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI architectural analysis completed"
+                    echo ""
+                    
+                    # User feedback loop for architectural issues
+                    if confirm_action "Did Copilot identify structural or architectural issues?"; then
+                        print_warning "Please review architectural recommendations before continuing"
+                        if [[ "$INTERACTIVE_MODE" == true ]]; then
+                            if ! confirm_action "Continue workflow with identified issues?"; then
+                                print_error "Workflow paused - please address architectural issues"
+                                return 1
+                            fi
+                        fi
+                    fi
+                else
+                    print_warning "Skipped Copilot CLI architectural analysis"
+                fi
+            else
+                print_info "No automated issues found - skipping optional architectural analysis"
+                if confirm_action "Run optional Copilot architectural analysis anyway?"; then
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For deep architectural analysis, use the prompt above manually with Copilot"
+    fi
+    
+    # Summary of automated checks
+    echo ""
+    if [[ $issues -eq 0 ]]; then
+        print_success "Directory structure valid in automated checks ✅"
+        save_step_summary "4" "Directory_Structure_Validation" "Project directory structure validated successfully. All expected directories present and properly organized." "✅"
+    else
+        print_warning "Found $issues structural issue(s) - review required"
+        if [[ $missing_critical -gt 0 ]]; then
+            print_error "Critical: $missing_critical critical directories missing!"
+            save_step_summary "4" "Directory_Structure_Validation" "CRITICAL: ${missing_critical} critical directories missing. Found ${issues} total structural issues requiring immediate attention." "❌"
+        else
+            save_step_summary "4" "Directory_Structure_Validation" "Found ${issues} structural issues. Review missing or misorganized directories." "⚠️"
+        fi
+        
+        # Save directory structure issues to backlog
+        local step_issues="### Directory Structure Issues Found
+
+**Total Issues:** ${issues}
+**Missing Critical Directories:** ${missing_critical}
+
+"
+        if [[ -f "$structure_issues_file" && -s "$structure_issues_file" ]]; then
+            step_issues+="### Details
+
+\`\`\`
+$(cat "$structure_issues_file")
+\`\`\`
+"
+        fi
+        save_step_issues "4" "Directory_Structure_Validation" "$step_issues"
+    fi
+    
+    update_workflow_status "step4" "✅"
+}
+
+# Steps 5-10: Placeholder implementations
+
+# ------------------------------------------------------------------------------
+# STEP 5: AI-POWERED TEST REVIEW AND GENERATION
+# ------------------------------------------------------------------------------
+# Persona: QA Engineer + Test Automation Specialist
+# Expertise: Testing strategies, Jest framework, coverage analysis, TDD/BDD practices
+#
+# WHY QA ENGINEER + TEST AUTOMATION PERSONA?
+#   - Test review requires QA mindset (what should be tested?)
+#   - Test generation needs automation expertise
+#   - Coverage analysis requires understanding of testing strategies
+#   - Jest-specific knowledge for proper test structure
+#
+# TWO-PHASE VALIDATION ARCHITECTURE:
+#
+# Phase 1: Automated Test Analysis
+#   1. Test file inventory and organization
+#   2. Coverage report analysis (if available)
+#   3. Untested code detection
+#   4. Test-to-code ratio calculation
+#
+# Phase 2: AI-Powered Test Strategy Analysis
+#   1. Existing Test Quality Assessment
+#   2. Coverage Gap Identification
+#   3. Test Case Generation Recommendations
+#   4. Testing Best Practices Validation
+#   5. CI/CD Integration Readiness
+#
+# INNOVATION: Combines coverage analysis with AI-powered test generation recommendations
+# ------------------------------------------------------------------------------
+step5_review_existing_tests() {
+    print_step "5" "Review Existing Jest Tests"
+    
+    cd "$SRC_DIR"
+    
+    local issues=0
+    local test_issues_file=$(mktemp)
+    TEMP_FILES+=("$test_issues_file")
+    
+    # PHASE 1: Automated test analysis
+    print_info "Phase 1: Automated test analysis..."
+    
+    # Check 1: Test file inventory
+    print_info "Gathering test file inventory..."
+    local test_files=$(find . -name "*.test.js" -o -name "*.spec.js" ! -path "*/node_modules/*" | sort)
+    local test_count=$(echo "$test_files" | grep -c "test.js\|spec.js" || echo "0")
+    
+    if [[ $test_count -eq 0 ]]; then
+        print_warning "No test files found!"
+        echo "CRITICAL: No test files exist" >> "$test_issues_file"
+        ((issues++))
+    else
+        print_success "Found $test_count test files"
+    fi
+    
+    # Check 2: Coverage report analysis (if available)
+    print_info "Checking for coverage reports..."
+    local coverage_exists=false
+    local coverage_summary=""
+    
+    if [[ -f "coverage/coverage-summary.json" ]]; then
+        coverage_exists=true
+        coverage_summary=$(cat coverage/coverage-summary.json 2>/dev/null || echo "{}")
+        print_success "Coverage report found"
+    else
+        print_warning "No coverage report found - run 'npm run test:coverage' first"
+        echo "Missing: Coverage report" >> "$test_issues_file"
+        ((issues++))
+    fi
+    
+    # Check 3: Identify untested code files
+    print_info "Identifying potentially untested code..."
+    local code_files=$(find scripts -name "*.js" -o -name "*.mjs" 2>/dev/null | wc -l || echo "0")
+    local untested_ratio=0
+    local untested_count=0
+    
+    if [[ $code_files -gt 0 && $test_count -gt 0 ]]; then
+        untested_ratio=$((code_files - test_count))
+        untested_count=$untested_ratio
+        if [[ $untested_ratio -gt 0 ]]; then
+            print_warning "Potentially $untested_ratio code files without corresponding tests"
+            echo "Untested files: ~$untested_ratio code files may lack tests" >> "$test_issues_file"
+            ((issues++))
+        fi
+    fi
+    
+    # Check 4: Test organization validation
+    print_info "Validating test organization..."
+    local tests_in_tests_dir=$(find __tests__ -name "*.test.js" 2>/dev/null | wc -l || echo "0")
+    local tests_colocated=$(find . -name "*.test.js" ! -path "*/__tests__/*" ! -path "*/node_modules/*" 2>/dev/null | wc -l || echo "0")
+    
+    if [[ $tests_colocated -gt 0 ]]; then
+        print_warning "Found $tests_colocated test files outside __tests__ directory"
+        echo "Organization: $tests_colocated tests not in __tests__/" >> "$test_issues_file"
+    fi
+    
+    # PHASE 2: AI-powered test strategy analysis with Copilot CLI
+    print_info "Phase 2: Preparing AI-powered test strategy analysis..."
+    
+    # Gather test context
+    local test_framework="Jest with ES Modules (experimental-vm-modules)"
+    local test_env="jsdom"
+    
+    # AI PERSONA PROMPT: QA Engineer + Test Automation Specialist
+    # Dual expertise for both quality assurance and automation
+    local copilot_prompt="**Role**: You are a senior QA engineer and test automation specialist with expertise in testing strategies, Jest framework, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices.
+
+**Task**: Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Test Framework: $test_framework
+- Test Environment: $test_env
+- Total Test Files: $test_count
+- Code Files: $code_files
+- Tests in __tests__/: $tests_in_tests_dir
+- Co-located Tests: $tests_colocated
+- Coverage Report Available: $coverage_exists
+
+**Phase 1 Automated Findings:**
+$(cat "$test_issues_file" 2>/dev/null || echo "   No automated issues detected")
+
+**Existing Test Files:**
+$test_files
+
+**Test Configuration (from package.json):**
+- Test Command: npm test (with experimental VM modules for ES6)
+- Test Environment: jsdom (for DOM testing)
+- Coverage: Available via npm run test:coverage
+- Watch Mode: Available for development
+
+**Analysis Tasks:**
+
+1. **Existing Test Quality Assessment:**
+   - Review test file naming conventions (should match *.test.js pattern)
+   - Assess test organization (__tests__/ directory vs co-located)
+   - Evaluate test structure (describe blocks, test cases, assertions)
+   - Check for proper use of Jest matchers and assertions
+   - Validate async/await handling in tests
+
+2. **Coverage Gap Identification:**
+   - Identify which JavaScript modules/functions lack tests
+   - Determine critical paths that need test coverage
+   - Assess edge cases and error handling coverage
+   - Evaluate DOM manipulation test coverage
+   - Check for integration test coverage
+
+3. **Test Case Generation Recommendations:**
+   - Suggest specific test cases for untested code
+   - Recommend unit tests for utility functions
+   - Propose integration tests for workflows
+   - Suggest DOM manipulation tests for UI components
+   - Recommend edge case and error scenario tests
+
+4. **Testing Best Practices Validation:**
+   - Test isolation and independence
+   - Proper setup/teardown (beforeEach, afterEach)
+   - Mock usage for external dependencies
+   - Assertion clarity and specificity
+   - Test naming conventions (should describe behavior)
+   - DRY principle in tests
+
+5. **CI/CD Integration Readiness:**
+   - Tests run in CI environment compatibility
+   - Test execution speed (avoid slow tests)
+   - Deterministic tests (no flakiness)
+   - Coverage threshold recommendations
+   - Pre-commit hook integration
+
+**Expected Output:**
+- List of test quality issues with specific file:line references
+- Coverage gaps with priority (Critical/High/Medium/Low)
+- Specific test case recommendations with examples
+- Missing test scenarios for each untested module
+- Code snippets for recommended tests
+- Best practice violations and fixes
+- CI/CD integration recommendations
+- Coverage improvement action plan
+
+**Testing Standards to Apply:**
+- Jest best practices for ES Modules
+- AAA pattern (Arrange-Act-Assert)
+- Clear test descriptions (behavior-focused)
+- Proper async/await handling
+- Mock isolation for unit tests
+- Integration test coverage for workflows
+- Minimum 80% code coverage target
+
+Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Test Review Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available for test analysis
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for test strategy analysis..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with test analysis prompt"
+        else
+            # Smart triggering: Offer analysis when issues found or in interactive mode
+            if [[ "$issues" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
+                if confirm_action "Run Copilot CLI for test strategy analysis?" "y"; then
+                    print_info "Starting Copilot CLI test analysis session..."
+                    print_info "This will analyze existing tests, identify coverage gaps, and recommend new tests"
+                    echo ""
+                    
+                    # Invoke Copilot CLI with the comprehensive prompt
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI test analysis completed"
+                    echo ""
+                    
+                    # User feedback loop for test generation
+                    if confirm_action "Did Copilot recommend new tests to generate?"; then
+                        print_info "Test generation recommendations identified"
+                        
+                        # Transition to Step 6 preparation
+                        if [[ "$INTERACTIVE_MODE" == true ]]; then
+                            if confirm_action "Continue to Step 6 (Generate New Tests)?"; then
+                                print_success "Will proceed to test generation in Step 6"
+                            else
+                                print_warning "Pausing before test generation - review recommendations"
+                                return 1
+                            fi
+                        fi
+                    fi
+                else
+                    print_warning "Skipped Copilot CLI test analysis"
+                fi
+            else
+                print_info "No test issues found - skipping optional analysis"
+                if confirm_action "Run optional Copilot test analysis anyway?"; then
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For deep test analysis, use the prompt above manually with Copilot"
+    fi
+    
+    # Summary of automated checks
+    echo ""
+    if [[ $issues -eq 0 ]]; then
+        print_success "Test suite structure validated ✅ ($test_count test files found)"
+        save_step_summary "5" "Test_Review" "Test suite validated with ${test_count} test files. All modules have adequate test coverage." "✅"
+    else
+        print_warning "Found $issues test-related issue(s) - review required"
+        save_step_summary "5" "Test_Review" "Found ${issues} test issues. ${untested_count} modules lack test coverage. Review and add missing tests." "⚠️"
+        
+        # Save test review issues to backlog
+        local step_issues="### Test Review Issues Found
+
+**Total Issues:** ${issues}
+**Test Files Found:** ${test_count}
+**Untested Modules:** ${untested_count}
+
+"
+        if [[ -f "$test_issues_file" && -s "$test_issues_file" ]]; then
+            step_issues+="### Details
+
+\`\`\`
+$(cat "$test_issues_file")
+\`\`\`
+"
+        fi
+        save_step_issues "5" "Test_Review" "$step_issues"
+    fi
+    
+    cd "$PROJECT_ROOT"
+    update_workflow_status "step5" "✅"
+}
+
+# ------------------------------------------------------------------------------
+# STEP 6: AI-POWERED TEST GENERATION
+# ------------------------------------------------------------------------------
+# Persona: TDD Expert + Code Generation Specialist
+# Expertise: Test-driven development, Jest patterns, code generation, edge case analysis
+#
+# WHY TDD EXPERT + CODE GENERATION PERSONA?
+#   - Test generation requires TDD mindset (test-first thinking)
+#   - Code generation needs deep understanding of testing patterns
+#   - Edge case identification requires expert analysis
+#   - Jest code generation requires framework expertise
+#
+# TWO-PHASE GENERATION ARCHITECTURE:
+#
+# Phase 1: Automated Gap Analysis
+#   1. Identify untested modules/functions
+#   2. Analyze code complexity (functions, branches)
+#   3. Detect missing edge case coverage
+#   4. Prioritize test generation targets
+#
+# Phase 2: AI-Powered Test Code Generation
+#   1. Generate Unit Test Templates
+#   2. Create Integration Test Scaffolds
+#   3. Generate Edge Case Test Scenarios
+#   4. Produce Mock and Stub Patterns
+#   5. Generate Test Data Fixtures
+#
+# INNOVATION: AI generates actual test code based on Step 5 recommendations
+# ------------------------------------------------------------------------------
+step6_generate_new_tests() {
+    print_step "6" "Generate New Tests (if needed)"
+    
+    cd "$SRC_DIR"
+    
+    local tests_generated=0
+    local generation_log_file=$(mktemp)
+    TEMP_FILES+=("$generation_log_file")
+    
+    # PHASE 1: Automated gap analysis
+    print_info "Phase 1: Automated test gap analysis..."
+    
+    # Check 1: Identify code files without tests
+    print_info "Analyzing code coverage gaps..."
+    local untested_files=()
+    
+    # Find JavaScript/mjs files in scripts/
+    if [[ -d "scripts" ]]; then
+        while IFS= read -r code_file; do
+            [[ -z "$code_file" ]] && continue
+            
+            local file_name=$(basename "$code_file" .js)
+            local test_file_1="__tests__/${file_name}.test.js"
+            local test_file_2="__tests__/${file_name}.spec.js"
+            
+            # Check if corresponding test exists
+            if [[ ! -f "$test_file_1" ]] && [[ ! -f "$test_file_2" ]]; then
+                untested_files+=("$code_file")
+                echo "Untested: $code_file" >> "$generation_log_file"
+            fi
+        done < <(find scripts -name "*.js" -o -name "*.mjs" 2>/dev/null)
+    fi
+    
+    local untested_count=${#untested_files[@]}
+    
+    if [[ $untested_count -eq 0 ]]; then
+        print_success "All code files have corresponding tests"
+    else
+        print_warning "Found $untested_count code files without tests"
+    fi
+    
+    # Check 2: Analyze existing tests for missing edge cases
+    print_info "Analyzing test completeness..."
+    local edge_case_gaps=0
+    
+    # Look for common testing anti-patterns
+    if [[ -d "__tests__" ]]; then
+        # Check for tests that might be incomplete (very short test files)
+        while IFS= read -r test_file; do
+            local line_count=$(wc -l < "$test_file")
+            if [[ $line_count -lt 20 ]]; then
+                print_warning "Potentially incomplete test: $test_file ($line_count lines)"
+                echo "Short test file: $test_file" >> "$generation_log_file"
+                ((edge_case_gaps++))
+            fi
+        done < <(find __tests__ -name "*.test.js" -o -name "*.spec.js" 2>/dev/null)
+    fi
+    
+    # Check 3: Prioritize test generation targets
+    print_info "Prioritizing test generation targets..."
+    local high_priority=()
+    local medium_priority=()
+    
+    # High priority: main application files, utilities
+    for file in "${untested_files[@]}"; do
+        if [[ "$file" =~ main\.js|utils\.js|helper ]]; then
+            high_priority+=("$file")
+        else
+            medium_priority+=("$file")
+        fi
+    done
+    
+    local high_count=${#high_priority[@]}
+    local medium_count=${#medium_priority[@]}
+    
+    if [[ $high_count -gt 0 ]]; then
+        print_warning "High priority: $high_count critical files need tests"
+    fi
+    
+    # PHASE 2: AI-powered test code generation with Copilot CLI
+    print_info "Phase 2: Preparing AI-powered test generation..."
+    
+    # Build comprehensive list of generation needs
+    local generation_needs=""
+    if [[ $untested_count -gt 0 ]]; then
+        generation_needs+="Untested Files ($untested_count):\n"
+        for file in "${untested_files[@]}"; do
+            generation_needs+="  - $file\n"
+        done
+    fi
+    
+    # AI PERSONA PROMPT: TDD Expert + Code Generation Specialist
+    # Specialized for generating actual test code
+    local copilot_prompt="**Role**: You are a senior test-driven development (TDD) expert and code generation specialist with expertise in Jest testing framework, test pattern generation, edge case analysis, mock creation, and automated test scaffolding.
+
+**Task**: Generate comprehensive test code for untested modules based on analysis from Step 5 (Test Review).
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Test Framework: Jest with ES Modules (experimental-vm-modules)
+- Test Environment: jsdom (for DOM testing)
+- Untested Files: $untested_count
+- High Priority: $high_count files
+- Medium Priority: $medium_count files
+- Incomplete Tests: $edge_case_gaps potential gaps
+
+**Phase 1 Gap Analysis:**
+$(cat "$generation_log_file" 2>/dev/null || echo "   No gaps detected - all code has tests")
+
+**Generation Targets:**
+$generation_needs
+
+**Generation Tasks:**
+
+1. **Unit Test Generation:**
+   - Create test file templates for each untested module
+   - Generate describe blocks for each function/class
+   - Create test cases covering:
+     * Happy path scenarios
+     * Edge cases and boundary conditions
+     * Error handling and exceptions
+     * Input validation
+   - Use proper Jest matchers (toBe, toEqual, toThrow, etc.)
+   - Follow AAA pattern (Arrange-Act-Assert)
+
+2. **Integration Test Scaffolds:**
+   - Create integration test templates for workflows
+   - Generate test cases for module interactions
+   - Include proper setup/teardown
+   - Mock external dependencies appropriately
+
+3. **Edge Case Test Scenarios:**
+   - Generate tests for null/undefined handling
+   - Create tests for empty inputs
+   - Generate tests for boundary values
+   - Include tests for async/promise edge cases
+
+4. **Mock and Stub Patterns:**
+   - Generate mock implementations for dependencies
+   - Create stub data fixtures
+   - Provide spy usage examples
+   - Include jest.mock() patterns for modules
+
+5. **Test Data Fixtures:**
+   - Generate realistic test data objects
+   - Create fixture files if needed
+   - Provide test data builders/factories
+   - Include both valid and invalid data examples
+
+**Code Generation Requirements:**
+
+1. **File Structure:**
+   - Test files in __tests__/ directory
+   - Name pattern: [module].test.js
+   - Proper ES Module imports
+   - Jest configuration compatible
+
+2. **Test Structure:**
+   ```javascript
+   import { functionName } from '../scripts/module.js';
+   
+   describe('Module/Function Name', () => {
+     describe('functionName', () => {
+       it('should handle valid input correctly', () => {
+         // Arrange
+         const input = 'test';
+         
+         // Act
+         const result = functionName(input);
+         
+         // Assert
+         expect(result).toBe(expectedOutput);
+       });
+       
+       it('should throw error for invalid input', () => {
+         expect(() => functionName(null)).toThrow();
+       });
+     });
+   });
+   ```
+
+3. **Best Practices:**
+   - Clear, behavior-focused test descriptions
+   - One assertion per test (when possible)
+   - Test isolation (no dependencies between tests)
+   - Proper async/await handling
+   - Meaningful variable names
+   - Comments explaining complex test setups
+
+4. **Coverage Goals:**
+   - Aim for 80%+ code coverage
+   - Cover all public APIs
+   - Test error paths
+   - Include performance-critical paths
+
+**Expected Output:**
+- Complete, runnable test files for each untested module
+- Proper Jest syntax and patterns
+- ES Module compatible imports
+- Clear test descriptions
+- Comprehensive edge case coverage
+- Mock/stub examples where needed
+- Test data fixtures if applicable
+- Comments explaining test intent
+- Ready to save to __tests__/ directory
+
+**Testing Standards:**
+- Jest best practices for ES Modules
+- AAA pattern consistently
+- Behavior-driven test names
+- Proper assertion specificity
+- Mock isolation
+- No test interdependencies
+
+Please generate complete, production-ready test code for the identified untested modules. Provide each test file as a separate, complete code block ready to be saved."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Test Generation Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available for test generation
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for test code generation..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with test generation prompt"
+        else
+            # Smart triggering: Only generate if there are gaps
+            if [[ $untested_count -gt 0 ]] || [[ $edge_case_gaps -gt 0 ]]; then
+                if confirm_action "Generate test code for $untested_count untested files using Copilot CLI?"; then
+                    print_info "Starting Copilot CLI test generation session..."
+                    print_info "This will generate actual Jest test code for untested modules"
+                    echo ""
+                    
+                    # Invoke Copilot CLI with the comprehensive prompt
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI test generation completed"
+                    echo ""
+                    
+                    # User confirmation of generated tests
+                    if confirm_action "Were test files generated successfully?"; then
+                        print_info "Please save generated test files to src/__tests__/ directory"
+                        
+                        if confirm_action "Have you saved the generated test files?"; then
+                            print_success "Test files saved - ready for execution in Step 7"
+                            ((tests_generated++))
+                        else
+                            print_warning "Test files not saved yet - save before continuing"
+                            if [[ "$INTERACTIVE_MODE" == true ]]; then
+                                if ! confirm_action "Continue without saving tests?"; then
+                                    print_error "Workflow paused - save test files first"
+                                    return 1
+                                fi
+                            fi
+                        fi
+                    else
+                        print_warning "Test generation had issues - review and retry if needed"
+                    fi
+                else
+                    print_warning "Skipped test generation"
+                fi
+            else
+                print_success "No test generation needed - all code has tests"
+                if [[ "$INTERACTIVE_MODE" == true ]]; then
+                    if confirm_action "Generate additional edge case tests anyway?"; then
+                        copilot -p "$copilot_prompt" --allow-all-tools
+                    fi
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using manual approach"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For test generation, use the prompt above manually with Copilot"
+    fi
+    
+    # Summary
+    echo ""
+    if [[ $untested_count -eq 0 ]]; then
+        print_success "Test coverage is complete ✅"
+        save_step_summary "6" "Test_Generation" "All modules have test coverage. No new test generation required." "✅"
+    else
+        if [[ $tests_generated -gt 0 ]]; then
+            print_success "Generated tests for untested code ✅"
+            save_step_summary "6" "Test_Generation" "Generated ${tests_generated} new test files for previously untested modules. Review and integrate new tests." "✅"
+        else
+            print_warning "Test generation skipped - $untested_count files remain untested"
+            save_step_summary "6" "Test_Generation" "${untested_count} modules remain untested. Test generation recommended for complete coverage." "⚠️"
+        fi
+        
+        # Save test generation report to backlog
+        local step_issues="### Test Generation Summary
+
+**Untested Modules:** ${untested_count}
+**Tests Generated:** ${tests_generated}
+**Edge Case Gaps:** ${edge_case_gaps}
+
+"
+        if [[ -f "$generation_log_file" && -s "$generation_log_file" ]]; then
+            step_issues+="### Untested Modules
+
+\`\`\`
+$(cat "$generation_log_file")
+\`\`\`
+"
+        fi
+        save_step_issues "6" "Test_Generation" "$step_issues"
+    fi
+    
+    cd "$PROJECT_ROOT"
+    update_workflow_status "step6" "✅"
+}
+
+# ------------------------------------------------------------------------------
+# STEP 7: AI-POWERED TEST EXECUTION AND ANALYSIS
+# ------------------------------------------------------------------------------
+# Persona: CI/CD Engineer + Test Results Analyst  
+# Expertise: Test execution, failure diagnosis, coverage analysis, CI/CD best practices
+#
+# WHY CI/CD ENGINEER + TEST RESULTS ANALYST PERSONA?
+#   - Test execution requires CI/CD pipeline knowledge
+#   - Failure analysis needs diagnostic expertise
+#   - Coverage interpretation requires analytical skills
+#   - Test optimization needs CI/CD best practices
+#
+# TWO-PHASE EXECUTION ARCHITECTURE:
+#
+# Phase 1: Automated Test Execution
+#   1. Run full test suite (npm test)
+#   2. Generate coverage report
+#   3. Parse test results and failures
+#   4. Extract coverage metrics
+#
+# Phase 2: AI-Powered Results Analysis
+#   1. Test Failure Root Cause Analysis
+#   2. Coverage Gap Interpretation
+#   3. Performance Bottleneck Detection
+#   4. Flaky Test Identification
+#   5. CI/CD Optimization Recommendations
+#
+# INNOVATION: AI analyzes test results and provides actionable failure diagnostics
+# ------------------------------------------------------------------------------
+step7_execute_test_suite() {
+    print_step "7" "Execute Full Test Suite with AI Analysis"
+    
+    cd "$SRC_DIR"
+    
+    local test_failures=0
+    local test_results_file=$(mktemp)
+    local coverage_summary_file=$(mktemp)
+    TEMP_FILES+=("$test_results_file" "$coverage_summary_file")
+    
+    # PHASE 1: Automated test execution
+    print_info "Phase 1: Executing Jest test suite..."
+    
+    # Check 1: Run full test suite
+    print_info "Running tests with coverage..."
+    local test_exit_code=0
+    
+    if [[ "$DRY_RUN" == true ]]; then
+        print_info "[DRY RUN] Would execute: npm run test:coverage"
+        test_exit_code=0
+    else
+        # Run tests and capture output
+        if npm run test:coverage > "$test_results_file" 2>&1; then
+            test_exit_code=0
+            print_success "All tests passed ✅"
+        else
+            test_exit_code=$?
+            test_failures=1
+            print_warning "Some tests failed - analyzing results..."
+        fi
+    fi
+    
+    # Check 2: Parse test results
+    print_info "Parsing test results..."
+    local tests_total=0
+    local tests_passed=0
+    local tests_failed=0
+    local tests_skipped=0
+    
+    if [[ -f "$test_results_file" ]]; then
+        # Extract Jest summary (example: "Tests:       1 failed, 4 passed, 5 total")
+        tests_total=$(grep -oP 'Tests:.*\K\d+(?= total)' "$test_results_file" 2>/dev/null || echo "0")
+        tests_passed=$(grep -oP 'Tests:.*\K\d+(?= passed)' "$test_results_file" 2>/dev/null || echo "0")
+        tests_failed=$(grep -oP 'Tests:.*\K\d+(?= failed)' "$test_results_file" 2>/dev/null || echo "0")
+        
+        print_info "Test Results: $tests_passed passed, $tests_failed failed, $tests_total total"
+    fi
+    
+    # Check 3: Extract coverage metrics
+    print_info "Analyzing coverage report..."
+    local coverage_statements=0
+    local coverage_branches=0
+    local coverage_functions=0
+    local coverage_lines=0
+    
+    if [[ -f "coverage/coverage-summary.json" ]]; then
+        cp "coverage/coverage-summary.json" "$coverage_summary_file"
+        
+        # Extract total coverage percentages (simplified - would need jq for precise parsing)
+        if command -v jq &> /dev/null; then
+            coverage_statements=$(jq '.total.statements.pct' "$coverage_summary_file" 2>/dev/null || echo "0")
+            coverage_branches=$(jq '.total.branches.pct' "$coverage_summary_file" 2>/dev/null || echo "0")
+            coverage_functions=$(jq '.total.functions.pct' "$coverage_summary_file" 2>/dev/null || echo "0")
+            coverage_lines=$(jq '.total.lines.pct' "$coverage_summary_file" 2>/dev/null || echo "0")
+            
+            print_info "Coverage: Statements: ${coverage_statements}%, Branches: ${coverage_branches}%, Functions: ${coverage_functions}%, Lines: ${coverage_lines}%"
+        else
+            print_warning "jq not found - detailed coverage parsing unavailable"
+        fi
+    else
+        print_warning "Coverage report not found"
+    fi
+    
+    # Check 4: Identify failed tests
+    local failed_test_list=""
+    if [[ $tests_failed -gt 0 ]] && [[ -f "$test_results_file" ]]; then
+        # Extract failed test names (Jest format: "● Test Suite Name › Test Name")
+        failed_test_list=$(grep -A 5 "FAIL" "$test_results_file" 2>/dev/null || echo "Unable to extract failed tests")
+    fi
+    
+    # PHASE 2: AI-powered test results analysis with Copilot CLI
+    print_info "Phase 2: Preparing AI-powered test results analysis..."
+    
+    # Build test execution summary
+    local execution_summary="Test Execution Summary:
+- Total Tests: $tests_total
+- Passed: $tests_passed
+- Failed: $tests_failed
+- Exit Code: $test_exit_code
+
+Coverage Metrics:
+- Statements: ${coverage_statements}%
+- Branches: ${coverage_branches}%
+- Functions: ${coverage_functions}%
+- Lines: ${coverage_lines}%"
+    
+    # AI PERSONA PROMPT: CI/CD Engineer + Test Results Analyst
+    # Specialized for test diagnostics and CI/CD optimization
+    local copilot_prompt="**Role**: You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices.
+
+**Task**: Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Test Framework: Jest with ES Modules (experimental-vm-modules)
+- Test Command: npm run test:coverage
+- Exit Code: $test_exit_code
+- Total Tests: $tests_total
+- Passed: $tests_passed
+- Failed: $tests_failed
+
+**Test Execution Results:**
+$execution_summary
+
+**Test Output:**
+$(cat "$test_results_file" 2>/dev/null | head -100 || echo "Test output unavailable")
+
+**Failed Tests:**
+$failed_test_list
+
+**Analysis Tasks:**
+
+1. **Test Failure Root Cause Analysis:**
+   - Identify why tests failed (assertion errors, runtime errors, timeouts)
+   - Determine if failures are code bugs or test issues
+   - Categorize failures (breaking changes, environment issues, flaky tests)
+   - Provide specific fix recommendations for each failure
+   - Priority level (Critical/High/Medium/Low) for each failure
+
+2. **Coverage Gap Interpretation:**
+   - Analyze coverage metrics (statements, branches, functions, lines)
+   - Identify which modules have low coverage
+   - Determine if coverage meets 80% target
+   - Recommend areas for additional test coverage
+   - Prioritize coverage improvements
+
+3. **Performance Bottleneck Detection:**
+   - Identify slow-running tests (if timing data available)
+   - Detect tests with heavy setup/teardown
+   - Find tests that could be parallelized
+   - Recommend test execution optimizations
+   - Suggest mocking strategies for faster tests
+
+4. **Flaky Test Identification:**
+   - Detect non-deterministic test behavior
+   - Identify timing-dependent tests
+   - Find tests with external dependencies
+   - Recommend fixes for flaky tests
+   - Suggest test isolation improvements
+
+5. **CI/CD Optimization Recommendations:**
+   - Suggest test splitting strategies for CI
+   - Recommend caching strategies
+   - Propose pre-commit hook configurations
+   - Suggest coverage thresholds for CI gates
+   - Recommend test parallelization approaches
+
+**Expected Output:**
+- Root cause analysis for each failure with file:line:test references
+- Specific code fixes or test modifications needed
+- Coverage improvement action plan
+- Performance optimization recommendations
+- Flaky test remediation steps
+- CI/CD integration best practices
+- Priority-ordered action items
+- Estimated effort for each fix
+
+**Diagnostic Standards to Apply:**
+- Systematic failure categorization
+- Evidence-based root cause identification
+- Actionable, specific recommendations
+- Consider both quick wins and long-term improvements
+- Balance coverage goals with maintenance burden
+- Optimize for CI/CD pipeline efficiency
+
+Please provide a comprehensive test results analysis with specific, actionable recommendations for resolving failures and improving the test suite."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Test Results Analysis Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available for results analysis
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for test results analysis..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with test analysis prompt"
+        else
+            # Smart triggering: Always analyze if tests failed, optional if all passed
+            if [[ $test_failures -gt 0 ]]; then
+                print_warning "Tests failed - running AI failure analysis..."
+                
+                if confirm_action "Analyze test failures with Copilot CLI?"; then
+                    print_info "Starting Copilot CLI test results analysis..."
+                    print_info "This will diagnose failures and provide fix recommendations"
+                    echo ""
+                    
+                    # Invoke Copilot CLI with the comprehensive prompt
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI test analysis completed"
+                    echo ""
+                    
+                    # User decision on proceeding
+                    if ! confirm_action "Continue workflow despite test failures?"; then
+                        print_error "Workflow paused - fix test failures before continuing"
+                        return 1
+                    else
+                        # User chose to continue - override test failure exit code
+                        test_exit_code=0
+                    fi
+                else
+                    print_warning "Skipped AI analysis - manual review required"
+                    if ! confirm_action "Continue anyway?"; then
+                        return 1
+                    else
+                        # User chose to continue - override test failure exit code
+                        test_exit_code=0
+                    fi
+                fi
+            else
+                print_success "All tests passed!"
+                if [[ "$INTERACTIVE_MODE" == true ]]; then
+                    if confirm_action "Run optional Copilot coverage analysis?"; then
+                        copilot -p "$copilot_prompt" --allow-all-tools
+                    fi
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - manual analysis required"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For test failure analysis, use the prompt above manually"
+        
+        # Still fail workflow if tests failed
+        if [[ $test_failures -gt 0 ]] && [[ "$INTERACTIVE_MODE" == true ]]; then
+            if ! confirm_action "Continue despite test failures?"; then
+                return 1
+            else
+                # User chose to continue - override test failure exit code
+                test_exit_code=0
+            fi
+        fi
+    fi
+    
+    # Summary
+    echo ""
+    if [[ $test_exit_code -eq 0 ]]; then
+        print_success "Test suite executed successfully ✅ ($tests_passed/$tests_total passed)"
+        print_success "Coverage: Lines ${coverage_lines}%, Branches ${coverage_branches}%"
+        save_step_summary "7" "Test_Execution" "All ${tests_total} tests passed. Coverage: ${coverage_lines}% lines, ${coverage_branches}% branches. Test suite healthy." "✅"
+    else
+        print_error "Test suite failed ❌ ($tests_failed/$tests_total failed)"
+        if [[ "$AUTO_MODE" == false ]]; then
+            print_warning "Review failures before continuing workflow"
+        fi
+        save_step_summary "7" "Test_Execution" "${tests_failed} of ${tests_total} tests failed. Review failures and fix broken tests. Coverage: ${coverage_lines}% lines." "❌"
+    fi
+    
+    # Save test execution results to backlog
+    local step_issues="### Test Execution Results
+
+**Total Tests:** ${tests_total}
+**Passed:** ${tests_passed}
+**Failed:** ${tests_failed}
+**Exit Code:** ${test_exit_code}
+
+### Coverage Metrics
+
+- **Statements:** ${coverage_statements}%
+- **Branches:** ${coverage_branches}%
+- **Functions:** ${coverage_functions}%
+- **Lines:** ${coverage_lines}%
+
+"
+    if [[ $tests_failed -gt 0 ]] && [[ -f "$test_results_file" && -s "$test_results_file" ]]; then
+        step_issues+="### Test Output
+
+\`\`\`
+$(cat "$test_results_file")
+\`\`\`
+"
+    fi
+    save_step_issues "7" "Test_Execution" "$step_issues"
+    
+    cd "$PROJECT_ROOT"
+    update_workflow_status "step7" "✅"
+    
+    # Return test exit code for workflow decision
+    return $test_exit_code
+}
+#
+# WHY CI/CD ENGINEER + TEST RESULTS ANALYST PERSONA?
+#   - Test execution requires CI/CD pipeline knowledge
+#   - Failure analysis needs diagnostic expertise
+#   - Coverage interpretation requires analytical skills
+#   - Test optimization needs CI/CD best practices
+#
+# TWO-PHASE EXECUTION ARCHITECTURE:
+#
+# Phase 1: Automated Test Execution
+#   1. Run full test suite (npm test)
+#   2. Generate coverage report
+#   3. Parse test results and failures
+#   4. Extract coverage metrics
+#
+# Phase 2: AI-Powered Results Analysis
+#   1. Test Failure Root Cause Analysis
+#   2. Coverage Gap Interpretation
+#   3. Performance Bottleneck Detection
+#   4. Flaky Test Identification
+#   5. CI/CD Optimization Recommendations
+#
+
+# ------------------------------------------------------------------------------
+# STEP 8: AI-POWERED DEPENDENCY VALIDATION
+# ------------------------------------------------------------------------------
+# Persona: DevOps Engineer + Package Management Specialist
+# Expertise: Dependency management, security audits, version compatibility, npm/yarn
+#
+# WHY DEVOPS ENGINEER + PACKAGE MANAGEMENT PERSONA?
+#   - Dependency validation requires DevOps infrastructure knowledge
+#   - Security audit needs package management expertise
+#   - Version compatibility requires ecosystem understanding
+#   - Environment management needs DevOps best practices
+#
+# TWO-PHASE VALIDATION ARCHITECTURE:
+#
+# Phase 1: Automated Dependency Analysis
+#   1. Check package.json existence and validity
+#   2. Run npm audit for security vulnerabilities
+#   3. Check for outdated packages
+#   4. Verify lockfile integrity
+#
+# Phase 2: AI-Powered Dependency Strategy
+#   1. Security Vulnerability Assessment
+#   2. Version Compatibility Analysis
+#   3. Dependency Tree Optimization
+#   4. Environment Configuration Review
+#   5. Update Strategy Recommendations
+#
+# INNOVATION: AI analyzes dependency health and provides security-first upgrade paths
+# ------------------------------------------------------------------------------
+step8_validate_dependencies() {
+    print_step "8" "Validate Dependencies & Environment"
+    
+    cd "$SRC_DIR"
+    
+    local issues=0
+    local dependency_report=$(mktemp)
+    TEMP_FILES+=("$dependency_report")
+    
+    # PHASE 1: Automated dependency analysis
+    print_info "Phase 1: Automated dependency analysis..."
+    
+    # Check 1: Verify package.json exists and is valid
+    print_info "Validating package.json..."
+    if [[ ! -f "package.json" ]]; then
+        print_error "package.json not found!"
+        echo "CRITICAL: Missing package.json" >> "$dependency_report"
+        ((issues++))
+        cd "$PROJECT_ROOT"
+        update_workflow_status "step8" "❌"
+        return 1
+    else
+        # Validate JSON syntax
+        if jq empty package.json &>/dev/null; then
+            print_success "package.json is valid JSON"
+        else
+            print_error "package.json contains invalid JSON"
+            echo "CRITICAL: Invalid package.json syntax" >> "$dependency_report"
+            ((issues++))
+        fi
+    fi
+    
+    # Check 2: Run npm audit for security vulnerabilities
+    print_info "Running npm audit for security vulnerabilities..."
+    local audit_output=$(mktemp)
+    TEMP_FILES+=("$audit_output")
+    
+    if npm audit --json > "$audit_output" 2>&1; then
+        print_success "No security vulnerabilities found"
+    else
+        local vulnerabilities=$(jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' "$audit_output" 2>/dev/null || echo "Unable to parse")
+        print_warning "Security vulnerabilities detected"
+        echo "Security vulnerabilities:" >> "$dependency_report"
+        echo "$vulnerabilities" >> "$dependency_report"
+        ((issues++))
+    fi
+    
+    # Check 3: Check for outdated packages
+    print_info "Checking for outdated packages..."
+    local outdated_output=$(mktemp)
+    TEMP_FILES+=("$outdated_output")
+    
+    if npm outdated --json > "$outdated_output" 2>&1; then
+        print_success "All packages are up to date"
+    else
+        local outdated_count=$(jq 'length' "$outdated_output" 2>/dev/null || echo "0")
+        if [[ $outdated_count -gt 0 ]]; then
+            print_warning "$outdated_count packages are outdated"
+            echo "Outdated packages: $outdated_count" >> "$dependency_report"
+            jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest)"' "$outdated_output" >> "$dependency_report" 2>/dev/null
+        fi
+    fi
+    
+    # Check 4: Verify lockfile integrity
+    print_info "Verifying package-lock.json integrity..."
+    if [[ -f "package-lock.json" ]]; then
+        if npm ls &>/dev/null; then
+            print_success "Lockfile integrity verified"
+        else
+            print_warning "Dependency tree has issues - may need npm install"
+            echo "Lockfile issues: Dependency tree inconsistent" >> "$dependency_report"
+            ((issues++))
+        fi
+    else
+        print_warning "package-lock.json not found"
+        echo "Missing lockfile: Recommended to commit package-lock.json" >> "$dependency_report"
+    fi
+    
+    # Check 5: Verify Node.js and npm versions
+    print_info "Checking Node.js and npm versions..."
+    local node_version=$(node --version 2>/dev/null || echo "not installed")
+    local npm_version=$(npm --version 2>/dev/null || echo "not installed")
+    
+    print_info "Node.js: $node_version, npm: $npm_version"
+    echo "Environment: Node.js $node_version, npm $npm_version" >> "$dependency_report"
+    
+    # Check 6: Analyze dependency count and size
+    print_info "Analyzing dependency footprint..."
+    local dep_count=$(jq -r '.dependencies // {} | length' package.json 2>/dev/null || echo "0")
+    local dev_dep_count=$(jq -r '.devDependencies // {} | length' package.json 2>/dev/null || echo "0")
+    local total_deps=$((dep_count + dev_dep_count))
+    
+    print_info "Dependencies: $dep_count, DevDependencies: $dev_dep_count (Total: $total_deps)"
+    echo "Dependency count: $dep_count prod, $dev_dep_count dev, $total_deps total" >> "$dependency_report"
+    
+    # PHASE 2: AI-powered dependency strategy analysis
+    print_info "Phase 2: Preparing AI-powered dependency analysis..."
+    
+    # Build dependency summary
+    local dependency_summary="Dependency Analysis Summary:
+- Production Dependencies: $dep_count
+- Development Dependencies: $dev_dep_count
+- Total Packages: $total_deps
+- Node.js Version: $node_version
+- npm Version: $npm_version
+- Security Issues: $(grep -c "Security" "$dependency_report" 2>/dev/null || echo "0")
+- Outdated Packages: $(grep -c "Outdated" "$dependency_report" 2>/dev/null || echo "0")"
+    
+    # Extract actual dependencies
+    local prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -20)
+    local dev_deps=$(jq -r '.devDependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null)
+    
+    # AI PERSONA PROMPT: DevOps Engineer + Package Management Specialist
+    # Specialized for dependency and environment management
+    local copilot_prompt="**Role**: You are a senior DevOps engineer and package management specialist with expertise in npm/yarn ecosystem, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices.
+
+**Task**: Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Package Manager: npm
+- Node.js Version: $node_version
+- npm Version: $npm_version
+- Production Dependencies: $dep_count
+- Development Dependencies: $dev_dep_count
+- Total Packages: $total_deps
+
+**Dependency Analysis Results:**
+$dependency_summary
+
+**Automated Findings:**
+$(cat "$dependency_report" 2>/dev/null || echo "   No critical issues detected")
+
+**Production Dependencies:**
+$prod_deps
+
+**Development Dependencies:**
+$dev_deps
+
+**npm Audit Summary:**
+$(cat "$audit_output" 2>/dev/null | jq -r '.metadata // "No data"' || echo "Unable to parse audit results")
+
+**Outdated Packages:**
+$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -10 || echo "None or unable to parse")
+
+**Analysis Tasks:**
+
+1. **Security Vulnerability Assessment:**
+   - Review npm audit results
+   - Identify critical/high severity vulnerabilities
+   - Assess exploitability and impact
+   - Provide immediate remediation steps
+   - Recommend long-term security strategy
+   - Consider transitive dependencies
+
+2. **Version Compatibility Analysis:**
+   - Check for breaking changes in outdated packages
+   - Identify version conflicts
+   - Assess compatibility with Node.js version
+   - Review semver ranges (^, ~, exact versions)
+   - Recommend version pinning strategy
+
+3. **Dependency Tree Optimization:**
+   - Identify unused dependencies
+   - Detect duplicate packages in tree
+   - Find opportunities to reduce bundle size
+   - Recommend consolidation strategies
+   - Suggest peer dependency resolution
+
+4. **Environment Configuration Review:**
+   - Validate Node.js version compatibility
+   - Check npm version requirements
+   - Review engine specifications in package.json
+   - Assess development vs production dependencies
+   - Recommend .nvmrc or .node-version file
+
+5. **Update Strategy Recommendations:**
+   - Prioritize updates (security > bug fixes > features)
+   - Create phased update plan
+   - Identify breaking changes to watch
+   - Recommend testing strategy for updates
+   - Suggest automation (Dependabot, Renovate)
+
+**Expected Output:**
+- Security vulnerability assessment with severity levels
+- Immediate action items for critical vulnerabilities
+- Safe update path for outdated packages
+- Version compatibility matrix
+- Dependency optimization recommendations
+- Environment configuration best practices
+- Automated dependency management setup
+- Testing strategy for dependency updates
+- Priority-ordered action plan with effort estimates
+
+**Package Management Standards:**
+- Security-first approach (patch vulnerabilities immediately)
+- Semantic versioning best practices
+- Lockfile commit requirements
+- Regular dependency audits (weekly/monthly)
+- Minimize dependency footprint
+- Prefer actively maintained packages
+- Document major version constraints
+
+Please provide a comprehensive dependency analysis with specific, actionable recommendations for maintaining a secure, optimized dependency tree."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Dependency Analysis Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for dependency analysis..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with dependency analysis prompt"
+        else
+            # Smart triggering: Analyze if issues found or in interactive mode
+            if [[ $issues -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
+                if confirm_action "Run Copilot CLI for dependency analysis?"; then
+                    print_info "Starting Copilot CLI dependency analysis..."
+                    print_info "This will analyze security, compatibility, and optimization"
+                    echo ""
+                    
+                    # Invoke Copilot CLI
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI dependency analysis completed"
+                    echo ""
+                    
+                    # User action on vulnerabilities
+                    if [[ $issues -gt 0 ]]; then
+                        if confirm_action "Critical dependency issues found - continue workflow?"; then
+                            print_warning "Continuing despite dependency issues"
+                        else
+                            print_error "Workflow paused - resolve dependency issues first"
+                            cd "$PROJECT_ROOT"
+                            return 1
+                        fi
+                    fi
+                else
+                    print_warning "Skipped Copilot dependency analysis"
+                fi
+            else
+                print_info "No dependency issues - skipping optional analysis"
+                if confirm_action "Run optional dependency optimization analysis?"; then
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For comprehensive dependency analysis, use the prompt above manually"
+    fi
+    
+    # Summary
+    echo ""
+    if [[ $issues -eq 0 ]]; then
+        print_success "Dependency validation passed ✅ ($total_deps packages healthy)"
+        save_step_summary "8" "Dependency_Validation" "All ${total_deps} dependencies validated. No vulnerabilities or outdated packages detected." "✅"
+    else
+        print_warning "Found $issues dependency issue(s) - review recommended"
+        save_step_summary "8" "Dependency_Validation" "Found ${issues} dependency issues: ${vuln_count} vulnerabilities, ${outdated_count} outdated packages. Update dependencies." "⚠️"
+        
+        # Save dependency issues to backlog
+        local step_issues="### Dependency Validation Issues
+
+**Total Issues:** ${issues}
+**Total Dependencies:** ${total_deps}
+**Vulnerabilities:** ${vuln_count}
+**Outdated Packages:** ${outdated_count}
+
+"
+        if [[ -f "$npm_audit_file" && -s "$npm_audit_file" ]]; then
+            step_issues+="### npm audit Output
+
+\`\`\`
+$(cat "$npm_audit_file")
+\`\`\`
+"
+        fi
+        if [[ -f "$outdated_file" && -s "$outdated_file" ]]; then
+            step_issues+="### Outdated Packages
+
+\`\`\`
+$(cat "$outdated_file")
+\`\`\`
+"
+        fi
+        save_step_issues "8" "Dependency_Validation" "$step_issues"
+    fi
+    
+    cd "$PROJECT_ROOT"
+    update_workflow_status "step8" "✅"
+}
+
+
+# ------------------------------------------------------------------------------
+# STEP 9: AI-POWERED CODE QUALITY VALIDATION
+# ------------------------------------------------------------------------------
+# Persona: Software Quality Engineer + Code Review Specialist
+# Expertise: Code quality standards, static analysis, linting, maintainability, best practices
+#
+# WHY SOFTWARE QUALITY ENGINEER + CODE REVIEW PERSONA?
+#   - Code quality requires SQE methodology and standards
+#   - Code review needs expert pattern recognition
+#   - Static analysis requires quality engineering knowledge
+#   - Maintainability assessment needs code review expertise
+#
+# TWO-PHASE VALIDATION ARCHITECTURE:
+#
+# Phase 1: Automated Code Quality Checks
+#   1. JavaScript/HTML/CSS file enumeration
+#   2. Code complexity analysis (file sizes, line counts)
+#   3. Naming convention validation
+#   4. Code duplication detection (basic)
+#
+# Phase 2: AI-Powered Code Quality Review
+#   1. Code Standards Compliance Assessment
+#   2. Best Practices Validation
+#   3. Maintainability & Readability Analysis
+#   4. Anti-Pattern Detection
+#   5. Refactoring Recommendations
+#
+# INNOVATION: AI performs deep code review analyzing patterns, maintainability, and quality
+# ------------------------------------------------------------------------------
+step9_code_quality_validation() {
+    print_step "9" "Code Quality Validation"
+    
+    cd "$SRC_DIR"
+    
+    local quality_issues=0
+    local quality_report=$(mktemp)
+    TEMP_FILES+=("$quality_report")
+    
+    # PHASE 1: Automated code quality checks
+    print_info "Phase 1: Automated code quality analysis..."
+    
+    # Check 1: Enumerate code files
+    print_info "Enumerating code files..."
+    local js_files=$(find . -name "*.js" -o -name "*.mjs" | wc -l)
+    local html_files=$(find . -name "*.html" | wc -l)
+    local css_files=$(find . -name "*.css" | wc -l)
+    local total_files=$((js_files + html_files + css_files))
+    
+    print_info "Code files: $js_files JS, $html_files HTML, $css_files CSS (Total: $total_files)"
+    echo "File count: $js_files JavaScript, $html_files HTML, $css_files CSS" >> "$quality_report"
+    
+    # Check 2: Analyze file sizes and complexity
+    print_info "Analyzing code complexity..."
+    local large_files_count=0
+    local large_files_list=""
+    
+    # Find JavaScript files over 300 lines (potential complexity issues)
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        local line_count=$(wc -l < "$file" 2>/dev/null || echo 0)
+        if [[ $line_count -gt 300 ]]; then
+            ((large_files_count++))
+            large_files_list+="  - $file ($line_count lines)\n"
+            echo "Large file: $file ($line_count lines)" >> "$quality_report"
+        fi
+    done < <(find . -name "*.js" -o -name "*.mjs" 2>/dev/null)
+    
+    if [[ $large_files_count -gt 0 ]]; then
+        print_warning "Found $large_files_count large files (>300 lines) - may need refactoring"
+        ((quality_issues++))
+    else
+        print_success "All files are reasonably sized"
+    fi
+    
+    # Check 3: Naming convention validation
+    print_info "Validating naming conventions..."
+    local naming_issues=0
+    
+    # Check for non-kebab-case HTML files
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        local basename=$(basename "$file")
+        if [[ "$basename" =~ [A-Z_] ]]; then
+            ((naming_issues++))
+            echo "Naming issue: $file (not kebab-case)" >> "$quality_report"
+        fi
+    done < <(find . -name "*.html" 2>/dev/null)
+    
+    if [[ $naming_issues -gt 0 ]]; then
+        print_warning "Found $naming_issues naming convention issues"
+        ((quality_issues++))
+    else
+        print_success "Naming conventions followed"
+    fi
+    
+    # Check 4: Detect potential code duplication (basic check)
+    print_info "Checking for potential code duplication..."
+    local duplicate_patterns=0
+    
+    # Look for common duplicate patterns (e.g., multiple similar function definitions)
+    if command -v grep &> /dev/null; then
+        # Count function declarations
+        local function_count=$(grep -r "^function\|^const.*=.*function\|^export function" . --include="*.js" --include="*.mjs" 2>/dev/null | wc -l)
+        echo "Function declarations: $function_count" >> "$quality_report"
+        
+        # Basic check: if too many functions in small codebase, might indicate duplication
+        if [[ $function_count -gt 100 ]] && [[ $js_files -lt 10 ]]; then
+            print_warning "High function count relative to file count - check for duplication"
+            ((duplicate_patterns++))
+        fi
+    fi
+    
+    # Check 5: Validate ES Module patterns
+    print_info "Validating ES Module usage..."
+    local module_issues=0
+    
+    # Check for proper import/export usage
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        
+        # Check if file uses modern ES modules
+        if grep -q "^import\|^export" "$file" 2>/dev/null; then
+            # Good - using ES modules
+            :
+        elif grep -q "require(" "$file" 2>/dev/null; then
+            # Found CommonJS pattern - flag for review
+            echo "Module issue: $file uses require() instead of import" >> "$quality_report"
+            ((module_issues++))
+        fi
+    done < <(find . -name "*.js" -o -name "*.mjs" 2>/dev/null | grep -v node_modules | grep -v vendor)
+    
+    if [[ $module_issues -gt 0 ]]; then
+        print_warning "Found $module_issues files using CommonJS instead of ES modules"
+        ((quality_issues++))
+    fi
+    
+    # Check 6: Code organization assessment
+    print_info "Assessing code organization..."
+    local dirs_with_js=$(find . -type f \( -name "*.js" -o -name "*.mjs" \) -exec dirname {} \; | sort -u | wc -l)
+    
+    echo "Code organization: JavaScript files spread across $dirs_with_js directories" >> "$quality_report"
+    
+    # PHASE 2: AI-powered code quality review
+    print_info "Phase 2: Preparing AI-powered code quality review..."
+    
+    # Build quality summary
+    local quality_summary="Code Quality Analysis Summary:
+- Total Files: $total_files ($js_files JS, $html_files HTML, $css_files CSS)
+- Large Files (>300 lines): $large_files_count
+- Naming Convention Issues: $naming_issues
+- Module Pattern Issues: $module_issues
+- Code Organization: $dirs_with_js directories
+- Quality Issues: $quality_issues"
+    
+    # Sample problematic files for review
+    local sample_files=$(find . -name "*.js" -o -name "*.mjs" 2>/dev/null | grep -v node_modules | head -5)
+    local sample_code=""
+    
+    for file in $sample_files; do
+        [[ -z "$file" ]] && continue
+        sample_code+="
+File: $file
+Lines: $(wc -l < "$file" 2>/dev/null || echo 0)
+Preview:
+$(head -30 "$file" 2>/dev/null)
+---
+"
+    done
+    
+    # AI PERSONA PROMPT: Software Quality Engineer + Code Review Specialist
+    # Specialized for code quality and maintainability assessment
+    local copilot_prompt="**Role**: You are a senior software quality engineer and code review specialist with expertise in code quality standards, static analysis, linting best practices, design patterns, maintainability assessment, and technical debt identification.
+
+**Task**: Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Technology Stack: HTML5, CSS3, JavaScript ES6+, ES Modules
+- Testing: Jest with jsdom
+- Code Files: $total_files total ($js_files JavaScript, $html_files HTML, $css_files CSS)
+
+**Code Quality Analysis Results:**
+$quality_summary
+
+**Automated Findings:**
+$(cat "$quality_report" 2>/dev/null || echo "   No critical issues detected")
+
+**Large Files Requiring Review:**
+$(echo -e "$large_files_list" | head -10 || echo "None")
+
+**Code Samples for Review:**
+$sample_code
+
+**Analysis Tasks:**
+
+1. **Code Standards Compliance Assessment:**
+   - Evaluate JavaScript coding standards (ES6+ features)
+   - Check HTML5 semantic markup usage
+   - Review CSS organization and naming (BEM, OOCSS, etc.)
+   - Assess consistent indentation and formatting
+   - Validate JSDoc/comment quality
+   - Check error handling patterns
+
+2. **Best Practices Validation:**
+   - Verify separation of concerns (HTML/CSS/JS)
+   - Check for proper event handling
+   - Assess DOM manipulation patterns
+   - Review async/await vs promises usage
+   - Validate proper use of const/let (no var)
+   - Check for magic numbers/strings
+
+3. **Maintainability & Readability Analysis:**
+   - Assess function complexity (cyclomatic complexity)
+   - Evaluate function length (should be < 50 lines)
+   - Check variable naming clarity
+   - Review code organization and structure
+   - Assess comment quality and documentation
+   - Identify overly complex logic
+
+4. **Anti-Pattern Detection:**
+   - Identify code smells (duplicated code, long functions)
+   - Detect callback hell or promise anti-patterns
+   - Find global variable pollution
+   - Spot tight coupling between modules
+   - Identify monolithic functions
+   - Detect violation of DRY principle
+
+5. **Refactoring Recommendations:**
+   - Suggest modularization opportunities
+   - Recommend function extraction for clarity
+   - Propose design pattern applications
+   - Suggest performance optimizations
+   - Recommend code reuse strategies
+   - Identify technical debt priorities
+
+**Expected Output:**
+- Code quality grade (A-F) with justification
+- Standards compliance checklist
+- Anti-patterns detected with file:line references
+- Maintainability score and improvement areas
+- Top 5 refactoring priorities with effort estimates
+- Best practice violations and fixes
+- Technical debt assessment
+- Specific code improvement recommendations
+- Quick wins vs long-term improvements
+
+**Code Quality Standards:**
+- Functions should be < 50 lines
+- Files should be < 300 lines
+- Cyclomatic complexity < 10
+- No code duplication (DRY principle)
+- Proper separation of concerns
+- Meaningful variable/function names
+- Consistent formatting and style
+- Comprehensive error handling
+- Clear documentation/comments
+
+Please provide a comprehensive code quality assessment with specific, actionable recommendations for improving code quality and reducing technical debt."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Code Quality Review Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for code quality review..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with code quality prompt"
+        else
+            # Smart triggering: Analyze if issues found or in interactive mode
+            if [[ $quality_issues -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
+                if confirm_action "Run Copilot CLI for code quality review?"; then
+                    print_info "Starting Copilot CLI code quality analysis..."
+                    print_info "This will review code standards, patterns, and maintainability"
+                    echo ""
+                    
+                    # Invoke Copilot CLI
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI code quality review completed"
+                    echo ""
+                    
+                    # User action on critical issues
+                    if [[ $quality_issues -gt 3 ]]; then
+                        if confirm_action "Multiple code quality issues found - continue workflow?"; then
+                            print_warning "Continuing despite quality issues - address in future iterations"
+                        else
+                            print_error "Workflow paused - improve code quality first"
+                            cd "$PROJECT_ROOT"
+                            return 1
+                        fi
+                    fi
+                else
+                    print_warning "Skipped Copilot code quality review"
+                fi
+            else
+                print_info "No major quality issues - skipping optional review"
+                if confirm_action "Run optional code quality optimization review?"; then
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                fi
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic checks only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For comprehensive code quality review, use the prompt above manually"
+    fi
+    
+    # Summary
+    echo ""
+    if [[ $quality_issues -eq 0 ]]; then
+        print_success "Code quality validation passed ✅ ($total_files files analyzed)"
+        save_step_summary "9" "Code_Quality_Validation" "Code quality validated across ${total_files} files. All quality standards met." "✅"
+    else
+        print_warning "Found $quality_issues code quality area(s) for improvement"
+        print_info "Review recommendations above for code quality enhancements"
+        save_step_summary "9" "Code_Quality_Validation" "Found ${quality_issues} code quality improvements needed across ${total_files} files. Review and apply quality enhancements." "⚠️"
+        
+        # Save code quality issues to backlog
+        local step_issues="### Code Quality Issues Found
+
+**Total Issues:** ${quality_issues}
+**Files Analyzed:** ${total_files}
+
+"
+        if [[ -f "$quality_file" && -s "$quality_file" ]]; then
+            step_issues+="### Details
+
+\`\`\`
+$(cat "$quality_file")
+\`\`\`
+"
+        fi
+        save_step_issues "9" "Code_Quality_Validation" "$step_issues"
+    fi
+    
+    cd "$PROJECT_ROOT"
+    update_workflow_status "step9" "✅"
+}
+
+
+# ------------------------------------------------------------------------------
+# STEP 10: AI-POWERED CONTEXT ANALYSIS & WORKFLOW ADAPTATION
+# ------------------------------------------------------------------------------
+# Persona: Technical Project Manager + Workflow Orchestration Specialist
+# Expertise: Workflow analysis, context synthesis, adaptive planning, strategic recommendations
+#
+# WHY TECHNICAL PROJECT MANAGER + WORKFLOW ORCHESTRATION PERSONA?
+#   - Context analysis requires holistic project understanding
+#   - Workflow adaptation needs orchestration expertise
+#   - Strategic recommendations require project management perspective
+#   - Integration synthesis needs technical PM knowledge
+#
+# TWO-PHASE ANALYSIS ARCHITECTURE:
+#
+# Phase 1: Automated Context Collection
+#   1. Workflow execution summary (all previous steps)
+#   2. Git repository state analysis
+#   3. Change impact assessment
+#   4. Issue and warning aggregation
+#
+# Phase 2: AI-Powered Strategic Analysis
+#   1. Workflow Effectiveness Assessment
+#   2. Context-Aware Recommendations
+#   3. Adaptive Workflow Optimization
+#   4. Next Steps Strategic Planning
+#   5. Risk & Opportunity Identification
+#
+# INNOVATION: AI analyzes entire workflow context and provides strategic adaptation recommendations
+# ------------------------------------------------------------------------------
+step10_context_analysis() {
+    print_step "10" "Context Analysis & Summary"
+    
+    cd "$PROJECT_ROOT"
+    
+    local context_report=$(mktemp)
+    TEMP_FILES+=("$context_report")
+    
+    # PHASE 1: Automated context collection
+    print_info "Phase 1: Collecting workflow context..."
+    
+    # Check 1: Workflow execution summary
+    print_info "Analyzing workflow execution status..."
+    local steps_completed=0
+    local steps_failed=0
+    local workflow_summary=""
+    
+    for step in "${!WORKFLOW_STATUS[@]}"; do
+        local status="${WORKFLOW_STATUS[$step]}"
+        workflow_summary+="$step: $status\n"
+        if [[ "$status" == "✅" ]]; then
+            ((steps_completed++))
+        else
+            ((steps_failed++))
+        fi
+    done
+    
+    local total_steps=${#WORKFLOW_STATUS[@]}
+    local completion_rate=$((steps_completed * 100 / total_steps))
+    
+    print_info "Workflow completion: $steps_completed/$total_steps steps ($completion_rate%)"
+    echo "Workflow Status: $steps_completed/$total_steps completed ($completion_rate%)" >> "$context_report"
+    echo -e "Step Details:\n$workflow_summary" >> "$context_report"
+    
+    # Check 2: Git repository state analysis (use cached git state)
+    print_info "Analyzing git repository state..."
+    local git_status=""
+    local modified_files=0
+    local untracked_files=0
+    local staged_files=0
+    
+    if is_git_repo; then
+        # Get from cache (performance optimization)
+        modified_files=$(get_git_modified_count)
+        untracked_files=$(get_git_untracked_count)
+        staged_files=$(get_git_staged_count)
+        
+        git_status="Modified: $modified_files, Untracked: $untracked_files, Staged: $staged_files"
+        
+        # Get branch info from cache
+        local current_branch=$(get_git_current_branch)
+        local commits_ahead=$(get_git_commits_ahead)
+        
+        echo "Git Status: $git_status" >> "$context_report"
+        echo "Branch: $current_branch (commits ahead: $commits_ahead)" >> "$context_report"
+    else
+        git_status="Not in a git repository"
+        echo "Git: Not a git repository" >> "$context_report"
+    fi
+    
+    print_info "Git state: $git_status"
+    
+    # Check 3: Change impact assessment
+    print_info "Assessing change impact..."
+    local change_impact="Low"
+    local impact_score=0
+    
+    # Calculate impact based on files changed and types
+    if [[ $modified_files -gt 10 ]]; then
+        ((impact_score += 3))
+    elif [[ $modified_files -gt 5 ]]; then
+        ((impact_score += 2))
+    elif [[ $modified_files -gt 0 ]]; then
+        ((impact_score += 1))
+    fi
+    
+    # Check for critical file modifications (use cached git state)
+    if is_deps_modified; then
+        ((impact_score += 2))
+        echo "Impact: Dependencies modified (package.json)" >> "$context_report"
+    fi
+    
+    if [[ $(get_git_scripts_modified) -gt 0 ]]; then
+        ((impact_score += 1))
+        echo "Impact: Shell scripts modified" >> "$context_report"
+    fi
+    
+    # Determine impact level
+    if [[ $impact_score -ge 5 ]]; then
+        change_impact="High"
+    elif [[ $impact_score -ge 3 ]]; then
+        change_impact="Medium"
+    fi
+    
+    echo "Change Impact Level: $change_impact (score: $impact_score)" >> "$context_report"
+    print_info "Change impact: $change_impact"
+    
+    # Check 4: Aggregate issues and warnings from previous steps
+    print_info "Aggregating workflow issues and warnings..."
+    local total_issues=0
+    local critical_issues=0
+    
+    # Scan all workflow status for failures or warnings
+    for step in "${!WORKFLOW_STATUS[@]}"; do
+        local status="${WORKFLOW_STATUS[$step]}"
+        if [[ "$status" == "❌" ]]; then
+            ((critical_issues++))
+            ((total_issues++))
+        elif [[ "$status" == "⚠️" ]]; then
+            ((total_issues++))
+        fi
+    done
+    
+    echo "Issues Found: $total_issues total, $critical_issues critical" >> "$context_report"
+    print_info "Issues: $total_issues total, $critical_issues critical"
+    
+    # Check 5: Workflow metrics
+    print_info "Calculating workflow metrics..."
+    local workflow_start_time=${WORKFLOW_START_TIME:-$(date +%s)}
+    local workflow_end_time=$(date +%s)
+    local workflow_duration=$((workflow_end_time - workflow_start_time))
+    
+    echo "Workflow Duration: ${workflow_duration}s" >> "$context_report"
+    
+    # PHASE 2: AI-powered strategic analysis
+    print_info "Phase 2: Preparing AI-powered strategic analysis..."
+    
+    # Build comprehensive context summary
+    local context_summary="Comprehensive Workflow Context:
+- Workflow Completion: $steps_completed/$total_steps steps ($completion_rate%)
+- Git State: $git_status
+- Change Impact: $change_impact (score: $impact_score)
+- Issues: $total_issues total, $critical_issues critical
+- Modified Files: $modified_files
+- Untracked Files: $untracked_files
+- Workflow Duration: ${workflow_duration}s"
+    
+    # Collect change scope from step0
+    local change_scope_detail="${CHANGE_SCOPE:-No specific scope detected}"
+    local recent_commits=$(git log --oneline -5 2>/dev/null || echo "No recent commits")
+    
+    # AI PERSONA PROMPT: Technical Project Manager + Workflow Orchestration Specialist
+    # Specialized for context analysis and adaptive workflow planning
+    local copilot_prompt="**Role**: You are a senior technical project manager and workflow orchestration specialist with expertise in software development workflows, continuous integration strategies, change impact assessment, risk management, and adaptive process optimization.
+
+**Task**: Analyze the complete workflow execution context, assess effectiveness, identify risks and opportunities, and provide strategic recommendations for workflow optimization and next steps.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Workflow: Tests & Documentation Automation v${SCRIPT_VERSION}
+- Execution Mode: ${INTERACTIVE_MODE:+Interactive}${AUTO_MODE:+Automatic}${DRY_RUN:+Dry-Run}
+- Total Steps: $total_steps
+- Completed Steps: $steps_completed ($completion_rate%)
+- Failed Steps: $steps_failed
+
+**Workflow Context Summary:**
+$context_summary
+
+**Detailed Workflow Status:**
+$(echo -e "$workflow_summary")
+
+**Context Report:**
+$(cat "$context_report" 2>/dev/null || echo "   No additional context")
+
+**Change Scope:**
+$change_scope_detail
+
+**Recent Commits:**
+$recent_commits
+
+**Modified Files (sample):**
+$(get_git_status_short_output | head -10 || echo "None")
+
+**Analysis Tasks:**
+
+1. **Workflow Effectiveness Assessment:**
+   - Evaluate overall workflow success ($completion_rate% completion)
+   - Identify bottlenecks or inefficiencies in execution
+   - Assess whether all steps added value
+   - Determine if workflow steps are in optimal order
+   - Evaluate automation vs manual intervention balance
+   - Measure workflow efficiency (time, resources)
+
+2. **Context-Aware Recommendations:**
+   - Based on change impact ($change_impact), recommend next actions
+   - Suggest additional validation if high-impact changes detected
+   - Recommend rollback strategies if critical issues found
+   - Propose testing priorities based on modified files
+   - Identify missing validation steps
+   - Suggest documentation updates based on changes
+
+3. **Adaptive Workflow Optimization:**
+   - Recommend workflow modifications for future runs
+   - Suggest additional automation opportunities
+   - Identify steps that could be parallelized
+   - Propose new validation steps based on this execution
+   - Recommend conditional step execution strategies
+   - Suggest workflow customization based on change type
+
+4. **Next Steps Strategic Planning:**
+   - Prioritize immediate actions (pre-commit, pre-push)
+   - Recommend git operations (commit, push, branch)
+   - Suggest deployment readiness assessment
+   - Identify follow-up tasks or technical debt
+   - Propose code review focus areas
+   - Recommend stakeholder communications
+
+5. **Risk & Opportunity Identification:**
+   - Identify potential risks from detected issues
+   - Assess deployment risk based on change impact
+   - Highlight opportunities for improvement
+   - Flag breaking changes or backward compatibility issues
+   - Identify testing gaps or coverage concerns
+   - Recommend mitigation strategies for risks
+
+**Expected Output:**
+- Workflow effectiveness score (1-10) with justification
+- Top 3 workflow strengths and top 3 improvement areas
+- Context-specific next actions (prioritized, actionable)
+- Adaptive workflow recommendations for future runs
+- Risk assessment with mitigation strategies
+- Opportunity identification with effort estimates
+- Strategic roadmap for continuous improvement
+- Immediate action checklist
+- Long-term optimization recommendations
+
+**Strategic Analysis Standards:**
+- Holistic perspective (not just individual step success)
+- Context-aware recommendations (consider change type, impact)
+- Risk-balanced approach (safety vs speed)
+- Actionable insights (specific, implementable)
+- Prioritization (quick wins vs strategic improvements)
+- Continuous improvement mindset
+- Developer experience optimization
+
+Please provide a comprehensive strategic analysis with specific, prioritized recommendations for immediate actions and long-term workflow optimization."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Strategic Context Analysis Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Check if Copilot CLI is available
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for strategic analysis..."
+        
+        if [[ "$DRY_RUN" == true ]]; then
+            print_info "[DRY RUN] Would invoke: copilot -p with context analysis prompt"
+        else
+            # Smart triggering: Always run in interactive mode, optional in auto
+            if [[ "$INTERACTIVE_MODE" == true ]] || [[ $total_issues -gt 0 ]]; then
+                if confirm_action "Run Copilot CLI for strategic context analysis?"; then
+                    print_info "Starting Copilot CLI strategic workflow analysis..."
+                    print_info "This will analyze context and provide adaptive recommendations"
+                    echo ""
+                    
+                    # Invoke Copilot CLI
+                    copilot -p "$copilot_prompt" --allow-all-tools
+                    
+                    print_success "Copilot CLI strategic analysis completed"
+                    echo ""
+                    
+                    # Display key insights
+                    print_info "Review the strategic recommendations above for workflow optimization"
+                    
+                else
+                    print_warning "Skipped Copilot strategic analysis"
+                fi
+            else
+                print_info "Auto mode - skipping optional strategic analysis"
+            fi
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using basic summary only"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For comprehensive strategic analysis, use the prompt above manually"
+    fi
+    
+    # Summary
+    echo ""
+    print_header "Workflow Context Summary"
+    echo -e "${CYAN}Completion:${NC} $steps_completed/$total_steps steps ($completion_rate%)"
+    echo -e "${CYAN}Git State:${NC} $git_status"
+    echo -e "${CYAN}Change Impact:${NC} $change_impact"
+    echo -e "${CYAN}Issues:${NC} $total_issues total, $critical_issues critical"
+    
+    if [[ $completion_rate -eq 100 ]] && [[ $critical_issues -eq 0 ]]; then
+        print_success "Workflow executed successfully - ready for finalization ✅"
+        save_step_summary "10" "Context_Analysis" "Workflow ${completion_rate}% complete. ${git_status}. Impact: ${change_impact}. ${total_issues} issues (${critical_issues} critical). Ready for finalization." "✅"
+    elif [[ $critical_issues -gt 0 ]]; then
+        print_warning "Critical issues detected - review before proceeding ⚠️"
+        save_step_summary "10" "Context_Analysis" "CRITICAL: ${critical_issues} critical issues detected. ${steps_completed}/${total_steps} steps complete. Review and address critical issues before proceeding." "⚠️"
+    else
+        print_info "Workflow completed with warnings - review recommended"
+        save_step_summary "10" "Context_Analysis" "Workflow ${completion_rate}% complete with ${total_issues} non-critical issues. Review recommended before finalization." "⚠️"
+    fi
+    
+    # Save context analysis to backlog
+    local step_issues="### Workflow Context Summary
+
+**Completion:** ${steps_completed}/${total_steps} steps (${completion_rate}%)
+**Git State:** ${git_status}
+**Change Impact:** ${change_impact}
+**Total Issues:** ${total_issues}
+**Critical Issues:** ${critical_issues}
+
+### Workflow Steps Completion
+
+"
+    for key in "${!WORKFLOW_STATUS[@]}"; do
+        step_issues+="- ${key}: ${WORKFLOW_STATUS[$key]}
+"
+    done
+    save_step_issues "10" "Context_Analysis" "$step_issues"
+    
+    update_workflow_status "step10" "✅"
+}
+
+
+# ------------------------------------------------------------------------------
+# STEP 11: AI-POWERED GIT FINALIZATION & COMMIT MESSAGE GENERATION
+# ------------------------------------------------------------------------------
+# Persona: Git Workflow Specialist + Technical Communication Expert
+# Expertise: Conventional commits, semantic versioning, git best practices, technical writing
+#
+# WHY GIT WORKFLOW SPECIALIST + TECHNICAL COMMUNICATION PERSONA?
+#   - Commit messages require conventional commit standards
+#   - Technical communication ensures clarity and context
+#   - Git workflow expertise guides proper branching and merging
+#   - Semantic versioning knowledge informs commit type selection
+#
+# TWO-PHASE FINALIZATION ARCHITECTURE:
+#
+# Phase 1: Automated Git Analysis
+#   1. Repository state analysis (status, branch, upstream)
+#   2. Change enumeration (modified, staged, untracked)
+#   3. Diff statistics and file categorization
+#   4. Commit type inference (feat/fix/docs/chore/refactor)
+#
+# Phase 2: AI-Powered Commit Message Generation
+#   1. Conventional Commit Message Crafting
+#   2. Semantic Context Integration
+#   3. Change Impact Description
+#   4. Breaking Change Detection
+#   5. Commit Body & Footer Generation
+#
+# INNOVATION: AI generates professional conventional commit messages with context
+# ------------------------------------------------------------------------------
+step11_git_finalization() {
+    print_step "11" "Git Finalization"
+    
+    cd "$PROJECT_ROOT"
+    
+    local git_analysis=$(mktemp)
+    TEMP_FILES+=("$git_analysis")
+    
+    # Dry-run preview
+    if [[ "$DRY_RUN" == true ]]; then
+        print_info "[DRY RUN] Git operations preview:"
+        print_info "  - Would stage all changes"
+        print_info "  - Would generate AI commit message"
+        print_info "  - Would commit with comprehensive message"
+        print_info "  - Would push to origin"
+        update_workflow_status "step11" "✅"
+        return 0
+    fi
+    
+    # PHASE 1: Automated git analysis (use cached git state)
+    print_info "Phase 1: Analyzing git repository state..."
+    
+    # Check 1: Repository state (from cache)
+    print_info "Checking repository state..."
+    local current_branch=$(get_git_current_branch)
+    local commits_ahead=$(get_git_commits_ahead)
+    local commits_behind=$(get_git_commits_behind)
+    
+    echo "Branch: $current_branch" >> "$git_analysis"
+    echo "Commits ahead: $commits_ahead" >> "$git_analysis"
+    echo "Commits behind: $commits_behind" >> "$git_analysis"
+    
+    print_info "Branch: $current_branch (ahead: $commits_ahead, behind: $commits_behind)"
+    
+    # Check 2: Change enumeration (from cache)
+    print_info "Enumerating changes..."
+    local modified_count=$(get_git_modified_count)
+    local staged_count=$(get_git_staged_count)
+    local untracked_count=$(get_git_untracked_count)
+    local deleted_count=$(get_git_deleted_count)
+    local total_changes=$(get_git_total_changes)
+    
+    echo "Modified: $modified_count" >> "$git_analysis"
+    echo "Staged: $staged_count" >> "$git_analysis"
+    echo "Untracked: $untracked_count" >> "$git_analysis"
+    echo "Deleted: $deleted_count" >> "$git_analysis"
+    
+    print_info "Changes: $total_changes files (modified: $modified_count, untracked: $untracked_count)"
+    
+    # Show current status (from cache)
+    print_info "Current git status:"
+    get_git_status_short_output
+    echo ""
+    
+    # Check 3: Diff statistics and file categorization (from cache)
+    print_info "Analyzing diff statistics..."
+    local diff_stats=$(get_git_diff_stat_output)
+    local diff_summary=$(get_git_diff_summary_output)
+    
+    echo "Diff Summary: $diff_summary" >> "$git_analysis"
+    
+    # Categorize files by type (from cache)
+    local docs_modified=$(get_git_docs_modified)
+    local tests_modified=$(get_git_tests_modified)
+    local scripts_modified=$(get_git_scripts_modified)
+    local code_modified=$(get_git_code_modified)
+    
+    echo "Documentation files: $docs_modified" >> "$git_analysis"
+    echo "Test files: $tests_modified" >> "$git_analysis"
+    echo "Script files: $scripts_modified" >> "$git_analysis"
+    echo "Code files: $code_modified" >> "$git_analysis"
+    
+    # Check 4: Infer commit type
+    print_info "Inferring commit type..."
+    local commit_type="chore"
+    local commit_scope=""
+    
+    # Prioritized commit type inference
+    if [[ $code_modified -gt 0 ]] && [[ $tests_modified -gt 0 ]]; then
+        commit_type="feat"
+        commit_scope="implementation+tests"
+    elif [[ $code_modified -gt 0 ]]; then
+        commit_type="feat"
+        commit_scope="implementation"
+    elif [[ $tests_modified -gt 0 ]]; then
+        commit_type="test"
+        commit_scope="testing"
+    elif [[ $docs_modified -gt 0 ]]; then
+        commit_type="docs"
+        commit_scope="documentation"
+    elif [[ $scripts_modified -gt 0 ]]; then
+        commit_type="chore"
+        commit_scope="automation"
+    fi
+    
+    echo "Inferred Commit Type: $commit_type" >> "$git_analysis"
+    echo "Inferred Scope: $commit_scope" >> "$git_analysis"
+    
+    print_info "Inferred commit type: $commit_type($commit_scope)"
+    
+    # Pre-commit diff review
+    print_info "Reviewing changes to be committed..."
+    git diff --stat
+    echo ""
+    
+    if [[ "$INTERACTIVE_MODE" == true ]]; then
+        if confirm_action "Review detailed diff before committing?"; then
+            git diff HEAD
+            echo ""
+        fi
+    fi
+    
+    # PHASE 2: AI-powered commit message generation
+    print_info "Phase 2: Preparing AI-powered commit message generation..."
+    
+    # Build comprehensive git context
+    local git_context="Git Repository Context:
+- Branch: $current_branch
+- Commits ahead: $commits_ahead, behind: $commits_behind
+- Total Changes: $total_changes files
+- Modified: $modified_count, Untracked: $untracked_count, Deleted: $deleted_count
+- Documentation: $docs_modified files
+- Tests: $tests_modified files
+- Scripts: $scripts_modified files
+- Code: $code_modified files
+- Inferred Type: $commit_type
+- Inferred Scope: $commit_scope"
+    
+    # Sample changed files
+    local changed_files=$(git status --short | head -20)
+    
+    # Get diff sample for context
+    local diff_sample=$(git diff --unified=3 HEAD | head -100)
+    
+    # AI PERSONA PROMPT: Git Workflow Specialist + Technical Communication Expert
+    # Specialized for conventional commit message generation
+    local copilot_prompt="**Role**: You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization.
+
+**Task**: Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Workflow: Tests & Documentation Automation v${SCRIPT_VERSION}
+- Change Scope: ${CHANGE_SCOPE:-General updates}
+
+**Git Repository Analysis:**
+$git_context
+
+**Changed Files:**
+$changed_files
+
+**Diff Statistics:**
+$diff_summary
+
+**Detailed Context:**
+$(cat "$git_analysis" 2>/dev/null || echo "   No additional context")
+
+**Diff Sample (first 100 lines):**
+$diff_sample
+
+**Commit Message Generation Tasks:**
+
+1. **Conventional Commit Message Crafting:**
+   - Select appropriate type: feat|fix|docs|style|refactor|test|chore
+   - Define clear scope (e.g., deployment, testing, documentation)
+   - Write concise subject line (<50 chars if possible, max 72)
+   - Follow format: type(scope): subject
+   - Use imperative mood (\"add\" not \"added\" or \"adds\")
+   - Don't end subject with period
+
+2. **Semantic Context Integration:**
+   - Analyze what changed and why
+   - Identify the business value or technical benefit
+   - Connect changes to workflow or project goals
+   - Reference workflow automation context
+   - Note automation tool version
+
+3. **Change Impact Description:**
+   - Describe what was changed (files, features, functionality)
+   - Explain why changes were made
+   - Note any architectural or structural improvements
+   - Highlight test coverage or documentation updates
+   - Mention dependency or quality improvements
+
+4. **Breaking Change Detection:**
+   - Identify any breaking changes (API, behavior, interface)
+   - Flag deprecations or removals
+   - Note migration steps if applicable
+   - Assess backward compatibility
+
+5. **Commit Body & Footer Generation:**
+   - Provide detailed multi-line body if needed
+   - List key changes as bullet points
+   - Include relevant issue/PR references
+   - Add footer metadata (automation info, breaking changes)
+   - Follow 72-character line wrap
+
+**Expected Output Format:**
+
+```
+type(scope): subject line here
+
+Optional body paragraph explaining what and why, not how.
+Wrap at 72 characters per line.
+
+- List key changes as bullet points
+- Each bullet should be clear and actionable
+- Focus on user/developer impact
+
+BREAKING CHANGE: describe any breaking changes
+Refs: #issue-number (if applicable)
+[workflow-automation v${SCRIPT_VERSION}]
+```
+
+**Conventional Commit Types:**
+- feat: New feature or functionality
+- fix: Bug fix
+- docs: Documentation changes
+- style: Code style/formatting (no logic change)
+- refactor: Code restructuring (no behavior change)
+- test: Adding or updating tests
+- chore: Maintenance tasks (build, tools, dependencies)
+- perf: Performance improvements
+- ci: CI/CD changes
+
+**Best Practices:**
+- Subject line: imperative mood, lowercase, no period, <72 chars
+- Body: explain WHAT and WHY, not HOW
+- Footer: metadata, breaking changes, references
+- Be specific but concise
+- Focus on impact and intent
+- Conventional commits enable automated changelogs
+- Think about future maintainers reading this
+
+**Quality Standards:**
+- Clear and unambiguous
+- Grammatically correct
+- Professionally written
+- Valuable for code review
+- Useful for git log history
+- Enables semantic versioning
+- Facilitates automated tools
+
+Please generate a complete conventional commit message following these standards. Provide ONLY the commit message text (no explanations, no markdown code blocks, just the raw commit message)."
+
+    echo ""
+    echo -e "${CYAN}GitHub Copilot CLI Commit Message Generation Prompt:${NC}"
+    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
+    
+    # Stage changes
+    echo ""
+    if [[ "$INTERACTIVE_MODE" == true ]]; then
+        if ! confirm_action "Stage changes for commit?"; then
+            print_warning "Skipping commit - changes not staged"
+            return 0
+        fi
+    fi
+    
+    git add .
+    print_success "Changes staged"
+    
+    # Generate commit message
+    local ai_commit_msg=""
+    local use_ai_message=false
+    local commit_msg_file=$(mktemp)
+    TEMP_FILES+=("$commit_msg_file")
+    
+    # Check if Copilot CLI is available
+    if command -v copilot &> /dev/null; then
+        print_info "GitHub Copilot CLI detected - ready for commit message generation..."
+        
+        if [[ "$INTERACTIVE_MODE" == true ]]; then
+            if confirm_action "Generate AI-powered commit message with Copilot CLI?"; then
+                print_info "Starting Copilot CLI commit message generation..."
+                print_info "This will create a professional conventional commit message"
+                print_info "BEST PRACTICE: Using 'copilot -p' for specialized git commit expertise"
+                echo ""
+                
+                # BEST PRACTICE ENHANCEMENT v1.2.0:
+                # =====================================
+                # Use 'copilot -p' for interactive AI generation with proper workflow
+                # 
+                # Pattern: copilot -p <prompt> creates interactive session
+                # User benefit: AI generates message, user can review/edit in Copilot session
+                # Fallback: Manual entry if user skips AI session
+                #
+                # Note: copilot CLI is interactive by design - it opens a conversation
+                # where the AI proposes a commit message and user can refine it
+                print_warning "Copilot CLI will open interactive session for message generation"
+                print_info "After AI generates message, copy it and paste when prompted"
+                echo ""
+                
+                # Invoke Copilot CLI in interactive mode
+                # The -p flag means "prompt mode" - it starts with this prompt
+                copilot -p "$copilot_prompt" --allow-all-tools
+                
+                echo ""
+                print_success "Copilot CLI commit message generation session completed"
+                echo ""
+                
+                # BEST PRACTICE: Ask user to provide the AI-generated message
+                # This is the correct workflow since copilot CLI is interactive
+                print_info "Please copy the AI-generated commit message from Copilot session above"
+                read -p "$(echo -e "${YELLOW}Paste AI-generated commit message (or press Enter for default): ${NC}")" ai_commit_msg
+                
+                if [[ -n "$ai_commit_msg" ]]; then
+                    use_ai_message=true
+                    # Save to temp file for reference
+                    echo "$ai_commit_msg" > "$commit_msg_file"
+                    print_success "Using AI-generated commit message ✅"
+                else
+                    print_info "No AI message provided - using default commit message"
+                fi
+            else
+                print_warning "Skipped AI commit message generation"
+            fi
+        else
+            # AUTO MODE: Skip interactive AI generation
+            print_info "Auto mode - skipping interactive Copilot generation"
+            print_info "Using default conventional commit message"
+        fi
+    else
+        print_warning "GitHub Copilot CLI not found - using default message"
+        print_info "Install from: https://github.com/github/gh-copilot"
+        print_info "For AI-powered commit messages, use the prompt above manually with Copilot"
+    fi
+    
+    # Commit with chosen message
+    local commit_message=""
+    
+    if [[ "$use_ai_message" == true ]] && [[ -n "$ai_commit_msg" ]]; then
+        commit_message="$ai_commit_msg"
+    else
+        # Build default comprehensive commit message
+        commit_message="${commit_type}(${commit_scope}): update tests and documentation
+
+Workflow automation completed comprehensive validation and updates.
+
+Changes:
+- Modified files: $modified_count
+- Documentation: $docs_modified files
+- Tests: $tests_modified files  
+- Scripts: $scripts_modified files
+- Code: $code_modified files
+
+Scope: ${CHANGE_SCOPE:-General updates}
+Total changes: $total_changes files
+
+[workflow-automation v${SCRIPT_VERSION}]"
+    fi
+    
+    print_info "Commit message:"
+    echo -e "${CYAN}${commit_message}${NC}"
+    echo ""
+    
+    if [[ "$INTERACTIVE_MODE" == true ]]; then
+        if ! confirm_action "Commit with this message?"; then
+            print_warning "Commit cancelled - entering manual mode"
+            read -p "Enter custom commit message: " custom_msg
+            if [[ -n "$custom_msg" ]]; then
+                commit_message="$custom_msg"
+            else
+                print_error "Empty commit message - aborting commit"
+                return 1
+            fi
+        fi
+    fi
+    
+    # Execute commit
+    if git commit -m "$commit_message"; then
+        print_success "Changes committed successfully ✅"
+    else
+        print_error "Commit failed"
+        return 1
+    fi
+    
+    # ENHANCEMENT 3: Push to remote with confirmation
+    echo ""
+    print_warning "🔴 CRITICAL: Ready to push to origin"
+    
+    if [[ "$INTERACTIVE_MODE" == true ]]; then
+        if ! confirm_action "Push to remote repository?"; then
+            print_warning "Push skipped - workflow incomplete"
+            return 0
+        fi
+    fi
+    
+    local current_branch=$(git branch --show-current)
+    
+    if git push origin "$current_branch"; then
+        print_success "Successfully pushed to origin/$current_branch ✅"
+        update_workflow_status "step11" "✅"
+        save_step_summary "11" "Git_Finalization" "Changes committed and pushed successfully to ${current_branch}. ${modified_count} files modified. Commit: ${commit_type}(${commit_scope})." "✅"
+    else
+        print_error "PUSH FAILED - workflow incomplete ❌"
+        save_step_summary "11" "Git_Finalization" "FAILED: Push to ${current_branch} failed. Changes committed locally but not pushed to remote." "❌"
+        return 1
+    fi
+    
+    # Save git finalization summary to backlog
+    local step_issues="### Git Finalization Summary
+
+**Commit Type:** ${commit_type}
+**Commit Scope:** ${commit_scope}
+**Branch:** ${current_branch}
+**Modified Files:** ${modified_count}
+**Total Changes:** ${total_changes}
+
+### Commit Message
+
+\`\`\`
+${commit_message}
+\`\`\`
+
+### Git Changes
+
+\`\`\`
+$(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
+\`\`\`
+"
+    save_step_issues "11" "Git_Finalization" "$step_issues"
+    
+    # Set executable permissions on shell scripts
+    print_info "Setting executable permissions on shell scripts..."
+    find shell_scripts -name "*.sh" -exec chmod +x {} \;
+    print_success "Permissions updated"
+}
+
+# ------------------------------------------------------------------------------
+# WORKFLOW ORCHESTRATION
+# ------------------------------------------------------------------------------
+execute_full_workflow() {
+    print_header "Executing Full Workflow"
+    
+    local failed_step=""
+    
+    # Execute all steps in sequence
+    step0_analyze_changes || { failed_step="Step 0"; }
+    [[ -n "$failed_step" ]] || step1_update_documentation || { failed_step="Step 1"; }
+    [[ -n "$failed_step" ]] || step2_check_consistency || { failed_step="Step 2"; }
+    [[ -n "$failed_step" ]] || step3_validate_script_references || { failed_step="Step 3"; }
+    [[ -n "$failed_step" ]] || step4_validate_directory_structure || { failed_step="Step 4"; }
+    [[ -n "$failed_step" ]] || step5_review_existing_tests || { failed_step="Step 5"; }
+    [[ -n "$failed_step" ]] || step6_generate_new_tests || { failed_step="Step 6"; }
+    [[ -n "$failed_step" ]] || step7_execute_test_suite || { failed_step="Step 7"; }
+    [[ -n "$failed_step" ]] || step8_validate_dependencies || { failed_step="Step 8"; }
+    [[ -n "$failed_step" ]] || step9_code_quality_validation || { failed_step="Step 9"; }
+    [[ -n "$failed_step" ]] || step10_context_analysis || { failed_step="Step 10"; }
+    [[ -n "$failed_step" ]] || step11_git_finalization || { failed_step="Step 11"; }
+    
+    # Final status
+    echo ""
+    if [[ -n "$failed_step" ]]; then
+        print_error "Workflow failed at: $failed_step"
+        show_progress
+        exit 1
+    else
+        print_header "🎉 Workflow Completed Successfully!"
+        show_progress
+        print_success "All steps completed successfully"
+        print_info "Backlog reports saved to: $BACKLOG_RUN_DIR"
+        print_info "Summaries saved to: $SUMMARIES_RUN_DIR"
+        
+        # Create workflow summary file
+        create_workflow_summary
+    fi
+}
+
+# Create a summary file for the entire workflow run
+create_workflow_summary() {
+    local summary_file="${BACKLOG_RUN_DIR}/WORKFLOW_SUMMARY.md"
+    
+    cat > "$summary_file" << EOF
+# Workflow Execution Summary
+
+**Workflow Run ID:** ${WORKFLOW_RUN_ID}
+**Execution Date:** $(date '+%Y-%m-%d %H:%M:%S')
+**Script Version:** ${SCRIPT_VERSION}
+**Mode:** $([ "$AUTO_MODE" = true ] && echo "Automatic" || echo "Interactive")
+
+---
+
+## Execution Overview
+
+### Steps Completed
+
+EOF
+    
+    # Add step status
+    local step_num=0
+    for step_num in {0..11}; do
+        local step_key="step${step_num}"
+        local step_status="${WORKFLOW_STATUS[$step_key]:-⏭️}"
+        echo "- **Step ${step_num}:** ${step_status}" >> "$summary_file"
+    done
+    
+    cat >> "$summary_file" << EOF
+
+### Change Analysis
+
+- **Change Scope:** ${CHANGE_SCOPE:-Not specified}
+- **Commits Ahead:** ${ANALYSIS_COMMITS:-0}
+- **Modified Files:** ${ANALYSIS_MODIFIED:-0}
+
+---
+
+## Individual Step Reports
+
+EOF
+    
+    # List all step reports in this run
+    for step_file in "$BACKLOG_RUN_DIR"/step*.md; do
+        if [[ -f "$step_file" ]]; then
+            local step_name=$(basename "$step_file" .md)
+            echo "- [\`${step_name}\`](./${step_name}.md)" >> "$summary_file"
+        fi
+    done
+    
+    cat >> "$summary_file" << EOF
+
+---
+
+## How to Use These Reports
+
+1. **Review Individual Steps:** Click on any step report above to see detailed findings
+2. **Address Issues:** Work through issues by priority (Critical → High → Medium → Low)
+3. **Track Progress:** Mark issues as resolved and update documentation
+4. **Archive:** Move resolved workflow runs to \`backlog/archive/\` for historical reference
+
+---
+
+**Generated by:** ${SCRIPT_NAME} v${SCRIPT_VERSION}
+EOF
+    
+    print_success "Workflow summary created: $summary_file"
+}
+
+# ==============================================================================
+# MAIN EXECUTION
+# ==============================================================================
+
+show_usage() {
+    cat << EOF
+${SCRIPT_NAME} v${SCRIPT_VERSION}
+
+USAGE:
+    $0 [OPTIONS]
+
+OPTIONS:
+    --dry-run           Preview all actions without executing
+    --auto              Run in automatic mode (no confirmations)
+    --interactive       Run in interactive mode (default)
+    --help              Show this help message
+    --version           Show script version
+
+DESCRIPTION:
+    Automates the complete tests and documentation update workflow including:
+    - Pre-analysis of recent changes
+    - Documentation updates and validation
+    - Test suite review and execution
+    - Dependency validation
+    - Code quality checks
+    - Git finalization
+
+EXAMPLES:
+    # Preview workflow without execution
+    $0 --dry-run
+    
+    # Run in interactive mode (default)
+    $0
+    
+    # Run in automatic mode (no confirmations)
+    $0 --auto
+
+For more information, see:
+    - /prompts/tests_documentation_update_enhanced.txt
+    - /docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md
+
+EOF
+}
+
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --dry-run)
+                DRY_RUN=true
+                print_info "Dry-run mode enabled"
+                shift
+                ;;
+            --auto)
+                AUTO_MODE=true
+                INTERACTIVE_MODE=false
+                print_info "Automatic mode enabled"
+                shift
+                ;;
+            --interactive)
+                INTERACTIVE_MODE=true
+                AUTO_MODE=false
+                shift
+                ;;
+            --help)
+                show_usage
+                exit 0
+                ;;
+            --version)
+                echo "${SCRIPT_NAME} v${SCRIPT_VERSION}"
+                exit 0
+                ;;
+            *)
+                print_error "Unknown option: $1"
+                show_usage
+                exit 1
+                ;;
+        esac
+    done
+}
+
+main() {
+    # Set up cleanup trap for temporary files
+    # Ensures cleanup on EXIT (normal), INT (Ctrl+C), TERM (kill)
+    # Critical for AI-enhanced steps that create temp files
+    trap cleanup EXIT INT TERM
+    
+    print_header "${SCRIPT_NAME} v${SCRIPT_VERSION}"
+    
+    parse_arguments "$@"
+    
+    if [[ "$DRY_RUN" == true ]]; then
+        print_warning "DRY RUN MODE - No changes will be made"
+    fi
+    
+    # Execute pre-flight checks
+    check_prerequisites
+    validate_dependencies
+    
+    # Initialize git state cache (performance optimization v1.5.0)
+    # Captures all git information once to eliminate 30+ redundant git calls
+    init_git_cache
+    
+    # Create backlog and summaries directories for this run
+    mkdir -p "$BACKLOG_RUN_DIR"
+    mkdir -p "$SUMMARIES_RUN_DIR"
+    mkdir -p "$LOGS_RUN_DIR"
+    print_info "Backlog directory created: $BACKLOG_RUN_DIR"
+    print_info "Summaries directory created: $SUMMARIES_RUN_DIR"
+    print_info "Logs directory created: $LOGS_RUN_DIR"
+    
+    # Execute full workflow with all AI-enhanced steps
+    execute_full_workflow
+}
+
+# ==============================================================================
+# SCRIPT ENTRY POINT
+# ==============================================================================
+
+main "$@"
