@@ -129,6 +129,31 @@ run_test "Source validation.sh" "
     declare -F check_prerequisites > /dev/null
 "
 
+# Test 6: Source backlog module
+run_test "Source backlog.sh" "
+    PROJECT_ROOT='/tmp' && \
+    source '$LIB_DIR/colors.sh' && \
+    source '$LIB_DIR/config.sh' && \
+    source '$LIB_DIR/utils.sh' && \
+    source '$LIB_DIR/backlog.sh' && \
+    declare -F create_workflow_summary > /dev/null
+"
+
+# Test 7: Source summary module
+run_test "Source summary.sh" "
+    source '$LIB_DIR/colors.sh' && \
+    source '$LIB_DIR/summary.sh' && \
+    declare -F determine_step_status > /dev/null
+"
+
+# Test 8: Source ai_helpers module
+run_test "Source ai_helpers.sh" "
+    source '$LIB_DIR/colors.sh' && \
+    source '$LIB_DIR/utils.sh' && \
+    source '$LIB_DIR/ai_helpers.sh' && \
+    declare -F is_copilot_available > /dev/null
+"
+
 # ==============================================================================
 # PHASE 3: FUNCTION AVAILABILITY TESTS
 # ==============================================================================
@@ -145,6 +170,9 @@ source "$LIB_DIR/config.sh"
 source "$LIB_DIR/utils.sh"
 source "$LIB_DIR/git_cache.sh"
 source "$LIB_DIR/validation.sh"
+source "$LIB_DIR/backlog.sh"
+source "$LIB_DIR/summary.sh"
+source "$LIB_DIR/ai_helpers.sh"
 
 # Test utility functions
 run_test "Function: print_header" "declare -F print_header > /dev/null"
@@ -171,6 +199,24 @@ run_test "Function: is_git_repo" "declare -F is_git_repo > /dev/null"
 # Test validation functions
 run_test "Function: check_prerequisites" "declare -F check_prerequisites > /dev/null"
 run_test "Function: validate_dependencies" "declare -F validate_dependencies > /dev/null"
+
+# Test backlog functions
+run_test "Function: create_workflow_summary" "declare -F create_workflow_summary > /dev/null"
+
+# Test summary functions
+run_test "Function: determine_step_status" "declare -F determine_step_status > /dev/null"
+run_test "Function: format_step_summary" "declare -F format_step_summary > /dev/null"
+run_test "Function: create_progress_summary" "declare -F create_progress_summary > /dev/null"
+run_test "Function: generate_step_stats" "declare -F generate_step_stats > /dev/null"
+run_test "Function: aggregate_summaries" "declare -F aggregate_summaries > /dev/null"
+
+# Test AI helper functions
+run_test "Function: is_copilot_available" "declare -F is_copilot_available > /dev/null"
+run_test "Function: validate_copilot_cli" "declare -F validate_copilot_cli > /dev/null"
+run_test "Function: build_ai_prompt" "declare -F build_ai_prompt > /dev/null"
+run_test "Function: build_doc_analysis_prompt" "declare -F build_doc_analysis_prompt > /dev/null"
+run_test "Function: execute_copilot_prompt" "declare -F execute_copilot_prompt > /dev/null"
+run_test "Function: trigger_ai_step" "declare -F trigger_ai_step > /dev/null"
 
 # Cleanup
 rm -rf "$PROJECT_ROOT"
