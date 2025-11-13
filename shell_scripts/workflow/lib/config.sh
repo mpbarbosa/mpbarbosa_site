@@ -12,12 +12,12 @@ SCRIPT_NAME="Tests & Documentation Workflow Automation"
 # Directory paths - computed relative to project root
 # PROJECT_ROOT must be set by calling script before sourcing this module
 if [[ -z "${PROJECT_ROOT:-}" ]]; then
-    # Fallback: compute from this script's location (assumes lib/ subdirectory)
-    PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+    # Fallback: compute from this script's location (lib/ is in shell_scripts/workflow/)
+    PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 fi
 
 SRC_DIR="${PROJECT_ROOT}/src"
-BACKLOG_DIR="${PROJECT_ROOT}/backlog"
+BACKLOG_DIR="${PROJECT_ROOT}/shell_scripts/workflow/backlog"
 SUMMARIES_DIR="${PROJECT_ROOT}/summaries"
 LOGS_DIR="${PROJECT_ROOT}/logs"
 DOCS_DIR="${PROJECT_ROOT}/docs"

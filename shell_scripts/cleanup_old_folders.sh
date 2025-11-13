@@ -20,7 +20,7 @@ readonly NC='\033[0m' # No Color
 # Script configuration
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-readonly KEEP_COUNT=15
+KEEP_COUNT=15
 readonly FOLDERS_TO_CLEAN=("backlog" "logs" "summaries")
 
 # Flags
@@ -198,7 +198,12 @@ main() {
     print_info "Folders to clean: ${FOLDERS_TO_CLEAN[*]}"
     echo
     for folder_name in "${FOLDERS_TO_CLEAN[@]}"; do
-        local folder_path="$PROJECT_ROOT/$folder_name"
+        # Special case: backlog is now in shell_scripts/workflow/
+        if [[ "$folder_name" == "backlog" ]]; then
+            local folder_path="$SCRIPT_DIR/workflow/backlog"
+        else
+            local folder_path="$PROJECT_ROOT/$folder_name"
+        fi
         print_info "Starting processing of $folder_name"
         cleanup_folder "$folder_path"
         print_info "Completed processing of $folder_name"

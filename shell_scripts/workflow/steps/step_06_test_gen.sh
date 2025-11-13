@@ -10,10 +10,11 @@
 step6_generate_new_tests() {
     print_step "6" "Generate New Tests (if needed)"
     
-    cd "$SRC_DIR"
+    cd "$SRC_DIR" || return 1
     
     local tests_generated=0
-    local generation_log_file=$(mktemp)
+    local generation_log_file
+    generation_log_file=$(mktemp)
     TEMP_FILES+=("$generation_log_file")
     
     # PHASE 1: Automated gap analysis
@@ -28,7 +29,8 @@ step6_generate_new_tests() {
         while IFS= read -r code_file; do
             [[ -z "$code_file" ]] && continue
             
-            local file_name=$(basename "$code_file" .js)
+            local file_name
+            file_name=$(basename "$code_file" .js)
             local test_file_1="__tests__/${file_name}.test.js"
             local test_file_2="__tests__/${file_name}.spec.js"
             
@@ -56,7 +58,8 @@ step6_generate_new_tests() {
     if [[ -d "__tests__" ]]; then
         # Check for tests that might be incomplete (very short test files)
         while IFS= read -r test_file; do
-            local line_count=$(wc -l < "$test_file")
+            local line_count
+            line_count=$(wc -l < "$test_file")
             if [[ $line_count -lt 20 ]]; then
                 print_warning "Potentially incomplete test: $test_file ($line_count lines)"
                 echo "Short test file: $test_file" >> "$generation_log_file"
@@ -98,10 +101,12 @@ step6_generate_new_tests() {
         done
     fi
     
-    local generation_log_content=$(cat "$generation_log_file" 2>/dev/null || echo "   No gaps detected - all code has tests")
+    local generation_log_content
+    generation_log_content=$(cat "$generation_log_file" 2>/dev/null || echo "   No gaps detected - all code has tests")
     
     # Build comprehensive test generation prompt
-    local copilot_prompt="**Role**: You are a senior test-driven development (TDD) expert and code generation specialist with expertise in Jest testing framework, test pattern generation, edge case analysis, mock creation, and automated test scaffolding.
+    local copilot_prompt
+    copilot_prompt="**Role**: You are a senior test-driven development (TDD) expert and code generation specialist with expertise in Jest testing framework, test pattern generation, edge case analysis, mock creation, and automated test scaffolding.
 
 **Task**: Generate comprehensive test code for untested modules based on analysis from Step 5 (Test Review).
 
@@ -234,10 +239,60 @@ Please generate complete, production-ready test code for the identified untested
                     print_info "This will generate actual Jest test code for untested modules"
                     echo ""
                     
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step6_copilot_test_generation_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
                     # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt"
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
                     
                     print_success "Copilot CLI test generation completed"
+                    print_info "Full session log saved to: $log_file"
+                    echo ""
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "6" "Test_Generation" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                     echo ""
                     
                     # User confirmation of generated tests
@@ -266,7 +321,57 @@ Please generate complete, production-ready test code for the identified untested
                 print_success "No test generation needed - all code has tests"
                 if [[ "$INTERACTIVE_MODE" == true ]]; then
                     if confirm_action "Generate additional edge case tests anyway?"; then
-                        execute_copilot_prompt "$copilot_prompt"
+                        # Create log file with unique timestamp
+                        local log_timestamp
+                        log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                        local log_file="${LOGS_RUN_DIR}/step6_copilot_test_generation_${log_timestamp}.log"
+                        print_info "Logging output to: $log_file"
+                        
+                        execute_copilot_prompt "$copilot_prompt" "$log_file"
+                        
+                        print_info "Full session log saved to: $log_file"
+                        
+                        # Ask user if they want to save issues from the Copilot session
+                        if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                            if [[ -f "$log_file" ]]; then
+                                local log_content
+                                log_content=$(cat "$log_file")
+                                
+                                # Build issue extraction prompt using helper function
+                                local extract_prompt
+                                extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                                echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                                echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                                
+                                if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                    sleep 1
+                                    print_info "Starting Copilot CLI session for issue extraction..."
+                                    copilot -p "$extract_prompt" --allow-all-tools
+                                    
+                                    print_info "Please copy the organized issues from Copilot output."
+                                    print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                    
+                                    local organized_issues=""
+                                    local line
+                                    while IFS= read -r line; do
+                                        if [[ "$line" == "END" ]]; then
+                                            break
+                                        fi
+                                        organized_issues+="${line}"$'\n'
+                                    done
+                                    
+                                    if [[ -n "$organized_issues" ]]; then
+                                        save_step_issues "6" "Test_Generation" "$organized_issues"
+                                        print_success "Issues extracted from log and saved to backlog"
+                                    else
+                                        print_warning "No organized issues provided - skipping backlog save"
+                                    fi
+                                else
+                                    print_warning "Skipped issue extraction - no backlog file created"
+                                fi
+                            fi
+                        fi
                     fi
                 fi
             fi
@@ -279,9 +384,23 @@ Please generate complete, production-ready test code for the identified untested
     
     # Summary
     echo ""
+    
+    # Always save backlog file (even when no issues found)
+    local step_issues=""
     if [[ $untested_count -eq 0 ]]; then
         print_success "Test coverage is complete ✅"
         save_step_summary "6" "Test_Generation" "All modules have test coverage. No new test generation required." "✅"
+        
+        # Save success status to backlog
+        step_issues="### Test Generation Summary
+
+**Untested Modules:** 0
+**Tests Generated:** ${tests_generated}
+**Edge Case Gaps:** ${edge_case_gaps}
+**Status:** ✅ All Checks Passed
+
+All modules have test coverage. No new test generation required.
+"
     else
         if [[ $tests_generated -gt 0 ]]; then
             print_success "Generated tests for untested code ✅"
@@ -292,7 +411,7 @@ Please generate complete, production-ready test code for the identified untested
         fi
         
         # Save to backlog
-        local step_issues="### Test Generation Summary
+        step_issues="### Test Generation Summary
 
 **Untested Modules:** ${untested_count}
 **Tests Generated:** ${tests_generated}
@@ -307,10 +426,12 @@ $(cat "$generation_log_file")
 \`\`\`
 "
         fi
-        save_step_issues "6" "Test_Generation" "$step_issues"
     fi
     
-    cd "$PROJECT_ROOT"
+    # Always save backlog file
+    save_step_issues "6" "Test_Generation" "$step_issues"
+    
+    cd "$PROJECT_ROOT" || return 1
     update_workflow_status "step6" "✅"
 }
 

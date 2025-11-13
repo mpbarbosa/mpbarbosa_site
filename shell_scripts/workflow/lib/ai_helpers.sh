@@ -142,6 +142,762 @@ Analyze:
 - Provide code examples for recommended fixes"
 }
 
+# Build an issue extraction prompt for Copilot session logs
+# Usage: build_issue_extraction_prompt <log_file> <log_content>
+build_issue_extraction_prompt() {
+    local log_file="$1"
+    local log_content="$2"
+    
+    build_ai_prompt \
+        "You are a technical project manager specialized in issue extraction, categorization, and documentation organization." \
+        "Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
+
+**Session Log File**: ${log_file}
+
+**Log Content**:
+\`\`\`
+${log_content}
+\`\`\`
+
+**Required Output Format**:
+### Critical Issues
+- [Issue description with priority and affected files]
+
+### High Priority Issues
+- [Issue description with priority and affected files]
+
+### Medium Priority Issues
+- [Issue description with priority and affected files]
+
+### Low Priority Issues
+- [Issue description with priority and affected files]
+
+### Recommendations
+- [Improvement suggestions]" \
+        "- Extract all issues, warnings, and recommendations from the log
+- Categorize by severity and impact
+- Include affected files/sections mentioned in the log
+- Prioritize actionable items
+- Add context where needed
+- If no issues found, state 'No issues identified'"
+}
+
+# Build a documentation consistency analysis prompt (Step 2)
+# Usage: build_step2_consistency_prompt <doc_count> <change_scope> <modified_count> <broken_refs> <doc_files>
+build_step2_consistency_prompt() {
+    local doc_count="$1"
+    local change_scope="$2"
+    local modified_count="$3"
+    local broken_refs_content="$4"
+    local doc_files="$5"
+    
+    cat << EOF
+**Role**: You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation.
+
+**Task**: Perform a comprehensive documentation consistency analysis for this project.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML with Material Design)
+- Documentation files: ${doc_count} markdown files
+- Scope: ${change_scope}
+- Recent changes: ${modified_count} files modified
+
+**Analysis Tasks:**
+
+1. **Cross-Reference Validation:**
+   - Check if all referenced files/directories exist
+   - Verify version numbers follow semantic versioning (MAJOR.MINOR.PATCH)
+   - Ensure version consistency across documentation and package.json
+   - Validate command examples match actual scripts
+
+2. **Content Synchronization:**
+   - Compare .github/copilot-instructions.md with README.md
+   - Check if shell_scripts/README.md matches actual scripts in shell_scripts/
+   - Verify package.json scripts match documented commands
+
+3. **Architecture Consistency:**
+   - Validate directory structure matches documented structure
+   - Check if deployment steps in docs match actual deployment scripts
+   - Verify submodule references are accurate
+
+4. **Broken References Found:**
+${broken_refs_content}
+
+5. **Quality Checks:**
+   - Missing documentation for new features
+   - Outdated version numbers or dates
+   - Inconsistent terminology or naming conventions
+   - Missing cross-references between related docs
+
+**Files to Analyze:**
+${doc_files}
+
+**Expected Output:**
+- List of inconsistencies found with specific file:line references
+- Recommendations for fixes with rationale
+- Priority level (Critical/High/Medium/Low) for each issue
+- Actionable remediation steps
+
+**Documentation Standards to Apply:**
+- Technical accuracy and precision
+- Consistency in terminology and formatting
+- Completeness of cross-references
+- Version number accuracy across all files
+
+Please analyze the documentation files and provide a detailed consistency report.
+EOF
+}
+
+# Build a shell script reference validation prompt (Step 3)
+# Usage: build_step3_script_refs_prompt <script_count> <change_scope> <issues> <script_issues> <all_scripts>
+build_step3_script_refs_prompt() {
+    local script_count="$1"
+    local change_scope="$2"
+    local issues="$3"
+    local script_issues_content="$4"
+    local all_scripts="$5"
+    
+    cat << EOF
+**Role**: You are a senior technical documentation specialist and DevOps documentation expert with expertise in shell script documentation, automation workflow documentation, and command-line tool reference guides.
+
+**Task**: Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
+
+**Context:**
+- Project: MP Barbosa Personal Website
+- Shell Scripts Directory: shell_scripts/
+- Total Scripts: ${script_count}
+- Scope: ${change_scope}
+- Issues Found in Phase 1: ${issues}
+
+**Phase 1 Automated Findings:**
+${script_issues_content}
+
+**Available Scripts:**
+${all_scripts}
+
+**Validation Tasks:**
+
+1. **Script-to-Documentation Mapping:**
+   - Verify every script in shell_scripts/ is documented in shell_scripts/README.md
+   - Check that documented scripts actually exist
+   - Validate script descriptions match actual functionality
+   - Ensure usage examples are accurate and complete
+
+2. **Reference Accuracy:**
+   - Validate command-line arguments in documentation match script implementation
+   - Check script version numbers are consistent
+   - Verify cross-references between scripts are accurate
+   - Validate file path references in script comments
+
+3. **Documentation Completeness:**
+   - Missing purpose/description for any scripts
+   - Missing usage examples or command syntax
+   - Missing prerequisite or dependency information
+   - Missing output/return value documentation
+
+4. **Shell Script Best Practices:**
+   - Executable permissions properly documented
+   - Shebang lines mentioned in documentation where relevant
+   - Environment variable requirements documented
+   - Error handling and exit codes documented
+
+5. **Integration Documentation:**
+   - Workflow relationships between scripts documented
+   - Execution order or dependencies clarified
+   - Common use cases and examples provided
+   - Troubleshooting guidance available
+
+**Files to Analyze:**
+- shell_scripts/README.md
+- All .sh files in shell_scripts/
+- .github/copilot-instructions.md (for shell script references)
+- Main README.md (for automation workflow mentions)
+
+**Expected Output:**
+- List of script reference issues with file:line locations
+- Missing or incomplete script documentation
+- Inconsistencies between code and documentation
+- Recommendations for improving script documentation
+- Priority level (Critical/High/Medium/Low) for each issue
+- Actionable remediation steps with examples
+
+**Documentation Standards to Apply:**
+- Clear and concise command syntax documentation
+- Comprehensive usage examples for each script
+- Accurate parameter and option descriptions
+- Proper shell script documentation conventions
+- Integration and workflow clarity
+
+Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements.
+EOF
+}
+
+# Build a directory structure validation prompt (Step 4)
+# Usage: build_step4_directory_prompt <dir_count> <change_scope> <missing_critical> <undocumented_dirs> <doc_mismatch> <structure_issues> <dir_tree>
+build_step4_directory_prompt() {
+    local dir_count="$1"
+    local change_scope="$2"
+    local missing_critical="$3"
+    local undocumented_dirs="$4"
+    local doc_structure_mismatch="$5"
+    local structure_issues_content="$6"
+    local dir_tree="$7"
+    
+    cat << EOF
+**Role**: You are a senior software architect and technical documentation specialist with expertise in project structure conventions, architectural patterns, code organization best practices, and documentation alignment.
+
+**Task**: Perform comprehensive validation of directory structure and architectural organization for this project.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML with Material Design + submodules)
+- Total Directories: ${dir_count} (excluding node_modules, .git, coverage)
+- Scope: ${change_scope}
+- Critical Directories Missing: ${missing_critical}
+- Undocumented Directories: ${undocumented_dirs}
+- Documentation Mismatches: ${doc_structure_mismatch}
+
+**Phase 1 Automated Findings:**
+${structure_issues_content}
+
+**Current Directory Structure:**
+${dir_tree}
+
+**Validation Tasks:**
+
+1. **Structure-to-Documentation Mapping:**
+   - Verify directory structure matches documented architecture
+   - Check that README.md and .github/copilot-instructions.md describe actual structure
+   - Validate directory purposes are clearly documented
+   - Ensure new directories have documentation explaining their role
+
+2. **Architectural Pattern Validation:**
+   - Assess if directory organization follows web development best practices
+   - Validate separation of concerns (src/, public/, docs/, etc.)
+   - Check for proper asset organization (images/, styles/, scripts/)
+   - Verify submodule structure is logical and documented
+
+3. **Naming Convention Consistency:**
+   - Validate directory names follow consistent conventions
+   - Check for naming pattern consistency across similar directories
+   - Verify no ambiguous or confusing directory names
+   - Ensure directory names are descriptive and self-documenting
+
+4. **Best Practice Compliance:**
+   - Static site project structure conventions
+   - Source vs distribution directory separation (src/ vs public/)
+   - Documentation organization (docs/ location and structure)
+   - Configuration file locations (.github/, root config files)
+   - Build artifact locations (coverage/, node_modules/)
+
+5. **Scalability and Maintainability Assessment:**
+   - Directory depth appropriate (not too deep or too flat)
+   - Related files properly grouped
+   - Clear boundaries between modules/components
+   - Easy to navigate structure for new developers
+   - Potential restructuring recommendations
+
+**Expected Output:**
+- List of structure issues with specific directory paths
+- Documentation mismatches (documented but missing, or undocumented but present)
+- Architectural pattern violations or inconsistencies
+- Naming convention issues
+- Best practice recommendations
+- Priority level (Critical/High/Medium/Low) for each issue
+- Actionable remediation steps with rationale
+- Suggested restructuring if needed (with migration impact assessment)
+
+Please analyze the directory structure and provide a detailed architectural validation report.
+EOF
+}
+
+# Build a test review and recommendations prompt (Step 5)
+# Usage: build_step5_test_review_prompt <test_framework> <test_env> <test_count> <code_files> <tests_in_dir> <tests_colocated> <coverage_exists> <test_issues> <test_files>
+build_step5_test_review_prompt() {
+    local test_framework="$1"
+    local test_env="$2"
+    local test_count="$3"
+    local code_files="$4"
+    local tests_in_tests_dir="$5"
+    local tests_colocated="$6"
+    local coverage_exists="$7"
+    local test_issues_content="$8"
+    local test_files="$9"
+    
+    cat << EOF
+**Role**: You are a senior QA engineer and test automation specialist with expertise in testing strategies, Jest framework, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices.
+
+**Task**: Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Test Framework: ${test_framework}
+- Test Environment: ${test_env}
+- Total Test Files: ${test_count}
+- Code Files: ${code_files}
+- Tests in __tests__/: ${tests_in_tests_dir}
+- Co-located Tests: ${tests_colocated}
+- Coverage Report Available: ${coverage_exists}
+
+**Phase 1 Automated Findings:**
+${test_issues_content}
+
+**Existing Test Files:**
+${test_files}
+
+**Test Configuration (from package.json):**
+- Test Command: npm test (with experimental VM modules for ES6)
+- Test Environment: jsdom (for DOM testing)
+- Coverage: Available via npm run test:coverage
+- Watch Mode: Available for development
+
+**Analysis Tasks:**
+
+1. **Existing Test Quality Assessment:**
+   - Review test file naming conventions (should match *.test.js pattern)
+   - Assess test organization (__tests__/ directory vs co-located)
+   - Evaluate test structure (describe blocks, test cases, assertions)
+   - Check for proper use of Jest matchers and assertions
+   - Validate async/await handling in tests
+
+2. **Coverage Gap Identification:**
+   - Identify which JavaScript modules/functions lack tests
+   - Determine critical paths that need test coverage
+   - Assess edge cases and error handling coverage
+   - Evaluate DOM manipulation test coverage
+   - Check for integration test coverage
+
+3. **Test Case Generation Recommendations:**
+   - Suggest specific test cases for untested code
+   - Recommend unit tests for utility functions
+   - Propose integration tests for workflows
+   - Suggest DOM manipulation tests for UI components
+   - Recommend edge case and error scenario tests
+
+4. **Testing Best Practices Validation:**
+   - Test isolation and independence
+   - Proper setup/teardown (beforeEach, afterEach)
+   - Mock usage for external dependencies
+   - Assertion clarity and specificity
+   - Test naming conventions (should describe behavior)
+   - DRY principle in tests
+
+5. **CI/CD Integration Readiness:**
+   - Tests run in CI environment compatibility
+   - Test execution speed (avoid slow tests)
+   - Deterministic tests (no flakiness)
+   - Coverage threshold recommendations
+   - Pre-commit hook integration
+
+**Expected Output:**
+- List of test quality issues with specific file:line references
+- Coverage gaps with priority (Critical/High/Medium/Low)
+- Specific test case recommendations with examples
+- Missing test scenarios for each untested module
+- Code snippets for recommended tests
+- Best practice violations and fixes
+- CI/CD integration recommendations
+- Coverage improvement action plan
+
+**Testing Standards to Apply:**
+- Jest best practices for ES Modules
+- AAA pattern (Arrange-Act-Assert)
+- Clear test descriptions (behavior-focused)
+- Proper async/await handling
+- Mock isolation for unit tests
+- Integration test coverage for workflows
+- Minimum 80% code coverage target
+
+Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality.
+EOF
+}
+
+# Build a test execution analysis prompt (Step 7)
+# Usage: build_step7_test_exec_prompt <test_exit_code> <tests_total> <tests_passed> <tests_failed> <exec_summary> <test_output> <failed_tests>
+build_step7_test_exec_prompt() {
+    local test_exit_code="$1"
+    local tests_total="$2"
+    local tests_passed="$3"
+    local tests_failed="$4"
+    local execution_summary="$5"
+    local test_output="$6"
+    local failed_test_list="$7"
+    
+    cat << EOF
+**Role**: You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices.
+
+**Task**: Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Test Framework: Jest with ES Modules (experimental-vm-modules)
+- Test Command: npm run test:coverage
+- Exit Code: ${test_exit_code}
+- Total Tests: ${tests_total}
+- Passed: ${tests_passed}
+- Failed: ${tests_failed}
+
+**Test Execution Results:**
+${execution_summary}
+
+**Test Output:**
+${test_output}
+
+**Failed Tests:**
+${failed_test_list}
+
+**Analysis Tasks:**
+
+1. **Test Failure Root Cause Analysis:**
+   - Identify why tests failed (assertion errors, runtime errors, timeouts)
+   - Determine if failures are code bugs or test issues
+   - Categorize failures (breaking changes, environment issues, flaky tests)
+   - Provide specific fix recommendations for each failure
+   - Priority level (Critical/High/Medium/Low) for each failure
+
+2. **Coverage Gap Interpretation:**
+   - Analyze coverage metrics (statements, branches, functions, lines)
+   - Identify which modules have low coverage
+   - Determine if coverage meets 80% target
+   - Recommend areas for additional test coverage
+   - Prioritize coverage improvements
+
+3. **Performance Bottleneck Detection:**
+   - Identify slow-running tests (if timing data available)
+   - Detect tests with heavy setup/teardown
+   - Find tests that could be parallelized
+   - Recommend test execution optimizations
+   - Suggest mocking strategies for faster tests
+
+4. **Flaky Test Identification:**
+   - Detect non-deterministic test behavior
+   - Identify timing-dependent tests
+   - Find tests with external dependencies
+   - Recommend fixes for flaky tests
+   - Suggest test isolation improvements
+
+5. **CI/CD Optimization Recommendations:**
+   - Suggest test splitting strategies for CI
+   - Recommend caching strategies
+   - Propose pre-commit hook configurations
+   - Suggest coverage thresholds for CI gates
+   - Recommend test parallelization approaches
+
+**Expected Output:**
+- Root cause analysis for each failure with file:line:test references
+- Specific code fixes or test modifications needed
+- Coverage improvement action plan
+- Performance optimization recommendations
+- Flaky test remediation steps
+- CI/CD integration best practices
+- Priority-ordered action items
+- Estimated effort for each fix
+
+Please provide a comprehensive test results analysis with specific, actionable recommendations.
+EOF
+}
+
+# Build a dependency management analysis prompt (Step 8)
+# Usage: build_step8_dependencies_prompt <node_version> <npm_version> <dep_count> <dev_dep_count> <total_deps> <dep_summary> <dep_report> <prod_deps> <dev_deps> <audit_summary> <outdated_list>
+build_step8_dependencies_prompt() {
+    local node_version="$1"
+    local npm_version="$2"
+    local dep_count="$3"
+    local dev_dep_count="$4"
+    local total_deps="$5"
+    local dependency_summary="$6"
+    local dependency_report_content="$7"
+    local prod_deps="$8"
+    local dev_deps="$9"
+    local audit_summary="${10}"
+    local outdated_list="${11}"
+    
+    cat << EOF
+**Role**: You are a senior DevOps engineer and package management specialist with expertise in npm/yarn ecosystem, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices.
+
+**Task**: Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Package Manager: npm
+- Node.js Version: ${node_version}
+- npm Version: ${npm_version}
+- Production Dependencies: ${dep_count}
+- Development Dependencies: ${dev_dep_count}
+- Total Packages: ${total_deps}
+
+**Dependency Analysis Results:**
+${dependency_summary}
+
+**Automated Findings:**
+${dependency_report_content}
+
+**Production Dependencies:**
+${prod_deps}
+
+**Development Dependencies:**
+${dev_deps}
+
+**npm Audit Summary:**
+${audit_summary}
+
+**Outdated Packages:**
+${outdated_list}
+
+**Analysis Tasks:**
+
+1. **Security Vulnerability Assessment:**
+   - Review npm audit results
+   - Identify critical/high severity vulnerabilities
+   - Assess exploitability and impact
+   - Provide immediate remediation steps
+   - Recommend long-term security strategy
+   - Consider transitive dependencies
+
+2. **Version Compatibility Analysis:**
+   - Check for breaking changes in outdated packages
+   - Identify version conflicts
+   - Assess compatibility with Node.js version
+   - Review semver ranges (^, ~, exact versions)
+   - Recommend version pinning strategy
+
+3. **Dependency Tree Optimization:**
+   - Identify unused dependencies
+   - Detect duplicate packages in tree
+   - Find opportunities to reduce bundle size
+   - Recommend consolidation strategies
+   - Suggest peer dependency resolution
+
+4. **Environment Configuration Review:**
+   - Validate Node.js version compatibility
+   - Check npm version requirements
+   - Review engine specifications in package.json
+   - Assess development vs production dependencies
+   - Recommend .nvmrc or .node-version file
+
+5. **Update Strategy Recommendations:**
+   - Prioritize updates (security > bug fixes > features)
+   - Create phased update plan
+   - Identify breaking changes to watch
+   - Recommend testing strategy for updates
+   - Suggest automation (Dependabot, Renovate)
+
+**Expected Output:**
+- Security vulnerability assessment with severity levels
+- Immediate action items for critical vulnerabilities
+- Safe update path for outdated packages
+- Version compatibility matrix
+- Dependency optimization recommendations
+- Environment configuration best practices
+- Automated dependency management setup
+EOF
+}
+
+# Build a code quality assessment prompt (Step 9)
+# Usage: build_step9_code_quality_prompt <total_files> <js_files> <html_files> <css_files> <quality_summary> <quality_report> <large_files> <sample_code>
+build_step9_code_quality_prompt() {
+    local total_files="$1"
+    local js_files="$2"
+    local html_files="$3"
+    local css_files="$4"
+    local quality_summary="$5"
+    local quality_report_content="$6"
+    local large_files_list="$7"
+    local sample_code="$8"
+    
+    cat << EOF
+**Role**: You are a senior software quality engineer and code review specialist with expertise in code quality standards, static analysis, linting best practices, design patterns, maintainability assessment, and technical debt identification.
+
+**Task**: Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Technology Stack: HTML5, CSS3, JavaScript ES6+, ES Modules
+- Testing: Jest with jsdom
+- Code Files: ${total_files} total (${js_files} JavaScript, ${html_files} HTML, ${css_files} CSS)
+
+**Code Quality Analysis Results:**
+${quality_summary}
+
+**Automated Findings:**
+${quality_report_content}
+
+**Large Files Requiring Review:**
+$(echo -e "${large_files_list}" | head -10 || echo "None")
+
+**Code Samples for Review:**
+${sample_code}
+
+**Analysis Tasks:**
+
+1. **Code Standards Compliance Assessment:**
+   - Evaluate JavaScript coding standards (ES6+ features)
+   - Check HTML5 semantic markup usage
+   - Review CSS organization and naming (BEM, OOCSS, etc.)
+   - Assess consistent indentation and formatting
+   - Validate JSDoc/comment quality
+   - Check error handling patterns
+
+2. **Best Practices Validation:**
+   - Verify separation of concerns (HTML/CSS/JS)
+   - Check for proper event handling
+   - Assess DOM manipulation patterns
+   - Review async/await vs promises usage
+   - Validate proper use of const/let (no var)
+   - Check for magic numbers/strings
+
+3. **Maintainability & Readability Analysis:**
+   - Assess function complexity (cyclomatic complexity)
+   - Evaluate function length (should be < 50 lines)
+   - Check variable naming clarity
+   - Review code organization and structure
+   - Assess comment quality and documentation
+   - Identify overly complex logic
+
+4. **Anti-Pattern Detection:**
+   - Identify code smells (duplicated code, long functions)
+   - Detect callback hell or promise anti-patterns
+   - Find global variable pollution
+   - Spot tight coupling between modules
+   - Identify monolithic functions
+   - Detect violation of DRY principle
+
+5. **Refactoring Recommendations:**
+   - Suggest modularization opportunities
+   - Recommend function extraction for clarity
+   - Propose design pattern applications
+   - Suggest performance optimizations
+   - Recommend code reuse strategies
+   - Identify technical debt priorities
+
+**Expected Output:**
+- Code quality grade (A-F) with justification
+- Standards compliance checklist
+- Anti-patterns detected with file:line references
+- Maintainability score and improvement areas
+- Top 5 refactoring priorities with effort estimates
+- Best practice violations and fixes
+- Technical debt assessment
+- Specific code improvement recommendations
+- Quick wins vs long-term improvements
+
+Please provide a comprehensive code quality assessment with specific, actionable recommendations.
+EOF
+}
+
+# Build a git commit message generation prompt (Step 11)
+# Usage: build_step11_git_commit_prompt <script_version> <change_scope> <git_context> <changed_files> <diff_summary> <git_analysis> <diff_sample>
+build_step11_git_commit_prompt() {
+    local script_version="$1"
+    local change_scope="$2"
+    local git_context="$3"
+    local changed_files="$4"
+    local diff_summary="$5"
+    local git_analysis_content="$6"
+    local diff_sample="$7"
+    
+    cat << EOF
+**Role**: You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization.
+
+**Task**: Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
+
+**Context:**
+- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
+- Workflow: Tests & Documentation Automation v${script_version}
+- Change Scope: ${change_scope:-General updates}
+
+**Git Repository Analysis:**
+${git_context}
+
+**Changed Files:**
+${changed_files}
+
+**Diff Statistics:**
+${diff_summary}
+
+**Detailed Context:**
+${git_analysis_content}
+
+**Diff Sample (first 100 lines):**
+${diff_sample}
+
+**Commit Message Generation Tasks:**
+
+1. **Conventional Commit Message Crafting:**
+   - Select appropriate type: feat|fix|docs|style|refactor|test|chore
+   - Define clear scope (e.g., deployment, testing, documentation)
+   - Write concise subject line (<50 chars if possible, max 72)
+   - Follow format: type(scope): subject
+   - Use imperative mood ("add" not "added" or "adds")
+   - Don't end subject with period
+
+2. **Semantic Context Integration:**
+   - Analyze what changed and why
+   - Identify the business value or technical benefit
+   - Connect changes to workflow or project goals
+   - Reference workflow automation context
+   - Note automation tool version
+
+3. **Change Impact Description:**
+   - Describe what was changed (files, features, functionality)
+   - Explain why changes were made
+   - Note any architectural or structural improvements
+   - Highlight test coverage or documentation updates
+   - Mention dependency or quality improvements
+
+4. **Breaking Change Detection:**
+   - Identify any breaking changes (API, behavior, interface)
+   - Flag deprecations or removals
+   - Note migration steps if applicable
+   - Assess backward compatibility
+
+5. **Commit Body & Footer Generation:**
+   - Provide detailed multi-line body if needed
+   - List key changes as bullet points
+   - Include relevant issue/PR references
+   - Add footer metadata (automation info, breaking changes)
+   - Follow 72-character line wrap
+
+**Expected Output Format:**
+
+\`\`\`
+type(scope): subject line here
+
+Optional body paragraph explaining what and why, not how.
+Wrap at 72 characters per line.
+
+- List key changes as bullet points
+- Each bullet should be clear and actionable
+- Focus on user/developer impact
+
+BREAKING CHANGE: describe any breaking changes
+Refs: #issue-number (if applicable)
+[workflow-automation v${script_version}]
+\`\`\`
+
+**Conventional Commit Types:**
+- feat: New feature or functionality
+- fix: Bug fix
+- docs: Documentation changes
+- style: Code style/formatting (no logic change)
+- refactor: Code restructuring (no behavior change)
+- test: Adding or updating tests
+- chore: Maintenance tasks (build, tools, dependencies)
+- perf: Performance improvements
+- ci: CI/CD changes
+
+**Best Practices:**
+- Subject line: imperative mood, lowercase, no period, <72 chars
+- Body: explain WHAT and WHY, not HOW
+- Footer: metadata, breaking changes, references
+- Be specific but concise
+- Focus on impact and intent
+- Conventional commits enable automated changelogs
+- Think about future maintainers reading this
+
+Please generate a complete conventional commit message following these standards. Provide ONLY the commit message text (no explanations, no markdown code blocks, just the raw commit message).
+EOF
+}
+
 # ==============================================================================
 # AI PROMPT EXECUTION
 # ==============================================================================
@@ -165,6 +921,11 @@ execute_copilot_prompt() {
     print_info "Executing Copilot CLI prompt..."
     
     if [[ -n "$log_file" ]]; then
+        # Ensure the parent directory exists
+        local log_dir
+        log_dir=$(dirname "$log_file")
+        mkdir -p "$log_dir"
+        
         copilot -p "$prompt_text" --allow-all-tools 2>&1 | tee "$log_file"
     else
         copilot -p "$prompt_text" --allow-all-tools
@@ -204,7 +965,8 @@ trigger_ai_step() {
         return 0
     fi
     
-    local prompt=$("$prompt_builder" "${args[@]}")
+    local prompt
+    prompt=$("$prompt_builder" "${args[@]}")
     execute_copilot_prompt "$prompt"
 }
 
@@ -216,5 +978,14 @@ export -f build_doc_analysis_prompt
 export -f build_consistency_prompt
 export -f build_test_strategy_prompt
 export -f build_quality_prompt
+export -f build_issue_extraction_prompt
+export -f build_step2_consistency_prompt
+export -f build_step3_script_refs_prompt
+export -f build_step4_directory_prompt
+export -f build_step5_test_review_prompt
+export -f build_step7_test_exec_prompt
+export -f build_step8_dependencies_prompt
+export -f build_step9_code_quality_prompt
+export -f build_step11_git_commit_prompt
 export -f execute_copilot_prompt
 export -f trigger_ai_step

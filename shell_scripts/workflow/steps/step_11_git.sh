@@ -22,6 +22,23 @@ step11_git_finalization() {
         print_info "  - Would generate AI commit message"
         print_info "  - Would commit with comprehensive message"
         print_info "  - Would push to origin"
+        
+        # Save dry-run status to backlog
+        local step_issues="### Git Finalization - DRY RUN
+
+**Status:** ✅ DRY RUN MODE
+
+Dry run mode enabled. No actual git operations performed.
+
+### Planned Operations
+- Stage all changes
+- Generate AI commit message
+- Commit with comprehensive message
+- Push to origin
+"
+        save_step_issues "11" "Git_Finalization" "$step_issues"
+        save_step_summary "11" "Git_Finalization" "Dry run mode - no git operations performed." "✅"
+        
         update_workflow_status "step11" "✅"
         return 0
     fi
@@ -143,106 +160,16 @@ step11_git_finalization() {
     
     local git_analysis_content=$(cat "$git_analysis" 2>/dev/null || echo "   No additional context")
     
-    # Build comprehensive commit message generation prompt
-    local copilot_prompt="**Role**: You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization.
-
-**Task**: Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
-
-**Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-- Workflow: Tests & Documentation Automation v${SCRIPT_VERSION}
-- Change Scope: ${CHANGE_SCOPE:-General updates}
-
-**Git Repository Analysis:**
-$git_context
-
-**Changed Files:**
-$changed_files
-
-**Diff Statistics:**
-$diff_summary
-
-**Detailed Context:**
-$git_analysis_content
-
-**Diff Sample (first 100 lines):**
-$diff_sample
-
-**Commit Message Generation Tasks:**
-
-1. **Conventional Commit Message Crafting:**
-   - Select appropriate type: feat|fix|docs|style|refactor|test|chore
-   - Define clear scope (e.g., deployment, testing, documentation)
-   - Write concise subject line (<50 chars if possible, max 72)
-   - Follow format: type(scope): subject
-   - Use imperative mood (\"add\" not \"added\" or \"adds\")
-   - Don't end subject with period
-
-2. **Semantic Context Integration:**
-   - Analyze what changed and why
-   - Identify the business value or technical benefit
-   - Connect changes to workflow or project goals
-   - Reference workflow automation context
-   - Note automation tool version
-
-3. **Change Impact Description:**
-   - Describe what was changed (files, features, functionality)
-   - Explain why changes were made
-   - Note any architectural or structural improvements
-   - Highlight test coverage or documentation updates
-   - Mention dependency or quality improvements
-
-4. **Breaking Change Detection:**
-   - Identify any breaking changes (API, behavior, interface)
-   - Flag deprecations or removals
-   - Note migration steps if applicable
-   - Assess backward compatibility
-
-5. **Commit Body & Footer Generation:**
-   - Provide detailed multi-line body if needed
-   - List key changes as bullet points
-   - Include relevant issue/PR references
-   - Add footer metadata (automation info, breaking changes)
-   - Follow 72-character line wrap
-
-**Expected Output Format:**
-
-\`\`\`
-type(scope): subject line here
-
-Optional body paragraph explaining what and why, not how.
-Wrap at 72 characters per line.
-
-- List key changes as bullet points
-- Each bullet should be clear and actionable
-- Focus on user/developer impact
-
-BREAKING CHANGE: describe any breaking changes
-Refs: #issue-number (if applicable)
-[workflow-automation v${SCRIPT_VERSION}]
-\`\`\`
-
-**Conventional Commit Types:**
-- feat: New feature or functionality
-- fix: Bug fix
-- docs: Documentation changes
-- style: Code style/formatting (no logic change)
-- refactor: Code restructuring (no behavior change)
-- test: Adding or updating tests
-- chore: Maintenance tasks (build, tools, dependencies)
-- perf: Performance improvements
-- ci: CI/CD changes
-
-**Best Practices:**
-- Subject line: imperative mood, lowercase, no period, <72 chars
-- Body: explain WHAT and WHY, not HOW
-- Footer: metadata, breaking changes, references
-- Be specific but concise
-- Focus on impact and intent
-- Conventional commits enable automated changelogs
-- Think about future maintainers reading this
-
-Please generate a complete conventional commit message following these standards. Provide ONLY the commit message text (no explanations, no markdown code blocks, just the raw commit message)."
+    # Build comprehensive commit message generation prompt using AI helper function
+    local copilot_prompt
+    copilot_prompt=$(build_step11_git_commit_prompt \
+        "${SCRIPT_VERSION}" \
+        "${CHANGE_SCOPE:-General updates}" \
+        "$git_context" \
+        "$changed_files" \
+        "$diff_summary" \
+        "$git_analysis_content" \
+        "$diff_sample")
 
     echo ""
     echo -e "${CYAN}GitHub Copilot CLI Commit Message Generation Prompt:${NC}"
@@ -281,11 +208,61 @@ Please generate a complete conventional commit message following these standards
                 print_info "After AI generates message, copy it and paste when prompted"
                 echo ""
                 
+                # Create log file with unique timestamp
+                local log_timestamp
+                log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                local log_file="${LOGS_RUN_DIR}/step11_copilot_commit_message_${log_timestamp}.log"
+                print_info "Logging output to: $log_file"
+                
                 # Execute Copilot prompt
-                execute_copilot_prompt "$copilot_prompt"
+                execute_copilot_prompt "$copilot_prompt" "$log_file"
                 
                 echo ""
                 print_success "Copilot CLI commit message generation session completed"
+                print_info "Full session log saved to: $log_file"
+                echo ""
+                
+                # Ask user if they want to save issues from the Copilot session
+                if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                    if [[ -f "$log_file" ]]; then
+                        local log_content
+                        log_content=$(cat "$log_file")
+                        
+                        # Build issue extraction prompt using helper function
+                        local extract_prompt
+                        extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                        echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                        echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                        
+                        if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                            sleep 1
+                            print_info "Starting Copilot CLI session for issue extraction..."
+                            copilot -p "$extract_prompt" --allow-all-tools
+                            
+                            print_info "Please copy the organized issues from Copilot output."
+                            print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                            
+                            local organized_issues=""
+                            local line
+                            while IFS= read -r line; do
+                                if [[ "$line" == "END" ]]; then
+                                    break
+                                fi
+                                organized_issues+="${line}"$'\n'
+                            done
+                            
+                            if [[ -n "$organized_issues" ]]; then
+                                save_step_issues "11" "Git_Finalization" "$organized_issues"
+                                print_success "Issues extracted from log and saved to backlog"
+                            else
+                                print_warning "No organized issues provided - skipping backlog save"
+                            fi
+                        else
+                            print_warning "Skipped issue extraction - no backlog file created"
+                        fi
+                    fi
+                fi
                 echo ""
                 
                 # Ask user to provide the AI-generated message
@@ -374,17 +351,7 @@ Total changes: $total_changes files
     
     local current_branch=$(git branch --show-current)
     
-    if git push origin "$current_branch"; then
-        print_success "Successfully pushed to origin/$current_branch ✅"
-        update_workflow_status "step11" "✅"
-        save_step_summary "11" "Git_Finalization" "Changes committed and pushed successfully to ${current_branch}. ${modified_count} files modified. Commit: ${commit_type}(${commit_scope})." "✅"
-    else
-        print_error "PUSH FAILED - workflow incomplete ❌"
-        save_step_summary "11" "Git_Finalization" "FAILED: Push to ${current_branch} failed. Changes committed locally but not pushed to remote." "❌"
-        return 1
-    fi
-    
-    # Save to backlog
+    # Save to backlog BEFORE push (in case push fails)
     local step_issues="### Git Finalization Summary
 
 **Commit Type:** ${commit_type}
@@ -406,6 +373,17 @@ $(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
 \`\`\`
 "
     save_step_issues "11" "Git_Finalization" "$step_issues"
+    
+    if git push origin "$current_branch"; then
+        print_success "Successfully pushed to origin/$current_branch ✅"
+        save_step_summary "11" "Git_Finalization" "Changes committed and pushed successfully to ${current_branch}. ${modified_count} files modified. Commit: ${commit_type}(${commit_scope})." "✅"
+        update_workflow_status "step11" "✅"
+    else
+        print_error "PUSH FAILED - workflow incomplete ❌"
+        save_step_summary "11" "Git_Finalization" "FAILED: Push to ${current_branch} failed. Changes committed locally but not pushed to remote." "❌"
+        update_workflow_status "step11" "❌"
+        return 1
+    fi
     
     # Set executable permissions on shell scripts
     print_info "Setting executable permissions on shell scripts..."

@@ -147,7 +147,8 @@ check_prerequisites() {
         print_error "npm is not installed"
         checks_passed=false
     else
-        local npm_version=$(npm --version)
+        local npm_version
+        npm_version=$(npm --version)
         print_success "npm: $npm_version"
     fi
     

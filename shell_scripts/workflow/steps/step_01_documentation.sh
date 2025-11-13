@@ -2,8 +2,40 @@
 ################################################################################
 # Step 1: AI-Powered Documentation Updates
 # Purpose: Update documentation based on code changes with AI assistance
-# Part of: Tests & Documentation Workflow Automation v2.0.0
+# Part of: Tests & Documentation Workflow Automation v1.5.0
+# Version: 1.5.0
 ################################################################################
+
+# Module version information
+readonly STEP1_VERSION="1.5.0"
+readonly STEP1_VERSION_MAJOR=1
+readonly STEP1_VERSION_MINOR=5
+readonly STEP1_VERSION_PATCH=0
+
+# Get the module version
+# Usage: step1_get_version [--format=simple|full|semver]
+# Returns: Version string
+step1_get_version() {
+    local format="${1:---format=simple}"
+    
+    case "$format" in
+        --format=simple|simple)
+            echo "$STEP1_VERSION"
+            ;;
+        --format=full|full)
+            echo "Step 1 (Documentation Updates) v$STEP1_VERSION"
+            ;;
+        --format=semver|semver)
+            echo "Major: $STEP1_VERSION_MAJOR, Minor: $STEP1_VERSION_MINOR, Patch: $STEP1_VERSION_PATCH"
+            ;;
+        --format=json|json)
+            echo "{\"version\":\"$STEP1_VERSION\",\"major\":$STEP1_VERSION_MAJOR,\"minor\":$STEP1_VERSION_MINOR,\"patch\":$STEP1_VERSION_PATCH}"
+            ;;
+        *)
+            echo "$STEP1_VERSION"
+            ;;
+    esac
+}
 
 # Main step function - updates documentation based on git changes
 # Returns: 0 for success, 1 for failure
@@ -13,7 +45,8 @@ step1_update_documentation() {
     cd "$PROJECT_ROOT" || return 1
     
     # Identify affected docs based on git diff (use cached git state)
-    local changed_files=$(get_git_diff_files_output)
+    local changed_files
+    changed_files=$(get_git_diff_files_output)
     
     print_info "Changed files detected:"
     echo "$changed_files" | head -20
@@ -38,10 +71,12 @@ step1_update_documentation() {
     # Build comprehensive GitHub Copilot CLI prompt for documentation updates
     print_info "Preparing GitHub Copilot CLI prompt for documentation updates..."
     
-    local modified_files_list=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//')
+    local modified_files_list
+    modified_files_list=$(echo "$changed_files" | tr '\n' ',' | sed 's/,$//')
     
     # Build AI prompt using helper function
-    local copilot_prompt=$(build_doc_analysis_prompt "$modified_files_list" "${docs_to_review[*]}")
+    local copilot_prompt
+    copilot_prompt=$(build_doc_analysis_prompt "$modified_files_list" "${docs_to_review[*]}")
     
     echo -e "\n${CYAN}GitHub Copilot CLI Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
@@ -55,7 +90,8 @@ step1_update_documentation() {
         else
             if confirm_action "Run GitHub Copilot CLI to update documentation?" "y"; then
                 # Save prompt to temporary file for tracking
-                local temp_prompt_file=$(mktemp)
+                local temp_prompt_file
+                temp_prompt_file=$(mktemp)
                 TEMP_FILES+=("$temp_prompt_file")
                 echo "$copilot_prompt" > "$temp_prompt_file"
                 
@@ -63,7 +99,8 @@ step1_update_documentation() {
                 print_info "Starting Copilot CLI session..."
                 
                 # Create log file with unique timestamp
-                local log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                local log_timestamp
+                log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
                 local log_file="${LOGS_RUN_DIR}/step1_copilot_documentation_update_${log_timestamp}.log"
                 print_info "Logging output to: $log_file"
                 
@@ -76,43 +113,12 @@ step1_update_documentation() {
                 # Ask user if they want to save issues from the Copilot session
                 if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
                     if [[ -f "$log_file" ]]; then
-                        local log_content=$(cat "$log_file")
+                        local log_content
+                        log_content=$(cat "$log_file")
                         
-                        # Create issue extraction prompt
-                        local extract_prompt="**Role**: You are a technical project manager specialized in issue extraction, categorization, and documentation organization.
-
-**Task**: Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
-
-**Session Log File**: ${log_file}
-
-**Log Content**:
-\`\`\`
-${log_content}
-\`\`\`
-
-**Required Output Format**:
-### Critical Issues
-- [Issue description with priority and affected files]
-
-### High Priority Issues
-- [Issue description with priority and affected files]
-
-### Medium Priority Issues
-- [Issue description with priority and affected files]
-
-### Low Priority Issues
-- [Issue description with priority and affected files]
-
-### Recommendations
-- [Improvement suggestions]
-
-**Approach**:
-- Extract all issues, warnings, and recommendations from the log
-- Categorize by severity and impact
-- Include affected files/sections mentioned in the log
-- Prioritize actionable items
-- Add context where needed
-- If no issues found, state 'No issues identified'"
+                        # Build issue extraction prompt using helper function
+                        local extract_prompt
+                        extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
 
                         echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
                         echo -e "${YELLOW}${extract_prompt}${NC}\n"
@@ -165,7 +171,8 @@ ${log_content}
     
     # Check README.md for version references
     if [[ -f "README.md" ]]; then
-        local readme_versions=$(grep -n "workflow.*v1\.[0-9]\.0\|automation.*v1\.[0-9]\.0\|execute_tests_docs_workflow.*v1\.[0-9]\.0" README.md 2>/dev/null || true)
+        local readme_versions
+        readme_versions=$(grep -n "workflow.*v1\.[0-9]\.0\|automation.*v1\.[0-9]\.0\|execute_tests_docs_workflow.*v1\.[0-9]\.0" README.md 2>/dev/null || true)
         if [[ -n "$readme_versions" ]]; then
             if echo "$readme_versions" | grep -qv "v${SCRIPT_VERSION}"; then
                 print_warning "Version inconsistency detected in README.md"
@@ -180,10 +187,10 @@ ${log_content}
             fi
         fi
     fi
-    
     # Check .github/copilot-instructions.md for version references
     if [[ -f ".github/copilot-instructions.md" ]]; then
-        local copilot_versions=$(grep -n "workflow.*v1\.[0-9]\.0\|automation.*v1\.[0-9]\.0\|execute_tests_docs_workflow.*v1\.[0-9]\.0" .github/copilot-instructions.md 2>/dev/null || true)
+        local copilot_versions
+        copilot_versions=$(grep -n "workflow.*v1\.[0-9]\.0\|automation.*v1\.[0-9]\.0\|execute_tests_docs_workflow.*v1\.[0-9]\.0" .github/copilot-instructions.md 2>/dev/null || true)
         if [[ -n "$copilot_versions" ]]; then
             if echo "$copilot_versions" | grep -qv "v${SCRIPT_VERSION}"; then
                 print_warning "Version inconsistency detected in .github/copilot-instructions.md"
@@ -281,12 +288,39 @@ ${log_content}
     fi
     
     print_success "Documentation review complete"
-    update_workflow_status "step1" "✅"
     
     # Save step summary
     local summary_text="Reviewed ${#docs_to_review[@]} documentation files for consistency with recent code changes."
     save_step_summary "1" "Update_Documentation" "$summary_text" "✅"
+    
+    # Always save backlog file with final status
+    local step_backlog="### Documentation Update Summary
+
+**Files Reviewed:** ${#docs_to_review[@]}
+**Change Scope:** ${CHANGE_SCOPE}
+**Modified Files:** ${ANALYSIS_MODIFIED}
+**Status:** ✅ Complete
+
+Reviewed ${#docs_to_review[@]} documentation files for consistency with recent code changes.
+
+### Documentation Files Reviewed
+
+"
+    for doc in "${docs_to_review[@]}"; do
+        step_backlog+="- \`${doc}\`
+"
+    done
+    
+    if [[ ${#docs_to_review[@]} -eq 0 ]]; then
+        step_backlog+="No documentation files required review based on recent changes.
+"
+    fi
+    
+    save_step_issues "1" "Update_Documentation" "$step_backlog"
+    
+    update_workflow_status "step1" "✅"
 }
 
-# Export step function
+# Export step functions
 export -f step1_update_documentation
+export -f step1_get_version

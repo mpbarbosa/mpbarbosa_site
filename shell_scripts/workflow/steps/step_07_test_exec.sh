@@ -10,11 +10,14 @@
 step7_execute_test_suite() {
     print_step "7" "Execute Full Test Suite with AI Analysis"
     
-    cd "$SRC_DIR"
+    cd "$SRC_DIR" || return 1
     
     local test_failures=0
-    local test_results_file=$(mktemp)
-    local coverage_summary_file=$(mktemp)
+    local test_results_file
+    local coverage_summary_file
+    
+    test_results_file=$(mktemp)
+    coverage_summary_file=$(mktemp)
     TEMP_FILES+=("$test_results_file" "$coverage_summary_file")
     
     # PHASE 1: Automated test execution
@@ -104,77 +107,16 @@ Coverage Metrics:
     
     local test_output=$(cat "$test_results_file" 2>/dev/null | head -100 || echo "Test output unavailable")
     
-    # Build comprehensive test analysis prompt
-    local copilot_prompt="**Role**: You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices.
-
-**Task**: Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
-
-**Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-- Test Framework: Jest with ES Modules (experimental-vm-modules)
-- Test Command: npm run test:coverage
-- Exit Code: $test_exit_code
-- Total Tests: $tests_total
-- Passed: $tests_passed
-- Failed: $tests_failed
-
-**Test Execution Results:**
-$execution_summary
-
-**Test Output:**
-$test_output
-
-**Failed Tests:**
-$failed_test_list
-
-**Analysis Tasks:**
-
-1. **Test Failure Root Cause Analysis:**
-   - Identify why tests failed (assertion errors, runtime errors, timeouts)
-   - Determine if failures are code bugs or test issues
-   - Categorize failures (breaking changes, environment issues, flaky tests)
-   - Provide specific fix recommendations for each failure
-   - Priority level (Critical/High/Medium/Low) for each failure
-
-2. **Coverage Gap Interpretation:**
-   - Analyze coverage metrics (statements, branches, functions, lines)
-   - Identify which modules have low coverage
-   - Determine if coverage meets 80% target
-   - Recommend areas for additional test coverage
-   - Prioritize coverage improvements
-
-3. **Performance Bottleneck Detection:**
-   - Identify slow-running tests (if timing data available)
-   - Detect tests with heavy setup/teardown
-   - Find tests that could be parallelized
-   - Recommend test execution optimizations
-   - Suggest mocking strategies for faster tests
-
-4. **Flaky Test Identification:**
-   - Detect non-deterministic test behavior
-   - Identify timing-dependent tests
-   - Find tests with external dependencies
-   - Recommend fixes for flaky tests
-   - Suggest test isolation improvements
-
-5. **CI/CD Optimization Recommendations:**
-   - Suggest test splitting strategies for CI
-   - Recommend caching strategies
-   - Propose pre-commit hook configurations
-   - Suggest coverage thresholds for CI gates
-   - Recommend test parallelization approaches
-
-**Expected Output:**
-- Root cause analysis for each failure with file:line:test references
-- Specific code fixes or test modifications needed
-- Coverage improvement action plan
-- Performance optimization recommendations
-- Flaky test remediation steps
-- CI/CD integration best practices
-- Priority-ordered action items
-- Estimated effort for each fix
-
-Please provide a comprehensive test results analysis with specific, actionable recommendations."
+    # Build comprehensive test analysis prompt using AI helper function
+    local copilot_prompt
+    copilot_prompt=$(build_step7_test_exec_prompt \
+        "$test_exit_code" \
+        "$tests_total" \
+        "$tests_passed" \
+        "$tests_failed" \
+        "$execution_summary" \
+        "$test_output" \
+        "$failed_test_list")
 
     echo ""
     echo -e "${CYAN}GitHub Copilot CLI Test Results Analysis Prompt:${NC}"
@@ -195,10 +137,60 @@ Please provide a comprehensive test results analysis with specific, actionable r
                     print_info "Starting Copilot CLI test results analysis..."
                     echo ""
                     
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step7_copilot_test_analysis_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
                     # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt"
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
                     
                     print_success "Copilot CLI test analysis completed"
+                    print_info "Full session log saved to: $log_file"
+                    echo ""
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "7" "Test_Execution" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                     echo ""
                     
                     # User decision on proceeding
@@ -220,7 +212,57 @@ Please provide a comprehensive test results analysis with specific, actionable r
                 print_success "All tests passed!"
                 if [[ "$INTERACTIVE_MODE" == true ]]; then
                     if confirm_action "Run optional Copilot coverage analysis?"; then
-                        execute_copilot_prompt "$copilot_prompt"
+                        # Create log file with unique timestamp
+                        local log_timestamp
+                        log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                        local log_file="${LOGS_RUN_DIR}/step7_copilot_test_analysis_${log_timestamp}.log"
+                        print_info "Logging output to: $log_file"
+                        
+                        execute_copilot_prompt "$copilot_prompt" "$log_file"
+                        
+                        print_info "Full session log saved to: $log_file"
+                        
+                        # Ask user if they want to save issues from the Copilot session
+                        if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                            if [[ -f "$log_file" ]]; then
+                                local log_content
+                                log_content=$(cat "$log_file")
+                                
+                                # Build issue extraction prompt using helper function
+                                local extract_prompt
+                                extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                                echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                                echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                                
+                                if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                    sleep 1
+                                    print_info "Starting Copilot CLI session for issue extraction..."
+                                    copilot -p "$extract_prompt" --allow-all-tools
+                                    
+                                    print_info "Please copy the organized issues from Copilot output."
+                                    print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                    
+                                    local organized_issues=""
+                                    local line
+                                    while IFS= read -r line; do
+                                        if [[ "$line" == "END" ]]; then
+                                            break
+                                        fi
+                                        organized_issues+="${line}"$'\n'
+                                    done
+                                    
+                                    if [[ -n "$organized_issues" ]]; then
+                                        save_step_issues "7" "Test_Execution" "$organized_issues"
+                                        print_success "Issues extracted from log and saved to backlog"
+                                    else
+                                        print_warning "No organized issues provided - skipping backlog save"
+                                    fi
+                                else
+                                    print_warning "Skipped issue extraction - no backlog file created"
+                                fi
+                            fi
+                        fi
                     fi
                 fi
             fi
@@ -279,7 +321,7 @@ $(cat "$test_results_file")
     fi
     save_step_issues "7" "Test_Execution" "$step_issues"
     
-    cd "$PROJECT_ROOT"
+    cd "$PROJECT_ROOT" || return 1
     update_workflow_status "step7" "✅"
     
     return $test_exit_code

@@ -10,9 +10,10 @@
 step10_context_analysis() {
     print_step "10" "Context Analysis & Summary"
     
-    cd "$PROJECT_ROOT"
+    cd "$PROJECT_ROOT" || return 1
     
-    local context_report=$(mktemp)
+    local context_report
+    context_report=$(mktemp)
     TEMP_FILES+=("$context_report")
     
     # PHASE 1: Automated context collection
@@ -60,8 +61,10 @@ step10_context_analysis() {
         git_status="Modified: $modified_files, Untracked: $untracked_files, Staged: $staged_files"
         
         # Get branch info
-        local current_branch=$(get_git_current_branch)
-        local commits_ahead=$(get_git_commits_ahead)
+        local current_branch
+        current_branch=$(get_git_current_branch)
+        local commits_ahead
+        commits_ahead=$(get_git_commits_ahead)
         
         echo "Git Status: $git_status" >> "$context_report"
         echo "Branch: $current_branch (commits ahead: $commits_ahead)" >> "$context_report"
@@ -129,7 +132,8 @@ step10_context_analysis() {
     # Check 5: Workflow metrics
     print_info "Calculating workflow metrics..."
     local workflow_start_time=${WORKFLOW_START_TIME:-$(date +%s)}
-    local workflow_end_time=$(date +%s)
+    local workflow_end_time
+    workflow_end_time=$(date +%s)
     local workflow_duration=$((workflow_end_time - workflow_start_time))
     
     echo "Workflow Duration: ${workflow_duration}s" >> "$context_report"
@@ -149,12 +153,16 @@ step10_context_analysis() {
     
     # Collect change scope
     local change_scope_detail="${CHANGE_SCOPE:-No specific scope detected}"
-    local recent_commits=$(git log --oneline -5 2>/dev/null || echo "No recent commits")
-    local git_status_sample=$(get_git_status_short_output | head -10 || echo "None")
-    local context_report_content=$(cat "$context_report" 2>/dev/null || echo "   No additional context")
+    local recent_commits
+    recent_commits=$(git log --oneline -5 2>/dev/null || echo "No recent commits")
+    local git_status_sample
+    git_status_sample=$(get_git_status_short_output | head -10 || echo "None")
+    local context_report_content
+    context_report_content=$(cat "$context_report" 2>/dev/null || echo "   No additional context")
     
     # Build comprehensive strategic analysis prompt
-    local copilot_prompt="**Role**: You are a senior technical project manager and workflow orchestration specialist with expertise in software development workflows, continuous integration strategies, change impact assessment, risk management, and adaptive process optimization.
+    local copilot_prompt
+    copilot_prompt="**Role**: You are a senior technical project manager and workflow orchestration specialist with expertise in software development workflows, continuous integration strategies, change impact assessment, risk management, and adaptive process optimization.
 
 **Task**: Analyze the complete workflow execution context, assess effectiveness, identify risks and opportunities, and provide strategic recommendations for workflow optimization and next steps.
 
@@ -256,10 +264,60 @@ Please provide a comprehensive strategic analysis with specific, prioritized rec
                     print_info "Starting Copilot CLI strategic workflow analysis..."
                     echo ""
                     
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step10_copilot_context_analysis_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
                     # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt"
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
                     
                     print_success "Copilot CLI strategic analysis completed"
+                    print_info "Full session log saved to: $log_file"
+                    echo ""
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "10" "Context_Analysis" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                     echo ""
                     
                     print_info "Review the strategic recommendations above for workflow optimization"

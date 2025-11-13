@@ -24,6 +24,7 @@
 #   Step 9:  Code Quality Validation (Software Quality Engineer + Code Review Specialist)
 #   Step 10: Context Analysis (Technical Project Manager + Workflow Orchestration Specialist)
 #   Step 11: Git Finalization (Git Workflow Specialist + Technical Communication Expert) ⭐ ENHANCED
+#   Step 12: Markdown Linting (Technical Documentation Specialist) ⭐ NEW
 #
 # ARCHITECTURE PATTERN:
 #   All enhanced steps follow: Role → Task → Standards structure
@@ -70,7 +71,7 @@ set -euo pipefail
 
 SCRIPT_VERSION="1.5.0"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SRC_DIR="${PROJECT_ROOT}/src"
 BACKLOG_DIR="${PROJECT_ROOT}/backlog"
 SUMMARIES_DIR="${PROJECT_ROOT}/summaries"
@@ -98,16 +99,44 @@ NC='\033[0m' # No Color
 
 # Workflow tracking
 declare -A WORKFLOW_STATUS
-TOTAL_STEPS=13
+TOTAL_STEPS=14
 DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
 WORKFLOW_START_TIME=$(date +%s)
 
+# Step execution control
+EXECUTE_STEPS="all"  # Default: execute all steps
+declare -a SELECTED_STEPS
+
 # Analysis variables (populated during execution)
 ANALYSIS_COMMITS=""
 ANALYSIS_MODIFIED=""
 CHANGE_SCOPE=""
+
+# ==============================================================================
+# MODULE LOADING
+# ==============================================================================
+# Source workflow library and step modules
+WORKFLOW_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${WORKFLOW_DIR}/lib"
+STEPS_DIR="${WORKFLOW_DIR}/steps"
+
+# Source library modules first (dependencies for step modules)
+for lib_file in "${LIB_DIR}"/*.sh; do
+    if [[ -f "$lib_file" ]]; then
+        # shellcheck source=/dev/null
+        source "$lib_file"
+    fi
+done
+
+# Source all step modules
+for step_file in "${STEPS_DIR}"/step_*.sh; do
+    if [[ -f "$step_file" ]]; then
+        # shellcheck source=/dev/null
+        source "$step_file"
+    fi
+done
 
 # ==============================================================================
 # GIT STATE CACHING - PERFORMANCE OPTIMIZATION (v1.5.0)
@@ -321,34 +350,19 @@ EOF
 }
 
 # User confirmation prompt with auto-mode bypass
-# Fixed: Proper variable quoting for security (v1.1.0 enhancement)
+# Updated: Simplified to "Enter to continue or Ctrl+C to exit" pattern
 confirm_action() {
     local prompt="$1"
-    local default_answer="${2:-}"  # Optional parameter: "y", "n", or empty (no default)
-    local response
-    local prompt_suffix
+    local default_answer="${2:-}"  # Kept for backward compatibility but ignored
     
     if [[ "$AUTO_MODE" == true ]]; then
         return 0
     fi
     
-    # Build prompt suffix based on default answer
-    if [[ "$default_answer" == "y" ]]; then
-        prompt_suffix=" (Y/n): "
-    elif [[ "$default_answer" == "n" ]]; then
-        prompt_suffix=" (y/N): "
-    else
-        prompt_suffix=" (y/n): "
-    fi
+    echo -e "${CYAN}ℹ️  ${prompt}${NC}"
+    read -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" 
     
-    read -p "$(echo -e "${YELLOW}${prompt}${prompt_suffix}${NC}")" response
-    
-    # Handle empty response with default answer
-    if [[ -z "$response" && -n "$default_answer" ]]; then
-        response="$default_answer"
-    fi
-    
-    [[ "$response" =~ ^[Yy]$ ]]
+    return 0
 }
 
 # Cleanup handler for temporary files
@@ -418,7 +432,8 @@ check_prerequisites() {
         print_error "Node.js is not installed"
         checks_passed=false
     else
-        local node_version=$(node --version)
+        local node_version
+        node_version=$(node --version)
         print_success "Node.js: $node_version"
     fi
     
@@ -426,7 +441,8 @@ check_prerequisites() {
         print_error "npm is not installed"
         checks_passed=false
     else
-        local npm_version=$(npm --version)
+        local npm_version
+        npm_version=$(npm --version)
         print_success "npm: $npm_version"
     fi
     
@@ -443,14 +459,11 @@ check_prerequisites() {
     if git -C "$PROJECT_ROOT" diff-index --quiet HEAD -- 2>/dev/null; then
         print_success "Git working tree is clean"
     else
-        print_warning "Git working tree has uncommitted changes"
-        print_info "Staging all changes with 'git add -A'..."
-        
         if [[ "$DRY_RUN" == true ]]; then
             print_info "[DRY RUN] Would execute: git add -A"
         else
             git -C "$PROJECT_ROOT" add -A
-            print_success "All changes staged successfully"
+            print_success "All uncommitted changes staged automatically"
         fi
     fi
     
@@ -884,203 +897,7 @@ ${log_content}
 #   - User choice: Interactive mode
 #   - Skip: Auto mode with clean results
 # ------------------------------------------------------------------------------
-step2_check_consistency() {
-    print_step "2" "Check Documentation Consistency"
-    
-    cd "$PROJECT_ROOT"
-    
-    local issues_found=0
-    local broken_refs_file=$(mktemp)
-    TEMP_FILES+=("$broken_refs_file")
-    
-    # PHASE 1: Automated broken link detection
-    print_info "Phase 1: Automated broken link detection..."
-    
-    # Check docs directory for broken references
-    while IFS= read -r md_file; do
-        # Extract file paths using regex (paths starting with /)
-        local refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' "$md_file" 2>/dev/null || true)
-        
-        while IFS= read -r ref; do
-            [[ -z "$ref" ]] && continue
-            
-            local full_path="${PROJECT_ROOT}${ref}"
-            if [[ ! -e "$full_path" ]]; then
-                print_warning "Broken reference in $md_file: $ref"
-                echo "$md_file: $ref" >> "$broken_refs_file"
-                ((issues_found++))
-            fi
-        done <<< "$refs"
-    done < <(find docs -name "*.md" -type f 2>/dev/null || true)
-    
-    # Check README.md
-    if [[ -f "README.md" ]]; then
-        local refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' "README.md" 2>/dev/null || true)
-        while IFS= read -r ref; do
-            [[ -z "$ref" ]] && continue
-            local full_path="${PROJECT_ROOT}${ref}"
-            if [[ ! -e "$full_path" ]]; then
-                print_warning "Broken reference in README.md: $ref"
-                echo "README.md: $ref" >> "$broken_refs_file"
-                ((issues_found++))
-            fi
-        done <<< "$refs"
-    fi
-    
-    # Check .github/copilot-instructions.md (critical for CI/CD)
-    if [[ -f ".github/copilot-instructions.md" ]]; then
-        local refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' ".github/copilot-instructions.md" 2>/dev/null || true)
-        while IFS= read -r ref; do
-            [[ -z "$ref" ]] && continue
-            local full_path="${PROJECT_ROOT}${ref}"
-            if [[ ! -e "$full_path" ]]; then
-                print_warning "Broken reference in .github/copilot-instructions.md: $ref"
-                echo ".github/copilot-instructions.md: $ref" >> "$broken_refs_file"
-                ((issues_found++))
-            fi
-        done <<< "$refs"
-    fi
-    
-    # PHASE 2: AI-powered consistency analysis with Copilot CLI
-    print_info "Phase 2: Preparing comprehensive consistency analysis..."
-    
-    # Gather documentation inventory for AI analysis
-    local doc_files=$(find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" | sort)
-    local doc_count=$(echo "$doc_files" | wc -l)
-    
-    # AI PERSONA PROMPT: Documentation Specialist + Information Architect
-    # Enhanced with dual expertise for comprehensive analysis
-    local copilot_prompt="**Role**: You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation.
 
-**Task**: Perform a comprehensive documentation consistency analysis for this project.
-
-**Context:**
-- Project: MP Barbosa Personal Website (static HTML with Material Design)
-- Documentation files: $doc_count markdown files
-- Scope: ${CHANGE_SCOPE}
-- Recent changes: ${ANALYSIS_MODIFIED} files modified
-
-**Analysis Tasks:**
-
-1. **Cross-Reference Validation:**
-   - Check if all referenced files/directories exist
-   - Verify version numbers are consistent across all docs
-   - Validate command examples match actual scripts
-
-2. **Content Synchronization:**
-   - Compare .github/copilot-instructions.md with README.md
-   - Check if shell_scripts/README.md matches actual scripts in shell_scripts/
-   - Verify package.json scripts match documented commands
-
-3. **Architecture Consistency:**
-   - Validate directory structure matches documented structure
-   - Check if deployment steps in docs match actual deployment scripts
-   - Verify submodule references are accurate
-
-4. **Broken References Found:**
-$(cat "$broken_refs_file" 2>/dev/null || echo "   No broken references detected")
-
-5. **Quality Checks:**
-   - Missing documentation for new features
-   - Outdated version numbers or dates
-   - Inconsistent terminology or naming conventions
-   - Missing cross-references between related docs
-
-**Files to Analyze:**
-$doc_files
-
-**Expected Output:**
-- List of inconsistencies found with specific file:line references
-- Recommendations for fixes with rationale
-- Priority level (Critical/High/Medium/Low) for each issue
-- Actionable remediation steps
-
-**Documentation Standards to Apply:**
-- Technical accuracy and precision
-- Consistency in terminology and formatting
-- Completeness of cross-references
-- Version number accuracy across all files
-
-Please analyze the documentation files and provide a detailed consistency report."
-
-    echo ""
-    echo -e "${CYAN}GitHub Copilot CLI Consistency Analysis Prompt:${NC}"
-    echo -e "${YELLOW}${copilot_prompt}${NC}\n"
-    
-    # Check if Copilot CLI is available for deep analysis
-    if command -v copilot &> /dev/null; then
-        print_info "GitHub Copilot CLI detected - ready for deep consistency analysis..."
-        
-        if [[ "$DRY_RUN" == true ]]; then
-            print_info "[DRY RUN] Would invoke: copilot -p with consistency analysis prompt"
-        else
-            # Smart triggering: Auto-trigger if issues found, user choice if interactive
-            if [[ "$issues_found" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
-                if confirm_action "Run Copilot CLI for deep documentation consistency analysis?" "y"; then
-                    print_info "Starting Copilot CLI consistency analysis session..."
-                    print_info "This will analyze all documentation files for cross-references, versions, and accuracy"
-                    echo ""
-                    
-                    # Invoke Copilot CLI with the comprehensive prompt
-                    copilot -p "$copilot_prompt" --allow-all-tools
-                    
-                    print_success "Copilot CLI consistency analysis completed"
-                    echo ""
-                    
-                    # User feedback loop for issue resolution
-                    if confirm_action "Did Copilot identify issues that need fixing?" "n"; then
-                        print_warning "Please review and fix identified issues before continuing"
-                        if [[ "$INTERACTIVE_MODE" == true ]]; then
-                            if ! confirm_action "Continue workflow with identified issues?"; then
-                                print_error "Workflow paused - please fix documentation issues"
-                                return 1
-                            fi
-                        fi
-                    fi
-                else
-                    print_warning "Skipped Copilot CLI deep analysis"
-                fi
-            else
-                print_info "No broken references found - skipping optional deep analysis"
-                if confirm_action "Run optional Copilot consistency analysis anyway?" "n"; then
-                    copilot -p "$copilot_prompt" --allow-all-tools
-                fi
-            fi
-        fi
-    else
-        print_warning "GitHub Copilot CLI not found - using basic checks only"
-        print_info "Install from: https://github.com/github/gh-copilot"
-        print_info "For deep analysis, use the prompt above manually with Copilot"
-    fi
-    
-    # Summary of automated checks
-    echo ""
-    if [[ $issues_found -eq 0 ]]; then
-        print_success "No broken references found in automated checks ✅"
-        save_step_summary "2" "Consistency_Analysis" "All documentation cross-references validated successfully. No broken links detected across ${doc_count} documentation files." "✅"
-    else
-        print_warning "Found $issues_found broken reference(s) - review required"
-        save_step_summary "2" "Consistency_Analysis" "Found ${issues_found} broken references requiring attention. Review and fix broken links before proceeding." "⚠️"
-        
-        # Save broken references to backlog
-        local step_issues="### Broken References Found
-
-**Total Issues:** ${issues_found}
-
-"
-        if [[ -f "$broken_refs_file" && -s "$broken_refs_file" ]]; then
-            step_issues+="### Details
-
-\`\`\`
-$(cat "$broken_refs_file")
-\`\`\`
-"
-        fi
-        save_step_issues "2" "Consistency_Analysis" "$step_issues"
-    fi
-    
-    update_workflow_status "step2" "✅"
-}
 
 # ------------------------------------------------------------------------------
 # STEP 3: AI-POWERED SCRIPT REFERENCE VALIDATION
@@ -2135,7 +1952,7 @@ $generation_needs
    - Jest configuration compatible
 
 2. **Test Structure:**
-   ```javascript
+   \`\`\`javascript
    import { functionName } from '../scripts/module.js';
    
    describe('Module/Function Name', () => {
@@ -2156,7 +1973,7 @@ $generation_needs
        });
      });
    });
-   ```
+   \`\`\`
 
 3. **Best Practices:**
    - Clear, behavior-focused test descriptions
@@ -4107,29 +3924,377 @@ $(git show --stat HEAD 2>/dev/null || echo "Latest commit details unavailable")
 }
 
 # ------------------------------------------------------------------------------
+# STEP 12: MARKDOWN LINTING
+# ------------------------------------------------------------------------------
+step12_markdown_linting() {
+    print_step "12" "Markdown Linting"
+    
+    cd "$PROJECT_ROOT"
+    
+    local lint_issues=0
+    local lint_report=$(mktemp)
+    TEMP_FILES+=("$lint_report")
+    
+    # PHASE 1: Automated markdown linting with mdl
+    print_info "Phase 1: Markdown linting analysis with mdl..."
+    
+    # Check 1: Enumerate markdown files
+    print_info "Enumerating markdown files..."
+    local md_files_count=$(find . -name "*.md" -not -path "*/node_modules/*" -not -path "*/coverage/*" 2>/dev/null | wc -l)
+    
+    print_info "Found $md_files_count markdown files to lint"
+    echo "Markdown files found: $md_files_count" >> "$lint_report"
+    
+    # Check 2: Verify mdl is installed
+    print_info "Checking for mdl (markdownlint)..."
+    if command -v mdl &> /dev/null; then
+        local mdl_version=$(mdl --version 2>&1)
+        print_success "mdl is installed: $mdl_version"
+        echo "mdl version: $mdl_version" >> "$lint_report"
+    else
+        print_error "mdl not found - install with: gem install mdl"
+        save_step_issues "12" "Markdown_Linting" "❌ mdl not installed. Install with: gem install mdl"
+        save_step_summary "12" "Markdown_Linting" "❌ FAIL" "mdl linter not installed"
+        WORKFLOW_STATUS[step12]="❌ FAIL - mdl not installed"
+        return 1
+    fi
+    
+    # Check 3: Run mdl on all markdown files
+    print_info "Running mdl on all markdown files..."
+    
+    # Create temporary file for mdl output
+    local mdl_output=$(mktemp)
+    TEMP_FILES+=("$mdl_output")
+    
+    # Run mdl and capture output
+    # mdl exits with non-zero if there are violations, so we use || true
+    if [[ "$DRY_RUN" == false ]]; then
+        # Run mdl with options:
+        # --git-recurse: Only check files tracked by git
+        # --ignore-front-matter: Ignore YAML front matter in markdown files
+        mdl --git-recurse --ignore-front-matter . > "$mdl_output" 2>&1 || true
+        
+        local lint_error_count=$(wc -l < "$mdl_output" 2>/dev/null || echo 0)
+        
+        if [[ $lint_error_count -eq 0 ]]; then
+            print_success "✅ No markdown linting errors found"
+            echo "✅ All markdown files pass mdl linting" >> "$lint_report"
+        else
+            print_warning "Found $lint_error_count markdown linting violations"
+            ((lint_issues++))
+            
+            # Add detailed output to report
+            echo "" >> "$lint_report"
+            echo "## mdl Linting Violations" >> "$lint_report"
+            echo "" >> "$lint_report"
+            cat "$mdl_output" >> "$lint_report"
+            
+            # Show summary of issues
+            print_info "Markdown linting violations:"
+            head -20 "$mdl_output" | while read -r line; do
+                echo "  $line"
+            done
+            
+            if [[ $lint_error_count -gt 20 ]]; then
+                print_info "... and $((lint_error_count - 20)) more (see backlog report)"
+            fi
+        fi
+    else
+        print_info "Dry run - skipping mdl execution"
+    fi
+    
+    # Check 4: Validate critical markdown files
+    print_info "Validating critical markdown files..."
+    local critical_files=(
+        "README.md"
+        ".github/copilot-instructions.md"
+        "shell_scripts/README.md"
+        "docs/MARKDOWN_BEST_PRACTICES.md"
+    )
+    
+    local missing_files=0
+    for file in "${critical_files[@]}"; do
+        if [[ ! -f "$PROJECT_ROOT/$file" ]]; then
+            print_warning "Critical file missing: $file"
+            ((missing_files++))
+            echo "⚠️ Missing critical file: $file" >> "$lint_report"
+        fi
+    done
+    
+    if [[ $missing_files -eq 0 ]]; then
+        print_success "✅ All critical markdown files present"
+    else
+        print_warning "$missing_files critical files missing"
+        ((lint_issues++))
+    fi
+    
+    # Check 5: Check for common markdown anti-patterns
+    print_info "Checking for common markdown anti-patterns..."
+    local antipattern_count=0
+    
+    # Check for missing spaces after hash symbols
+    local files_with_missing_space=0
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        if grep -q "^#[^# ]" "$file" 2>/dev/null; then
+            ((files_with_missing_space++))
+            echo "⚠️ Missing space after # in: $file" >> "$lint_report"
+        fi
+    done < <(find . -name "*.md" -not -path "*/node_modules/*" -not -path "*/coverage/*" 2>/dev/null)
+    
+    if [[ $files_with_missing_space -gt 0 ]]; then
+        print_warning "Found $files_with_missing_space files with missing spaces after #"
+        ((antipattern_count++))
+    fi
+    
+    # Check for malformed bold text (e.g., " *text**:" or "-*text**:")
+    local files_with_malformed_bold=0
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        if grep -q "[\s\-]\*[^\*].*\*\*:" "$file" 2>/dev/null; then
+            ((files_with_malformed_bold++))
+            echo "⚠️ Potential malformed bold in: $file" >> "$lint_report"
+        fi
+    done < <(find . -name "*.md" -not -path "*/node_modules/*" -not -path "*/coverage/*" 2>/dev/null)
+    
+    if [[ $files_with_malformed_bold -gt 0 ]]; then
+        print_warning "Found $files_with_malformed_bold files with potential malformed bold"
+        ((antipattern_count++))
+    fi
+    
+    if [[ $antipattern_count -eq 0 ]]; then
+        print_success "✅ No common anti-patterns detected"
+    else
+        print_warning "Found $antipattern_count anti-pattern categories"
+        ((lint_issues++))
+    fi
+    
+    # PHASE 2: AI-powered markdown review (if in interactive mode)
+    if [[ "$INTERACTIVE_MODE" == true ]] && [[ "$AUTO_MODE" == false ]] && command -v copilot &> /dev/null; then
+        print_info ""
+        print_info "Phase 2: AI-powered markdown quality review available"
+        
+        local ai_prompt="You are a Technical Documentation Specialist expert in markdown best practices.
+
+Review markdown linting results and provide recommendations.
+
+Linting Summary:
+- Files analyzed: $md_files_count
+- Lint errors: $(wc -l < "$markdownlint_output" 2>/dev/null || echo 0)
+- Missing critical files: $missing_files
+- Anti-patterns found: $antipattern_count
+
+Provide:
+1. Severity Assessment (Excellent/Good/Needs Improvement/Poor)
+2. Critical Issues (must-fix affecting rendering/accessibility)
+3. Style Issues (formatting inconsistencies)
+4. Best Practice Recommendations (based on markdownguide.org)
+5. Quick Fixes (specific sed/awk commands or manual fixes)
+
+Format: Concise analysis (200-300 words) with actionable recommendations."
+
+        read -p "$(echo -e ${CYAN}Run AI-powered markdown review? [y/N]: ${NC})" -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            copilot -p "$ai_prompt" || print_warning "Copilot interaction skipped or failed"
+        fi
+    fi
+    
+    # Generate step backlog report
+    save_step_issues "12" "Markdown_Linting" "$(cat "$lint_report")"
+    
+    # Generate step summary
+    local summary_status="✅ PASS"
+    local summary_details="Linted $md_files_count markdown files successfully"
+    
+    if [[ $lint_issues -gt 0 ]]; then
+        summary_status="⚠️ WARNINGS"
+        summary_details="Found $lint_issues issue categories in $md_files_count files"
+    fi
+    
+    save_step_summary "12" "Markdown_Linting" "$summary_status" "$summary_details"
+    
+    # Update workflow status
+    if [[ $lint_issues -eq 0 ]]; then
+        WORKFLOW_STATUS[step12]="✅ PASS - No linting issues"
+        print_success "Markdown linting validation passed"
+        return 0
+    else
+        WORKFLOW_STATUS[step12]="⚠️ WARNINGS - $lint_issues issue categories"
+        print_warning "Markdown linting completed with warnings (non-blocking)"
+        return 0  # Non-blocking - warnings don't fail the workflow
+    fi
+}
+
+# ------------------------------------------------------------------------------
+# STEP SELECTION & VALIDATION
+# ------------------------------------------------------------------------------
+validate_and_parse_steps() {
+    if [[ "$EXECUTE_STEPS" == "all" ]]; then
+        SELECTED_STEPS=(0 1 2 3 4 5 6 7 8 9 10 11 12)
+        print_info "Step selection: All steps (0-12)"
+        return 0
+    fi
+    
+    # Parse comma-separated step list
+    IFS=',' read -ra SELECTED_STEPS <<< "$EXECUTE_STEPS"
+    
+    # Validate each step number
+    for step in "${SELECTED_STEPS[@]}"; do
+        if ! [[ "$step" =~ ^[0-9]+$ ]] || [[ $step -lt 0 ]] || [[ $step -gt 12 ]]; then
+            print_error "Invalid step number: $step (valid range: 0-12)"
+            exit 1
+        fi
+    done
+    
+    # Sort and deduplicate steps
+    SELECTED_STEPS=($(echo "${SELECTED_STEPS[@]}" | tr ' ' '\n' | sort -n | uniq))
+    
+    print_info "Step selection: ${SELECTED_STEPS[*]}"
+}
+
+should_execute_step() {
+    local step_num="$1"
+    
+    # If executing all steps, always return true
+    if [[ "$EXECUTE_STEPS" == "all" ]]; then
+        return 0
+    fi
+    
+    # Check if step is in selected steps
+    for selected in "${SELECTED_STEPS[@]}"; do
+        if [[ "$selected" == "$step_num" ]]; then
+            return 0
+        fi
+    done
+    
+    return 1
+}
+
+# ------------------------------------------------------------------------------
 # WORKFLOW ORCHESTRATION
 # ------------------------------------------------------------------------------
 execute_full_workflow() {
-    print_header "Executing Full Workflow"
+    print_header "Executing Workflow"
+    
+    # Validate and parse step selection
+    validate_and_parse_steps
     
     local failed_step=""
+    local executed_steps=0
+    local skipped_steps=0
     
-    # Execute all steps in sequence
-    step0_analyze_changes || { failed_step="Step 0"; }
-    [[ -n "$failed_step" ]] || step1_update_documentation || { failed_step="Step 1"; }
-    [[ -n "$failed_step" ]] || step2_check_consistency || { failed_step="Step 2"; }
-    [[ -n "$failed_step" ]] || step3_validate_script_references || { failed_step="Step 3"; }
-    [[ -n "$failed_step" ]] || step4_validate_directory_structure || { failed_step="Step 4"; }
-    [[ -n "$failed_step" ]] || step5_review_existing_tests || { failed_step="Step 5"; }
-    [[ -n "$failed_step" ]] || step6_generate_new_tests || { failed_step="Step 6"; }
-    [[ -n "$failed_step" ]] || step7_execute_test_suite || { failed_step="Step 7"; }
-    [[ -n "$failed_step" ]] || step8_validate_dependencies || { failed_step="Step 8"; }
-    [[ -n "$failed_step" ]] || step9_code_quality_validation || { failed_step="Step 9"; }
-    [[ -n "$failed_step" ]] || step10_context_analysis || { failed_step="Step 10"; }
-    [[ -n "$failed_step" ]] || step11_git_finalization || { failed_step="Step 11"; }
+    # Execute steps conditionally based on selection
+    if should_execute_step 0; then
+        step0_analyze_changes || { failed_step="Step 0"; }
+        ((executed_steps++)) || true
+    else
+        print_info "Skipping Step 0 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 1; then
+        step1_update_documentation || { failed_step="Step 1"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 1 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 2; then
+        step2_check_consistency || { failed_step="Step 2"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 2 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 3; then
+        step3_validate_script_references || { failed_step="Step 3"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 3 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 4; then
+        step4_validate_directory_structure || { failed_step="Step 4"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 4 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 5; then
+        step5_review_existing_tests || { failed_step="Step 5"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 5 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 6; then
+        step6_generate_new_tests || { failed_step="Step 6"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 6 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 7; then
+        step7_execute_test_suite || { failed_step="Step 7"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 7 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 8; then
+        step8_validate_dependencies || { failed_step="Step 8"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 8 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 9; then
+        step9_code_quality_validation || { failed_step="Step 9"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 9 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 10; then
+        step10_context_analysis || { failed_step="Step 10"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 10 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 11; then
+        step11_git_finalization || { failed_step="Step 11"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 11 (not selected)"
+        ((skipped_steps++)) || true
+    fi
+    
+    if [[ -z "$failed_step" ]] && should_execute_step 12; then
+        step12_markdown_linting || { failed_step="Step 12"; }
+        ((executed_steps++)) || true
+    elif [[ -z "$failed_step" ]]; then
+        print_info "Skipping Step 12 (not selected)"
+        ((skipped_steps++)) || true
+    fi
     
     # Final status
     echo ""
+    print_header "Workflow Execution Summary"
+    print_info "Executed steps: $executed_steps"
+    print_info "Skipped steps: $skipped_steps"
+    
     if [[ -n "$failed_step" ]]; then
         print_error "Workflow failed at: $failed_step"
         show_progress
@@ -4137,7 +4302,7 @@ execute_full_workflow() {
     else
         print_header "🎉 Workflow Completed Successfully!"
         show_progress
-        print_success "All steps completed successfully"
+        print_success "All selected steps completed successfully"
         print_info "Backlog reports saved to: $BACKLOG_RUN_DIR"
         print_info "Summaries saved to: $SUMMARIES_RUN_DIR"
         
@@ -4168,7 +4333,7 @@ EOF
     
     # Add step status
     local step_num=0
-    for step_num in {0..11}; do
+    for step_num in {0..12}; do
         local step_key="step${step_num}"
         local step_status="${WORKFLOW_STATUS[$step_key]:-⏭️}"
         echo "- **Step ${step_num}:** ${step_status}" >> "$summary_file"
@@ -4230,27 +4395,59 @@ OPTIONS:
     --dry-run           Preview all actions without executing
     --auto              Run in automatic mode (no confirmations)
     --interactive       Run in interactive mode (default)
+    --steps STEPS       Execute specific steps (comma-separated, e.g., "0,1,2" or "all")
     --help              Show this help message
     --version           Show script version
 
 DESCRIPTION:
     Automates the complete tests and documentation update workflow including:
-    - Pre-analysis of recent changes
-    - Documentation updates and validation
-    - Test suite review and execution
-    - Dependency validation
-    - Code quality checks
-    - Git finalization
+    - Pre-analysis of recent changes (Step 0)
+    - Documentation updates and validation (Steps 1-4)
+    - Test suite review and execution (Steps 5-7)
+    - Dependency validation (Step 8)
+    - Code quality checks (Step 9)
+    - Context analysis (Step 10)
+    - Git finalization (Step 11)
+    - Markdown linting (Step 12)
+
+STEP EXECUTION:
+    By default, all steps (0-12) are executed. Use --steps to select specific steps:
+    
+    Step 0:  Pre-Analysis - Analyzing Recent Changes
+    Step 1:  Update Related Documentation
+    Step 2:  Check Documentation Consistency
+    Step 3:  Validate Script References
+    Step 4:  Validate Directory Structure
+    Step 5:  Review Existing Tests
+    Step 6:  Generate New Tests
+    Step 7:  Execute Test Suite
+    Step 8:  Validate Dependencies
+    Step 9:  Code Quality Validation
+    Step 10: Context Analysis & Summary
+    Step 11: Git Finalization
+    Step 12: Markdown Linting
 
 EXAMPLES:
     # Preview workflow without execution
     $0 --dry-run
     
-    # Run in interactive mode (default)
+    # Run in interactive mode (default - all steps)
     $0
     
-    # Run in automatic mode (no confirmations)
+    # Run in automatic mode (no confirmations - all steps)
     $0 --auto
+    
+    # Execute only documentation steps (0-4)
+    $0 --steps 0,1,2,3,4
+    
+    # Execute only testing steps (0,5,6,7)
+    $0 --steps 0,5,6,7
+    
+    # Execute only git finalization (11)
+    $0 --steps 11
+    
+    # Execute all steps explicitly
+    $0 --steps all
 
 For more information, see:
     - /prompts/tests_documentation_update_enhanced.txt
@@ -4278,6 +4475,14 @@ parse_arguments() {
                 AUTO_MODE=false
                 shift
                 ;;
+            --steps)
+                if [[ -z "$2" ]] || [[ "$2" == --* ]]; then
+                    print_error "--steps requires an argument (e.g., '0,1,2' or 'all')"
+                    exit 1
+                fi
+                EXECUTE_STEPS="$2"
+                shift 2
+                ;;
             --help)
                 show_usage
                 exit 0
@@ -4299,7 +4504,8 @@ main() {
     # Set up cleanup trap for temporary files
     # Ensures cleanup on EXIT (normal), INT (Ctrl+C), TERM (kill)
     # Critical for AI-enhanced steps that create temp files
-    trap cleanup EXIT INT TERM
+    trap 'cleanup' EXIT
+    trap 'exit 130' INT TERM
     
     print_header "${SCRIPT_NAME} v${SCRIPT_VERSION}"
     

@@ -10,10 +10,11 @@
 step8_validate_dependencies() {
     print_step "8" "Validate Dependencies & Environment"
     
-    cd "$SRC_DIR"
+    cd "$SRC_DIR" || return 1
     
     local issues=0
-    local dependency_report=$(mktemp)
+    local dependency_report
+    dependency_report=$(mktemp)
     TEMP_FILES+=("$dependency_report")
     
     # PHASE 1: Automated dependency analysis
@@ -25,7 +26,19 @@ step8_validate_dependencies() {
         print_error "package.json not found!"
         echo "CRITICAL: Missing package.json" >> "$dependency_report"
         ((issues++))
-        cd "$PROJECT_ROOT"
+        
+        # Save error to backlog before returning
+        local step_issues="### Dependency Validation - CRITICAL ERROR
+
+**Total Issues:** ${issues}
+**Status:** ❌ FAILED
+
+CRITICAL: Missing package.json file. Cannot validate dependencies.
+"
+        save_step_issues "8" "Dependency_Validation" "$step_issues"
+        save_step_summary "8" "Dependency_Validation" "CRITICAL: Missing package.json file." "❌"
+        
+        cd "$PROJECT_ROOT" || return 1
         update_workflow_status "step8" "❌"
         return 1
     else
@@ -36,19 +49,35 @@ step8_validate_dependencies() {
             print_error "package.json contains invalid JSON"
             echo "CRITICAL: Invalid package.json syntax" >> "$dependency_report"
             ((issues++))
+            
+            # Save error to backlog before returning
+            local step_issues="### Dependency Validation - CRITICAL ERROR
+
+**Total Issues:** ${issues}
+**Status:** ❌ FAILED
+
+CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
+"
+            save_step_issues "8" "Dependency_Validation" "$step_issues"
+            save_step_summary "8" "Dependency_Validation" "CRITICAL: Invalid package.json syntax." "❌"
+            
+            cd "$PROJECT_ROOT" || return 1
+            update_workflow_status "step8" "❌"
+            return 1
         fi
     fi
-    
     # Check 2: Run npm audit for security vulnerabilities
     print_info "Running npm audit for security vulnerabilities..."
-    local audit_output=$(mktemp)
+    local audit_output
+    audit_output=$(mktemp)
     TEMP_FILES+=("$audit_output")
     
     local vuln_count=0
     if npm audit --json > "$audit_output" 2>&1; then
         print_success "No security vulnerabilities found"
     else
-        local vulnerabilities=$(jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' "$audit_output" 2>/dev/null || echo "Unable to parse")
+        local vulnerabilities
+        vulnerabilities=$(jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' "$audit_output" 2>/dev/null || echo "Unable to parse")
         vuln_count=$(echo "$vulnerabilities" | grep -c ":" || echo "0")
         print_warning "Security vulnerabilities detected"
         echo "Security vulnerabilities:" >> "$dependency_report"
@@ -56,9 +85,9 @@ step8_validate_dependencies() {
         ((issues++))
     fi
     
-    # Check 3: Check for outdated packages
     print_info "Checking for outdated packages..."
-    local outdated_output=$(mktemp)
+    local outdated_output
+    outdated_output=$(mktemp)
     TEMP_FILES+=("$outdated_output")
     
     local outdated_count=0
@@ -90,16 +119,20 @@ step8_validate_dependencies() {
     
     # Check 5: Verify Node.js and npm versions
     print_info "Checking Node.js and npm versions..."
-    local node_version=$(node --version 2>/dev/null || echo "not installed")
-    local npm_version=$(npm --version 2>/dev/null || echo "not installed")
+    local node_version
+    local npm_version
+    node_version=$(node --version 2>/dev/null || echo "not installed")
+    npm_version=$(npm --version 2>/dev/null || echo "not installed")
     
     print_info "Node.js: $node_version, npm: $npm_version"
     echo "Environment: Node.js $node_version, npm $npm_version" >> "$dependency_report"
     
     # Check 6: Analyze dependency count and size
     print_info "Analyzing dependency footprint..."
-    local dep_count=$(jq -r '.dependencies // {} | length' package.json 2>/dev/null || echo "0")
-    local dev_dep_count=$(jq -r '.devDependencies // {} | length' package.json 2>/dev/null || echo "0")
+    local dep_count
+    dep_count=$(jq -r '.dependencies // {} | length' package.json 2>/dev/null || echo "0")
+    local dev_dep_count
+    dev_dep_count=$(jq -r '.devDependencies // {} | length' package.json 2>/dev/null || echo "0")
     local total_deps=$((dep_count + dev_dep_count))
     
     print_info "Dependencies: $dep_count, DevDependencies: $dev_dep_count (Total: $total_deps)"
@@ -109,7 +142,8 @@ step8_validate_dependencies() {
     print_info "Phase 2: Preparing AI-powered dependency analysis..."
     
     # Build dependency summary
-    local dependency_summary="Dependency Analysis Summary:
+    local dependency_summary
+    dependency_summary="Dependency Analysis Summary:
 - Production Dependencies: $dep_count
 - Development Dependencies: $dev_dep_count
 - Total Packages: $total_deps
@@ -119,95 +153,32 @@ step8_validate_dependencies() {
 - Outdated Packages: $(grep -c "Outdated" "$dependency_report" 2>/dev/null || echo "0")"
     
     # Extract actual dependencies
-    local prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -20)
-    local dev_deps=$(jq -r '.devDependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null)
+    local prod_deps
+    prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -20)
+    local dev_deps
+    dev_deps=$(jq -r '.devDependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null)
     
-    local dependency_report_content=$(cat "$dependency_report" 2>/dev/null || echo "   No critical issues detected")
-    local audit_summary=$(cat "$audit_output" 2>/dev/null | jq -r '.metadata // "No data"' || echo "Unable to parse audit results")
-    local outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -10 || echo "None or unable to parse")
+    local dependency_report_content
+    dependency_report_content=$(cat "$dependency_report" 2>/dev/null || echo "   No critical issues detected")
+    local audit_summary
+    audit_summary=$(cat "$audit_output" 2>/dev/null | jq -r '.metadata // "No data"' || echo "Unable to parse audit results")
+    local outdated_list
+    outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -10 || echo "None or unable to parse")
     
-    # Build comprehensive dependency analysis prompt
-    local copilot_prompt="**Role**: You are a senior DevOps engineer and package management specialist with expertise in npm/yarn ecosystem, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices.
-
-**Task**: Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
-
-**Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-- Package Manager: npm
-- Node.js Version: $node_version
-- npm Version: $npm_version
-- Production Dependencies: $dep_count
-- Development Dependencies: $dev_dep_count
-- Total Packages: $total_deps
-
-**Dependency Analysis Results:**
-$dependency_summary
-
-**Automated Findings:**
-$dependency_report_content
-
-**Production Dependencies:**
-$prod_deps
-
-**Development Dependencies:**
-$dev_deps
-
-**npm Audit Summary:**
-$audit_summary
-
-**Outdated Packages:**
-$outdated_list
-
-**Analysis Tasks:**
-
-1. **Security Vulnerability Assessment:**
-   - Review npm audit results
-   - Identify critical/high severity vulnerabilities
-   - Assess exploitability and impact
-   - Provide immediate remediation steps
-   - Recommend long-term security strategy
-   - Consider transitive dependencies
-
-2. **Version Compatibility Analysis:**
-   - Check for breaking changes in outdated packages
-   - Identify version conflicts
-   - Assess compatibility with Node.js version
-   - Review semver ranges (^, ~, exact versions)
-   - Recommend version pinning strategy
-
-3. **Dependency Tree Optimization:**
-   - Identify unused dependencies
-   - Detect duplicate packages in tree
-   - Find opportunities to reduce bundle size
-   - Recommend consolidation strategies
-   - Suggest peer dependency resolution
-
-4. **Environment Configuration Review:**
-   - Validate Node.js version compatibility
-   - Check npm version requirements
-   - Review engine specifications in package.json
-   - Assess development vs production dependencies
-   - Recommend .nvmrc or .node-version file
-
-5. **Update Strategy Recommendations:**
-   - Prioritize updates (security > bug fixes > features)
-   - Create phased update plan
-   - Identify breaking changes to watch
-   - Recommend testing strategy for updates
-   - Suggest automation (Dependabot, Renovate)
-
-**Expected Output:**
-- Security vulnerability assessment with severity levels
-- Immediate action items for critical vulnerabilities
-- Safe update path for outdated packages
-- Version compatibility matrix
-- Dependency optimization recommendations
-- Environment configuration best practices
-- Automated dependency management setup
-- Testing strategy for dependency updates
-- Priority-ordered action plan with effort estimates
-
-Please provide a comprehensive dependency analysis with specific, actionable recommendations for maintaining a secure, optimized dependency tree."
+    # Build comprehensive dependency analysis prompt using AI helper function
+    local copilot_prompt
+    copilot_prompt=$(build_step8_dependencies_prompt \
+        "$node_version" \
+        "$npm_version" \
+        "$dep_count" \
+        "$dev_dep_count" \
+        "$total_deps" \
+        "$dependency_summary" \
+        "$dependency_report_content" \
+        "$prod_deps" \
+        "$dev_deps" \
+        "$audit_summary" \
+        "$outdated_list")
 
     echo ""
     echo -e "${CYAN}GitHub Copilot CLI Dependency Analysis Prompt:${NC}"
@@ -226,10 +197,60 @@ Please provide a comprehensive dependency analysis with specific, actionable rec
                     print_info "Starting Copilot CLI dependency analysis..."
                     echo ""
                     
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step8_copilot_dependency_analysis_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
                     # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt"
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
                     
                     print_success "Copilot CLI dependency analysis completed"
+                    print_info "Full session log saved to: $log_file"
+                    echo ""
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "8" "Dependency_Validation" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                     echo ""
                     
                     # User action on vulnerabilities
@@ -248,7 +269,57 @@ Please provide a comprehensive dependency analysis with specific, actionable rec
             else
                 print_info "No dependency issues - skipping optional analysis"
                 if confirm_action "Run optional dependency optimization analysis?"; then
-                    execute_copilot_prompt "$copilot_prompt"
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step8_copilot_dependency_analysis_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
+                    
+                    print_info "Full session log saved to: $log_file"
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "8" "Dependency_Validation" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                 fi
             fi
         fi
@@ -259,15 +330,30 @@ Please provide a comprehensive dependency analysis with specific, actionable rec
     
     # Summary
     echo ""
+    
+    # Always save backlog file (even when no issues found)
+    local step_issues=""
     if [[ $issues -eq 0 ]]; then
         print_success "Dependency validation passed ✅ ($total_deps packages healthy)"
         save_step_summary "8" "Dependency_Validation" "All ${total_deps} dependencies validated. No vulnerabilities or outdated packages detected." "✅"
+        
+        # Save success status to backlog
+        step_issues="### Dependency Validation
+
+**Total Issues:** 0
+**Total Dependencies:** ${total_deps}
+**Vulnerabilities:** 0
+**Outdated Packages:** 0
+**Status:** ✅ All Checks Passed
+
+All ${total_deps} dependencies validated. No vulnerabilities or outdated packages detected.
+"
     else
         print_warning "Found $issues dependency issue(s) - review recommended"
         save_step_summary "8" "Dependency_Validation" "Found ${issues} dependency issues. Review vulnerabilities and outdated packages." "⚠️"
         
         # Save to backlog
-        local step_issues="### Dependency Validation Issues
+        step_issues="### Dependency Validation Issues
 
 **Total Issues:** ${issues}
 **Total Dependencies:** ${total_deps}
@@ -291,10 +377,12 @@ $(cat "$outdated_output" | jq -r '.' 2>/dev/null || cat "$outdated_output")
 \`\`\`
 "
         fi
-        save_step_issues "8" "Dependency_Validation" "$step_issues"
     fi
     
-    cd "$PROJECT_ROOT"
+    # Always save backlog file
+    save_step_issues "8" "Dependency_Validation" "$step_issues"
+    
+    cd "$PROJECT_ROOT" || return 1
     update_workflow_status "step8" "✅"
 }
 

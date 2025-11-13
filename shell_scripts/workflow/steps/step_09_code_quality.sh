@@ -149,83 +149,17 @@ $(head -30 "$file" 2>/dev/null)
     
     local quality_report_content=$(cat "$quality_report" 2>/dev/null || echo "   No critical issues detected")
     
-    # Build comprehensive code quality prompt
-    local copilot_prompt="**Role**: You are a senior software quality engineer and code review specialist with expertise in code quality standards, static analysis, linting best practices, design patterns, maintainability assessment, and technical debt identification.
-
-**Task**: Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
-
-**Context:**
-- Project: MP Barbosa Personal Website (static HTML + JavaScript with ES Modules)
-- Technology Stack: HTML5, CSS3, JavaScript ES6+, ES Modules
-- Testing: Jest with jsdom
-- Code Files: $total_files total ($js_files JavaScript, $html_files HTML, $css_files CSS)
-
-**Code Quality Analysis Results:**
-$quality_summary
-
-**Automated Findings:**
-$quality_report_content
-
-**Large Files Requiring Review:**
-$(echo -e "$large_files_list" | head -10 || echo "None")
-
-**Code Samples for Review:**
-$sample_code
-
-**Analysis Tasks:**
-
-1. **Code Standards Compliance Assessment:**
-   - Evaluate JavaScript coding standards (ES6+ features)
-   - Check HTML5 semantic markup usage
-   - Review CSS organization and naming (BEM, OOCSS, etc.)
-   - Assess consistent indentation and formatting
-   - Validate JSDoc/comment quality
-   - Check error handling patterns
-
-2. **Best Practices Validation:**
-   - Verify separation of concerns (HTML/CSS/JS)
-   - Check for proper event handling
-   - Assess DOM manipulation patterns
-   - Review async/await vs promises usage
-   - Validate proper use of const/let (no var)
-   - Check for magic numbers/strings
-
-3. **Maintainability & Readability Analysis:**
-   - Assess function complexity (cyclomatic complexity)
-   - Evaluate function length (should be < 50 lines)
-   - Check variable naming clarity
-   - Review code organization and structure
-   - Assess comment quality and documentation
-   - Identify overly complex logic
-
-4. **Anti-Pattern Detection:**
-   - Identify code smells (duplicated code, long functions)
-   - Detect callback hell or promise anti-patterns
-   - Find global variable pollution
-   - Spot tight coupling between modules
-   - Identify monolithic functions
-   - Detect violation of DRY principle
-
-5. **Refactoring Recommendations:**
-   - Suggest modularization opportunities
-   - Recommend function extraction for clarity
-   - Propose design pattern applications
-   - Suggest performance optimizations
-   - Recommend code reuse strategies
-   - Identify technical debt priorities
-
-**Expected Output:**
-- Code quality grade (A-F) with justification
-- Standards compliance checklist
-- Anti-patterns detected with file:line references
-- Maintainability score and improvement areas
-- Top 5 refactoring priorities with effort estimates
-- Best practice violations and fixes
-- Technical debt assessment
-- Specific code improvement recommendations
-- Quick wins vs long-term improvements
-
-Please provide a comprehensive code quality assessment with specific, actionable recommendations."
+    # Build comprehensive code quality prompt using AI helper function
+    local copilot_prompt
+    copilot_prompt=$(build_step9_code_quality_prompt \
+        "$total_files" \
+        "$js_files" \
+        "$html_files" \
+        "$css_files" \
+        "$quality_summary" \
+        "$quality_report_content" \
+        "$large_files_list" \
+        "$sample_code")
 
     echo ""
     echo -e "${CYAN}GitHub Copilot CLI Code Quality Review Prompt:${NC}"
@@ -244,10 +178,60 @@ Please provide a comprehensive code quality assessment with specific, actionable
                     print_info "Starting Copilot CLI code quality analysis..."
                     echo ""
                     
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step9_copilot_quality_review_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
                     # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt"
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
                     
                     print_success "Copilot CLI code quality review completed"
+                    print_info "Full session log saved to: $log_file"
+                    echo ""
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "9" "Code_Quality_Validation" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                     echo ""
                     
                     # User action on critical issues
@@ -266,7 +250,57 @@ Please provide a comprehensive code quality assessment with specific, actionable
             else
                 print_info "No major quality issues - skipping optional review"
                 if confirm_action "Run optional code quality optimization review?"; then
-                    execute_copilot_prompt "$copilot_prompt"
+                    # Create log file with unique timestamp
+                    local log_timestamp
+                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+                    local log_file="${LOGS_RUN_DIR}/step9_copilot_quality_review_${log_timestamp}.log"
+                    print_info "Logging output to: $log_file"
+                    
+                    execute_copilot_prompt "$copilot_prompt" "$log_file"
+                    
+                    print_info "Full session log saved to: $log_file"
+                    
+                    # Ask user if they want to save issues from the Copilot session
+                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                        if [[ -f "$log_file" ]]; then
+                            local log_content
+                            log_content=$(cat "$log_file")
+                            
+                            # Build issue extraction prompt using helper function
+                            local extract_prompt
+                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                            
+                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                                sleep 1
+                                print_info "Starting Copilot CLI session for issue extraction..."
+                                copilot -p "$extract_prompt" --allow-all-tools
+                                
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "9" "Code_Quality_Validation" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
+                            else
+                                print_warning "Skipped issue extraction - no backlog file created"
+                            fi
+                        fi
+                    fi
                 fi
             fi
         fi
@@ -277,16 +311,29 @@ Please provide a comprehensive code quality assessment with specific, actionable
     
     # Summary
     echo ""
+    
+    # Always save backlog file (even when no issues found)
+    local step_issues=""
     if [[ $quality_issues -eq 0 ]]; then
         print_success "Code quality validation passed ✅ ($total_files files analyzed)"
         save_step_summary "9" "Code_Quality_Validation" "Code quality validated across ${total_files} files. All quality standards met." "✅"
+        
+        # Save success status to backlog
+        step_issues="### Code Quality Validation
+
+**Total Issues:** 0
+**Files Analyzed:** ${total_files}
+**Status:** ✅ All Checks Passed
+
+Code quality validated across ${total_files} files. All quality standards met.
+"
     else
         print_warning "Found $quality_issues code quality area(s) for improvement"
         print_info "Review recommendations above for code quality enhancements"
         save_step_summary "9" "Code_Quality_Validation" "Found ${quality_issues} code quality improvements needed across ${total_files} files. Review and apply quality enhancements." "⚠️"
         
         # Save to backlog
-        local step_issues="### Code Quality Issues Found
+        step_issues="### Code Quality Issues Found
 
 **Total Issues:** ${quality_issues}
 **Files Analyzed:** ${total_files}
@@ -300,8 +347,10 @@ $(cat "$quality_report")
 \`\`\`
 "
         fi
-        save_step_issues "9" "Code_Quality_Validation" "$step_issues"
     fi
+    
+    # Always save backlog file
+    save_step_issues "9" "Code_Quality_Validation" "$step_issues"
     
     cd "$PROJECT_ROOT"
     update_workflow_status "step9" "✅"

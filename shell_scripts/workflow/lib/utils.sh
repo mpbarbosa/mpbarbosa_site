@@ -128,35 +128,24 @@ EOF
 
 # User confirmation prompt with auto-mode bypass
 # Usage: confirm_action <prompt> [default_answer]
-# Returns: 0 for yes, 1 for no
+# Returns: 0 for yes (always), 1 for no (Ctrl+C)
 confirm_action() {
     local prompt="$1"
-    local default_answer="${2:-}"  # Optional: "y", "n", or empty
-    local response
-    local prompt_suffix
+    local default_answer="${2:-}"  # Optional: kept for compatibility but not used
     
     # Auto mode always returns true (yes)
     if [[ "$AUTO_MODE" == true ]]; then
         return 0
     fi
     
-    # Build prompt suffix based on default answer
-    if [[ "$default_answer" == "y" ]]; then
-        prompt_suffix=" (Y/n): "
-    elif [[ "$default_answer" == "n" ]]; then
-        prompt_suffix=" (y/N): "
-    else
-        prompt_suffix=" (y/n): "
-    fi
+    # Display the prompt message
+    echo -e "${CYAN}ℹ️  ${prompt}${NC}"
     
-    read -p "$(echo -e "${YELLOW}${prompt}${prompt_suffix}${NC}")" response
+    # Simple continuation prompt - read from /dev/tty to handle input redirection
+    read -p "$(echo -e "${YELLOW}Enter to continue or Ctrl+C to exit...${NC}")" < /dev/tty
     
-    # Handle empty response with default answer
-    if [[ -z "$response" && -n "$default_answer" ]]; then
-        response="$default_answer"
-    fi
-    
-    [[ "$response" =~ ^[Yy]$ ]]
+    # Any response (including empty) continues
+    return 0
 }
 
 # ==============================================================================
@@ -166,12 +155,14 @@ confirm_action() {
 # Cleanup handler for temporary files
 # Registered via trap in main() to ensure cleanup on EXIT/INT/TERM
 cleanup() {
+    local exit_code=$?
     if [[ ${#TEMP_FILES[@]} -gt 0 ]]; then
         print_info "Cleaning up temporary files..."
         for temp_file in "${TEMP_FILES[@]}"; do
             [[ -f "$temp_file" ]] && rm -f "$temp_file"
         done
     fi
+    exit $exit_code
 }
 
 # ==============================================================================
