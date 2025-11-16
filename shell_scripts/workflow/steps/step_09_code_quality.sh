@@ -21,9 +21,10 @@ step9_code_quality_validation() {
     
     # Check 1: Enumerate code files
     print_info "Enumerating code files..."
-    local js_files=$(find . -name "*.js" -o -name "*.mjs" 2>/dev/null | wc -l)
-    local html_files=$(find . -name "*.html" 2>/dev/null | wc -l)
-    local css_files=$(find . -name "*.css" 2>/dev/null | wc -l)
+    local js_files=$(fast_find "." "*.js" 10 "node_modules" ".git" "coverage" | wc -l)
+    js_files=$((js_files + $(fast_find "." "*.mjs" 10 "node_modules" ".git" "coverage" | wc -l)))
+    local html_files=$(fast_find "." "*.html" 10 "node_modules" ".git" "coverage" | wc -l)
+    local css_files=$(fast_find "." "*.css" 10 "node_modules" ".git" "coverage" | wc -l)
     local total_files=$((js_files + html_files + css_files))
     
     print_info "Code files: $js_files JS, $html_files HTML, $css_files CSS (Total: $total_files)"
@@ -34,7 +35,8 @@ step9_code_quality_validation() {
     local large_files_count=0
     local large_files_list=""
     
-    # Find JavaScript files over 300 lines
+    # Find JavaScript files over 300 lines (cache results for reuse)
+    local all_js_files=$(fast_find "." "*.js" 10 "node_modules" ".git" "coverage" && fast_find "." "*.mjs" 10 "node_modules" ".git" "coverage")
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
         local line_count=$(wc -l < "$file" 2>/dev/null || echo 0)
@@ -43,7 +45,7 @@ step9_code_quality_validation() {
             large_files_list+="  - $file ($line_count lines)\n"
             echo "Large file: $file ($line_count lines)" >> "$quality_report"
         fi
-    done < <(find . -name "*.js" -o -name "*.mjs" 2>/dev/null)
+    done <<< "$all_js_files"
     
     if [[ $large_files_count -gt 0 ]]; then
         print_warning "Found $large_files_count large files (>300 lines) - may need refactoring"
@@ -166,191 +168,37 @@ $(head -30 "$file" 2>/dev/null)
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
     # Check if Copilot CLI is available
-    if is_copilot_available; then
-        print_info "GitHub Copilot CLI detected - ready for code quality review..."
-        
-        if [[ "$DRY_RUN" == true ]]; then
-            print_info "[DRY RUN] Would invoke: copilot -p with code quality prompt"
+    # Execute Phase 2 AI analysis using shared library
+    execute_phase2_ai_analysis \
+        "$copilot_prompt" \
+        "9" \
+        "quality_review" \
+        "Code_Quality_Validation" \
+        "$quality_issues" \
+        "code quality review" \
+        "No major quality issues - skipping optional review" \
+        "Did Copilot identify code quality issues to fix?"
+    
+    # Handle critical quality issues
+    if [[ $quality_issues -gt 3 ]]; then
+        if confirm_action "Multiple code quality issues found - continue workflow?"; then
+            print_warning "Continuing despite quality issues - address in future iterations"
         else
-            # Smart triggering
-            if [[ $quality_issues -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
-                if confirm_action "Run Copilot CLI for code quality review?"; then
-                    print_info "Starting Copilot CLI code quality analysis..."
-                    echo ""
-                    
-                    # Create log file with unique timestamp
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step9_copilot_quality_review_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_success "Copilot CLI code quality review completed"
-                    print_info "Full session log saved to: $log_file"
-                    echo ""
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "9" "Code_Quality_Validation" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                    echo ""
-                    
-                    # User action on critical issues
-                    if [[ $quality_issues -gt 3 ]]; then
-                        if confirm_action "Multiple code quality issues found - continue workflow?"; then
-                            print_warning "Continuing despite quality issues - address in future iterations"
-                        else
-                            print_error "Workflow paused - improve code quality first"
-                            cd "$PROJECT_ROOT"
-                            return 1
-                        fi
-                    fi
-                else
-                    print_warning "Skipped Copilot code quality review"
-                fi
-            else
-                print_info "No major quality issues - skipping optional review"
-                if confirm_action "Run optional code quality optimization review?"; then
-                    # Create log file with unique timestamp
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step9_copilot_quality_review_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_info "Full session log saved to: $log_file"
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "9" "Code_Quality_Validation" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                fi
-            fi
-        fi
-    else
-        print_warning "GitHub Copilot CLI not found - using basic checks only"
-        print_info "Install from: https://github.com/github/gh-copilot"
-    fi
-    
-    # Summary
-    echo ""
-    
-    # Always save backlog file (even when no issues found)
-    local step_issues=""
-    if [[ $quality_issues -eq 0 ]]; then
-        print_success "Code quality validation passed ✅ ($total_files files analyzed)"
-        save_step_summary "9" "Code_Quality_Validation" "Code quality validated across ${total_files} files. All quality standards met." "✅"
-        
-        # Save success status to backlog
-        step_issues="### Code Quality Validation
-
-**Total Issues:** 0
-**Files Analyzed:** ${total_files}
-**Status:** ✅ All Checks Passed
-
-Code quality validated across ${total_files} files. All quality standards met.
-"
-    else
-        print_warning "Found $quality_issues code quality area(s) for improvement"
-        print_info "Review recommendations above for code quality enhancements"
-        save_step_summary "9" "Code_Quality_Validation" "Found ${quality_issues} code quality improvements needed across ${total_files} files. Review and apply quality enhancements." "⚠️"
-        
-        # Save to backlog
-        step_issues="### Code Quality Issues Found
-
-**Total Issues:** ${quality_issues}
-**Files Analyzed:** ${total_files}
-
-"
-        if [[ -f "$quality_report" && -s "$quality_report" ]]; then
-            step_issues+="### Details
-
-\`\`\`
-$(cat "$quality_report")
-\`\`\`
-"
+            print_error "Workflow paused - improve code quality first"
+            cd "$PROJECT_ROOT"
+            return 1
         fi
     fi
     
-    # Always save backlog file
-    save_step_issues "9" "Code_Quality_Validation" "$step_issues"
+    # Save step results using shared library
+    save_step_results \
+        "9" \
+        "Code_Quality_Validation" \
+        "$quality_issues" \
+        "Code quality validation passed ($total_files files analyzed)" \
+        "Found ${quality_issues} code quality improvements needed across ${total_files} files. Review and apply quality enhancements." \
+        "$quality_report" \
+        "$total_files"
     
     cd "$PROJECT_ROOT"
     update_workflow_status "step9" "✅"

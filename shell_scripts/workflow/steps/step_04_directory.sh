@@ -127,179 +127,26 @@ step4_validate_directory_structure() {
     echo -e "${CYAN}GitHub Copilot CLI Directory Structure Validation Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Check if Copilot CLI is available
-    if is_copilot_available; then
-        print_info "GitHub Copilot CLI detected - ready for architectural analysis..."
-        
-        if [[ "$DRY_RUN" == true ]]; then
-            print_info "[DRY RUN] Would invoke: copilot -p with architectural analysis prompt"
-        else
-            # Smart triggering
-            if [[ "$issues" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
-                if confirm_action "Run Copilot CLI for deep architectural analysis?" "y"; then
-                    print_info "Starting Copilot CLI architectural analysis session..."
-                    echo ""
-                    
-                    # Create log file with unique timestamp (same format as step 1)
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step4_copilot_directory_structure_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_success "Copilot CLI architectural analysis completed"
-                    print_info "Full session log saved to: $log_file"
-                    echo ""
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "4" "Directory_Structure_Validation" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                    echo ""
-                    
-                    # User feedback loop
-                    if confirm_action "Did Copilot identify structural or architectural issues?"; then
-                        print_warning "Please review architectural recommendations before continuing"
-                        if [[ "$INTERACTIVE_MODE" == true ]]; then
-                            if ! confirm_action "Continue workflow with identified issues?"; then
-                                print_error "Workflow paused - please address architectural issues"
-                                return 1
-                            fi
-                        fi
-                    fi
-                else
-                    print_warning "Skipped Copilot CLI architectural analysis"
-                fi
-            else
-                print_info "No automated issues found - skipping optional architectural analysis"
-                if confirm_action "Run optional Copilot architectural analysis anyway?"; then
-                    # Create log file with unique timestamp (same format as step 1)
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step4_copilot_directory_structure_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_info "Full session log saved to: $log_file"
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "4" "Directory_Structure_Validation" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                fi
-            fi
-        fi
-    else
-        print_warning "GitHub Copilot CLI not found - using basic checks only"
-        print_info "Install from: https://github.com/github/gh-copilot"
-    fi
+    # Execute Phase 2 AI analysis using shared library
+    execute_phase2_ai_analysis \
+        "$copilot_prompt" \
+        "4" \
+        "directory_structure" \
+        "Directory_Structure_Validation" \
+        "$issues" \
+        "architectural analysis" \
+        "No automated issues found - skipping optional architectural analysis" \
+        "Did Copilot identify structural or architectural issues?"
     
-    # Summary
-    echo ""
-    
-    # Always save backlog file (even when no issues found)
-    local step_issues=""
-    if [[ $issues -eq 0 ]]; then
-        print_success "Directory structure valid in automated checks ✅"
-        save_step_summary "4" "Directory_Structure_Validation" "Project directory structure validated successfully. All expected directories present and properly organized." "✅"
+    # Save step results using shared library
+    # Handle critical directory failures specially
+    if [[ $missing_critical -gt 0 ]]; then
+        print_error "Critical: $missing_critical critical directories missing!"
+        local failure_msg="CRITICAL: ${missing_critical} critical directories missing. Found ${issues} total structural issues requiring immediate attention."
+        save_step_summary "4" "Directory_Structure_Validation" "$failure_msg" "❌"
         
-        # Save success status to backlog
-        step_issues="### Directory Structure Validation
-
-**Total Issues:** 0
-**Missing Critical Directories:** 0
-**Status:** ✅ All Checks Passed
-
-Project directory structure validated successfully. All expected directories present and properly organized.
-"
-    else
-        print_warning "Found $issues structural issue(s) - review required"
-        if [[ $missing_critical -gt 0 ]]; then
-            print_error "Critical: $missing_critical critical directories missing!"
-            save_step_summary "4" "Directory_Structure_Validation" "CRITICAL: ${missing_critical} critical directories missing. Found ${issues} total structural issues requiring immediate attention." "❌"
-        else
-            save_step_summary "4" "Directory_Structure_Validation" "Found ${issues} structural issues. Review missing or misorganized directories." "⚠️"
-        fi
-        
-        # Save to backlog
-        step_issues="### Directory Structure Issues Found
+        # Build detailed critical issues
+        local step_issues="### Directory Structure Issues Found
 
 **Total Issues:** ${issues}
 **Missing Critical Directories:** ${missing_critical}
@@ -313,10 +160,17 @@ $(cat "$structure_issues_file")
 \`\`\`
 "
         fi
+        save_step_issues "4" "Directory_Structure_Validation" "$step_issues"
+    else
+        save_step_results \
+            "4" \
+            "Directory_Structure_Validation" \
+            "$issues" \
+            "Directory structure valid in automated checks" \
+            "Found ${issues} structural issues. Review missing or misorganized directories." \
+            "$structure_issues_file" \
+            "$dir_count"
     fi
-    
-    # Always save backlog file
-    save_step_issues "4" "Directory_Structure_Validation" "$step_issues"
     
     update_workflow_status "step4" "✅"
 }

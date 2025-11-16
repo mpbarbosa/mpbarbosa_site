@@ -37,7 +37,7 @@ What do you need to do?
 │        When: Changes made to submodule content
 │
 ├─ 🧪 RUN TESTS & UPDATE DOCS?
-│  └─ Run: ./shell_scripts/execute_tests_docs_workflow.sh
+│  └─ Run: ./shell_scripts/workflow/execute_tests_docs_workflow.sh
 │     Purpose: 13-step AI-powered test & documentation workflow
 │     When: After significant changes, before commits
 │     Modes: --interactive (default), --auto (CI/CD), --dry-run (preview)
@@ -66,7 +66,7 @@ What do you need to do?
 | Start work session | `./shell_scripts/pull_all_submodules.sh` | Daily |
 | Test deployment | `./shell_scripts/sync_to_public.sh --step1 --dry-run` | Before production |
 | Deploy to production | `./shell_scripts/sync_to_public.sh --both-steps` | Weekly/as needed |
-| Run tests & docs | `./shell_scripts/execute_tests_docs_workflow.sh` | Before major commits |
+| Run tests & docs | `./shell_scripts/workflow/execute_tests_docs_workflow.sh` | Before major commits |
 | Validate links | `./shell_scripts/validate_external_links.sh --fix` | After link changes |
 | Better AI prompts | `./shell_scripts/copilot_with_enhanced_prompt.sh "task"` | As needed |
 
@@ -299,7 +299,7 @@ chmod +x shell_scripts/pull_all_submodules.sh
 chmod +x shell_scripts/push_all_submodules.sh
 chmod +x shell_scripts/sync_to_public.sh
 chmod +x shell_scripts/deploy_to_webserver.sh
-chmod +x shell_scripts/execute_tests_docs_workflow.sh
+chmod +x shell_scripts/workflow/execute_tests_docs_workflow.sh
 chmod +x shell_scripts/validate_external_links.sh
 chmod +x shell_scripts/enhance_prompt.sh
 chmod +x shell_scripts/copilot_with_enhanced_prompt.sh
@@ -330,6 +330,253 @@ ls -l shell_scripts/*.sh
 | `validate_external_links.sh` | Link security validation | ✅ Yes |
 | `enhance_prompt.sh` | AI prompt enhancement | ✅ Yes |
 | `copilot_with_enhanced_prompt.sh` | Enhanced Copilot execution | ✅ Yes |
+
+---
+
+## Available Scripts
+
+### 🧹 Maintenance & Cleanup Scripts
+
+#### `cleanup_old_folders.sh`
+**Purpose**: Clean up workflow output folders, keeping only the last 15 subfolders
+
+**Features**:
+- ✅ Manages backlog, logs, and summaries directories
+- ✅ Retention policy: keeps 15 most recent workflow runs
+- ✅ Sorted by modification time for intelligent cleanup
+- ✅ Safe deletion with preview mode
+- ✅ Colored output with deletion summary
+
+**Usage**:
+```bash
+./shell_scripts/cleanup_old_folders.sh           # Clean up old workflow outputs
+./shell_scripts/cleanup_old_folders.sh --help    # Show help
+```
+
+**Version**: 1.0.0
+
+---
+
+#### `consolidate_docs.sh`
+**Purpose**: Documentation consolidation and cleanup automation
+
+**Features**:
+- ✅ Implements documentation retention policy
+- ✅ Consolidates reports into historical archive
+- ✅ Manages docs/reports directory structure
+- ✅ Automatic cleanup of workflow logs
+- ✅ Comprehensive archiving strategy
+
+**Usage**:
+```bash
+./shell_scripts/consolidate_docs.sh              # Consolidate documentation
+./shell_scripts/consolidate_docs.sh --help       # Show help
+```
+
+**Version**: 1.0.0
+
+---
+
+#### `manage_reports.sh`
+**Purpose**: Automated report file management with timestamp-based naming
+
+**Features**:
+- ✅ Manages consistency validation reports
+- ✅ Automatic archiving with 30-day retention
+- ✅ Timestamp-based file organization
+- ✅ Archive directory management
+- ✅ Cleanup of outdated reports
+
+**Usage**:
+```bash
+./shell_scripts/manage_reports.sh                # Manage validation reports
+./shell_scripts/manage_reports.sh --help         # Show help
+```
+
+**Version**: 1.0.0
+
+---
+
+### 🔍 Documentation Validation Scripts
+
+#### `fix_documentation_consistency.sh`
+**Purpose**: Automatically fix documentation consistency issues
+
+**Features**:
+- ✅ Repairs cross-reference inconsistencies
+- ✅ Updates version numbers across documentation
+- ✅ Fixes broken internal links
+- ✅ Standardizes formatting
+- ✅ Automated correction with backup
+
+**Usage**:
+```bash
+./shell_scripts/fix_documentation_consistency.sh              # Fix consistency issues
+./shell_scripts/fix_documentation_consistency.sh --dry-run    # Preview fixes
+./shell_scripts/fix_documentation_consistency.sh --help       # Show help
+```
+
+---
+
+#### `validate_documentation_consistency.sh`
+**Purpose**: Validate documentation consistency across the project
+
+**Features**:
+- ✅ Checks cross-references between documents
+- ✅ Validates version number consistency
+- ✅ Verifies internal link integrity
+- ✅ Reports inconsistencies with file locations
+- ✅ CI/CD compatible exit codes
+
+**Usage**:
+```bash
+./shell_scripts/validate_documentation_consistency.sh         # Validate documentation
+./shell_scripts/validate_documentation_consistency.sh --help  # Show help
+```
+
+---
+
+### 🧪 Testing & Performance Scripts
+
+#### `workflow/test_modules.sh`
+**Purpose**: Verify all workflow modules are syntactically correct and functional
+
+**Features**:
+- ✅ Tests all library modules (11 modules)
+- ✅ Tests all step modules (13 modules)
+- ✅ Syntax validation with bash -n
+- ✅ Function existence verification
+- ✅ Comprehensive test reporting
+
+**Usage**:
+```bash
+./shell_scripts/workflow/test_modules.sh          # Test all modules
+./shell_scripts/workflow/test_modules.sh --help   # Show help
+```
+
+**Part of**: Tests & Documentation Workflow Automation v2.0.0
+
+---
+
+#### `workflow/test_file_operations.sh`
+**Purpose**: Validate file operations module resilience and error recovery
+
+**Features**:
+- ✅ Tests file_operations.sh library module
+- ✅ Validates resilience features
+- ✅ Tests error recovery mechanisms
+- ✅ Comprehensive edge case testing
+- ✅ Detailed test result reporting
+
+**Usage**:
+```bash
+./shell_scripts/workflow/test_file_operations.sh  # Test file operations
+```
+
+**Part of**: Tests & Documentation Workflow Automation v2.0.0
+
+---
+
+#### `workflow/test_session_manager.sh`
+**Purpose**: Test session management functionality for bash command execution
+
+**Features**:
+- ✅ Tests session_manager.sh library module
+- ✅ Validates session lifecycle management
+- ✅ Tests cleanup handlers
+- ✅ Verifies timeout mechanisms
+- ✅ Comprehensive session testing
+
+**Usage**:
+```bash
+./shell_scripts/workflow/test_session_manager.sh  # Test session manager
+```
+
+**Part of**: Tests & Documentation Workflow Automation v2.0.0
+
+---
+
+#### `workflow/benchmark_performance.sh`
+**Purpose**: Measure and compare performance of optimized vs standard operations
+
+**Features**:
+- ✅ Benchmarks performance.sh module optimizations
+- ✅ Measures file operation speeds
+- ✅ Compares optimized vs standard implementations
+- ✅ Generates performance metrics
+- ✅ Identifies optimization opportunities
+
+**Usage**:
+```bash
+./shell_scripts/workflow/benchmark_performance.sh  # Run performance benchmarks
+```
+
+**Part of**: Tests & Documentation Workflow Automation v2.0.0
+
+---
+
+#### `workflow/example_session_manager.sh`
+**Purpose**: Demonstrate session management best practices in workflow steps
+
+**Features**:
+- ✅ Example implementations of session patterns
+- ✅ Best practices for sync/async execution
+- ✅ Timeout configuration examples
+- ✅ Cleanup handler demonstrations
+- ✅ Educational reference code
+
+**Usage**:
+```bash
+./shell_scripts/workflow/example_session_manager.sh  # Run examples
+```
+
+**Part of**: Tests & Documentation Workflow Automation v2.0.0
+
+---
+
+### 📚 Workflow Library Modules
+
+The following are library modules (not meant to be executed directly):
+
+#### `workflow/lib/file_operations.sh`
+**Purpose**: File resilience and atomic operations for workflow steps
+
+**Features**:
+- Atomic file writes with backup
+- Safe directory creation
+- Error recovery mechanisms
+- File existence validation
+
+**Executable**: ✅ Yes (now executable)  
+**Sourced by**: All workflow step modules
+
+---
+
+#### `workflow/lib/performance.sh`
+**Purpose**: Performance optimization utilities for workflow operations
+
+**Features**:
+- File operation caching
+- Batch processing optimization
+- Performance measurement utilities
+- Resource usage tracking
+
+**Executable**: ✅ Yes (now executable)  
+**Sourced by**: Workflow steps requiring optimization
+
+---
+
+#### `workflow/lib/session_manager.sh`
+**Purpose**: Bash command session lifecycle management
+
+**Features**:
+- Session creation and cleanup
+- Timeout management
+- Cleanup trap handlers
+- Session state tracking
+
+**Executable**: ✅ Yes (now executable)  
+**Sourced by**: Workflow steps executing bash commands
 
 ---
 
@@ -503,16 +750,16 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 ### 📋 `execute_tests_docs_workflow.sh` (v2.0.0)
 **Purpose**: AI-powered automation for complete tests and documentation update workflow
 
-**Architecture Status**: 🎉 **Phase 3 Complete - Fully Modularized** (v2.0.0)
-- ✅ **20 extracted modules**: 8 library modules + 12 step modules
-- ✅ **4,313 lines modularized**: Professional separation of concerns
+**Architecture Status**: 🎉 **Complete Modularization** (v2.0.0)
+- ✅ **25 extracted modules**: 12 library modules + 13 step modules
+- ✅ **Main script**: 4,740 lines with module loading architecture
+- ✅ **Total modular code**: 7,219 lines
 - ✅ **Single responsibility**: Each module focused on specific domain
 - ✅ **Testable components**: 54 automated tests with 100% pass rate
-- ✅ **Ready for Phase 4**: Main script integration pending
 
 **Features**:
 - ✅ **13-step comprehensive workflow** from analysis to git finalization
-- ✅ **AI-powered analysis** using GitHub Copilot CLI with 11 specialized personas
+- ✅ **AI-powered analysis** using GitHub Copilot CLI with 12 specialized personas
 - ✅ **Two-phase validation architecture**: Automated detection + AI-powered deep analysis
 - ✅ **Conventional commit generation**: AI-assisted commit message creation with git context
 - ✅ **Smart triggering modes**: Auto, Interactive, and Dry-run
@@ -524,19 +771,19 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 **Usage**:
 ```bash
 # Full automated workflow (interactive mode, default)
-./shell_scripts/execute_tests_docs_workflow.sh
+./shell_scripts/workflow/execute_tests_docs_workflow.sh
 
 # Preview without executing
-./shell_scripts/execute_tests_docs_workflow.sh --dry-run
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
 
 # Automatic mode (CI/CD compatible, no prompts)
-./shell_scripts/execute_tests_docs_workflow.sh --auto
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
 
 # Combined for safe testing
-./shell_scripts/execute_tests_docs_workflow.sh --dry-run --auto
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run --auto
 
 # Show help and options
-./shell_scripts/execute_tests_docs_workflow.sh --help
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --help
 ```
 
 **Workflow Steps**:
@@ -552,9 +799,10 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 10. **Step 9**: Code Quality Validation - AI-powered software quality engineer
 11. **Step 10**: Context Analysis - AI-powered technical project manager summary
 12. **Step 11**: Git Finalization - AI-powered conventional commit message generation
+13. **Step 12**: Markdown Linting - AI-assisted markdown validation with mdl
 
 **AI-Enhanced Features**:
-- **11 Specialized AI Personas**: Each step uses domain-expert personas (Git Workflow Specialist, DevOps Engineer, QA Automation Engineer, etc.)
+- **12 Specialized AI Personas**: Each step uses domain-expert personas (Git Workflow Specialist, DevOps Engineer, QA Automation Engineer, etc.)
 - **Modern Copilot CLI Integration**: Uses `copilot -p` for interactive persona-based analysis
 - **Conventional Commits**: Step 11 generates professional commit messages following conventional commit standards
 - **Graceful Fallbacks**: Works without Copilot CLI installed (automated validation continues)
@@ -570,41 +818,44 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 - ✓ **Reusable components**: Libraries shared across multiple scripts
 - ✓ **Testable modules**: Comprehensive test coverage with Jest
 
-**Modular Architecture** (v2.0.0 - Phase 3 Complete):
-The workflow script has been fully modularized into professional components:
+**Modular Architecture** (v2.0.0 - Complete):
+The workflow script now uses a fully modularized architecture with automatic module loading:
 
-- **8 Library Modules** (1,035 lines total):
-  - `lib/config.sh` - Configuration and constants (55 lines)
-  - `lib/colors.sh` - ANSI color definitions (18 lines)
-  - `lib/utils.sh` - Utility functions (194 lines)
-  - `lib/git_cache.sh` - Git state caching (129 lines)
-  - `lib/validation.sh` - Pre-flight checks (151 lines)
-  - `lib/backlog.sh` - Issue tracking (89 lines)
-  - `lib/summary.sh` - Summary generation (132 lines)
-  - `lib/ai_helpers.sh` - AI integration (267 lines)
+- **Main Workflow Script**: 4,740 lines
+  - Module loading system for libraries and steps
+  - Execution orchestration and flow control
+  - Progress tracking and workflow state management
 
-- **13 Step Modules** (4,611 lines total):
-  - `steps/step_00_analyze.sh` - Pre-workflow change analysis (57 lines)
-  - `steps/step_01_documentation.sh` - Documentation updates (326 lines)
-  - `steps/step_02_consistency.sh` - Consistency analysis (329 lines)
-  - `steps/step_03_script_refs.sh` - Script reference validation (353 lines)
-  - `steps/step_04_directory.sh` - Directory structure validation (375 lines)
-  - `steps/step_05_test_review.sh` - Test review (387 lines)
-  - `steps/step_06_test_gen.sh` - Test generation (439 lines)
-  - `steps/step_07_test_exec.sh` - Test execution (392 lines)
-  - `steps/step_08_dependencies.sh` - Dependency validation (458 lines)
-  - `steps/step_09_code_quality.sh` - Code quality validation (426 lines)
-  - `steps/step_10_context.sh` - Context analysis (377 lines)
-  - `steps/step_11_git.sh` - **AI-powered git finalization** (485 lines) ⭐
+- **12 Library Modules**:
+  - `lib/config.sh` - Configuration and constants
+  - `lib/colors.sh` - ANSI color definitions
+  - `lib/utils.sh` - Utility functions
+  - `lib/git_cache.sh` - Git state caching
+  - `lib/validation.sh` - Pre-flight checks
+  - `lib/backlog.sh` - Issue tracking
+  - `lib/summary.sh` - Summary generation
+  - `lib/ai_helpers.sh` - AI integration
+  - `lib/file_operations.sh` - File management utilities
+  - `lib/performance.sh` - Performance optimization
+  - `lib/session_manager.sh` - Session state management
+  - `lib/step_execution.sh` - Step execution framework
 
-**Total Modularization**: 5,646 lines extracted from monolithic script (1,035 libs + 4,611 steps)
+- **13 Step Modules** (step_00 through step_12):
+  - `steps/step_00_analyze.sh` - Pre-workflow change analysis
+  - `steps/step_01_documentation.sh` - Documentation updates
+  - `steps/step_02_consistency.sh` - Consistency analysis
+  - `steps/step_03_script_refs.sh` - Script reference validation
+  - `steps/step_04_directory.sh` - Directory structure validation
+  - `steps/step_05_test_review.sh` - Test review
+  - `steps/step_06_test_gen.sh` - Test generation
+  - `steps/step_07_test_exec.sh` - Test execution
+  - `steps/step_08_dependencies.sh` - Dependency validation
+  - `steps/step_09_code_quality.sh` - Code quality validation
+  - `steps/step_10_context.sh` - Context analysis
+  - `steps/step_11_git.sh` - **AI-powered git finalization** ⭐
+  - `steps/step_12_markdown_lint.sh` - **Markdown linting validation** ⭐
 
-**Phase 3 Highlights**:
-- ✅ All 13 step modules fully extracted
-- ✅ Step 11 includes Git Workflow Specialist AI persona
-- ✅ AI-powered conventional commit message generation
-- ✅ Two-phase git finalization (automated analysis + AI enhancement)
-- ✅ Professional separation of concerns achieved
+**Total Modular Code**: 7,219 lines across 25 modules
 
 **Related Documentation**:
 - Module Documentation: `/shell_scripts/workflow/README.md`
@@ -619,7 +870,7 @@ The workflow script has been fully modularized into professional components:
 
 The workflow automation script generates three types of outputs in dedicated directories:
 
-#### 📊 `/logs/` - Raw Execution Logs (v1.5.0)
+#### 📊 `/shell_scripts/workflow/logs/` - Raw Execution Logs (v1.5.0)
 **Purpose**: Complete execution traces and AI session logs
 
 **Contents**:
@@ -635,9 +886,9 @@ The workflow automation script generates three types of outputs in dedicated dir
 
 **Retention**: 30 days (raw debugging data, high volume)
 
-**Documentation**: `/logs/README.md`
+**Documentation**: `/shell_scripts/workflow/logs/README.md`
 
-#### 📋 `/backlog/` - Detailed Issue Reports (v1.3.0)
+#### 📋 `/shell_scripts/workflow/backlog/` - Detailed Issue Reports (v1.3.0)
 **Purpose**: Comprehensive technical findings and validation output
 
 **Contents**:
@@ -676,22 +927,22 @@ The workflow automation script generates three types of outputs in dedicated dir
 
 | Directory | Version | Purpose | Audience | Length | Retention |
 |-----------|---------|---------|----------|--------|-----------|
-| **logs/** | v1.5.0 | Raw traces & AI sessions | Developers (debug) | Full logs | 30 days |
-| **backlog/** | v1.3.0 | Detailed reports | Developers (fixing) | Full reports | 90 days |
+| **shell_scripts/workflow/logs/** | v1.5.0 | Raw traces & AI sessions | Developers (debug) | Full logs | 30 days |
+| **shell_scripts/workflow/backlog/** | v1.3.0 | Detailed reports | Developers (fixing) | Full reports | 90 days |
 | **summaries/** | v1.4.0 | Quick conclusions | Managers (overview) | 2-3 sentences | Indefinite |
 
 #### Version Evolution Timeline
 
 - **v1.2.0** (Nov 4, 2025): Initial AI-powered workflow automation
-- **v1.3.0** (Nov 5, 2025): Added `/backlog/` for issue tracking
+- **v1.3.0** (Nov 5, 2025): Added `/shell_scripts/workflow/backlog/` for issue tracking
 - **v1.4.0** (Nov 6, 2025): Added `/summaries/` for quick-reference conclusions
-- **v1.5.0** (Nov 9, 2025): Added `/logs/` for execution traces + performance optimization
+- **v1.5.0** (Nov 9, 2025): Added `/shell_scripts/workflow/logs/` for execution traces + performance optimization
 
 #### Quick Reference: Which Directory to Use?
 
 **For Quick Status**: → `/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)  
-**For Debugging**: → `/logs/` (raw execution traces, AI session logs)  
-**For Fixing Issues**: → `/backlog/` (detailed findings, file references, raw tool output)  
+**For Debugging**: → `/shell_scripts/workflow/logs/` (raw execution traces, AI session logs)  
+**For Fixing Issues**: → `/shell_scripts/workflow/backlog/` (detailed findings, file references, raw tool output)  
 **For Team Updates**: → `/summaries/` (lightweight, easy to share)  
 **For Trend Analysis**: → `/summaries/` (kept indefinitely, compare across runs)
 

@@ -2,7 +2,7 @@
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 1.5.0
+# Version: 2.0.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -61,6 +61,23 @@
 #   ✓ Centralized git cache with accessor functions
 #   ✓ Single git query per workflow run for status/diff/branch info
 #   ✓ Consistent git state across all workflow steps
+#
+# NEW IN v2.0.0:
+#   ✓ Workflow execution logging - comprehensive audit trail
+#   ✓ Main execution log (workflow_execution.log) per workflow run
+#   ✓ Timestamped log entries for all major events
+#   ✓ Pre-flight checks logging with SUCCESS/ERROR/WARNING levels
+#   ✓ Step execution tracking with start/complete timestamps
+#   ✓ Workflow summary with duration and step status
+#   ✓ Log file location info displayed at completion
+#
+# PERFORMANCE OPTIMIZATIONS (2025-11-14):
+#   ✓ Optimized find operations - replaced with fast_find (performance.sh)
+#   ✓ Reduced redundant file searches - cache and reuse results
+#   ✓ Smart exclusions - skip node_modules/.git/coverage directories
+#   ✓ Maxdepth limits - prevent deep directory traversals
+#   ✓ Performance module integration - lib/performance.sh auto-loaded
+#   Expected Impact: Additional 15-25% reduction in execution time
 ################################################################################
 
 set -euo pipefail
@@ -69,13 +86,13 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="1.5.0"
+SCRIPT_VERSION="2.0.0"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SRC_DIR="${PROJECT_ROOT}/src"
-BACKLOG_DIR="${PROJECT_ROOT}/backlog"
-SUMMARIES_DIR="${PROJECT_ROOT}/summaries"
-LOGS_DIR="${PROJECT_ROOT}/logs"
+BACKLOG_DIR="${PROJECT_ROOT}/shell_scripts/workflow/backlog"
+SUMMARIES_DIR="${PROJECT_ROOT}/shell_scripts/workflow/summaries"
+LOGS_DIR="${PROJECT_ROOT}/shell_scripts/workflow/logs"
 
 # Temporary files tracking for cleanup
 # Used by AI-enhanced steps to store intermediate validation results
@@ -87,6 +104,7 @@ WORKFLOW_RUN_ID="workflow_$(date +%Y%m%d_%H%M%S)"
 BACKLOG_RUN_DIR="${BACKLOG_DIR}/${WORKFLOW_RUN_ID}"
 SUMMARIES_RUN_DIR="${SUMMARIES_DIR}/${WORKFLOW_RUN_ID}"
 LOGS_RUN_DIR="${LOGS_DIR}/${WORKFLOW_RUN_ID}"
+WORKFLOW_LOG_FILE="${LOGS_RUN_DIR}/workflow_execution.log"
 
 # Color codes (matching existing scripts)
 RED='\033[0;31m'
@@ -268,6 +286,104 @@ print_step() {
     echo -e "\n${MAGENTA}▶ Step ${step_num}: ${step_name}${NC}"
 }
 
+# ==============================================================================
+# WORKFLOW EXECUTION LOGGING
+# ==============================================================================
+
+# Initialize workflow execution log
+# Creates log file with header information
+init_workflow_log() {
+    mkdir -p "$(dirname "$WORKFLOW_LOG_FILE")"
+    
+    cat > "$WORKFLOW_LOG_FILE" << EOF
+================================================================================
+WORKFLOW EXECUTION LOG
+================================================================================
+Workflow ID: ${WORKFLOW_RUN_ID}
+Script Version: ${SCRIPT_VERSION}
+Started: $(date '+%Y-%m-%d %H:%M:%S')
+Mode: $(if [[ "$DRY_RUN" == true ]]; then echo "DRY RUN"; elif [[ "$AUTO_MODE" == true ]]; then echo "AUTO"; else echo "INTERACTIVE"; fi)
+Steps: ${EXECUTE_STEPS}
+Project Root: ${PROJECT_ROOT}
+
+================================================================================
+EXECUTION LOG
+================================================================================
+
+EOF
+    
+    print_info "Workflow log initialized: $WORKFLOW_LOG_FILE"
+}
+
+# Log a message to the workflow execution log
+# Usage: log_to_workflow <level> <message>
+# Levels: INFO, SUCCESS, WARNING, ERROR, STEP
+log_to_workflow() {
+    local level="$1"
+    shift
+    local message="$*"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    echo "[${timestamp}] [${level}] ${message}" >> "$WORKFLOW_LOG_FILE"
+}
+
+# Log step start
+log_step_start() {
+    local step_num="$1"
+    local step_name="$2"
+    log_to_workflow "STEP" "========== Step ${step_num}: ${step_name} =========="
+    log_to_workflow "INFO" "Step ${step_num} started"
+}
+
+# Log step completion
+log_step_complete() {
+    local step_num="$1"
+    local step_name="$2"
+    local status="$3"  # SUCCESS, SKIPPED, FAILED
+    log_to_workflow "INFO" "Step ${step_num} completed: ${status}"
+}
+
+# Finalize workflow log with summary
+finalize_workflow_log() {
+    local end_time=$(date +%s)
+    local duration=$((end_time - WORKFLOW_START_TIME))
+    local minutes=$((duration / 60))
+    local seconds=$((duration % 60))
+    
+    cat >> "$WORKFLOW_LOG_FILE" << EOF
+
+================================================================================
+WORKFLOW SUMMARY
+================================================================================
+Completed: $(date '+%Y-%m-%d %H:%M:%S')
+Duration: ${minutes}m ${seconds}s
+Total Steps: ${TOTAL_STEPS}
+
+Step Status:
+EOF
+    
+    # Add step status summary
+    for i in $(seq 0 $((TOTAL_STEPS - 1))); do
+        local status="${WORKFLOW_STATUS[$i]:-NOT_EXECUTED}"
+        echo "  Step $i: $status" >> "$WORKFLOW_LOG_FILE"
+    done
+    
+    # Add file locations
+    cat >> "$WORKFLOW_LOG_FILE" << EOF
+
+Output Files:
+  - Backlog: ${BACKLOG_RUN_DIR}
+  - Summaries: ${SUMMARIES_RUN_DIR}
+  - Logs: ${LOGS_RUN_DIR}
+
+================================================================================
+END OF LOG
+================================================================================
+EOF
+    
+    print_success "Workflow log finalized: $WORKFLOW_LOG_FILE"
+}
+
 # Save issues found in a step to backlog
 # Usage: save_step_issues <step_num> <step_name> <issues_content>
 save_step_issues() {
@@ -371,9 +487,15 @@ confirm_action() {
 cleanup() {
     if [[ ${#TEMP_FILES[@]} -gt 0 ]]; then
         print_info "Cleaning up temporary files..."
+        log_to_workflow "INFO" "Cleaning up ${#TEMP_FILES[@]} temporary files"
         for temp_file in "${TEMP_FILES[@]}"; do
             [[ -f "$temp_file" ]] && rm -f "$temp_file"
         done
+    fi
+    
+    # Finalize workflow log before exit
+    if [[ -f "$WORKFLOW_LOG_FILE" ]]; then
+        finalize_workflow_log
     fi
 }
 
@@ -381,6 +503,9 @@ update_workflow_status() {
     local step="$1"
     local status="$2"
     WORKFLOW_STATUS["$step"]="$status"
+    
+    # Log status update
+    log_to_workflow "INFO" "Step ${step} status updated: ${status}"
 }
 
 show_progress() {
@@ -398,6 +523,7 @@ show_progress() {
 
 check_prerequisites() {
     print_header "Pre-Flight System Checks"
+    log_to_workflow "INFO" "Starting pre-flight system checks"
     
     local checks_passed=true
     
@@ -405,128 +531,159 @@ check_prerequisites() {
     print_info "Checking project directory structure..."
     if [[ ! -d "$PROJECT_ROOT" ]]; then
         print_error "Project root not found: $PROJECT_ROOT"
+        log_to_workflow "ERROR" "Project root not found: $PROJECT_ROOT"
         checks_passed=false
     else
         print_success "Project root: $PROJECT_ROOT"
+        log_to_workflow "SUCCESS" "Project root validated: $PROJECT_ROOT"
     fi
     
     # Check 2: Verify src directory
     if [[ ! -d "$SRC_DIR" ]]; then
         print_error "Source directory not found: $SRC_DIR"
+        log_to_workflow "ERROR" "Source directory not found: $SRC_DIR"
         checks_passed=false
     else
         print_success "Source directory: $SRC_DIR"
+        log_to_workflow "SUCCESS" "Source directory validated: $SRC_DIR"
     fi
     
     # Check 3: Verify package.json exists
     if [[ ! -f "$SRC_DIR/package.json" ]]; then
         print_error "package.json not found in $SRC_DIR"
+        log_to_workflow "ERROR" "package.json not found"
         checks_passed=false
     else
         print_success "package.json found"
+        log_to_workflow "SUCCESS" "package.json found"
     fi
     
     # Check 4: Verify Node.js/npm installation
     print_info "Checking Node.js and npm..."
     if ! command -v node &> /dev/null; then
         print_error "Node.js is not installed"
+        log_to_workflow "ERROR" "Node.js not installed"
         checks_passed=false
     else
         local node_version
         node_version=$(node --version)
         print_success "Node.js: $node_version"
+        log_to_workflow "SUCCESS" "Node.js detected: $node_version"
     fi
     
     if ! command -v npm &> /dev/null; then
         print_error "npm is not installed"
+        log_to_workflow "ERROR" "npm not installed"
         checks_passed=false
     else
         local npm_version
         npm_version=$(npm --version)
         print_success "npm: $npm_version"
+        log_to_workflow "SUCCESS" "npm detected: $npm_version"
     fi
     
     # Check 5: Verify git repository
     print_info "Checking git repository..."
     if ! git -C "$PROJECT_ROOT" rev-parse --git-dir &> /dev/null; then
         print_error "Not a git repository: $PROJECT_ROOT"
+        log_to_workflow "ERROR" "Not a git repository"
         checks_passed=false
     else
         print_success "Git repository validated"
+        log_to_workflow "SUCCESS" "Git repository validated"
     fi
     
     # Check 6: Check git working tree status
     if git -C "$PROJECT_ROOT" diff-index --quiet HEAD -- 2>/dev/null; then
         print_success "Git working tree is clean"
+        log_to_workflow "INFO" "Git working tree is clean"
     else
         if [[ "$DRY_RUN" == true ]]; then
             print_info "[DRY RUN] Would execute: git add -A"
+            log_to_workflow "INFO" "[DRY RUN] Would stage all changes"
         else
             git -C "$PROJECT_ROOT" add -A
             print_success "All uncommitted changes staged automatically"
+            log_to_workflow "INFO" "Staged all uncommitted changes"
         fi
     fi
     
     # Check 7: Verify shell_scripts directory
     if [[ ! -d "$PROJECT_ROOT/shell_scripts" ]]; then
         print_error "shell_scripts directory not found"
+        log_to_workflow "ERROR" "shell_scripts directory not found"
         checks_passed=false
     else
         print_success "shell_scripts directory found"
+        log_to_workflow "SUCCESS" "shell_scripts directory found"
     fi
     
     # Check 8: Verify docs directory
     if [[ ! -d "$PROJECT_ROOT/docs" ]]; then
         print_warning "docs directory not found - will be created if needed"
+        log_to_workflow "WARNING" "docs directory not found"
     else
         print_success "docs directory found"
+        log_to_workflow "SUCCESS" "docs directory found"
     fi
     
     # Check 9: Optional - tree command
     if command -v tree &> /dev/null; then
         print_success "tree command available (optional)"
+        log_to_workflow "SUCCESS" "tree command available"
     else
         print_info "tree command not found (optional - some validation features limited)"
+        log_to_workflow "INFO" "tree command not found (optional)"
     fi
     
     # Final verdict
     echo ""
     if [[ "$checks_passed" == false ]]; then
         print_error "Pre-flight checks failed. Please resolve issues before continuing."
+        log_to_workflow "ERROR" "Pre-flight checks FAILED"
         exit 1
     else
         print_success "All pre-flight checks passed!"
+        log_to_workflow "SUCCESS" "All pre-flight checks PASSED"
     fi
 }
 
 validate_dependencies() {
     print_header "Validating Dependencies"
+    log_to_workflow "INFO" "Starting dependency validation"
     
     cd "$SRC_DIR"
     
     # Check if node_modules exists
     if [[ ! -d "node_modules" ]]; then
         print_warning "node_modules not found. Installing dependencies..."
+        log_to_workflow "WARNING" "node_modules not found, installing..."
         
         if [[ "$DRY_RUN" == true ]]; then
             print_info "[DRY RUN] Would execute: npm install"
+            log_to_workflow "INFO" "[DRY RUN] Would run: npm install"
         else
             npm install
             print_success "Dependencies installed"
+            log_to_workflow "SUCCESS" "Dependencies installed via npm install"
         fi
     else
         print_success "node_modules directory exists"
+        log_to_workflow "SUCCESS" "node_modules directory exists"
     fi
     
     # Verify Jest is available
     if [[ -f "node_modules/.bin/jest" ]]; then
         print_success "Jest is available"
+        log_to_workflow "SUCCESS" "Jest detected in node_modules"
     else
         print_error "Jest not found in node_modules"
+        log_to_workflow "ERROR" "Jest not found in node_modules"
         exit 1
     fi
     
     cd "$PROJECT_ROOT"
+    log_to_workflow "SUCCESS" "Dependency validation completed"
 }
 
 # ==============================================================================
@@ -2516,11 +2673,13 @@ step8_validate_dependencies() {
     print_info "Running npm audit for security vulnerabilities..."
     local audit_output=$(mktemp)
     TEMP_FILES+=("$audit_output")
+    local vuln_count=0
     
     if npm audit --json > "$audit_output" 2>&1; then
         print_success "No security vulnerabilities found"
     else
         local vulnerabilities=$(jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' "$audit_output" 2>/dev/null || echo "Unable to parse")
+        vuln_count=$(jq -r '.metadata.vulnerabilities | to_entries | map(.value) | add // 0' "$audit_output" 2>/dev/null || echo "0")
         print_warning "Security vulnerabilities detected"
         echo "Security vulnerabilities:" >> "$dependency_report"
         echo "$vulnerabilities" >> "$dependency_report"
@@ -2531,11 +2690,12 @@ step8_validate_dependencies() {
     print_info "Checking for outdated packages..."
     local outdated_output=$(mktemp)
     TEMP_FILES+=("$outdated_output")
+    local outdated_count=0
     
     if npm outdated --json > "$outdated_output" 2>&1; then
         print_success "All packages are up to date"
     else
-        local outdated_count=$(jq 'length' "$outdated_output" 2>/dev/null || echo "0")
+        outdated_count=$(jq 'length' "$outdated_output" 2>/dev/null || echo "0")
         if [[ $outdated_count -gt 0 ]]; then
             print_warning "$outdated_count packages are outdated"
             echo "Outdated packages: $outdated_count" >> "$dependency_report"
@@ -2753,15 +2913,15 @@ Please provide a comprehensive dependency analysis with specific, actionable rec
 **Outdated Packages:** ${outdated_count}
 
 "
-        if [[ -f "$npm_audit_file" && -s "$npm_audit_file" ]]; then
+        if [[ -f "$audit_output" && -s "$audit_output" ]]; then
             step_issues+="### npm audit Output
 
 \`\`\`
-$(cat "$npm_audit_file")
+$(cat "$audit_output")
 \`\`\`
 "
         fi
-        if [[ -f "$outdated_file" && -s "$outdated_file" ]]; then
+        if [[ -f "$outdated_output" && -s "$outdated_output" ]]; then
             step_issues+="### Outdated Packages
 
 \`\`\`
@@ -2836,8 +2996,9 @@ step9_code_quality_validation() {
     # Find JavaScript files over 300 lines (potential complexity issues)
     while IFS= read -r file; do
         [[ -z "$file" ]] && continue
-        local line_count=$(wc -l < "$file" 2>/dev/null || echo 0)
-        if [[ $line_count -gt 300 ]]; then
+        line_count=$(wc -l < "$file" 2>/dev/null || echo 0)
+        line_count=$(echo "$line_count" | tr -d '[:space:]')
+        if [[ -n "$line_count" && "$line_count" =~ ^[0-9]+$ && $line_count -gt 300 ]]; then
             ((large_files_count++))
             large_files_list+="  - $file ($line_count lines)\n"
             echo "Large file: $file ($line_count lines)" >> "$quality_report"
@@ -3054,8 +3215,16 @@ Please provide a comprehensive code quality assessment with specific, actionable
                     print_info "This will review code standards, patterns, and maintainability"
                     echo ""
                     
-                    # Invoke Copilot CLI
-                    copilot -p "$copilot_prompt" --allow-all-tools
+                    # Write prompt to temporary file to avoid "Argument list too long" error
+                    local prompt_file
+                    prompt_file=$(mktemp)
+                    echo "$copilot_prompt" > "$prompt_file"
+                    
+                    # Invoke Copilot CLI with prompt from stdin (avoids argument list too long)
+                    cat "$prompt_file" | copilot --allow-all-tools
+                    
+                    # Clean up temporary file
+                    rm -f "$prompt_file"
                     
                     print_success "Copilot CLI code quality review completed"
                     echo ""
@@ -3103,11 +3272,11 @@ Please provide a comprehensive code quality assessment with specific, actionable
 **Files Analyzed:** ${total_files}
 
 "
-        if [[ -f "$quality_file" && -s "$quality_file" ]]; then
+        if [[ -f "$quality_report" && -s "$quality_report" ]]; then
             step_issues+="### Details
 
 \`\`\`
-$(cat "$quality_file")
+$(cat "$quality_report")
 \`\`\`
 "
         fi
@@ -3164,23 +3333,31 @@ step10_context_analysis() {
     local steps_completed=0
     local steps_failed=0
     local workflow_summary=""
+    local total_steps=0
+    local completion_rate=0
     
-    for step in "${!WORKFLOW_STATUS[@]}"; do
-        local status="${WORKFLOW_STATUS[$step]}"
-        workflow_summary+="$step: $status\n"
-        if [[ "$status" == "✅" ]]; then
-            ((steps_completed++))
-        else
-            ((steps_failed++))
-        fi
-    done
-    
-    local total_steps=${#WORKFLOW_STATUS[@]}
-    local completion_rate=$((steps_completed * 100 / total_steps))
-    
-    print_info "Workflow completion: $steps_completed/$total_steps steps ($completion_rate%)"
-    echo "Workflow Status: $steps_completed/$total_steps completed ($completion_rate%)" >> "$context_report"
-    echo -e "Step Details:\n$workflow_summary" >> "$context_report"
+    # Check if WORKFLOW_STATUS array has any elements
+    if [[ -v WORKFLOW_STATUS && ${#WORKFLOW_STATUS[@]} -gt 0 ]]; then
+        for step in "${!WORKFLOW_STATUS[@]}"; do
+            local status="${WORKFLOW_STATUS[$step]}"
+            workflow_summary+="$step: $status\n"
+            if [[ "$status" == "✅" ]]; then
+                ((steps_completed++))
+            else
+                ((steps_failed++))
+            fi
+        done
+        
+        total_steps=${#WORKFLOW_STATUS[@]}
+        completion_rate=$((steps_completed * 100 / total_steps))
+        
+        print_info "Workflow completion: $steps_completed/$total_steps steps ($completion_rate%)"
+        echo "Workflow Status: $steps_completed/$total_steps completed ($completion_rate%)" >> "$context_report"
+        echo -e "Step Details:\n$workflow_summary" >> "$context_report"
+    else
+        print_info "No workflow steps executed yet (running Step 10 standalone)"
+        echo "Workflow Status: Step 10 running standalone (no previous steps)" >> "$context_report"
+    fi
     
     # Check 2: Git repository state analysis (use cached git state)
     print_info "Analyzing git repository state..."
@@ -3274,6 +3451,12 @@ step10_context_analysis() {
     
     # PHASE 2: AI-powered strategic analysis
     print_info "Phase 2: Preparing AI-powered strategic analysis..."
+    
+    # Calculate total steps and completion rate
+    local total_steps=0
+    if [[ -v WORKFLOW_STATUS && ${#WORKFLOW_STATUS[@]} -gt 0 ]]; then
+        total_steps=${#WORKFLOW_STATUS[@]}
+    fi
     
     # Build comprehensive context summary
     local context_summary="Comprehensive Workflow Context:
@@ -4176,9 +4359,12 @@ should_execute_step() {
 # ------------------------------------------------------------------------------
 execute_full_workflow() {
     print_header "Executing Workflow"
+    log_to_workflow "INFO" "Starting workflow execution"
+    log_to_workflow "INFO" "Execution mode: $(if [[ "$DRY_RUN" == true ]]; then echo "DRY RUN"; elif [[ "$AUTO_MODE" == true ]]; then echo "AUTO"; else echo "INTERACTIVE"; fi)"
     
     # Validate and parse step selection
     validate_and_parse_steps
+    log_to_workflow "INFO" "Step selection: ${EXECUTE_STEPS}"
     
     local failed_step=""
     local executed_steps=0
@@ -4186,125 +4372,157 @@ execute_full_workflow() {
     
     # Execute steps conditionally based on selection
     if should_execute_step 0; then
+        log_step_start 0 "Pre-Analysis"
         step0_analyze_changes || { failed_step="Step 0"; }
         ((executed_steps++)) || true
     else
         print_info "Skipping Step 0 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 0 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 1; then
+        log_step_start 1 "Documentation Updates"
         step1_update_documentation || { failed_step="Step 1"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 1 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 1 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 2; then
+        log_step_start 2 "Consistency Analysis"
         step2_check_consistency || { failed_step="Step 2"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 2 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 2 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 3; then
+        log_step_start 3 "Script Reference Validation"
         step3_validate_script_references || { failed_step="Step 3"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 3 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 3 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 4; then
+        log_step_start 4 "Directory Structure Validation"
         step4_validate_directory_structure || { failed_step="Step 4"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 4 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 4 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 5; then
+        log_step_start 5 "Test Review"
         step5_review_existing_tests || { failed_step="Step 5"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 5 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 5 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 6; then
+        log_step_start 6 "Test Generation"
         step6_generate_new_tests || { failed_step="Step 6"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 6 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 6 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 7; then
+        log_step_start 7 "Test Execution"
         step7_execute_test_suite || { failed_step="Step 7"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 7 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 7 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 8; then
+        log_step_start 8 "Dependency Validation"
         step8_validate_dependencies || { failed_step="Step 8"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 8 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 8 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 9; then
+        log_step_start 9 "Code Quality Validation"
         step9_code_quality_validation || { failed_step="Step 9"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 9 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 9 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 10; then
+        log_step_start 10 "Context Analysis"
         step10_context_analysis || { failed_step="Step 10"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 10 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 10 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 11; then
+        log_step_start 11 "Git Finalization"
         step11_git_finalization || { failed_step="Step 11"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 11 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 11 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     if [[ -z "$failed_step" ]] && should_execute_step 12; then
+        log_step_start 12 "Markdown Linting"
         step12_markdown_linting || { failed_step="Step 12"; }
         ((executed_steps++)) || true
     elif [[ -z "$failed_step" ]]; then
         print_info "Skipping Step 12 (not selected)"
+        log_to_workflow "INFO" "Skipping Step 12 (not selected)"
         ((skipped_steps++)) || true
     fi
     
     # Final status
     echo ""
     print_header "Workflow Execution Summary"
+    log_to_workflow "INFO" "Workflow execution completed"
     print_info "Executed steps: $executed_steps"
+    log_to_workflow "INFO" "Executed steps: $executed_steps"
     print_info "Skipped steps: $skipped_steps"
+    log_to_workflow "INFO" "Skipped steps: $skipped_steps"
     
     if [[ -n "$failed_step" ]]; then
         print_error "Workflow failed at: $failed_step"
+        log_to_workflow "ERROR" "Workflow FAILED at: $failed_step"
         show_progress
         exit 1
     else
         print_header "🎉 Workflow Completed Successfully!"
+        log_to_workflow "SUCCESS" "Workflow completed successfully"
         show_progress
         print_success "All selected steps completed successfully"
         print_info "Backlog reports saved to: $BACKLOG_RUN_DIR"
         print_info "Summaries saved to: $SUMMARIES_RUN_DIR"
+        print_info "Execution log saved to: $WORKFLOW_LOG_FILE"
         
         # Create workflow summary file
         create_workflow_summary
@@ -4515,6 +4733,17 @@ main() {
         print_warning "DRY RUN MODE - No changes will be made"
     fi
     
+    # Create backlog, summaries, and logs directories for this run
+    mkdir -p "$BACKLOG_RUN_DIR"
+    mkdir -p "$SUMMARIES_RUN_DIR"
+    mkdir -p "$LOGS_RUN_DIR"
+    print_info "Backlog directory created: $BACKLOG_RUN_DIR"
+    print_info "Summaries directory created: $SUMMARIES_RUN_DIR"
+    print_info "Logs directory created: $LOGS_RUN_DIR"
+    
+    # Initialize workflow execution log
+    init_workflow_log
+    
     # Execute pre-flight checks
     check_prerequisites
     validate_dependencies
@@ -4522,14 +4751,6 @@ main() {
     # Initialize git state cache (performance optimization v1.5.0)
     # Captures all git information once to eliminate 30+ redundant git calls
     init_git_cache
-    
-    # Create backlog and summaries directories for this run
-    mkdir -p "$BACKLOG_RUN_DIR"
-    mkdir -p "$SUMMARIES_RUN_DIR"
-    mkdir -p "$LOGS_RUN_DIR"
-    print_info "Backlog directory created: $BACKLOG_RUN_DIR"
-    print_info "Summaries directory created: $SUMMARIES_RUN_DIR"
-    print_info "Logs directory created: $LOGS_RUN_DIR"
     
     # Execute full workflow with all AI-enhanced steps
     execute_full_workflow

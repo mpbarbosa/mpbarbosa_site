@@ -22,7 +22,7 @@ step12_markdown_linting() {
     
     # Check 1: Enumerate markdown files
     print_info "Enumerating markdown files..."
-    local md_files_count=$(find . -name "*.md" -not -path "*/node_modules/*" -not -path "*/coverage/*" 2>/dev/null | wc -l)
+    local md_files_count=$(fast_find "." "*.md" 5 "node_modules" "coverage" ".git" | wc -l)
     
     print_info "Found $md_files_count markdown files to lint"
     echo "Markdown files found: $md_files_count" >> "$lint_report"

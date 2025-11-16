@@ -28,13 +28,13 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 **Performance Optimization (NEW in v1.5.0)**:
 - Git state caching for 40% reduction in git command executions
-- Dedicated `/logs/` directory for AI session logs and execution traces
+- Dedicated `/shell_scripts/workflow/logs/` directory for AI session logs and execution traces
 - Reduced AI invocations with strategic Copilot CLI usage
 - Enhanced logging with PID tracking for multi-instance support
 
 **Output Directories**:
-- `/logs/` - Raw execution traces and AI session logs (NEW in v1.5.0)
-- `/backlog/` - Detailed issue reports (introduced in v1.3.0)
+- `/shell_scripts/workflow/logs/` - Raw execution traces and AI session logs (NEW in v1.5.0)
+- `/shell_scripts/workflow/backlog/` - Detailed issue reports (introduced in v1.3.0)
 - `/summaries/` - High-level conclusions (introduced in v1.4.0)
 
 ### Version 1.4.0

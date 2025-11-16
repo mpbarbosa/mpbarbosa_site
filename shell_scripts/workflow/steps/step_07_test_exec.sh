@@ -105,7 +105,8 @@ Coverage Metrics:
 - Functions: ${coverage_functions}%
 - Lines: ${coverage_lines}%"
     
-    local test_output=$(cat "$test_results_file" 2>/dev/null | head -100 || echo "Test output unavailable")
+    local test_output
+    test_output=$(cat "$test_results_file" 2>/dev/null | head -100 || echo "Test output unavailable")
     
     # Build comprehensive test analysis prompt using AI helper function
     local copilot_prompt
@@ -122,150 +123,24 @@ Coverage Metrics:
     echo -e "${CYAN}GitHub Copilot CLI Test Results Analysis Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Check if Copilot CLI is available
-    if is_copilot_available; then
-        print_info "GitHub Copilot CLI detected - ready for test results analysis..."
-        
-        if [[ "$DRY_RUN" == true ]]; then
-            print_info "[DRY RUN] Would invoke: copilot -p with test analysis prompt"
+    # Execute Phase 2 AI analysis using shared library
+    execute_phase2_ai_analysis \
+        "$copilot_prompt" \
+        "7" \
+        "test_analysis" \
+        "Test_Execution" \
+        "$test_failures" \
+        "test results analysis" \
+        "All tests passed - skipping optional coverage analysis" \
+        "Did Copilot identify test issues to fix?"
+    
+    # Handle test failure workflow continuation
+    if [[ $test_failures -gt 0 ]]; then
+        if ! confirm_action "Continue workflow despite test failures?"; then
+            print_error "Workflow paused - fix test failures before continuing"
+            return 1
         else
-            # Smart triggering: Always analyze if tests failed
-            if [[ $test_failures -gt 0 ]]; then
-                print_warning "Tests failed - running AI failure analysis..."
-                
-                if confirm_action "Analyze test failures with Copilot CLI?"; then
-                    print_info "Starting Copilot CLI test results analysis..."
-                    echo ""
-                    
-                    # Create log file with unique timestamp
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step7_copilot_test_analysis_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_success "Copilot CLI test analysis completed"
-                    print_info "Full session log saved to: $log_file"
-                    echo ""
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "7" "Test_Execution" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                    echo ""
-                    
-                    # User decision on proceeding
-                    if ! confirm_action "Continue workflow despite test failures?"; then
-                        print_error "Workflow paused - fix test failures before continuing"
-                        return 1
-                    else
-                        test_exit_code=0
-                    fi
-                else
-                    print_warning "Skipped AI analysis - manual review required"
-                    if ! confirm_action "Continue anyway?"; then
-                        return 1
-                    else
-                        test_exit_code=0
-                    fi
-                fi
-            else
-                print_success "All tests passed!"
-                if [[ "$INTERACTIVE_MODE" == true ]]; then
-                    if confirm_action "Run optional Copilot coverage analysis?"; then
-                        # Create log file with unique timestamp
-                        local log_timestamp
-                        log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                        local log_file="${LOGS_RUN_DIR}/step7_copilot_test_analysis_${log_timestamp}.log"
-                        print_info "Logging output to: $log_file"
-                        
-                        execute_copilot_prompt "$copilot_prompt" "$log_file"
-                        
-                        print_info "Full session log saved to: $log_file"
-                        
-                        # Ask user if they want to save issues from the Copilot session
-                        if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                            if [[ -f "$log_file" ]]; then
-                                local log_content
-                                log_content=$(cat "$log_file")
-                                
-                                # Build issue extraction prompt using helper function
-                                local extract_prompt
-                                extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                                echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                                echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                                
-                                if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                    sleep 1
-                                    print_info "Starting Copilot CLI session for issue extraction..."
-                                    copilot -p "$extract_prompt" --allow-all-tools
-                                    
-                                    print_info "Please copy the organized issues from Copilot output."
-                                    print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                    
-                                    local organized_issues=""
-                                    local line
-                                    while IFS= read -r line; do
-                                        if [[ "$line" == "END" ]]; then
-                                            break
-                                        fi
-                                        organized_issues+="${line}"$'\n'
-                                    done
-                                    
-                                    if [[ -n "$organized_issues" ]]; then
-                                        save_step_issues "7" "Test_Execution" "$organized_issues"
-                                        print_success "Issues extracted from log and saved to backlog"
-                                    else
-                                        print_warning "No organized issues provided - skipping backlog save"
-                                    fi
-                                else
-                                    print_warning "Skipped issue extraction - no backlog file created"
-                                fi
-                            fi
-                        fi
-                    fi
-                fi
-            fi
+            test_exit_code=0
         fi
     else
         print_warning "GitHub Copilot CLI not found - manual analysis required"

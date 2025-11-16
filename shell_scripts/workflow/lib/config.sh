@@ -18,8 +18,8 @@ fi
 
 SRC_DIR="${PROJECT_ROOT}/src"
 BACKLOG_DIR="${PROJECT_ROOT}/shell_scripts/workflow/backlog"
-SUMMARIES_DIR="${PROJECT_ROOT}/summaries"
-LOGS_DIR="${PROJECT_ROOT}/logs"
+SUMMARIES_DIR="${PROJECT_ROOT}/shell_scripts/workflow/summaries"
+LOGS_DIR="${PROJECT_ROOT}/shell_scripts/workflow/logs"
 DOCS_DIR="${PROJECT_ROOT}/docs"
 SHELL_SCRIPTS_DIR="${PROJECT_ROOT}/shell_scripts"
 

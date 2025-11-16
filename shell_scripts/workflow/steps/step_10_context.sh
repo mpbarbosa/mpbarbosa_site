@@ -252,86 +252,16 @@ Please provide a comprehensive strategic analysis with specific, prioritized rec
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
     # Check if Copilot CLI is available
-    if is_copilot_available; then
-        print_info "GitHub Copilot CLI detected - ready for strategic analysis..."
-        
-        if [[ "$DRY_RUN" == true ]]; then
-            print_info "[DRY RUN] Would invoke: copilot -p with context analysis prompt"
-        else
-            # Smart triggering
-            if [[ "$INTERACTIVE_MODE" == true ]] || [[ $total_issues -gt 0 ]]; then
-                if confirm_action "Run Copilot CLI for strategic context analysis?"; then
-                    print_info "Starting Copilot CLI strategic workflow analysis..."
-                    echo ""
-                    
-                    # Create log file with unique timestamp
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step10_copilot_context_analysis_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    # Execute Copilot prompt
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_success "Copilot CLI strategic analysis completed"
-                    print_info "Full session log saved to: $log_file"
-                    echo ""
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "10" "Context_Analysis" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                    echo ""
-                    
-                    print_info "Review the strategic recommendations above for workflow optimization"
-                else
-                    print_warning "Skipped Copilot strategic analysis"
-                fi
-            else
-                print_info "Auto mode - skipping optional strategic analysis"
-            fi
-        fi
-    else
-        print_warning "GitHub Copilot CLI not found - using basic summary only"
-        print_info "Install from: https://github.com/github/gh-copilot"
-    fi
+    # Execute Phase 2 AI analysis using shared library
+    execute_phase2_ai_analysis \
+        "$copilot_prompt" \
+        "10" \
+        "context_analysis" \
+        "Context_Analysis" \
+        "$total_issues" \
+        "strategic context analysis" \
+        "Auto mode - skipping optional strategic analysis" \
+        "Did Copilot provide strategic recommendations?"
     
     # Summary
     echo ""

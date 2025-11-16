@@ -208,7 +208,7 @@ All logs saved to: `${LOGS_RUN_DIR}/`
 
 **Log Directory Structure**:
 ```
-logs/
+shell_scripts/workflow/logs/
 └── workflow_YYYYMMDD_HHMMSS/
     ├── step1_copilot_documentation_update_*.log
     ├── step2_copilot_consistency_analysis_*.log
@@ -248,10 +248,10 @@ logs/
 Starting Copilot CLI script validation session...
 This will analyze shell scripts, documentation, and cross-references
 
-ℹ️  Logging output to: /path/to/logs/workflow_20251113_024015/step3_copilot_script_validation_20251113_024015_789.log
+ℹ️  Logging output to: /path/to/shell_scripts/workflow/logs/workflow_20251113_024015/step3_copilot_script_validation_20251113_024015_789.log
 [Copilot analysis runs...]
 ✅ Copilot CLI script validation completed
-ℹ️  Full session log saved to: /path/to/logs/workflow_20251113_024015/step3_copilot_script_validation_20251113_024015_789.log
+ℹ️  Full session log saved to: /path/to/shell_scripts/workflow/logs/workflow_20251113_024015/step3_copilot_script_validation_20251113_024015_789.log
 ```
 
 ## Related Documentation

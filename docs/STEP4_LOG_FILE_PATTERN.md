@@ -219,7 +219,7 @@ All logs saved to: `${LOGS_RUN_DIR}/`
 
 **Log Directory Structure**:
 ```
-logs/
+shell_scripts/workflow/logs/
 └── workflow_YYYYMMDD_HHMMSS/
     ├── step1_copilot_documentation_update_*.log
     ├── step2_copilot_consistency_analysis_*.log
@@ -247,10 +247,10 @@ logs/
 ```
 Starting Copilot CLI architectural analysis session...
 
-ℹ️  Logging output to: /path/to/logs/workflow_20251113_024315/step4_copilot_architectural_analysis_20251113_024315_892.log
+ℹ️  Logging output to: /path/to/shell_scripts/workflow/logs/workflow_20251113_024315/step4_copilot_architectural_analysis_20251113_024315_892.log
 [Copilot architectural analysis runs...]
 ✅ Copilot CLI architectural analysis completed
-ℹ️  Full session log saved to: /path/to/logs/workflow_20251113_024315/step4_copilot_architectural_analysis_20251113_024315_892.log
+ℹ️  Full session log saved to: /path/to/shell_scripts/workflow/logs/workflow_20251113_024315/step4_copilot_architectural_analysis_20251113_024315_892.log
 ```
 
 ## Future Enhancements

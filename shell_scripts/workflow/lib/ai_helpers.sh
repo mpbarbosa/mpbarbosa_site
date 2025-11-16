@@ -920,18 +920,27 @@ execute_copilot_prompt() {
     
     print_info "Executing Copilot CLI prompt..."
     
+    # Write prompt to temporary file to avoid ARG_MAX limit
+    local temp_prompt_file
+    temp_prompt_file=$(mktemp)
+    echo "$prompt_text" > "$temp_prompt_file"
+    
     if [[ -n "$log_file" ]]; then
         # Ensure the parent directory exists
         local log_dir
         log_dir=$(dirname "$log_file")
         mkdir -p "$log_dir"
         
-        copilot -p "$prompt_text" --allow-all-tools 2>&1 | tee "$log_file"
+        # Use stdin to avoid ARG_MAX: read prompt from file and pipe to copilot
+        cat "$temp_prompt_file" | copilot --allow-all-tools 2>&1 | tee "$log_file"
     else
-        copilot -p "$prompt_text" --allow-all-tools
+        cat "$temp_prompt_file" | copilot --allow-all-tools
     fi
     
     local exit_code=$?
+    
+    # Clean up temporary file
+    rm -f "$temp_prompt_file"
     
     if [[ $exit_code -eq 0 ]]; then
         print_success "Copilot CLI analysis completed"

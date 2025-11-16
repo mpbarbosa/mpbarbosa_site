@@ -1,7 +1,7 @@
 # MP Barbosa Personal Website
 
 > **📄 File Size Note**  
-> This comprehensive instructions file is 488 lines (~24,700 characters, ~6,200 tokens).  
+> This comprehensive instructions file is 552 lines (~27,600 characters, ~6,900 tokens).  
 > Size is **intentional** to provide complete development context in a single file.  
 > Well within AI context limits (128K+ tokens for modern models).  
 > Alternative: Split into `/docs/` if file exceeds 1,000 lines or 200K characters.
@@ -100,10 +100,15 @@ mpbarbosa_site/
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
 │   ├── pull_all_submodules.sh  # Update all submodules
 │   ├── push_all_submodules.sh  # Deploy submodule changes
-│   ├── execute_tests_docs_workflow.sh  # AI-powered workflow automation (v2.0.0)
+│   ├── cleanup_old_folders.sh  # Automated cleanup of old workflow/backlog folders
+│   ├── fix_documentation_consistency.sh  # Documentation consistency fixes
 │   ├── workflow/               # Modular workflow architecture (v2.0.0)
-│   │   ├── lib/               # 8 library modules (989 lines)
-│   │   └── steps/             # 12 step modules (3,324 lines)
+│   │   ├── execute_tests_docs_workflow.sh  # Main workflow script (4,740 lines)
+│   │   ├── lib/               # 12 library modules
+│   │   ├── steps/             # 13 step modules (step_00 through step_12)
+│   │   ├── backlog/           # Workflow execution history
+│   │   ├── logs/              # Workflow execution logs
+│   │   └── summaries/         # Step execution summaries
 │   └── README.md              # Shell scripts documentation
 ├── public/                     # Deployment staging directory (sync_to_public.sh output)
 │   ├── index.html             # Synchronized main page
@@ -189,39 +194,41 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 
 #### Tests & Documentation Workflow Automation (v2.0.0)
 ```bash
-# Full automated workflow (13 steps)
-./shell_scripts/execute_tests_docs_workflow.sh
+# Full automated workflow (13 steps: Step 0-12)
+./shell_scripts/workflow/execute_tests_docs_workflow.sh
 
 # Preview without executing
-./shell_scripts/execute_tests_docs_workflow.sh --dry-run
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
 
 # Automatic mode (CI/CD compatible, no prompts)
-./shell_scripts/execute_tests_docs_workflow.sh --auto
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
 
 # Interactive mode with confirmations (default)
-./shell_scripts/execute_tests_docs_workflow.sh --interactive
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --interactive
 
 # Features:
 # - Complete tests & documentation update automation
 # - AI-powered analysis with GitHub Copilot CLI integration
-# - 13 workflow steps with specialized AI personas
+# - 13 workflow steps (Step 0-12) with specialized AI personas
 # - AI-powered conventional commit message generation (Step 11)
+# - Markdown linting automation with AI assistance (Step 12)
 # - Two-phase validation (automated + AI-powered)
 # - Smart triggering (auto/interactive/optional modes)
 # - Comprehensive error handling with colored output
 # - Progress tracking and workflow state management
 # 
-# Architecture (v2.0.0 - Phase 3 COMPLETE ✅):
-# - Fully modularized: 21 modules (8 libraries + 13 steps)
-# - 5,646 lines extracted from monolithic script (1,035 lib + 4,611 steps)
-# - All 13 step modules successfully extracted (Step 11 final - 417 lines)
-# - Professional separation of concerns with single responsibility
-# - 54 automated tests (100% pass rate)
+# Architecture (v2.0.0 - Complete Modularization ✅):
+# - Fully modularized: 25 modules (12 libraries + 13 steps)
+# - Main workflow script: 4,740 lines with module loading architecture
+# - Library modules: 12 files (ai_helpers, backlog, colors, config, file_operations,
+#   git_cache, performance, session_manager, step_execution, summary, utils, validation)
+# - Step modules: 13 files (step_00 through step_12)
+# - Total modular code: 7,219 lines extracted from monolithic architecture
+# - Professional separation of concerns with single responsibility principle
+# - Comprehensive automated test coverage (54 tests, 100% pass rate)
 # - Reusable components across scripts
-# - Git Workflow Specialist AI integration for commits (Step 11)
-# - Markdown linting automation with AI assistance (Step 12)
 # - Module Documentation: shell_scripts/workflow/README.md
-# - Phase 3 Completion: docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md
+# - Completion Report: docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md
 ```
 
 #### Submodule Management
@@ -238,7 +245,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 ```
 
 ### Important Notes
-- **No linting tools configured**: There are no ESLint, HTMLHint, or other linting tools set up
+- **Linting Tools**: Markdown linting available via `npm run lint:md` (markdownlint); no ESLint or HTMLHint configured
 - **Jest Testing Framework**: Comprehensive test suite exists in `src/__tests__/` with coverage reporting
 - **ES Modules**: Project uses `"type": "module"` with `.mjs` files for modern JavaScript
 - **No CI/CD**: No GitHub Actions or other continuous integration configured
@@ -296,7 +303,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh
     "build": "echo 'Build step not defined yet.'",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "lint:md": "mdl --git-recurse --ignore-front-matter ."
   },
   "jest": {
     "testEnvironment": "jsdom",
@@ -308,7 +316,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh
     "collectCoverageFrom": [
       "scripts/**/*.{js,mjs}",
       "submodules/guia_turistico/src/libs/guia_js/src/**/*.js",
-      "submodules/music_in_numbers/src/**/*.js"
+      "submodules/music_in_numbers/src/**/*.js",
+      "submodules/monitora_vagas/src/**/*.js"
     ]
   }
 }
@@ -331,8 +340,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh
   - GitHub Copilot CLI integration with specialized personas
   - Conventional commit message generation
   - Smart modes: interactive, auto, dry-run
-  - **Modular architecture**: 21 modules (8 libraries + 13 steps)
-  - **5,646 lines modularized** for professional separation of concerns
+  - **Modular architecture**: 24 modules (11 libraries + 13 steps)
+  - **7,307 lines modularized** for professional separation of concerns
   - See: `shell_scripts/workflow/README.md` for module documentation
 
 ## Modular Architecture Excellence
@@ -418,6 +427,9 @@ npm run test:coverage
 
 # Test specific file
 npm test -- main.test.js
+
+# Lint markdown files (requires mdl: gem install mdl)
+npm run lint:md
 ```
 
 ## 🏗️ Advanced Architecture Patterns
@@ -454,15 +466,19 @@ Critical deployment and maintenance patterns:
 sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 
 # Tests & Documentation workflow automation (AI-powered)
-./shell_scripts/execute_tests_docs_workflow.sh --dry-run
-./shell_scripts/execute_tests_docs_workflow.sh --interactive  # Default mode
-./shell_scripts/execute_tests_docs_workflow.sh --auto        # CI/CD mode
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --interactive  # Default mode
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto        # CI/CD mode
 
-# Modular workflow architecture (v2.0.0 - Phase 3 Complete)
+# Modular workflow architecture (v2.0.0 - Complete Modularization)
 # See: shell_scripts/workflow/README.md for module documentation
-# 21 modules: 8 libraries (config, colors, utils, git_cache, validation, backlog, summary, ai_helpers)
-#            13 steps (step_00 through step_12 for each workflow stage)
-# Total extraction: 5,646 lines modularized from monolithic script
+# 25 modules total:
+# - 12 libraries: ai_helpers, backlog, colors, config, file_operations, git_cache,
+#                 performance, session_manager, step_execution, summary, utils, validation
+# - 13 steps: step_00 through step_12 (Pre-Analysis through Markdown Linting)
+# Main workflow script: 4,740 lines with module loading architecture
+# Total modular code: 7,219 lines
+# Workflow locations: backlog/, logs/, summaries/ all in shell_scripts/workflow/
 ```
 
 **Key Patterns**: 

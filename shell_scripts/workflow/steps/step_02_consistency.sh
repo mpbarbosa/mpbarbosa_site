@@ -130,7 +130,7 @@ step2_check_consistency() {
                 ((issues_found++))
             fi
         done <<< "$refs"
-    done < <(find docs -name "*.md" -type f 2>/dev/null || true)
+    done < <(fast_find "docs" "*.md" 5)
     
     # Check README.md
     if [[ -f "README.md" ]]; then
@@ -164,7 +164,7 @@ step2_check_consistency() {
     
     # Gather documentation inventory for AI analysis
     local doc_files
-    doc_files=$(find . -name "*.md" -type f ! -path "*/node_modules/*" ! -path "*/.git/*" | sort)
+    doc_files=$(fast_find "." "*.md" 5 "node_modules" ".git" "coverage" | sort)
     local doc_count
     doc_count=$(echo "$doc_files" | wc -l)
     
@@ -185,192 +185,26 @@ step2_check_consistency() {
     echo -e "${CYAN}GitHub Copilot CLI Consistency Analysis Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Check if Copilot CLI is available for deep analysis
-    if is_copilot_available; then
-        print_info "GitHub Copilot CLI detected - ready for deep consistency analysis..."
-        
-        if [[ "$DRY_RUN" == true ]]; then
-            print_info "[DRY RUN] Would invoke: copilot -p with consistency analysis prompt"
-        else
-            # Smart triggering: Auto-trigger if issues found, user choice if interactive
-            if [[ "$issues_found" -gt 0 ]] || [[ "$INTERACTIVE_MODE" == true ]]; then
-                if confirm_action "Run Copilot CLI for deep documentation consistency analysis?" "y"; then
-                    print_info "Starting Copilot CLI consistency analysis session..."
-                    print_info "This will analyze all documentation files for cross-references, versions, and accuracy"
-                    echo ""
-                    
-                    # Create log file with unique timestamp
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step2_copilot_consistency_analysis_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    print_info "Log file: $log_file"
-                    # Invoke Copilot CLI with the comprehensive prompt
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_success "Copilot CLI consistency analysis completed"
-                    print_info "Full session log saved to: $log_file"
-                    echo ""
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "2" "Consistency_Analysis" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                    echo ""
-                    
-                    # User feedback loop for issue resolution
-                    if confirm_action "Did Copilot identify issues that need fixing?" "n"; then
-                        print_warning "Please review and fix identified issues before continuing"
-                        if [[ "$INTERACTIVE_MODE" == true ]]; then
-                            if ! confirm_action "Continue workflow with identified issues?"; then
-                                print_error "Workflow paused - please fix documentation issues"
-                                return 1
-                            fi
-                        fi
-                    fi
-                else
-                    print_warning "Skipped Copilot CLI deep analysis"
-                fi
-            else
-                print_info "No broken references found - skipping optional deep analysis"
-                if confirm_action "Run optional Copilot consistency analysis anyway?" "n"; then
-                    # Create log file with unique timestamp (same format as step 1)
-                    local log_timestamp
-                    log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
-                    local log_file="${LOGS_RUN_DIR}/step2_copilot_consistency_analysis_${log_timestamp}.log"
-                    print_info "Logging output to: $log_file"
-                    
-                    execute_copilot_prompt "$copilot_prompt" "$log_file"
-                    
-                    print_info "Full session log saved to: $log_file"
-                    
-                    # Ask user if they want to save issues from the Copilot session
-                    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                        if [[ -f "$log_file" ]]; then
-                            local log_content
-                            log_content=$(cat "$log_file")
-                            
-                            # Build issue extraction prompt using helper function
-                            local extract_prompt
-                            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                            echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                            
-                            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                                sleep 1
-                                print_info "Starting Copilot CLI session for issue extraction..."
-                                copilot -p "$extract_prompt" --allow-all-tools
-                                
-                                print_info "Please copy the organized issues from Copilot output."
-                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                
-                                local organized_issues=""
-                                local line
-                                while IFS= read -r line; do
-                                    if [[ "$line" == "END" ]]; then
-                                        break
-                                    fi
-                                    organized_issues+="${line}"$'\n'
-                                done
-                                
-                                if [[ -n "$organized_issues" ]]; then
-                                    save_step_issues "2" "Consistency_Analysis" "$organized_issues"
-                                    print_success "Issues extracted from log and saved to backlog"
-                                else
-                                    print_warning "No organized issues provided - skipping backlog save"
-                                fi
-                            else
-                                print_warning "Skipped issue extraction - no backlog file created"
-                            fi
-                        fi
-                    fi
-                fi
-            fi
-        fi
-    else
-        print_warning "GitHub Copilot CLI not found - using basic checks only"
-        print_info "Install from: https://github.com/github/gh-copilot"
-        print_info "For deep analysis, use the prompt above manually with Copilot"
-    fi
+    # Execute Phase 2 AI analysis using shared library
+    execute_phase2_ai_analysis \
+        "$copilot_prompt" \
+        "2" \
+        "consistency_analysis" \
+        "Consistency_Analysis" \
+        "$issues_found" \
+        "documentation consistency analysis" \
+        "No broken references found - skipping optional deep analysis" \
+        "Did Copilot identify issues that need fixing?"
     
-    # Summary of automated checks
-    echo ""
-    
-    # Always save backlog file (even when no issues found)
-    local step_issues=""
-    if [[ $issues_found -eq 0 ]]; then
-        print_success "No broken references found in automated checks ✅"
-        save_step_summary "2" "Consistency_Analysis" "All documentation cross-references validated successfully. No broken links detected across ${doc_count} documentation files." "✅"
-        
-        # Save success status to backlog
-        step_issues="### Documentation Consistency Check
-
-**Total Issues:** 0
-**Status:** ✅ All Checks Passed
-
-All documentation cross-references validated successfully. No broken links detected across ${doc_count} documentation files.
-"
-    else
-        print_warning "Found $issues_found broken reference(s) - review required"
-        save_step_summary "2" "Consistency_Analysis" "Found ${issues_found} broken references requiring attention. Review and fix broken links before proceeding." "⚠️"
-        
-        # Save broken references to backlog
-        step_issues="### Broken References Found
-
-**Total Issues:** ${issues_found}
-
-"
-        if [[ -f "$broken_refs_file" && -s "$broken_refs_file" ]]; then
-            step_issues+="### Details
-
-\`\`\`
-$(cat "$broken_refs_file")
-\`\`\`
-"
-        fi
-    fi
-    
-    # Always save backlog file
-    save_step_issues "2" "Consistency_Analysis" "$step_issues"
+    # Save step results using shared library
+    save_step_results \
+        "2" \
+        "Consistency_Analysis" \
+        "$issues_found" \
+        "No broken references found in automated checks" \
+        "Found ${issues_found} broken references requiring attention. Review and fix broken links before proceeding." \
+        "$broken_refs_file" \
+        "$doc_count"
     
     update_workflow_status "step2" "✅"
 }

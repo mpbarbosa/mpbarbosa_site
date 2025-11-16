@@ -39,21 +39,27 @@ mpbarbosa_site/
 ├── shell_scripts/                     # Automation and deployment scripts
 │   ├── sync_to_public.sh              # Two-step deployment script (v2.0.0)
 │   ├── deploy_to_webserver.sh         # Legacy production deployment (v2.0.0 - requires sync_to_public.sh step1)
-│   ├── execute_tests_docs_workflow.sh # Tests & docs workflow automation (v2.0.0 - Phase 3 Complete)
-│   ├── workflow/                      # Modular workflow architecture (v2.0.0 - Phase 3 Complete)
-│   │   ├── lib/                       # 8 library modules (989 lines)
-│   │   │   ├── config.sh              # Configuration and constants
-│   │   │   ├── colors.sh              # ANSI color definitions
-│   │   │   ├── utils.sh               # Utility functions
+│   ├── cleanup_old_folders.sh         # Automated cleanup of old workflow/backlog folders
+│   ├── fix_documentation_consistency.sh # Documentation consistency fixes
+│   ├── workflow/                      # Modular workflow architecture (v2.0.0 - Complete)
+│   │   ├── execute_tests_docs_workflow.sh # Main workflow script (4,740 lines with module loading)
+│   │   ├── lib/                       # 12 library modules
+│   │   │   ├── ai_helpers.sh          # AI Copilot CLI integration
+│   │   │   ├── backlog.sh             # Issue tracking and reporting
+│   │   │   ├── colors.sh              # Terminal color codes
+│   │   │   ├── config.sh              # Central configuration
+│   │   │   ├── file_operations.sh     # File handling utilities
 │   │   │   ├── git_cache.sh           # Git state caching
-│   │   │   ├── validation.sh          # Pre-flight checks
-│   │   │   ├── backlog.sh             # Issue tracking
+│   │   │   ├── performance.sh         # Performance optimization
+│   │   │   ├── session_manager.sh     # Session management
+│   │   │   ├── step_execution.sh      # Step execution framework
 │   │   │   ├── summary.sh             # Summary generation
-│   │   │   └── ai_helpers.sh          # AI integration
-│   │   ├── backlog/                   # Workflow execution backlog (v1.3.0)
+│   │   │   ├── utils.sh               # Common utilities
+│   │   │   └── validation.sh          # Validation functions
+│   │   ├── backlog/                   # Workflow execution backlog
 │   │   │   ├── README.md              # Backlog management documentation
 │   │   │   └── workflow_YYYYMMDD_HHMMSS/ # Timestamped workflow runs
-│   │   ├── steps/                     # 12 step modules (3,324 lines)
+│   │   ├── steps/                     # 13 step modules (step_00 through step_12)
 │   │   │   ├── step_00_analyze.sh     # Pre-workflow change analysis
 │   │   │   ├── step_01_documentation.sh # Documentation updates
 │   │   │   ├── step_02_consistency.sh # Consistency analysis
@@ -65,8 +71,10 @@ mpbarbosa_site/
 │   │   │   ├── step_08_dependencies.sh # Dependency validation
 │   │   │   ├── step_09_code_quality.sh # Code quality validation
 │   │   │   ├── step_10_context.sh     # Context analysis
-│   │   │   └── step_11_git.sh         # AI-powered git finalization ⭐
-│   │   ├── test_modules.sh            # Module testing script
+│   │   │   ├── step_11_git.sh         # AI-powered git finalization ⭐
+│   │   │   └── step_12_markdown_lint.sh # Markdown linting with AI
+│   │   ├── logs/                      # Workflow execution logs
+│   │   ├── summaries/                 # Step execution summaries
 │   │   └── README.md                  # Modular architecture documentation
 │   ├── pull_all_submodules.sh         # Submodule update automation
 │   ├── push_all_submodules.sh         # Submodule deployment automation
@@ -155,6 +163,22 @@ npm start
 ```
 The development server runs at `http://localhost:8080` with live reload.
 
+### Testing and Quality
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+
+# Lint markdown files
+npm run lint:md
+```
+
 ### Deployment and Automation
 
 The project includes comprehensive shell scripts for production deployment:
@@ -182,9 +206,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 ./shell_scripts/push_all_submodules.sh --handle-stash
 
 # Tests & documentation workflow automation (v2.0.0)
-./shell_scripts/execute_tests_docs_workflow.sh                # Full 13-step workflow
-./shell_scripts/execute_tests_docs_workflow.sh --auto         # CI/CD mode (no prompts)
-./shell_scripts/execute_tests_docs_workflow.sh --dry-run      # Preview workflow
+./shell_scripts/workflow/execute_tests_docs_workflow.sh                # Full 13-step workflow
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto         # CI/CD mode (no prompts)
+./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run      # Preview workflow
 
 # AI-assisted development
 ./shell_scripts/copilot_with_enhanced_prompt.sh "your task description"
@@ -204,16 +228,18 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - **Comprehensive test coverage**: 3,403 lines of Jest tests across 6 test suites (1,520 passing tests)
 
 **Workflow Automation Features (v2.0.0):**
-- **Fully modularized architecture**: 20 modules (8 libraries + 12 steps, 4,313 lines)
+- **Fully modularized architecture**: 25 modules (12 libraries + 13 steps)
+- **Main workflow script**: 4,740 lines with automatic module loading
+- **Total modular code**: 7,219 lines across all modules
 - Professional separation of concerns with single responsibility per module
-- 13-step comprehensive workflow (analysis → documentation → testing → git finalization)
-- AI-powered with GitHub Copilot CLI (11 enhanced steps with specialized personas)
-- Conventional commit message generation with comprehensive git context
+- 13-step comprehensive workflow (Step 0-12: analysis → documentation → testing → markdown linting → git finalization)
+- AI-powered with GitHub Copilot CLI (specialized personas for each step)
+- Conventional commit message generation with comprehensive git context (Step 11)
+- Markdown linting automation with AI assistance (Step 12)
 - Smart execution modes: Interactive (default), Auto (CI/CD), Dry-run (preview)
 - Two-phase validation: Automated detection + AI-powered deep analysis
-- Backlog tracking with timestamped workflow runs
-- Summary generation with status indicators (✅ ⚠️ ❌)
-- Performance optimized with git state caching (v1.5.0)
+- Workflow state management with backlog, logs, and summaries directories
+- Performance optimized with git state caching
 - **54 automated tests** with 100% pass rate
 - **Reusable components** across multiple scripts
 - See: `shell_scripts/workflow/README.md` for module documentation
@@ -250,9 +276,9 @@ The project demonstrates **professional-grade architecture** with:
 ### 📚 Architecture Documentation
 - **[Comprehensive UX Documentation](docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
 - **[Two-Step Deployment Architecture v2.0.0](docs/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive parametrized deployment workflow guide
-- **[Tests & Docs Workflow Automation](docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - AI-powered 13-step automation workflow (Phase 3 COMPLETE ✅)
-- **[Workflow Modular Architecture](shell_scripts/workflow/README.md)** - Complete module documentation (20 modules, 4,313 lines extracted)
-- **[Workflow Phase 3 Completion](docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All step modules extraction completion report ⭐
+- **[Tests & Docs Workflow Automation](docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - AI-powered 13-step automation workflow (Complete ✅)
+- **[Workflow Modular Architecture](shell_scripts/workflow/README.md)** - Complete module documentation (25 modules: 12 libraries + 13 steps)
+- **[Workflow Phase 3 Completion](docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - Modularization completion report ⭐
 - **[External Links Policy](docs/EXTERNAL_LINKS_POLICY.md)** - Security and UX standards for external hyperlinks with tabnapping prevention
 - **[Functional Core, Imperative Shell Guide](docs/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
 - **[Resource Path Guide](docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and deployment best practices

@@ -32,7 +32,7 @@
   - Reduced redundant command executions
   - Optimized step dependencies
   
-- ✅ **Logs Directory** (`/logs/`)
+- ✅ **Logs Directory** (`/shell_scripts/workflow/logs/`)
   - Raw execution traces
   - AI session logs (GitHub Copilot CLI interactions)
   - PID tracking for multi-instance support
@@ -51,12 +51,12 @@
 - Enhanced error handling and debugging
 
 **Output Directories**:
-- `/logs/` - Raw execution traces (NEW)
-- `/backlog/` - Detailed issue reports
+- `/shell_scripts/workflow/logs/` - Raw execution traces (NEW)
+- `/shell_scripts/workflow/backlog/` - Detailed issue reports
 - `/summaries/` - High-level conclusions
 
 **Documentation**:
-- Created `/logs/README.md`
+- Created `/shell_scripts/workflow/logs/README.md`
 - Updated `/shell_scripts/README.md` with workflow output section
 - Enhanced `/shell_scripts/CHANGELOG.md`
 - Updated version references across all READMEs
@@ -298,7 +298,7 @@
 - Status indicators (✅/⚠️/❌)
 - Indefinite retention
 
-**v1.5.0**: Added `/logs/`
+**v1.5.0**: Added `/shell_scripts/workflow/logs/`
 - Raw execution traces
 - AI session logs
 - 30-day retention
@@ -307,7 +307,7 @@
 
 ```
 mpbarbosa_site/
-├── logs/                           # v1.5.0 - Raw traces (30 days)
+├── shell_scripts/workflow/logs/    # v1.5.0 - Raw traces (30 days)
 │   ├── README.md
 │   └── workflow_YYYYMMDD_HHMMSS/
 │       ├── step1_copilot_*.log
@@ -340,7 +340,7 @@ mpbarbosa_site/
 **Action Required**: None (automatic)
 
 **Optional**:
-- Review `/logs/README.md` for log management best practices
+- Review `/shell_scripts/workflow/logs/README.md` for log management best practices
 - Configure log retention policy if needed
 - Set up log rotation for production environments
 
@@ -426,8 +426,8 @@ mpbarbosa_site/
 ### Current Version (v1.5.0)
 - **Script Documentation**: `/shell_scripts/README.md`
 - **Changelog**: `/shell_scripts/CHANGELOG.md`
-- **Logs Directory**: `/logs/README.md`
-- **Backlog Directory**: `/backlog/README.md`
+- **Logs Directory**: `/shell_scripts/workflow/logs/README.md`
+- **Backlog Directory**: `/shell_scripts/workflow/backlog/README.md`
 - **Summaries Directory**: `/summaries/README.md`
 
 ### Historical Documentation
