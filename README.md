@@ -98,7 +98,8 @@ mpbarbosa_site/
 │   ├── submodules/                   # Personal projects (Git submodules)
 │   │   ├── music_in_numbers/         # 🎵 Music analytics platform
 │   │   ├── guia_turistico/           # 🗺️ Travel guide application
-│   │   └── monitora_vagas/           # 💼 Job monitoring application
+│   │   ├── monitora_vagas/           # 💼 Job monitoring application
+│   │   └── busca_vagas/              # 🔍 Job search application
 │   └── __tests__/                    # Jest test suites
 │       ├── main.test.js              # Main site functionality tests (495 lines)
 │       ├── documentation.test.js     # Documentation consistency tests (184 lines)
@@ -151,6 +152,13 @@ mpbarbosa_site/
 - Automated job search and monitoring
 - Custom filtering and alert systems
 - Professional opportunity tracking
+- **Status**: Active development
+
+### Busca Vagas
+**Job Search Application**
+- Advanced job search functionality
+- Integration with job platforms
+- Streamlined application process
 - **Status**: Active development
 
 ## 🛠 Development

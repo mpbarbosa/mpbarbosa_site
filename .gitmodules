@@ -7,3 +7,6 @@
 [submodule "src/submodules/monitora_vagas"]
 	path = src/submodules/monitora_vagas
 	url = git@github.com:mpbarbosa/monitora_vagas.git
+[submodule "src/submodules/busca_vagas"]
+	path = src/submodules/busca_vagas
+	url = https://github.com/mpbarbosa/busca_vagas.git

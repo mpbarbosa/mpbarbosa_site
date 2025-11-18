@@ -14,7 +14,7 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 
 **Architecture Highlights**:
 - **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
-- **Multi-project structure**: Main site + 3 specialized submodules (Music in Numbers, Guia Turístico, Monitora Vagas)
+- **Multi-project structure**: Main site + 4 specialized submodules (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
 - **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
@@ -43,10 +43,11 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 ### Git Submodules (REQUIRES AUTHENTICATION)
 - **WARNING**: Submodules require GitHub authentication and will fail in environments without proper credentials
-- Three submodules exist for personal projects:
+- Four submodules exist for personal projects:
   - `src/submodules/music_in_numbers` → Music in Numbers (Spotify analytics) project
   - `src/submodules/guia_turistico` → Guia Turístico (Travel Guide) project
   - `src/submodules/monitora_vagas` → Monitora Vagas (Job monitoring) project
+  - `src/submodules/busca_vagas` → Busca Vagas (Job search) project
 - To initialize submodules (when authenticated): `git submodule update --init --recursive`
 - Automated submodule management available: `./shell_scripts/pull_all_submodules.sh`
 - If submodules fail to initialize, the project links will show 404 errors but the main site will function normally
@@ -76,8 +77,8 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 4. **Project Links**: 
    - Navigate to "Projetos (IA)" section
-   - Click "Music in Numbers", "Guia Turístico", and "Monitora Vagas" project links
-   - **Expected behavior**: These will show 404 errors unless submodules are properly initialized
+   - Click "Scripts de automação", "Music in Numbers", and "Monitora Vagas" project links
+   - **Expected behavior**: Submodule links will show 404 errors unless submodules are properly initialized
    - This is normal and documented behavior in environments without authentication
    - All project links follow consistent submodule navigation pattern
 

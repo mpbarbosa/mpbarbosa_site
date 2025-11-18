@@ -198,12 +198,8 @@ main() {
     print_info "Folders to clean: ${FOLDERS_TO_CLEAN[*]}"
     echo
     for folder_name in "${FOLDERS_TO_CLEAN[@]}"; do
-        # Special case: backlog is now in shell_scripts/workflow/
-        if [[ "$folder_name" == "backlog" ]]; then
-            local folder_path="$SCRIPT_DIR/workflow/backlog"
-        else
-            local folder_path="$PROJECT_ROOT/$folder_name"
-        fi
+        # All folders (backlog, logs, summaries) are in shell_scripts/workflow/
+        local folder_path="$SCRIPT_DIR/workflow/$folder_name"
         print_info "Starting processing of $folder_name"
         cleanup_folder "$folder_path"
         print_info "Completed processing of $folder_name"

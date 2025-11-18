@@ -121,6 +121,7 @@ TOTAL_STEPS=14
 DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
+VERBOSE=false
 WORKFLOW_START_TIME=$(date +%s)
 
 # Step execution control
@@ -4613,6 +4614,7 @@ OPTIONS:
     --dry-run           Preview all actions without executing
     --auto              Run in automatic mode (no confirmations)
     --interactive       Run in interactive mode (default)
+    --verbose           Enable verbose output
     --steps STEPS       Execute specific steps (comma-separated, e.g., "0,1,2" or "all")
     --help              Show this help message
     --version           Show script version
@@ -4691,6 +4693,11 @@ parse_arguments() {
             --interactive)
                 INTERACTIVE_MODE=true
                 AUTO_MODE=false
+                shift
+                ;;
+            --verbose)
+                VERBOSE=true
+                print_info "Verbose mode enabled"
                 shift
                 ;;
             --steps)
