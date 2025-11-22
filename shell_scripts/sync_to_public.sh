@@ -368,6 +368,8 @@ FILES TO SYNC:
     - submodules/music_in_numbers/src/ (Music in Numbers HTML files)
     - submodules/music_in_numbers/src/scripts/ (Music in Numbers JavaScript modules)
     - submodules/music_in_numbers/src/styles/ (Music in Numbers CSS stylesheets)
+    - submodules/busca_vagas/client/public/ (Busca Vagas HTML and client files)
+    - submodules/monitora_vagas/src/ (Monitora Vagas HTML, JS, and subdirectories)
     - Additional resources can be added by extending this script
 
 EOF
@@ -832,6 +834,134 @@ copy_music_in_numbers_styles() {
     return 0
 }
 
+# Copy Busca Vagas submodule files
+copy_busca_vagas_submodule() {
+    print_step "Copying Busca Vagas submodule files"
+    
+    local source_dir="$SOURCE_DIR/submodules/busca_vagas/client/public"
+    local dest_dir="$PUBLIC_DIR/submodules/busca_vagas/client/public"
+    
+    if [[ ! -d "$source_dir" ]]; then
+        print_warning "Busca Vagas client/public directory not found in source"
+        print_info "  Expected: $source_dir"
+        return 0
+    fi
+    
+    # Count files to copy
+    local html_count=$(find "$source_dir" -maxdepth 1 -type f -name "*.html" | wc -l)
+    local total_files=$(find "$source_dir" -maxdepth 1 -type f | wc -l)
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Create destination directory if it doesn't exist
+        mkdir -p "$dest_dir"
+        
+        # Copy all files
+        cp -r "$source_dir"/* "$dest_dir/"
+        print_success "Copied: Busca Vagas submodule ($html_count HTML files, $total_files total files)"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $source_dir"
+            print_info "  Destination: $dest_dir"
+            print_info "  HTML files: $html_count"
+            print_info "  Total files: $total_files"
+            
+            # Show HTML files
+            local html_files=$(find "$dest_dir" -maxdepth 1 -name "*.html")
+            if [[ -n "$html_files" ]]; then
+                print_info "  HTML files copied:"
+                echo "$html_files" | while read file; do
+                    if [[ -f "$file" ]]; then
+                        local filename=$(basename "$file")
+                        local filesize=$(du -h "$file" | cut -f1)
+                        print_info "    - $filename ($filesize)"
+                    fi
+                done
+            fi
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  HTML files to copy: $html_count"
+            print_info "  Total files to copy: $total_files"
+        fi
+    fi
+    
+    return 0
+}
+
+# Copy Monitora Vagas submodule files
+copy_monitora_vagas_submodule() {
+    print_step "Copying Monitora Vagas submodule files"
+    
+    local source_dir="$SOURCE_DIR/submodules/monitora_vagas/src"
+    local dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/src"
+    
+    if [[ ! -d "$source_dir" ]]; then
+        print_warning "Monitora Vagas src directory not found in source"
+        print_info "  Expected: $source_dir"
+        return 0
+    fi
+    
+    # Count files to copy
+    local html_count=$(find "$source_dir" -maxdepth 1 -type f -name "*.html" | wc -l)
+    local js_count=$(find "$source_dir" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
+    local dirs_count=$(find "$source_dir" -mindepth 1 -maxdepth 1 -type d | wc -l)
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Create destination directory if it doesn't exist
+        mkdir -p "$dest_dir"
+        
+        # Copy all files and directories recursively
+        cp -r "$source_dir"/* "$dest_dir/"
+        print_success "Copied: Monitora Vagas submodule ($html_count HTML files, $js_count JS files, $dirs_count subdirectories)"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $source_dir"
+            print_info "  Destination: $dest_dir"
+            print_info "  HTML files: $html_count"
+            print_info "  JavaScript files: $js_count"
+            print_info "  Subdirectories: $dirs_count"
+            
+            # Show main HTML files
+            local html_files=$(find "$dest_dir" -maxdepth 1 -name "*.html")
+            if [[ -n "$html_files" ]]; then
+                print_info "  HTML files copied:"
+                echo "$html_files" | while read file; do
+                    if [[ -f "$file" ]]; then
+                        local filename=$(basename "$file")
+                        local filesize=$(du -h "$file" | cut -f1)
+                        print_info "    - $filename ($filesize)"
+                    fi
+                done
+            fi
+            
+            # Show main JS files
+            local js_files=$(find "$dest_dir" -maxdepth 1 \( -name "*.js" -o -name "*.mjs" \))
+            if [[ -n "$js_files" ]]; then
+                print_info "  JavaScript files copied:"
+                echo "$js_files" | while read file; do
+                    if [[ -f "$file" ]]; then
+                        local filename=$(basename "$file")
+                        local filesize=$(du -h "$file" | cut -f1)
+                        print_info "    - $filename ($filesize)"
+                    fi
+                done
+            fi
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  HTML files to copy: $html_count"
+            print_info "  JavaScript files to copy: $js_count"
+            print_info "  Subdirectories to copy: $dirs_count"
+        fi
+    fi
+    
+    return 0
+}
+
 # Copy additional resources (placeholder for future expansion)
 copy_additional_resources() {
     print_step "Checking for additional resources"
@@ -869,6 +999,8 @@ validate_sync() {
         "$PUBLIC_DIR/submodules/music_in_numbers/src|Music in Numbers submodule|*.html|false"
         "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts|Music in Numbers scripts|js_files|false"
         "$PUBLIC_DIR/submodules/music_in_numbers/src/styles|Music in Numbers styles|*.css|false"
+        "$PUBLIC_DIR/submodules/busca_vagas/client/public|Busca Vagas submodule|*.html|false"
+        "$PUBLIC_DIR/submodules/monitora_vagas/src|Monitora Vagas submodule|*.html|false"
     )
     
     # Validate each path using the generic validation function
@@ -898,6 +1030,22 @@ validate_sync() {
                 print_info "    - $file ($file_size)"
             fi
         done
+    fi
+    
+    # Add specific verbose information for Busca Vagas files if needed
+    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/submodules/busca_vagas/client/public" ]]; then
+        if [[ -f "$PUBLIC_DIR/submodules/busca_vagas/client/public/index.html" ]]; then
+            local file_size=$(du -h "$PUBLIC_DIR/submodules/busca_vagas/client/public/index.html" | cut -f1)
+            print_info "    - index.html ($file_size)"
+        fi
+    fi
+    
+    # Add specific verbose information for Monitora Vagas files if needed
+    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/submodules/monitora_vagas/src" ]]; then
+        if [[ -f "$PUBLIC_DIR/submodules/monitora_vagas/src/index.html" ]]; then
+            local file_size=$(du -h "$PUBLIC_DIR/submodules/monitora_vagas/src/index.html" | cut -f1)
+            print_info "    - index.html ($file_size)"
+        fi
     fi
     
     if [[ $validation_errors -eq 0 ]]; then
@@ -972,6 +1120,16 @@ show_summary() {
                 local dirs_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -mindepth 1 -type d | wc -l)
                 echo -e "  ✓ Music in Numbers scripts ($js_count JS files, $dirs_count API architectures)"
             fi
+            if [[ -d "$PUBLIC_DIR/submodules/busca_vagas/client/public" ]]; then
+                local html_count=$(find "$PUBLIC_DIR/submodules/busca_vagas/client/public" -maxdepth 1 -name "*.html" | wc -l)
+                local total_files=$(find "$PUBLIC_DIR/submodules/busca_vagas/client/public" -maxdepth 1 -type f | wc -l)
+                echo -e "  ✓ Busca Vagas submodule ($html_count HTML files, $total_files total files)"
+            fi
+            if [[ -d "$PUBLIC_DIR/submodules/monitora_vagas/src" ]]; then
+                local html_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -name "*.html" | wc -l)
+                local js_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
+                echo -e "  ✓ Monitora Vagas submodule ($html_count HTML files, $js_count JS files)"
+            fi
             echo ""
         fi
         
@@ -989,6 +1147,12 @@ show_summary() {
             fi
             if [[ -d "$PRODUCTION_DIR/submodules/music_in_numbers" ]]; then
                 echo -e "  ✓ Music in Numbers submodule deployed"
+            fi
+            if [[ -d "$PRODUCTION_DIR/submodules/busca_vagas" ]]; then
+                echo -e "  ✓ Busca Vagas submodule deployed"
+            fi
+            if [[ -d "$PRODUCTION_DIR/submodules/monitora_vagas" ]]; then
+                echo -e "  ✓ Monitora Vagas submodule deployed"
             fi
             echo ""
         fi
@@ -1224,6 +1388,8 @@ execute_step_1() {
     copy_music_in_numbers_submodule
     copy_music_in_numbers_scripts
     copy_music_in_numbers_styles
+    copy_busca_vagas_submodule
+    copy_monitora_vagas_submodule
     copy_additional_resources
     
     if [[ "$DRY_RUN" == "false" ]]; then
