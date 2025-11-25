@@ -229,47 +229,8 @@ Dry run mode enabled. No actual git operations performed.
                 print_info "Full session log saved to: $log_file"
                 echo ""
                 
-                # Ask user if they want to save issues from the Copilot session
-                if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                    if [[ -f "$log_file" ]]; then
-                        local log_content
-                        log_content=$(cat "$log_file")
-                        
-                        # Build issue extraction prompt using helper function
-                        local extract_prompt
-                        extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                        echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                        echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                        
-                        if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                            sleep 1
-                            print_info "Starting Copilot CLI session for issue extraction..."
-                            copilot -p "$extract_prompt" --allow-all-tools
-                            
-                            print_info "Please copy the organized issues from Copilot output."
-                            print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                            
-                            local organized_issues=""
-                            local line
-                            while IFS= read -r line; do
-                                if [[ "$line" == "END" ]]; then
-                                    break
-                                fi
-                                organized_issues+="${line}"$'\n'
-                            done
-                            
-                            if [[ -n "$organized_issues" ]]; then
-                                save_step_issues "11" "Git_Finalization" "$organized_issues"
-                                print_success "Issues extracted from log and saved to backlog"
-                            else
-                                print_warning "No organized issues provided - skipping backlog save"
-                            fi
-                        else
-                            print_warning "Skipped issue extraction - no backlog file created"
-                        fi
-                    fi
-                fi
+                # Extract and save issues using library function
+                extract_and_save_issues_from_log "11" "Git_Finalization" "$log_file"
                 echo ""
                 
                 # Ask user to provide the AI-generated message

@@ -138,6 +138,8 @@ CHANGE_SCOPE=""
 # ==============================================================================
 # Source workflow library and step modules
 WORKFLOW_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="${WORKFLOW_DIR}"  # Alias for library compatibility
+export SCRIPT_DIR
 LIB_DIR="${WORKFLOW_DIR}/lib"
 STEPS_DIR="${WORKFLOW_DIR}/steps"
 

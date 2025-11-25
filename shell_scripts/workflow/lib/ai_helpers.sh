@@ -50,13 +50,39 @@ EOF
 
 # Build a documentation analysis prompt
 # Usage: build_doc_analysis_prompt <changed_files> <doc_files>
+# Step 1: Build a documentation analysis prompt
+# Build documentation analysis prompt
+# Usage: build_doc_analysis_prompt <changed_files> <doc_files>
 build_doc_analysis_prompt() {
     local changed_files="$1"
     local doc_files="$2"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    build_ai_prompt \
-        "You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization." \
-        "Based on the recent changes to the following files: ${changed_files}
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role (quoted string on same line)
+        role=$(grep 'role:' "$yaml_file" | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template (multiline after |)
+        task_template=$(awk '/task_template: \|/{flag=1; next} /^[[:space:]]*approach:/{flag=0} flag && /^[[:space:]]{4}/' "$yaml_file" | sed 's/^[[:space:]]*//')
+        
+        # Extract approach (multiline after |)
+        approach=$(awk '/approach: \|/{flag=1; next} /^$/{if(flag) exit} flag && /^[[:space:]]{4}/' "$yaml_file" | sed 's/^[[:space:]]*//')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{changed_files\}/$changed_files}"
+        task="${task//\{doc_files\}/$doc_files}"
+        
+        build_ai_prompt "$role" "$task" "$approach"
+    else
+        # Fallback to hardcoded strings if YAML not available
+        build_ai_prompt \
+            "You are a senior technical documentation specialist with expertise in software architecture documentation, API documentation, and developer experience (DX) optimization." \
+            "Based on the recent changes to the following files: ${changed_files}
 
 Please update all related documentation including:
 1. .github/copilot-instructions.md - Update project overview, architecture patterns, key files
@@ -66,21 +92,58 @@ Please update all related documentation including:
 5. Inline code comments - Add/update comments for complex logic
 
 Documentation to review: ${doc_files}" \
-        "- Analyze the git diff to understand what changed
+            "- Analyze the git diff to understand what changed
 - Update only the documentation sections affected by these changes
 - Be surgical and precise - don't modify unrelated documentation
 - Ensure consistency in terminology, formatting, and style
 - Maintain professional technical writing standards"
+    fi
 }
 
 # Build a consistency analysis prompt
 # Usage: build_consistency_prompt <files_to_check>
+# Step 2: Build a documentation consistency analysis prompt
 build_consistency_prompt() {
     local files_to_check="$1"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    build_ai_prompt \
-        "You are a documentation specialist and information architect with expertise in content consistency, cross-reference validation, and documentation quality assurance." \
-        "Perform a deep consistency analysis across the following documentation files: ${files_to_check}
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from consistency_prompt section (use sed with line numbers)
+        role=$(sed -n '/^consistency_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^consistency_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^consistency_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{files_to_check\}/$files_to_check}"
+        
+        build_ai_prompt "$role" "$task" "$approach"
+    else
+        # Fallback to hardcoded strings if YAML not available
+        build_ai_prompt \
+            "You are a documentation specialist and information architect with expertise in content consistency, cross-reference validation, and documentation quality assurance." \
+            "Perform a deep consistency analysis across the following documentation files: ${files_to_check}
 
 Check for:
 1. **Cross-Reference Accuracy** - All links and references point to correct locations
@@ -88,11 +151,12 @@ Check for:
 3. **Terminology Consistency** - Same concepts use same terms throughout
 4. **Format Consistency** - Headings, lists, code blocks follow same patterns
 5. **Content Completeness** - No missing sections or incomplete information" \
-        "- Read all documentation files thoroughly
+            "- Read all documentation files thoroughly
 - Create a comprehensive consistency report
 - Identify specific inconsistencies with file names and line numbers
 - Suggest fixes for each inconsistency found
 - Prioritize issues by severity (Critical, High, Medium, Low)"
+    fi
 }
 
 # Build a test strategy analysis prompt
@@ -100,10 +164,46 @@ Check for:
 build_test_strategy_prompt() {
     local coverage_stats="$1"
     local test_files="$2"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    build_ai_prompt \
-        "You are a QA engineer and test automation specialist with expertise in test strategy, coverage analysis, and test-driven development (TDD)." \
-        "Based on the current test coverage statistics: ${coverage_stats}
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from test_strategy_prompt section
+        role=$(sed -n '/^test_strategy_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^test_strategy_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^test_strategy_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{coverage_stats\}/$coverage_stats}"
+        task="${task//\{test_files\}/$test_files}"
+        
+        build_ai_prompt "$role" "$task" "$approach"
+    else
+        # Fallback to hardcoded strings if YAML not available
+        build_ai_prompt \
+            "You are a QA engineer and test automation specialist with expertise in test strategy, coverage analysis, and test-driven development (TDD)." \
+            "Based on the current test coverage statistics: ${coverage_stats}
 
 And existing test files: ${test_files}
 
@@ -112,21 +212,57 @@ Recommend:
 2. **Test improvements** - Suggest enhancements to existing tests
 3. **Coverage gaps** - Highlight areas with low or missing coverage
 4. **Test patterns** - Recommend best practices for this codebase" \
-        "- Analyze coverage reports to identify gaps
+            "- Analyze coverage reports to identify gaps
 - Consider edge cases and error scenarios
 - Recommend specific test cases with clear descriptions
 - Prioritize tests by importance and coverage impact
 - Follow Jest testing patterns and best practices"
+    fi
 }
 
 # Build a code quality validation prompt
 # Usage: build_quality_prompt <files_to_review>
 build_quality_prompt() {
     local files_to_review="$1"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    build_ai_prompt \
-        "You are a software quality engineer and code review specialist with expertise in code quality standards, best practices, and maintainability." \
-        "Review the following files for code quality: ${files_to_review}
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from quality_prompt section
+        role=$(sed -n '/^quality_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^quality_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^quality_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{files_to_review\}/$files_to_review}"
+        
+        build_ai_prompt "$role" "$task" "$approach"
+    else
+        # Fallback to hardcoded strings if YAML not available
+        build_ai_prompt \
+            "You are a software quality engineer and code review specialist with expertise in code quality standards, best practices, and maintainability." \
+            "Review the following files for code quality: ${files_to_review}
 
 Analyze:
 1. **Code Organization** - Logical structure and separation of concerns
@@ -135,11 +271,12 @@ Analyze:
 4. **Documentation** - Inline comments and function documentation
 5. **Best Practices** - Following language-specific best practices
 6. **Potential Issues** - Security concerns, performance issues, bugs" \
-        "- Review each file systematically
+            "- Review each file systematically
 - Identify specific issues with file names and line numbers
 - Suggest concrete improvements
 - Prioritize findings by severity
 - Provide code examples for recommended fixes"
+    fi
 }
 
 # Build an issue extraction prompt for Copilot session logs
@@ -147,10 +284,46 @@ Analyze:
 build_issue_extraction_prompt() {
     local log_file="$1"
     local log_content="$2"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    build_ai_prompt \
-        "You are a technical project manager specialized in issue extraction, categorization, and documentation organization." \
-        "Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from issue_extraction_prompt section
+        role=$(sed -n '/^issue_extraction_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^issue_extraction_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^issue_extraction_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{log_file\}/$log_file}"
+        task="${task//\{log_content\}/$log_content}"
+        
+        build_ai_prompt "$role" "$task" "$approach"
+    else
+        # Fallback to hardcoded strings if YAML not available
+        build_ai_prompt \
+            "You are a technical project manager specialized in issue extraction, categorization, and documentation organization." \
+            "Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
 
 **Session Log File**: ${log_file}
 
@@ -174,12 +347,13 @@ ${log_content}
 
 ### Recommendations
 - [Improvement suggestions]" \
-        "- Extract all issues, warnings, and recommendations from the log
+            "- Extract all issues, warnings, and recommendations from the log
 - Categorize by severity and impact
 - Include affected files/sections mentioned in the log
 - Prioritize actionable items
 - Add context where needed
 - If no issues found, state 'No issues identified'"
+    fi
 }
 
 # Build a documentation consistency analysis prompt (Step 2)
@@ -190,8 +364,53 @@ build_step2_consistency_prompt() {
     local modified_count="$3"
     local broken_refs_content="$4"
     local doc_files="$5"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step2_consistency_prompt section
+        role=$(sed -n '/^step2_consistency_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step2_consistency_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step2_consistency_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{doc_count\}/$doc_count}"
+        task="${task//\{change_scope\}/$change_scope}"
+        task="${task//\{modified_count\}/$modified_count}"
+        task="${task//\{broken_refs_content\}/$broken_refs_content}"
+        task="${task//\{doc_files\}/$doc_files}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior technical documentation specialist and information architect with expertise in documentation quality assurance, technical writing standards, and cross-reference validation.
 
 **Task**: Perform a comprehensive documentation consistency analysis for this project.
@@ -246,6 +465,7 @@ ${doc_files}
 
 Please analyze the documentation files and provide a detailed consistency report.
 EOF
+    fi
 }
 
 # Build a shell script reference validation prompt (Step 3)
@@ -256,8 +476,53 @@ build_step3_script_refs_prompt() {
     local issues="$3"
     local script_issues_content="$4"
     local all_scripts="$5"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step3_script_refs_prompt section
+        role=$(sed -n '/^step3_script_refs_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step3_script_refs_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step3_script_refs_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{script_count\}/$script_count}"
+        task="${task//\{change_scope\}/$change_scope}"
+        task="${task//\{issues\}/$issues}"
+        task="${task//\{script_issues_content\}/$script_issues_content}"
+        task="${task//\{all_scripts\}/$all_scripts}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior technical documentation specialist and DevOps documentation expert with expertise in shell script documentation, automation workflow documentation, and command-line tool reference guides.
 
 **Task**: Perform comprehensive validation of shell script references and documentation quality for this project's automation scripts.
@@ -330,6 +595,7 @@ ${all_scripts}
 
 Please analyze the shell script references and provide a detailed validation report with specific recommendations for documentation improvements.
 EOF
+    fi
 }
 
 # Build a directory structure validation prompt (Step 4)
@@ -342,8 +608,55 @@ build_step4_directory_prompt() {
     local doc_structure_mismatch="$5"
     local structure_issues_content="$6"
     local dir_tree="$7"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step4_directory_prompt section
+        role=$(sed -n '/^step4_directory_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step4_directory_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step4_directory_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{dir_count\}/$dir_count}"
+        task="${task//\{change_scope\}/$change_scope}"
+        task="${task//\{missing_critical\}/$missing_critical}"
+        task="${task//\{undocumented_dirs\}/$undocumented_dirs}"
+        task="${task//\{doc_structure_mismatch\}/$doc_structure_mismatch}"
+        task="${task//\{structure_issues_content\}/$structure_issues_content}"
+        task="${task//\{dir_tree\}/$dir_tree}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior software architect and technical documentation specialist with expertise in project structure conventions, architectural patterns, code organization best practices, and documentation alignment.
 
 **Task**: Perform comprehensive validation of directory structure and architectural organization for this project.
@@ -408,6 +721,7 @@ ${dir_tree}
 
 Please analyze the directory structure and provide a detailed architectural validation report.
 EOF
+    fi
 }
 
 # Build a test review and recommendations prompt (Step 5)
@@ -422,8 +736,57 @@ build_step5_test_review_prompt() {
     local coverage_exists="$7"
     local test_issues_content="$8"
     local test_files="$9"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step5_test_review_prompt section
+        role=$(sed -n '/^step5_test_review_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step5_test_review_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step5_test_review_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{test_framework\}/$test_framework}"
+        task="${task//\{test_env\}/$test_env}"
+        task="${task//\{test_count\}/$test_count}"
+        task="${task//\{code_files\}/$code_files}"
+        task="${task//\{tests_in_tests_dir\}/$tests_in_tests_dir}"
+        task="${task//\{tests_colocated\}/$tests_colocated}"
+        task="${task//\{coverage_exists\}/$coverage_exists}"
+        task="${task//\{test_issues_content\}/$test_issues_content}"
+        task="${task//\{test_files\}/$test_files}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior QA engineer and test automation specialist with expertise in testing strategies, Jest framework, code coverage analysis, test-driven development (TDD), behavior-driven development (BDD), and continuous integration best practices.
 
 **Task**: Perform comprehensive review of existing tests and provide recommendations for test generation and coverage improvement.
@@ -509,6 +872,7 @@ ${test_files}
 
 Please analyze the existing tests and provide a detailed test strategy report with specific, actionable recommendations for improving test coverage and quality.
 EOF
+    fi
 }
 
 # Build a test execution analysis prompt (Step 7)
@@ -521,8 +885,55 @@ build_step7_test_exec_prompt() {
     local execution_summary="$5"
     local test_output="$6"
     local failed_test_list="$7"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step7_test_exec_prompt section
+        role=$(sed -n '/^step7_test_exec_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step7_test_exec_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step7_test_exec_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{test_exit_code\}/$test_exit_code}"
+        task="${task//\{tests_total\}/$tests_total}"
+        task="${task//\{tests_passed\}/$tests_passed}"
+        task="${task//\{tests_failed\}/$tests_failed}"
+        task="${task//\{execution_summary\}/$execution_summary}"
+        task="${task//\{test_output\}/$test_output}"
+        task="${task//\{failed_test_list\}/$failed_test_list}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior CI/CD engineer and test results analyst with expertise in test execution diagnostics, failure root cause analysis, code coverage interpretation, performance optimization, and continuous integration best practices.
 
 **Task**: Analyze test execution results, diagnose failures, and provide actionable recommendations for improving test suite quality and CI/CD integration.
@@ -594,6 +1005,7 @@ ${failed_test_list}
 
 Please provide a comprehensive test results analysis with specific, actionable recommendations.
 EOF
+    fi
 }
 
 # Build a dependency management analysis prompt (Step 8)
@@ -610,8 +1022,59 @@ build_step8_dependencies_prompt() {
     local dev_deps="$9"
     local audit_summary="${10}"
     local outdated_list="${11}"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step8_dependencies_prompt section
+        role=$(sed -n '/^step8_dependencies_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step8_dependencies_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step8_dependencies_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{node_version\}/$node_version}"
+        task="${task//\{npm_version\}/$npm_version}"
+        task="${task//\{dep_count\}/$dep_count}"
+        task="${task//\{dev_dep_count\}/$dev_dep_count}"
+        task="${task//\{total_deps\}/$total_deps}"
+        task="${task//\{dependency_summary\}/$dependency_summary}"
+        task="${task//\{dependency_report_content\}/$dependency_report_content}"
+        task="${task//\{prod_deps\}/$prod_deps}"
+        task="${task//\{dev_deps\}/$dev_deps}"
+        task="${task//\{audit_summary\}/$audit_summary}"
+        task="${task//\{outdated_list\}/$outdated_list}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior DevOps engineer and package management specialist with expertise in npm/yarn ecosystem, security vulnerability assessment, version compatibility analysis, dependency tree optimization, and environment configuration best practices.
 
 **Task**: Analyze project dependencies, assess security risks, evaluate version compatibility, and provide recommendations for dependency management and environment setup.
@@ -690,6 +1153,7 @@ ${outdated_list}
 - Environment configuration best practices
 - Automated dependency management setup
 EOF
+    fi
 }
 
 # Build a code quality assessment prompt (Step 9)
@@ -703,8 +1167,64 @@ build_step9_code_quality_prompt() {
     local quality_report_content="$6"
     local large_files_list="$7"
     local sample_code="$8"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step9_code_quality_prompt section
+        role=$(sed -n '/^step9_code_quality_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step9_code_quality_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step9_code_quality_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /approach: \|/ {flag=1; next}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Format large files list (handle both echo and direct variable)
+        local formatted_large_files
+        if [[ -n "$large_files_list" ]]; then
+            formatted_large_files=$(echo -e "${large_files_list}" | head -10 || echo "None")
+        else
+            formatted_large_files="None"
+        fi
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{total_files\}/$total_files}"
+        task="${task//\{js_files\}/$js_files}"
+        task="${task//\{html_files\}/$html_files}"
+        task="${task//\{css_files\}/$css_files}"
+        task="${task//\{quality_summary\}/$quality_summary}"
+        task="${task//\{quality_report_content\}/$quality_report_content}"
+        task="${task//\{large_files_list\}/$formatted_large_files}"
+        task="${task//\{sample_code\}/$sample_code}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior software quality engineer and code review specialist with expertise in code quality standards, static analysis, linting best practices, design patterns, maintainability assessment, and technical debt identification.
 
 **Task**: Perform comprehensive code quality review, identify anti-patterns, assess maintainability, and provide recommendations for improving code quality and reducing technical debt.
@@ -782,6 +1302,7 @@ ${sample_code}
 
 Please provide a comprehensive code quality assessment with specific, actionable recommendations.
 EOF
+    fi
 }
 
 # Build a git commit message generation prompt (Step 11)
@@ -794,8 +1315,59 @@ build_step11_git_commit_prompt() {
     local diff_summary="$5"
     local git_analysis_content="$6"
     local diff_sample="$7"
+    local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
     
-    cat << EOF
+    # Read from YAML config if available
+    if [[ -f "$yaml_file" ]]; then
+        local role
+        local task_template
+        local approach
+        
+        # Extract role from step11_git_commit_prompt section
+        role=$(sed -n '/^step11_git_commit_prompt:/,/^[a-z_]/p' "$yaml_file" | grep 'role:' | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+        
+        # Extract task template
+        task_template=$(sed -n '/^step11_git_commit_prompt:/,/^[a-z_]/p' "$yaml_file" | awk '
+            /task_template: \|/ {flag=1; next}
+            /^[[:space:]]+approach:/ {flag=0}
+            flag && /^[[:space:]]{4}/ {
+                sub(/^[[:space:]]{4}/, "");
+                print
+            }
+        ')
+        
+        # Extract approach
+        approach=$(sed -n '/^step11_git_commit_prompt:/,/^$/ {
+            /approach: \|/,/^$/ {
+                /approach: \|/d
+                /^$/d
+                s/^[[:space:]]{4}//
+                p
+            }
+        }' "$yaml_file")
+        
+        # Replace placeholders in task template
+        local task="${task_template//\{script_version\}/$script_version}"
+        task="${task//\{change_scope\}/${change_scope:-General updates}}"
+        task="${task//\{git_context\}/$git_context}"
+        task="${task//\{changed_files\}/$changed_files}"
+        task="${task//\{diff_summary\}/$diff_summary}"
+        task="${task//\{git_analysis_content\}/$git_analysis_content}"
+        task="${task//\{diff_sample\}/$diff_sample}"
+        
+        # Replace placeholders in approach
+        local final_approach="${approach//\{script_version\}/$script_version}"
+        
+        cat << EOF
+**Role**: ${role}
+
+**Task**: ${task}
+
+**Approach**: ${final_approach}
+EOF
+    else
+        # Fallback to hardcoded strings if YAML not available
+        cat << EOF
 **Role**: You are a senior git workflow specialist and technical communication expert with expertise in conventional commits, semantic versioning, git best practices, technical writing, and commit message optimization.
 
 **Task**: Generate a professional conventional commit message that clearly communicates the changes, follows best practices, and provides useful context for code reviewers and future maintainers.
@@ -896,6 +1468,7 @@ Refs: #issue-number (if applicable)
 
 Please generate a complete conventional commit message following these standards. Provide ONLY the commit message text (no explanations, no markdown code blocks, just the raw commit message).
 EOF
+    fi
 }
 
 # ==============================================================================
@@ -998,3 +1571,92 @@ export -f build_step9_code_quality_prompt
 export -f build_step11_git_commit_prompt
 export -f execute_copilot_prompt
 export -f trigger_ai_step
+
+# ============================================================================
+# Issue Extraction Workflow
+# ============================================================================
+
+# Execute interactive issue extraction workflow from Copilot session logs
+# This function handles the complete workflow of extracting issues from a
+# Copilot CLI session log file and saving them to the backlog.
+#
+# Usage: extract_and_save_issues_from_log <step_number> <step_name> <log_file>
+#
+# Parameters:
+#   step_number - The workflow step number (e.g., "2", "3")
+#   step_name   - The step name for backlog organization (e.g., "Consistency_Analysis")
+#   log_file    - Path to the Copilot session log file
+#
+# Returns:
+#   0 on success, 1 on error
+#
+# Workflow:
+#   1. Prompts user to confirm issue extraction
+#   2. Reads log file content
+#   3. Builds issue extraction prompt using build_issue_extraction_prompt
+#   4. Executes Copilot CLI with the prompt
+#   5. Accepts multi-line user input of organized issues (until "END")
+#   6. Saves issues to backlog using save_step_issues
+#
+# Note: This function requires interactive user input and should not be
+# called in automated/non-interactive contexts.
+extract_and_save_issues_from_log() {
+    local step_number="$1"
+    local step_name="$2"
+    local log_file="$3"
+    
+    # Validate parameters
+    if [[ -z "$step_number" || -z "$step_name" || -z "$log_file" ]]; then
+        print_error "Usage: extract_and_save_issues_from_log <step_number> <step_name> <log_file>"
+        return 1
+    fi
+    
+    # Check if user wants to save issues
+    if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+        if [[ -f "$log_file" ]]; then
+            local log_content
+            log_content=$(cat "$log_file")
+            
+            # Build issue extraction prompt using helper function
+            local extract_prompt
+            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+            
+            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                sleep 1
+                print_info "Starting Copilot CLI session for issue extraction..."
+                copilot -p "$extract_prompt" --allow-all-tools
+                
+                print_info "Please copy the organized issues from Copilot output."
+                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                
+                local organized_issues=""
+                local line
+                while IFS= read -r line; do
+                    if [[ "$line" == "END" ]]; then
+                        break
+                    fi
+                    organized_issues+="${line}"$'\n'
+                done
+                
+                if [[ -n "$organized_issues" ]]; then
+                    save_step_issues "$step_number" "$step_name" "$organized_issues"
+                    print_success "Issues extracted from log and saved to backlog"
+                else
+                    print_warning "No organized issues provided - skipping backlog save"
+                fi
+            else
+                print_warning "Skipped issue extraction - no backlog file created"
+            fi
+        else
+            print_error "Log file not found: $log_file"
+            print_warning "Cannot extract issues without log file"
+        fi
+    fi
+    
+    return 0
+}
+
+export -f extract_and_save_issues_from_log

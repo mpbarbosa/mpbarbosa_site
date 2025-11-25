@@ -2,8 +2,9 @@
 
 **Version:** 2.0.0  
 **Status:** Phase 3 COMPLETE ✅ - All Step Modules Extracted  
-**Last Updated:** 2025-11-15  
-**Modules:** 25 total (12 libraries + 13 steps)
+**Last Updated:** 2025-11-25  
+**Modules:** 26 total (13 libraries [12 .sh + 1 .yaml] + 13 steps)  
+**Total Lines:** 6,993 lines modularized (excluding tests/examples)
 
 ---
 
@@ -19,8 +20,8 @@ The Tests & Documentation Workflow Automation script has been modularized to imp
 
 ```
 shell_scripts/workflow/
-├── execute_tests_docs_workflow.sh   # Main orchestrator (4,323 lines)
-├── lib/                              # Core library modules ✅ COMPLETE (12 modules, 3,352 lines)
+├── execute_tests_docs_workflow.sh   # Main orchestrator (4,740 lines)
+├── lib/                              # Core library modules ✅ COMPLETE (13 modules, 5,093 lines total)
 │   ├── config.sh                     # Configuration and constants (55 lines)
 │   ├── colors.sh                     # ANSI color definitions (18 lines)
 │   ├── utils.sh                      # Utility functions (194 lines)
@@ -28,12 +29,13 @@ shell_scripts/workflow/
 │   ├── validation.sh                 # Pre-flight checks (151 lines)
 │   ├── backlog.sh                    # Backlog tracking (89 lines)
 │   ├── summary.sh                    # Summary generation (132 lines)
-│   ├── ai_helpers.sh                 # AI prompt templates (991 lines)
+│   ├── ai_helpers.sh                 # AI prompt templates with YAML config (1,662 lines)
+│   ├── ai_helpers.yaml               # Externalized AI prompt configurations (762 lines) ⭐ NEW
 │   ├── session_manager.sh            # Bash session management (374 lines) ✨
 │   ├── file_operations.sh            # File resilience operations (494 lines) ✨
 │   ├── performance.sh                # Performance optimization (482 lines) ✨
 │   └── step_execution.sh             # Shared step execution patterns (243 lines) ✨ NEW
-└── steps/                            # Step modules ✅ COMPLETE (13 modules, 3,541 lines)
+└── steps/                            # Step modules ✅ COMPLETE (13 modules, 3,200 lines)
     ├── step_00_analyze.sh            # Pre-workflow change analysis (57 lines)
     ├── step_01_documentation.sh      # Documentation updates (326 lines)
     ├── step_02_consistency.sh        # Consistency analysis (216 lines) 🔄 REFACTORED
@@ -165,24 +167,44 @@ status=$(determine_step_status 0 2)  # 0 errors, 2 warnings -> ⚠️
 stats=$(generate_step_stats 10 2 3)  # 10 files, 2 issues, 3 warnings
 ```
 
-### 8. `lib/ai_helpers.sh` (225 lines)
-**Purpose:** AI prompt templates and Copilot CLI integration
+### 8. `lib/ai_helpers.sh` (1,662 lines) + `ai_helpers.yaml` (762 lines) ⭐ ENHANCED
+**Purpose:** AI prompt templates and Copilot CLI integration with externalized YAML configuration
+
+**Architecture Enhancement (v2.0.0):**
+- ✅ **YAML Configuration Support**: Externalized AI prompt templates for maintainability
+- ✅ **Intelligent Fallback**: Automatic fallback to hardcoded prompts if YAML unavailable
+- ✅ **Template Variables**: Dynamic placeholder replacement in YAML templates
+- ✅ **Multi-Section Parsing**: Supports multiple prompt types in single YAML file
 
 **Functions:**
 - `is_copilot_available()` - Check if Copilot CLI is installed
 - `validate_copilot_cli()` - Validate and provide user feedback
 - `build_ai_prompt()` - Build structured prompts (role, task, standards)
-- `build_doc_analysis_prompt()` - Documentation analysis prompt
-- `build_consistency_prompt()` - Consistency checking prompt
-- `build_test_strategy_prompt()` - Test strategy prompt
-- `build_quality_prompt()` - Code quality validation prompt
+- `build_doc_analysis_prompt()` - Documentation analysis prompt (YAML-backed)
+- `build_consistency_prompt()` - Consistency checking prompt (YAML-backed)
+- `build_test_strategy_prompt()` - Test strategy prompt (YAML-backed)
+- `build_quality_prompt()` - Code quality validation prompt (YAML-backed)
+- `build_issue_extraction_prompt()` - Issue extraction from logs (YAML-backed)
 - `execute_copilot_prompt()` - Execute prompt with error handling
 - `trigger_ai_step()` - Trigger AI-enhanced step with confirmation
+
+**YAML Configuration Format:**
+```yaml
+doc_analysis_prompt:
+  role: "Senior technical documentation specialist..."
+  task_template: |
+    Based on changes to: {changed_files}
+    Update documentation: {doc_files}
+  approach: |
+    - Analyze git diff
+    - Update affected sections
+```
 
 **Usage:**
 ```bash
 source "$(dirname "$0")/lib/ai_helpers.sh"
 if is_copilot_available; then
+    # Automatically uses YAML config if available, falls back to hardcoded
     prompt=$(build_doc_analysis_prompt "$changed_files" "$docs")
     execute_copilot_prompt "$prompt"
 fi
@@ -326,6 +348,87 @@ save_step_results \
 - **step_03_script_refs.sh:** 303 → 127 lines (-58%)
 - **Maintainability:** Centralized AI workflow logic for easier updates
 - **Consistency:** Guaranteed identical behavior across all workflow steps
+
+---
+
+## YAML Configuration System (v2.0.0)
+
+### Overview
+
+The workflow now supports externalized AI prompt templates via `lib/ai_helpers.yaml`, providing:
+
+✅ **Separation of Concerns**: Prompt templates separated from logic  
+✅ **Maintainability**: Easy updates without touching shell code  
+✅ **Version Control**: Track prompt evolution independently  
+✅ **Intelligent Fallback**: Automatic fallback to hardcoded prompts if YAML unavailable
+
+### Configuration File Structure
+
+**Location:** `shell_scripts/workflow/lib/ai_helpers.yaml` (762 lines)
+
+**Format:**
+```yaml
+doc_analysis_prompt:
+  role: "Senior technical documentation specialist..."
+  task_template: |
+    Based on changes to: {changed_files}
+    Update documentation: {doc_files}
+    ...
+  approach: |
+    - Analyze git diff
+    - Update affected sections
+    ...
+
+consistency_prompt:
+  role: "Documentation specialist..."
+  task_template: |
+    Analyze: {files_to_check}
+    ...
+  approach: |
+    - Read documentation
+    - Identify inconsistencies
+    ...
+```
+
+### Supported Prompt Types
+
+1. **doc_analysis_prompt** - Documentation update prompts (Step 1)
+2. **consistency_prompt** - Consistency analysis prompts (Step 2)
+3. **test_strategy_prompt** - Test coverage analysis prompts (Steps 5-6)
+4. **quality_prompt** - Code quality validation prompts (Step 9)
+5. **issue_extraction_prompt** - Log analysis and issue extraction prompts
+
+### Usage in Modules
+
+The `ai_helpers.sh` functions automatically:
+1. Check for YAML file existence
+2. Parse the appropriate section using `sed`/`awk`
+3. Extract role, task_template, and approach
+4. Replace `{placeholder}` variables with actual values
+5. Fallback to hardcoded strings if YAML unavailable or parsing fails
+
+**Example from `build_doc_analysis_prompt()`:**
+```bash
+local yaml_file="${SCRIPT_DIR}/lib/ai_helpers.yaml"
+
+if [[ -f "$yaml_file" ]]; then
+    role=$(grep 'role:' "$yaml_file" | sed 's/^[[:space:]]*role:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/')
+    task_template=$(awk '/task_template: \|/{flag=1; next} /^[[:space:]]*approach:/{flag=0} ...')
+    task="${task_template//\{changed_files\}/$changed_files}"
+    build_ai_prompt "$role" "$task" "$approach"
+else
+    # Fallback to hardcoded prompt
+    build_ai_prompt "Senior technical documentation specialist..." "..." "..."
+fi
+```
+
+### Benefits
+
+- **Centralized Prompts**: All AI prompts in one location
+- **Easy Testing**: Test different prompt strategies without code changes
+- **Documentation**: Prompts serve as documentation of AI integration
+- **Flexibility**: Swap entire prompt sets by replacing YAML file
+- **Resilience**: Zero-downtime fallback to hardcoded prompts
 
 ---
 
@@ -554,16 +657,17 @@ done
 
 ## Benefits Achieved (All Phases Complete)
 
-✅ **All library modules extracted** (8 modules, 1,035 lines)  
-✅ **All step modules extracted** (13 modules, 4,611 lines)  
-✅ **Total modularization:** 5,646 lines extracted from monolithic script  
+✅ **All library modules extracted** (13 modules: 12 .sh + 1 .yaml, 5,093 lines total)  
+✅ **All step modules extracted** (13 modules, 3,200 lines)  
+✅ **Total modularization:** 8,293 lines (6,993 core modules + 1,300 test/utility scripts)  
+✅ **YAML configuration system** for AI prompts with intelligent fallback  
 ✅ **Single responsibility** per module  
 ✅ **Reusable functions** across multiple scripts  
 ✅ **Easier testing** with 54 automated tests  
 ✅ **Clear dependencies** and interfaces  
 ✅ **Performance optimization** preserved (git caching)  
-✅ **AI integration** modularized and testable  
-✅ **Professional architecture** ready for Phase 4 integration  
+✅ **AI integration** modularized and testable with externalized configuration  
+✅ **Professional architecture** ready for production use  
 
 ---
 

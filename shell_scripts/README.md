@@ -754,9 +754,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 **Purpose**: AI-powered automation for complete tests and documentation update workflow
 
 **Architecture Status**: 🎉 **Complete Modularization** (v2.0.0)
-- ✅ **25 extracted modules**: 12 library modules + 13 step modules
+- ✅ **26 extracted modules**: 13 library modules + 13 step modules
 - ✅ **Main script**: 4,740 lines with module loading architecture
-- ✅ **Total modular code**: 6,395 lines
+- ✅ **Total modular code**: 6,993 lines
 - ✅ **Single responsibility**: Each module focused on specific domain
 - ✅ **Testable components**: 54 automated tests with 100% pass rate
 
@@ -858,7 +858,7 @@ The workflow script now uses a fully modularized architecture with automatic mod
   - `steps/step_11_git.sh` - **AI-powered git finalization** ⭐
   - `steps/step_12_markdown_lint.sh` - **Markdown linting validation** ⭐
 
-**Total Modular Code**: 6,395 lines across 25 modules
+**Total Modular Code**: 6,993 lines across 26 modules
 
 **Related Documentation**:
 - Module Documentation: `/shell_scripts/workflow/README.md`
@@ -907,9 +907,9 @@ The workflow automation script generates three types of outputs in dedicated dir
 
 **Retention**: 90 days (detailed history for recurring problems)
 
-**Documentation**: `/backlog/README.md`
+**Documentation**: `/shell_scripts/workflow/backlog/README.md`
 
-#### 📝 `/summaries/` - High-Level Conclusions (v1.4.0)
+#### 📝 `/shell_scripts/workflow/summaries/` - High-Level Conclusions (v1.4.0)
 **Purpose**: Quick-reference status summaries for rapid review
 
 **Contents**:
@@ -924,7 +924,7 @@ The workflow automation script generates three types of outputs in dedicated dir
 
 **Retention**: Indefinite (lightweight, high value for trend analysis)
 
-**Documentation**: `/summaries/README.md`
+**Documentation**: `/shell_scripts/workflow/summaries/README.md`
 
 #### Output Directory Comparison
 
@@ -932,22 +932,22 @@ The workflow automation script generates three types of outputs in dedicated dir
 |-----------|---------|---------|----------|--------|-----------|
 | **shell_scripts/workflow/logs/** | v1.5.0 | Raw traces & AI sessions | Developers (debug) | Full logs | 30 days |
 | **shell_scripts/workflow/backlog/** | v1.3.0 | Detailed reports | Developers (fixing) | Full reports | 90 days |
-| **summaries/** | v1.4.0 | Quick conclusions | Managers (overview) | 2-3 sentences | Indefinite |
+| **shell_scripts/workflow/summaries/** | v1.4.0 | Quick conclusions | Managers (overview) | 2-3 sentences | Indefinite |
 
 #### Version Evolution Timeline
 
 - **v1.2.0** (Nov 4, 2025): Initial AI-powered workflow automation
 - **v1.3.0** (Nov 5, 2025): Added `/shell_scripts/workflow/backlog/` for issue tracking
-- **v1.4.0** (Nov 6, 2025): Added `/summaries/` for quick-reference conclusions
+- **v1.4.0** (Nov 6, 2025): Added `/shell_scripts/workflow/summaries/` for quick-reference conclusions
 - **v1.5.0** (Nov 9, 2025): Added `/shell_scripts/workflow/logs/` for execution traces + performance optimization
 
 #### Quick Reference: Which Directory to Use?
 
-**For Quick Status**: → `/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)  
+**For Quick Status**: → `/shell_scripts/workflow/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)  
 **For Debugging**: → `/shell_scripts/workflow/logs/` (raw execution traces, AI session logs)  
 **For Fixing Issues**: → `/shell_scripts/workflow/backlog/` (detailed findings, file references, raw tool output)  
-**For Team Updates**: → `/summaries/` (lightweight, easy to share)  
-**For Trend Analysis**: → `/summaries/` (kept indefinitely, compare across runs)
+**For Team Updates**: → `/shell_scripts/workflow/summaries/` (lightweight, easy to share)  
+**For Trend Analysis**: → `/shell_scripts/workflow/summaries/` (kept indefinitely, compare across runs)
 
 ---
 
@@ -1314,6 +1314,29 @@ alias pushall='cd /path/to/mpbarbosa_site && ./shell_scripts/push_all_submodules
 alias deploysite='cd /path/to/mpbarbosa_site && sudo ./shell_scripts/deploy_to_webserver.sh'
 alias deploypreview='cd /path/to/mpbarbosa_site && ./shell_scripts/deploy_to_webserver.sh --dry-run'
 ```
+
+## Historical Documentation (v2.0.0)
+
+### Consolidated Validation Reports
+
+To reduce repository clutter, historical validation reports have been consolidated into three comprehensive files in the `/docs` directory:
+
+1. **`DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md`**  
+   - Consolidates 9 directory structure validation reports (Nov 13-25, 2025)
+   - Tracks architectural consistency over 12-day period
+   - All reports show ✅ EXCELLENT status
+
+2. **`DOCUMENTATION_CONSISTENCY_HISTORY_CONSOLIDATED.md`**  
+   - Consolidates documentation consistency analysis reports
+   - Historical tracking of cross-reference accuracy and terminology consistency
+   - Preserves lessons learned and best practices evolution
+
+3. **`SHELL_SCRIPT_VALIDATION_HISTORY_CONSOLIDATED.md`**  
+   - Consolidates shell script validation reports
+   - Documents shell script quality and best practices compliance
+   - Historical record of script improvements and refactoring
+
+**Cleanup Pattern**: Individual timestamped reports deleted after consolidation to maintain clean repository structure while preserving complete historical analysis.
 
 ## Contributing
 

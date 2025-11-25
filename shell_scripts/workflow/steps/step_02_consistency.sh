@@ -121,6 +121,25 @@ step2_check_consistency() {
         print_success "All version numbers follow semantic versioning format ✅"
     fi
     
+    # Check metrics consistency across documentation
+    print_info "Checking workflow metrics consistency..."
+    
+    # Source metrics validation library
+    if [[ -f "$PROJECT_ROOT/shell_scripts/workflow/lib/metrics_validation.sh" ]]; then
+        # shellcheck source=shell_scripts/workflow/lib/metrics_validation.sh
+        source "$PROJECT_ROOT/shell_scripts/workflow/lib/metrics_validation.sh"
+        
+        # Run metrics validation
+        if ! validate_all_documentation_metrics; then
+            print_warning "Documentation metrics inconsistencies detected"
+            ((issues_found++)) || true
+        else
+            print_success "All documentation metrics are consistent ✅"
+        fi
+    else
+        print_warning "Metrics validation library not found - skipping metrics check"
+    fi
+    
     # Check docs directory for broken references
     while IFS= read -r md_file; do
         # Extract file paths using regex (paths starting with /)
@@ -129,12 +148,12 @@ step2_check_consistency() {
         
         while IFS= read -r ref; do
             [[ -z "$ref" ]] && continue
-            
+            # Extract file paths using regex (paths starting with /)
             local full_path="${PROJECT_ROOT}${ref}"
             if [[ ! -e "$full_path" ]]; then
                 print_warning "Broken reference in $md_file: $ref"
                 echo "$md_file: $ref" >> "$broken_refs_file"
-                ((issues_found++))
+                ((issues_found++)) || true
             fi
         done <<< "$refs"
     done < <(fast_find "docs" "*.md" 5)
@@ -142,14 +161,16 @@ step2_check_consistency() {
     # Check README.md
     if [[ -f "README.md" ]]; then
         local refs
+        # Extract file paths using regex (paths starting with /)
         refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' "README.md" 2>/dev/null || true)
         while IFS= read -r ref; do
             [[ -z "$ref" ]] && continue
+            # Extract file paths using regex (paths starting with /)
             local full_path="${PROJECT_ROOT}${ref}"
             if [[ ! -e "$full_path" ]]; then
                 print_warning "Broken reference in README.md: $ref"
                 echo "README.md: $ref" >> "$broken_refs_file"
-                ((issues_found++))
+                ((issues_found++)) || true
             fi
         done <<< "$refs"
     fi
@@ -157,14 +178,16 @@ step2_check_consistency() {
     # Check .github/copilot-instructions.md (critical for CI/CD)
     if [[ -f ".github/copilot-instructions.md" ]]; then
         local refs
+        # Extract file paths using regex (paths starting with /)
         refs=$(grep -oP '(?<=\()(/[^)]+)(?=\))' ".github/copilot-instructions.md" 2>/dev/null || true)
         while IFS= read -r ref; do
             [[ -z "$ref" ]] && continue
+            # Extract file paths using regex (paths starting with /)
             local full_path="${PROJECT_ROOT}${ref}"
             if [[ ! -e "$full_path" ]]; then
                 print_warning "Broken reference in .github/copilot-instructions.md: $ref"
                 echo ".github/copilot-instructions.md: $ref" >> "$broken_refs_file"
-                ((issues_found++))
+                ((issues_found++)) || true
             fi
         done <<< "$refs"
     fi
@@ -218,50 +241,8 @@ step2_check_consistency() {
             print_success "GitHub Copilot CLI session completed"
             print_info "Full session log saved to: $log_file"
             
-            # Ask user if they want to save issues from the Copilot session
-            if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-                if [[ -f "$log_file" ]]; then
-                    local log_content
-                    log_content=$(cat "$log_file")
-                    
-                    # Build issue extraction prompt using helper function
-                    local extract_prompt
-                    extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
-
-                    echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-                    echo -e "${YELLOW}${extract_prompt}${NC}\n"
-                    
-                    if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                        sleep 1
-                        print_info "Starting Copilot CLI session for issue extraction..."
-                        copilot -p "$extract_prompt" --allow-all-tools
-                        
-                        print_info "Please copy the organized issues from Copilot output."
-                        print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                        
-                        local organized_issues=""
-                        local line
-                        while IFS= read -r line; do
-                            if [[ "$line" == "END" ]]; then
-                                break
-                            fi
-                            organized_issues+="${line}"$'\n'
-                        done
-                        
-                        if [[ -n "$organized_issues" ]]; then
-                            save_step_issues "2" "Consistency_Analysis" "$organized_issues"
-                            print_success "Issues extracted from log and saved to backlog"
-                        else
-                            print_warning "No organized issues provided - skipping backlog save"
-                        fi
-                    else
-                        print_warning "Skipped issue extraction - no backlog file created"
-                    fi
-                else
-                    print_error "Log file not found: $log_file"
-                    print_warning "Cannot extract issues without log file"
-                fi
-            fi
+            # Extract and save issues using library function
+            extract_and_save_issues_from_log "2" "Consistency_Analysis" "$log_file"
         else
             print_warning "Skipped GitHub Copilot CLI - using manual review"
         fi
