@@ -3,7 +3,14 @@
 # Step 11: AI-Powered Git Finalization & Commit Message Generation
 # Purpose: Stage changes, generate conventional commit messages, push to remote
 # Part of: Tests & Documentation Workflow Automation v2.0.0
+# Version: 2.0.0
 ################################################################################
+
+# Module version information
+readonly STEP11_VERSION="2.0.0"
+readonly STEP11_VERSION_MAJOR=2
+readonly STEP11_VERSION_MINOR=0
+readonly STEP11_VERSION_PATCH=0
 
 # Main step function - finalizes git operations with AI-generated commit messages
 # Returns: 0 for success, 1 for failure

@@ -3,7 +3,14 @@
 # Step 8: AI-Powered Dependency Validation
 # Purpose: Validate npm dependencies and environment configuration
 # Part of: Tests & Documentation Workflow Automation v2.0.0
+# Version: 2.0.0
 ################################################################################
+
+# Module version information
+readonly STEP8_VERSION="2.0.0"
+readonly STEP8_VERSION_MAJOR=2
+readonly STEP8_VERSION_MINOR=0
+readonly STEP8_VERSION_PATCH=0
 
 # Main step function - validates dependencies with AI assistance
 # Returns: 0 for success, 1 for failure
@@ -184,17 +191,80 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
     echo -e "${CYAN}GitHub Copilot CLI Dependency Analysis Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Check if Copilot CLI is available
-    # Execute Phase 2 AI analysis using shared library
-    execute_phase2_ai_analysis \
-        "$copilot_prompt" \
-        "8" \
-        "dependency_analysis" \
-        "Dependency_Validation" \
-        "$issues" \
-        "dependency analysis" \
-        "No dependency issues - skipping optional analysis" \
-        "Did Copilot identify dependency issues to fix?"
+    # PHASE 2: Execute AI analysis with manual issue tracking
+    if [[ "$DRY_RUN" == true ]]; then
+        print_info "[DRY RUN] Would invoke: copilot -p with dependency analysis prompt"
+    else
+        if confirm_action "Run GitHub Copilot CLI to analyze dependencies?" "y"; then
+            # Save prompt to temporary file for tracking
+            local temp_prompt_file
+            temp_prompt_file=$(mktemp)
+            TEMP_FILES+=("$temp_prompt_file")
+            echo "$copilot_prompt" > "$temp_prompt_file"
+            
+            # Invoke Copilot CLI
+            print_info "Starting Copilot CLI session..."
+            
+            # Create log file with unique timestamp
+            local log_timestamp
+            log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+            local log_file="${LOGS_RUN_DIR}/step8_copilot_dependency_analysis_${log_timestamp}.log"
+            print_info "Logging output to: $log_file"
+            
+            # Execute Copilot prompt
+            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            
+            print_success "GitHub Copilot CLI session completed"
+            print_info "Full session log saved to: $log_file"
+            
+            # Ask user if they want to save issues from the Copilot session
+            if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                if [[ -f "$log_file" ]]; then
+                    local log_content
+                    log_content=$(cat "$log_file")
+                    
+                    # Build issue extraction prompt using helper function
+                    local extract_prompt
+                    extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                    echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                    echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                    
+                    if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                        sleep 1
+                        print_info "Starting Copilot CLI session for issue extraction..."
+                        copilot -p "$extract_prompt" --allow-all-tools
+                        
+                        print_info "Please copy the organized issues from Copilot output."
+                        print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                        
+                        local organized_issues=""
+                        local line
+                        while IFS= read -r line; do
+                            if [[ "$line" == "END" ]]; then
+                                break
+                            fi
+                            organized_issues+="${line}"$'\n'
+                        done
+                        
+                        if [[ -n "$organized_issues" ]]; then
+                            save_step_issues "8" "Dependency_Validation" "$organized_issues"
+                            print_success "Issues extracted from log and saved to backlog"
+                        else
+                            print_warning "No organized issues provided - skipping backlog save"
+                        fi
+                    else
+                        print_warning "Skipped issue extraction - no backlog file created"
+                    fi
+                else
+                    print_error "Log file not found: $log_file"
+                    print_warning "Cannot extract issues without log file"
+                fi
+            fi
+        else
+            print_warning "Skipped GitHub Copilot CLI - using manual review"
+        fi
+    fi
     
     # Handle critical dependency issues
     if [[ $issues -gt 0 ]]; then

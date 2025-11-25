@@ -3,7 +3,14 @@
 # Step 10: AI-Powered Context Analysis & Workflow Adaptation
 # Purpose: Analyze workflow context and provide strategic recommendations
 # Part of: Tests & Documentation Workflow Automation v2.0.0
+# Version: 2.0.0
 ################################################################################
+
+# Module version information
+readonly STEP10_VERSION="2.0.0"
+readonly STEP10_VERSION_MAJOR=2
+readonly STEP10_VERSION_MINOR=0
+readonly STEP10_VERSION_PATCH=0
 
 # Main step function - analyzes workflow context with AI strategic planning
 # Returns: 0 for success, 1 for failure
@@ -251,17 +258,80 @@ Please provide a comprehensive strategic analysis with specific, prioritized rec
     echo -e "${CYAN}GitHub Copilot CLI Strategic Context Analysis Prompt:${NC}"
     echo -e "${YELLOW}${copilot_prompt}${NC}\n"
     
-    # Check if Copilot CLI is available
-    # Execute Phase 2 AI analysis using shared library
-    execute_phase2_ai_analysis \
-        "$copilot_prompt" \
-        "10" \
-        "context_analysis" \
-        "Context_Analysis" \
-        "$total_issues" \
-        "strategic context analysis" \
-        "Auto mode - skipping optional strategic analysis" \
-        "Did Copilot provide strategic recommendations?"
+    # PHASE 2: Execute AI analysis with manual issue tracking
+    if [[ "$DRY_RUN" == true ]]; then
+        print_info "[DRY RUN] Would invoke: copilot -p with strategic context analysis prompt"
+    else
+        if confirm_action "Run GitHub Copilot CLI for strategic context analysis?" "y"; then
+            # Save prompt to temporary file for tracking
+            local temp_prompt_file
+            temp_prompt_file=$(mktemp)
+            TEMP_FILES+=("$temp_prompt_file")
+            echo "$copilot_prompt" > "$temp_prompt_file"
+            
+            # Invoke Copilot CLI
+            print_info "Starting Copilot CLI session..."
+            
+            # Create log file with unique timestamp
+            local log_timestamp
+            log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)
+            local log_file="${LOGS_RUN_DIR}/step10_copilot_context_analysis_${log_timestamp}.log"
+            print_info "Logging output to: $log_file"
+            
+            # Execute Copilot prompt
+            execute_copilot_prompt "$copilot_prompt" "$log_file"
+            
+            print_success "GitHub Copilot CLI session completed"
+            print_info "Full session log saved to: $log_file"
+            
+            # Ask user if they want to save issues from the Copilot session
+            if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
+                if [[ -f "$log_file" ]]; then
+                    local log_content
+                    log_content=$(cat "$log_file")
+                    
+                    # Build issue extraction prompt using helper function
+                    local extract_prompt
+                    extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+
+                    echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+                    echo -e "${YELLOW}${extract_prompt}${NC}\n"
+                    
+                    if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+                        sleep 1
+                        print_info "Starting Copilot CLI session for issue extraction..."
+                        copilot -p "$extract_prompt" --allow-all-tools
+                        
+                        print_info "Please copy the organized issues from Copilot output."
+                        print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                        
+                        local organized_issues=""
+                        local line
+                        while IFS= read -r line; do
+                            if [[ "$line" == "END" ]]; then
+                                break
+                            fi
+                            organized_issues+="${line}"$'\n'
+                        done
+                        
+                        if [[ -n "$organized_issues" ]]; then
+                            save_step_issues "10" "Context_Analysis" "$organized_issues"
+                            print_success "Issues extracted from log and saved to backlog"
+                        else
+                            print_warning "No organized issues provided - skipping backlog save"
+                        fi
+                    else
+                        print_warning "Skipped issue extraction - no backlog file created"
+                    fi
+                else
+                    print_error "Log file not found: $log_file"
+                    print_warning "Cannot extract issues without log file"
+                fi
+            fi
+        else
+            print_warning "Skipped GitHub Copilot CLI - using manual review"
+        fi
+    fi
     
     # Summary
     echo ""

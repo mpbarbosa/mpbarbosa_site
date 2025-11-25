@@ -3,7 +3,14 @@
 # Step 6: AI-Powered Test Generation
 # Purpose: Generate new test code for untested modules
 # Part of: Tests & Documentation Workflow Automation v2.0.0
+# Version: 2.0.0
 ################################################################################
+
+# Module version information
+readonly STEP6_VERSION="2.0.0"
+readonly STEP6_VERSION_MAJOR=2
+readonly STEP6_VERSION_MINOR=0
+readonly STEP6_VERSION_PATCH=0
 
 # Main step function - generates new tests with AI assistance
 # Returns: 0 for success, 1 for failure
@@ -235,6 +242,12 @@ Please generate complete, production-ready test code for the identified untested
             # Smart triggering: Only generate if there are gaps
             if [[ $untested_count -gt 0 ]] || [[ $edge_case_gaps -gt 0 ]]; then
                 if confirm_action "Generate test code for $untested_count untested files using Copilot CLI?"; then
+                    # Save prompt to temporary file for tracking
+                    local temp_prompt_file
+                    temp_prompt_file=$(mktemp)
+                    TEMP_FILES+=("$temp_prompt_file")
+                    echo "$copilot_prompt" > "$temp_prompt_file"
+                    
                     print_info "Starting Copilot CLI test generation session..."
                     print_info "This will generate actual Jest test code for untested modules"
                     echo ""
@@ -321,6 +334,12 @@ Please generate complete, production-ready test code for the identified untested
                 print_success "No test generation needed - all code has tests"
                 if [[ "$INTERACTIVE_MODE" == true ]]; then
                     if confirm_action "Generate additional edge case tests anyway?"; then
+                        # Save prompt to temporary file for tracking
+                        local temp_prompt_file
+                        temp_prompt_file=$(mktemp)
+                        TEMP_FILES+=("$temp_prompt_file")
+                        echo "$copilot_prompt" > "$temp_prompt_file"
+                        
                         # Create log file with unique timestamp
                         local log_timestamp
                         log_timestamp=$(date +%Y%m%d_%H%M%S_%N | cut -c1-21)

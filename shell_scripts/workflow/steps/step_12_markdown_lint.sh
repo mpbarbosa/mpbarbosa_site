@@ -3,8 +3,15 @@
 # Step 12: Markdown Linting Validation
 # Purpose: Validate markdown formatting with mdl and catch errors before commit
 # Part of: Tests & Documentation Workflow Automation v2.0.0
+# Version: 2.0.0
 # Tool: mdl (markdownlint Ruby gem) - https://github.com/markdownlint/markdownlint
 ################################################################################
+
+# Module version information
+readonly STEP12_VERSION="2.0.0"
+readonly STEP12_VERSION_MAJOR=2
+readonly STEP12_VERSION_MINOR=0
+readonly STEP12_VERSION_PATCH=0
 
 # Main step function - validates markdown files with mdl linting
 # Returns: 0 for success, 1 for failure
