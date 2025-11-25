@@ -105,9 +105,8 @@ get_submodules_hierarchical() {
         return 0
     fi
     
-    # Get all submodules and sort by depth (deepest first)
-    git config --file .gitmodules --get-regexp path | \
-        awk '{ print $2 }' | \
+    # Get all submodules recursively and sort by depth (deepest first)
+    git submodule foreach --quiet --recursive 'echo $displaypath' | \
         awk '{ print gsub(/\//, "/") + 1, $0 }' | \
         sort -nr | \
         awk '{ print $2 }'
@@ -116,6 +115,17 @@ get_submodules_hierarchical() {
 # Function to check if a directory has uncommitted changes
 has_changes() {
     local dir="$1"
+    
+    # Convert to absolute path if relative
+    if [[ ! "$dir" =~ ^/ ]]; then
+        dir="$REPO_ROOT/$dir"
+    fi
+    
+    # Check if directory exists
+    if [ ! -d "$dir" ]; then
+        return 1  # No changes if directory doesn't exist
+    fi
+    
     (
         cd "$dir"
         # Check for staged changes
@@ -138,6 +148,17 @@ has_changes() {
 commit_and_push() {
     local dir="$1"
     local context="$2"
+    
+    # Convert to absolute path if relative
+    if [[ ! "$dir" =~ ^/ ]]; then
+        dir="$REPO_ROOT/$dir"
+    fi
+    
+    # Check if directory exists
+    if [ ! -d "$dir" ]; then
+        log_warning "Directory does not exist: $dir"
+        return 0
+    fi
     
     (
         cd "$dir"
@@ -186,8 +207,12 @@ commit_and_push() {
         
         # Push changes
         log_info "  Pushing $repo_name to origin..."
-        if git push origin main 2>/dev/null || git push origin master 2>/dev/null; then
-            log_success "  Pushed $repo_name successfully"
+        # Get current branch name
+        local current_branch
+        current_branch=$(git rev-parse --abbrev-ref HEAD)
+        
+        if git push origin "$current_branch"; then
+            log_success "  Pushed $repo_name successfully (branch: $current_branch)"
         else
             log_error "  Failed to push $repo_name"
             return 1
