@@ -655,6 +655,7 @@ The following are library modules (not meant to be executed directly):
 - ✅ Production directory configuration support (default: `/var/www/html`)
 - ✅ Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - ✅ Music in Numbers submodule support with complete module architecture
+- ✅ Busca Vagas full-stack deployment (React client + Express.js server API)
 - ✅ Enhanced backup system for both public and production deployments
 - ✅ Comprehensive validation and reporting for each step
 - ✅ Dry-run mode for safe operation preview
@@ -677,7 +678,9 @@ The following are library modules (not meant to be executed directly):
 2. Main HTML files (index.html, robots.txt, humans.txt)
 3. Asset directories (CSS, JS, SASS, webfonts, images)  
 4. Music in Numbers submodule (3 HTML files, 15+ JS modules, 4 CSS files)
-5. Comprehensive validation of all copied resources
+5. Busca Vagas submodule (React client HTML + Express.js server API with MVC architecture)
+6. Monitora Vagas submodule (React app with components and styles)
+7. Comprehensive validation of all copied resources
 
 **Step 2 (Public → Production)**:
 1. Production environment validation and permission checks

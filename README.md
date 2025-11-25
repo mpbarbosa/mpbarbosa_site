@@ -99,7 +99,17 @@ mpbarbosa_site/
 │   │   ├── music_in_numbers/         # 🎵 Music analytics platform
 │   │   ├── guia_turistico/           # 🗺️ Travel guide application
 │   │   ├── monitora_vagas/           # 💼 Job monitoring application
-│   │   └── busca_vagas/              # 🔍 Job search application
+│   │   └── busca_vagas/              # 🔍 Full-stack job search application
+│   │       ├── client/               # React frontend
+│   │       │   └── public/           # Client HTML and assets
+│   │       └── src/                  # Express.js backend API
+│   │           ├── config/           # Database and server configuration
+│   │           ├── controllers/      # API controllers
+│   │           ├── middlewares/      # Auth and validation
+│   │           ├── models/           # Data models
+│   │           ├── routes/           # API routes
+│   │           ├── services/         # Business logic
+│   │           └── utils/            # Helper utilities
 │   └── __tests__/                    # Jest test suites
 │       ├── main.test.js              # Main site functionality tests (495 lines)
 │       ├── documentation.test.js     # Documentation consistency tests (184 lines)
@@ -155,10 +165,13 @@ mpbarbosa_site/
 - **Status**: Active development
 
 ### Busca Vagas
-**Job Search Application**
-- Advanced job search functionality
-- Integration with job platforms
-- Streamlined application process
+**Full-Stack Job Search Application**
+- React-based client with modern UI components
+- Express.js REST API with MVC architecture
+- Database integration with PostgreSQL support
+- Authentication and validation middleware
+- Advanced job search and filtering
+- **Architecture**: Client-server separation with independent deployment
 - **Status**: Active development
 
 ## 🛠 Development
@@ -229,6 +242,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - Automatic backup with 7-day retention for both public and production
 - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - Music in Numbers submodule support with complete module architecture
+- Busca Vagas full-stack deployment (React client + Express.js server API)
 - Production environment validation with permission checks
 - Comprehensive error handling with colored output
 - Dry-run mode for validation

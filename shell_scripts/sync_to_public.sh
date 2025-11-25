@@ -369,6 +369,7 @@ FILES TO SYNC:
     - submodules/music_in_numbers/src/scripts/ (Music in Numbers JavaScript modules)
     - submodules/music_in_numbers/src/styles/ (Music in Numbers CSS stylesheets)
     - submodules/busca_vagas/client/public/ (Busca Vagas HTML and client files)
+    - submodules/busca_vagas/src/ (Busca Vagas server files and API)
     - submodules/monitora_vagas/src/ (Monitora Vagas HTML, JS, and subdirectories)
     - Additional resources can be added by extending this script
 
@@ -890,6 +891,120 @@ copy_busca_vagas_submodule() {
     return 0
 }
 
+# Copy Busca Vagas server folder
+# Deploys the Express.js backend API with MVC architecture:
+# - config/ (database and server configuration)
+# - controllers/ (API request handlers)
+# - middlewares/ (authentication and validation)
+# - models/ (data models)
+# - routes/ (API routing)
+# - services/ (business logic)
+# - utils/ (helper utilities)
+# - server.js (Express application entry point)
+copy_busca_vagas_server() {
+    print_step "Copying Busca Vagas server folder"
+    
+    local source_dir="$SOURCE_DIR/submodules/busca_vagas/src"
+    local dest_dir="$PUBLIC_DIR/submodules/busca_vagas/src"
+    
+    if [[ ! -d "$source_dir" ]]; then
+        print_warning "Busca Vagas src directory not found in source"
+        print_info "  Expected: $source_dir"
+        return 0
+    fi
+    
+    # Count all JavaScript files
+    local js_count=$(find "$source_dir" -type f -name "*.js" | wc -l)
+    local dirs_count=$(find "$source_dir" -mindepth 1 -type d | wc -l)
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Create destination directory if it doesn't exist
+        mkdir -p "$dest_dir"
+        
+        # Copy all files and directories recursively
+        cp -r "$source_dir"/* "$dest_dir/"
+        print_success "Copied: Busca Vagas server ($js_count JavaScript files, $dirs_count subdirectories)"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $source_dir"
+            print_info "  Destination: $dest_dir"
+            print_info "  JavaScript files: $js_count"
+            print_info "  Subdirectories: $dirs_count"
+            
+            # Show main JavaScript files (root level)
+            local main_js_files=$(find "$dest_dir" -maxdepth 1 -name "*.js")
+            if [[ -n "$main_js_files" ]]; then
+                print_info "  Main JavaScript files:"
+                echo "$main_js_files" | head -10 | while read file; do
+                    if [[ -f "$file" ]]; then
+                        local filename=$(basename "$file")
+                        local filesize=$(du -h "$file" | cut -f1)
+                        print_info "    - $filename ($filesize)"
+                    fi
+                done
+            fi
+            
+            # Show subdirectories
+            local subdirs=$(find "$dest_dir" -mindepth 1 -maxdepth 1 -type d)
+            if [[ -n "$subdirs" ]]; then
+                print_info "  Subdirectories:"
+                echo "$subdirs" | while read dir; do
+                    if [[ -d "$dir" ]]; then
+                        local dirname=$(basename "$dir")
+                        local files_in_dir=$(find "$dir" -name "*.js" | wc -l)
+                        print_info "    - $dirname/ ($files_in_dir files)"
+                    fi
+                done
+            fi
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  JavaScript files to copy: $js_count"
+            print_info "  Subdirectories to copy: $dirs_count"
+            
+            # Show preview of main files
+            local main_js_files=$(find "$source_dir" -maxdepth 1 -name "*.js")
+            if [[ -n "$main_js_files" ]]; then
+                print_info "  Main JavaScript files to copy:"
+                echo "$main_js_files" | head -5 | while read file; do
+                    if [[ -f "$file" ]]; then
+                        local filename=$(basename "$file")
+                        local filesize=$(du -h "$file" | cut -f1)
+                        print_info "    - $filename ($filesize)"
+                    fi
+                done
+                
+                local main_count=$(echo "$main_js_files" | wc -l)
+                if [[ $main_count -gt 5 ]]; then
+                    print_info "    ... and $((main_count - 5)) more main files"
+                fi
+            fi
+            
+            # Show preview of subdirectories
+            local subdirs=$(find "$source_dir" -mindepth 1 -maxdepth 1 -type d)
+            if [[ -n "$subdirs" ]]; then
+                print_info "  Subdirectories to copy:"
+                echo "$subdirs" | head -3 | while read dir; do
+                    if [[ -d "$dir" ]]; then
+                        local dirname=$(basename "$dir")
+                        local files_in_dir=$(find "$dir" -name "*.js" | wc -l)
+                        print_info "    - $dirname/ ($files_in_dir files)"
+                    fi
+                done
+                
+                local subdir_count=$(echo "$subdirs" | wc -l)
+                if [[ $subdir_count -gt 3 ]]; then
+                    print_info "    ... and $((subdir_count - 3)) more subdirectories"
+                fi
+            fi
+        fi
+    fi
+    
+    return 0
+}
+
 # Copy Monitora Vagas submodule files
 copy_monitora_vagas_submodule() {
     print_step "Copying Monitora Vagas submodule files"
@@ -1389,6 +1504,7 @@ execute_step_1() {
     copy_music_in_numbers_scripts
     copy_music_in_numbers_styles
     copy_busca_vagas_submodule
+    copy_busca_vagas_server
     copy_monitora_vagas_submodule
     copy_additional_resources
     

@@ -17,6 +17,7 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 - **Multi-project structure**: Main site + 4 specialized submodules (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
+- **Full-stack architecture**: Client-side React apps + server-side Node.js/Express APIs (Busca Vagas)
 - **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
@@ -47,7 +48,7 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
   - `src/submodules/music_in_numbers` → Music in Numbers (Spotify analytics) project
   - `src/submodules/guia_turistico` → Guia Turístico (Travel Guide) project
   - `src/submodules/monitora_vagas` → Monitora Vagas (Job monitoring) project
-  - `src/submodules/busca_vagas` → Busca Vagas (Job search) project
+  - `src/submodules/busca_vagas` → Busca Vagas (Full-stack job search app with React client + Express API)
 - To initialize submodules (when authenticated): `git submodule update --init --recursive`
 - Automated submodule management available: `./shell_scripts/pull_all_submodules.sh`
 - If submodules fail to initialize, the project links will show 404 errors but the main site will function normally
@@ -138,6 +139,20 @@ mpbarbosa_site/
 │   │   ├── guia_turistico.html      # Redirects to submodule
 │   │   └── monitora_vagas.html      # Redirects to submodule
 │   └── submodules/            # Git submodules for projects (may be empty)
+│       ├── music_in_numbers/  # Spotify analytics (client-side)
+│       ├── guia_turistico/    # Travel guide (client-side)
+│       ├── monitora_vagas/    # Job monitoring (client-side)
+│       └── busca_vagas/       # Job search (full-stack)
+│           ├── client/        # React frontend
+│           │   └── public/    # Client HTML and assets
+│           └── src/           # Express.js backend API
+│               ├── config/    # Database and server configuration
+│               ├── controllers/ # API controllers
+│               ├── middlewares/ # Auth and validation
+│               ├── models/    # Data models
+│               ├── routes/    # API routes
+│               ├── services/  # Business logic
+│               └── utils/     # Helper utilities
 ├── .gitmodules               # Git submodule configuration
 ├── index.html               # Simple redirect to mpbarbosa.com
 └── README.md               # Project documentation
@@ -174,6 +189,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers submodule support with complete module architecture
+# - Busca Vagas full-stack deployment (client HTML + server API)
 # - Enhanced backup system for both public and production directories
 # - Production environment validation with permission checks  
 # - Comprehensive error handling with colored output
