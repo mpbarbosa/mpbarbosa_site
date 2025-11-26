@@ -102,21 +102,25 @@ restore_stash() {
 pull_main_repo() {
     log_step "Step 1: Pulling main repository"
     
+    # Get current branch name
+    local current_branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    
     # Fetch latest changes
     log_info "Fetching latest changes from origin..."
     git fetch origin
     
     # Check if we're behind
     local behind_count
-    behind_count=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "0")
+    behind_count=$(git rev-list --count HEAD..origin/"$current_branch" 2>/dev/null || echo "0")
     
     if [ "$behind_count" -gt 0 ]; then
-        log_info "Main repository is $behind_count commits behind origin/main"
+        log_info "Main repository is $behind_count commits behind origin/$current_branch"
         log_info "Pulling latest changes..."
-        git pull origin main
+        git pull origin "$current_branch"
         log_success "Main repository updated successfully"
     else
-        log_success "Main repository is already up-to-date"
+        log_success "Main repository is already up-to-date (branch: $current_branch)"
     fi
 }
 
@@ -149,16 +153,24 @@ verify_submodules() {
         return 0
     fi
     
-    # Get list of submodules
+    # Get list of all submodules recursively
     local submodules
-    submodules=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+    submodules=$(git submodule foreach --quiet --recursive 'echo $displaypath' 2>/dev/null || echo "")
     
-    for submodule in $submodules; do
-        if [ -d "$submodule" ]; then
+    if [ -z "$submodules" ]; then
+        log_info "No initialized submodules found"
+        return 0
+    fi
+    
+    while IFS= read -r submodule; do
+        # Convert to absolute path
+        local submodule_path="$REPO_ROOT/$submodule"
+        
+        if [ -d "$submodule_path" ]; then
             log_info "Verifying submodule: $submodule"
             
             (
-                cd "$submodule"
+                cd "$submodule_path"
                 local status
                 status=$(git status --porcelain)
                 local branch
@@ -175,7 +187,7 @@ verify_submodules() {
         else
             log_warning "Submodule directory not found: $submodule"
         fi
-    done
+    done <<< "$submodules"
 }
 
 # Function to ensure all submodules are initialized
