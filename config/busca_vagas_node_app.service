@@ -23,9 +23,9 @@
     [Service]
     # IMPORTANT: Update ExecStart path to point to your actual server.js location
     # Example: /var/www/html/submodules/busca_vagas/src/server.js
-    ExecStart=/usr/bin/node /var/www/mpbarbosa.com/
+    ExecStart=/usr/bin/node /home/ubuntu/Documents/Github/busca_vagas/package.json
     # IMPORTANT: Update WorkingDirectory to match your deployment directory
-    WorkingDirectory=/home/user/my-node-app
+    WorkingDirectory=/home/ubuntu/Documents/Github/busca_vagas
     Restart=always
     # IMPORTANT: Replace 'user' with the actual system user running the service
     User=user # Replace 'user' with the desired user to run the service
