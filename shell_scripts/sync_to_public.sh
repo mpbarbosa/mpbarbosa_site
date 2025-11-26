@@ -1291,6 +1291,19 @@ show_summary() {
             if [[ -d "$PRODUCTION_DIR/submodules/monitora_vagas" ]]; then
                 echo -e "  ✓ Monitora Vagas submodule deployed"
             fi
+            if [[ -f "/etc/systemd/system/busca_vagas_node_app.service" ]]; then
+                echo -e "  ✓ Busca Vagas systemd service deployed"
+            fi
+            
+            # Show service status if root and services were restarted
+            if [[ $EUID -eq 0 ]]; then
+                if systemctl is-active --quiet nginx 2>/dev/null; then
+                    echo -e "  ✓ Nginx service running"
+                fi
+                if systemctl is-active --quiet busca_vagas_node_app.service 2>/dev/null; then
+                    echo -e "  ✓ Busca Vagas API service running"
+                fi
+            fi
             echo ""
         fi
         
@@ -1454,6 +1467,137 @@ copy_public_to_production() {
     fi
 }
 
+# Copy systemd service file to /etc/systemd/system/
+# Deploys the Busca Vagas Node.js API systemd service configuration
+copy_systemd_service() {
+    print_step "Deploying systemd service configuration"
+    
+    local source_file="$PROJECT_ROOT/config/busca_vagas_node_app.service"
+    local dest_file="/etc/systemd/system/busca_vagas_node_app.service"
+    
+    # Check if source file exists
+    if [[ ! -f "$source_file" ]]; then
+        print_warning "Systemd service file not found in source"
+        print_info "  Expected: $source_file"
+        print_info "  Skipping systemd service deployment"
+        return 0
+    fi
+    
+    # Check if we have permission to write to /etc/systemd/system/
+    if [[ "$DRY_RUN" == "false" ]]; then
+        if [[ ! -w "/etc/systemd/system/" ]]; then
+            print_warning "No write permission to /etc/systemd/system/"
+            print_info "  Skipping systemd service deployment"
+            print_info "  Run with sudo to deploy systemd service"
+            return 0
+        fi
+        
+        # Copy the service file
+        cp "$source_file" "$dest_file"
+        chmod 644 "$dest_file"
+        print_success "Systemd service deployed: $dest_file"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $source_file"
+            print_info "  Destination: $dest_file"
+            print_info "  Permissions: 644"
+            
+            # Provide instructions for enabling the service
+            echo ""
+            print_info "To enable and start the service, run:"
+            print_info "  sudo systemctl daemon-reload"
+            print_info "  sudo systemctl enable busca_vagas_node_app.service"
+            print_info "  sudo systemctl start busca_vagas_node_app.service"
+            echo ""
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_file → $dest_file"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Permissions would be set to: 644"
+            print_info "  Would require sudo privileges"
+        fi
+    fi
+    
+    return 0
+}
+
+# Restart and enable system services (nginx and busca_vagas_node_app)
+# Executed at the end of Step 2 to activate deployed changes
+restart_system_services() {
+    print_step "Restarting and enabling system services"
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Check if we have sudo privileges
+        if [[ $EUID -ne 0 ]]; then
+            print_warning "Not running as root - service restart requires sudo"
+            print_info "  Skipping service restart"
+            print_info "  Manually run the following commands:"
+            echo ""
+            print_info "    sudo systemctl daemon-reload"
+            print_info "    sudo systemctl restart nginx"
+            print_info "    sudo systemctl enable busca_vagas_node_app.service"
+            print_info "    sudo systemctl start busca_vagas_node_app.service"
+            echo ""
+            return 0
+        fi
+        
+        # Reload systemd daemon to recognize new/updated service files
+        print_info "Reloading systemd daemon..."
+        if systemctl daemon-reload 2>/dev/null; then
+            print_success "Systemd daemon reloaded"
+        else
+            print_warning "Failed to reload systemd daemon"
+        fi
+        
+        # Restart nginx web server
+        print_info "Restarting nginx web server..."
+        if systemctl restart nginx 2>/dev/null; then
+            print_success "Nginx restarted successfully"
+        else
+            print_warning "Failed to restart nginx (may not be installed or running)"
+        fi
+        
+        # Enable Busca Vagas Node.js API service (auto-start on boot)
+        if [[ -f "/etc/systemd/system/busca_vagas_node_app.service" ]]; then
+            print_info "Enabling Busca Vagas API service..."
+            if systemctl enable busca_vagas_node_app.service 2>/dev/null; then
+                print_success "Busca Vagas API service enabled"
+            else
+                print_warning "Failed to enable Busca Vagas API service"
+            fi
+            
+            # Start Busca Vagas Node.js API service
+            print_info "Starting Busca Vagas API service..."
+            if systemctl start busca_vagas_node_app.service 2>/dev/null; then
+                print_success "Busca Vagas API service started"
+                
+                if [[ "$VERBOSE" == "true" ]]; then
+                    echo ""
+                    print_info "Service status:"
+                    systemctl status busca_vagas_node_app.service --no-pager --lines=5 2>/dev/null || true
+                    echo ""
+                fi
+            else
+                print_warning "Failed to start Busca Vagas API service"
+                print_info "  Check service configuration and logs:"
+                print_info "    sudo systemctl status busca_vagas_node_app.service"
+                print_info "    sudo journalctl -u busca_vagas_node_app.service -n 50"
+            fi
+        else
+            print_info "Busca Vagas API service file not found, skipping service start"
+        fi
+        
+        print_success "System services restart completed"
+    else
+        print_info "[DRY RUN] Would execute service restart commands:"
+        print_info "  sudo systemctl daemon-reload"
+        print_info "  sudo systemctl restart nginx"
+        print_info "  sudo systemctl enable busca_vagas_node_app.service"
+        print_info "  sudo systemctl start busca_vagas_node_app.service"
+    fi
+}
+
 # Validate production deployment
 validate_production_deployment() {
     print_step "Validating production deployment"
@@ -1544,9 +1688,14 @@ execute_step_2() {
     validate_production_environment
     create_production_backup
     copy_public_to_production
+    copy_systemd_service
     
     if [[ "$DRY_RUN" == "false" ]]; then
         validate_production_deployment
+        restart_system_services
+    else
+        # Show what services would be restarted in dry-run mode
+        restart_system_services
     fi
     
     print_success "Step 2 completed: Files deployed from public to production"
