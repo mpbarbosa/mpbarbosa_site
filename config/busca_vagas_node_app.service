@@ -28,7 +28,7 @@
     WorkingDirectory=/home/ubuntu/Documents/Github/busca_vagas
     Restart=always
     # IMPORTANT: Replace 'user' with the actual system user running the service
-    User=user # Replace 'user' with the desired user to run the service
+    User=www # Replace 'user' with the desired user to run the service
     # IMPORTANT: Replace 'user' with the actual system group
     Group=user # Replace 'user' with the desired group
 
