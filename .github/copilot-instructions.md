@@ -97,6 +97,8 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 mpbarbosa_site/
 ├── .github/                    # GitHub configuration and workflows
 │   └── copilot-instructions.md # These instructions
+├── config/                     # System configuration files
+│   └── busca_vagas_node_app.service  # Systemd service for Busca Vagas API server
 ├── shell_scripts/              # Automation and deployment scripts
 │   ├── sync_to_public.sh       # Two-step deployment script (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
@@ -146,6 +148,7 @@ mpbarbosa_site/
 │           ├── client/        # React frontend
 │           │   └── public/    # Client HTML and assets
 │           └── src/           # Express.js backend API
+│               ├── server.js  # Express server with CORS and middleware
 │               ├── config/    # Database and server configuration
 │               ├── controllers/ # API controllers
 │               ├── middlewares/ # Auth and validation
@@ -153,6 +156,8 @@ mpbarbosa_site/
 │               ├── routes/    # API routes
 │               ├── services/  # Business logic
 │               └── utils/     # Helper utilities
+├── config/                  # System configuration files
+│   └── busca_vagas_node_app.service  # Systemd service for Busca Vagas API
 ├── .gitmodules               # Git submodule configuration
 ├── index.html               # Simple redirect to mpbarbosa.com
 └── README.md               # Project documentation
@@ -207,6 +212,30 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Git validation updated to check project root instead of source directory
 # - All file paths updated for new public directory structure
 # - Comprehensive test coverage shared with sync_to_public.sh
+```
+
+#### Busca Vagas API Server (Systemd Service)
+```bash
+# Systemd service configuration for production Node.js API server
+# Location: config/busca_vagas_node_app.service
+
+# Install systemd service (production only)
+sudo cp config/busca_vagas_node_app.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable busca_vagas_node_app.service
+sudo systemctl start busca_vagas_node_app.service
+
+# Service management
+sudo systemctl status busca_vagas_node_app.service  # Check status
+sudo systemctl restart busca_vagas_node_app.service # Restart after updates
+sudo systemctl stop busca_vagas_node_app.service    # Stop service
+
+# Service details:
+# - Express.js API server with CORS support
+# - Middleware: express.json(), express.urlencoded()
+# - Auto-restart on failure
+# - Runs on port 3000 (configurable via PORT env variable)
+# - WorkingDirectory and User must be configured for production environment
 ```
 
 #### Tests & Documentation Workflow Automation (v2.0.0)
@@ -415,6 +444,25 @@ This project uses modern ES modules with Jest testing:
 - **Exports**: Use named exports for testability
 - **Imports**: Use ES6 import syntax consistently
 - **Type**: `package.json` includes `"type": "module"`
+
+#### Express.js Middleware in ES Modules
+When working with Express.js in ES module projects (like Busca Vagas):
+- **Correct syntax**: Use `express.json()` and `express.urlencoded()` as methods on the express object
+- **Incorrect syntax**: ❌ `import { json, urlencoded } from 'express'` (causes TypeError)
+- **Example**:
+  ```javascript
+  import express from 'express';
+  const app = express();
+  
+  // ✅ Correct: Call middleware as express methods
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  
+  // ❌ Incorrect: Named imports don't work for middleware
+  // import { json, urlencoded } from 'express';
+  // app.use(json());  // TypeError: json is not a function
+  ```
+- **Reference**: `public/submodules/busca_vagas/src/server.js` (lines 14-17)
 
 #### Testing Approach
 ```javascript

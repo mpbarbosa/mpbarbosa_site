@@ -9,8 +9,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
+// CORS: Enable cross-origin resource sharing for API access
 app.use(cors());
+// Body parsing: express.json() replaces body-parser for JSON payloads
+// Note: In ES modules, use express.json() not import { json } from 'express'
 app.use(express.json());
+// URL-encoded: express.urlencoded() for form data with extended query string parsing
+// Note: In ES modules, use express.urlencoded() not import { urlencoded } from 'express'
 app.use(express.urlencoded({ extended: true }));
 
 // Routes

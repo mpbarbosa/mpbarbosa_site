@@ -182,7 +182,7 @@ Individual timestamped reports have been archived into these consolidated files 
 ### Busca Vagas
 **Full-Stack Job Search Application**
 - React-based client with modern UI components
-- Express.js REST API with MVC architecture
+- Express.js REST API with MVC architecture (ES modules with `express.json()` and `express.urlencoded()`)
 - Database integration with PostgreSQL support
 - Authentication and validation middleware
 - Advanced job search and filtering
@@ -258,6 +258,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - Music in Numbers submodule support with complete module architecture
 - Busca Vagas full-stack deployment (React client + Express.js server API)
+- Systemd service configuration for Node.js API server (config/busca_vagas_node_app.service)
 - Production environment validation with permission checks
 - Comprehensive error handling with colored output
 - Dry-run mode for validation
