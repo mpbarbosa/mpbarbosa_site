@@ -476,6 +476,12 @@ Critical deployment and maintenance patterns:
 ./shell_scripts/pull_all_submodules.sh --dry-run
 ./shell_scripts/push_all_submodules.sh --handle-stash
 
+# Features:
+# - Dynamic branch detection (works with any branch, not just main)
+# - Recursive submodule discovery using git submodule foreach
+# - Absolute path resolution for nested submodules
+# - Safe stash management and comprehensive verification
+
 # Two-step production deployment with nginx integration (v2.0.0)
 ./shell_scripts/sync_to_public.sh --step1 --dry-run
 ./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/html

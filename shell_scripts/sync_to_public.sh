@@ -901,11 +901,14 @@ copy_busca_vagas_submodule() {
 # - services/ (business logic)
 # - utils/ (helper utilities)
 # - server.js (Express application entry point)
+# - package.json (Node.js dependencies with ES module configuration)
 copy_busca_vagas_server() {
     print_step "Copying Busca Vagas server folder"
     
     local source_dir="$SOURCE_DIR/submodules/busca_vagas/src"
     local dest_dir="$PUBLIC_DIR/submodules/busca_vagas/src"
+    local package_json_source="$SOURCE_DIR/submodules/busca_vagas/package.json"
+    local package_json_dest="$PUBLIC_DIR/submodules/busca_vagas/package.json"
     
     if [[ ! -d "$source_dir" ]]; then
         print_warning "Busca Vagas src directory not found in source"
@@ -920,14 +923,26 @@ copy_busca_vagas_server() {
     if [[ "$DRY_RUN" == "false" ]]; then
         # Create destination directory if it doesn't exist
         mkdir -p "$dest_dir"
+        mkdir -p "$(dirname "$package_json_dest")"
         
         # Copy all files and directories recursively
         cp -r "$source_dir"/* "$dest_dir/"
-        print_success "Copied: Busca Vagas server ($js_count JavaScript files, $dirs_count subdirectories)"
+        
+        # Copy package.json to busca_vagas root for ES module support
+        if [[ -f "$package_json_source" ]]; then
+            cp "$package_json_source" "$package_json_dest"
+            print_success "Copied: Busca Vagas server ($js_count JavaScript files, $dirs_count subdirectories, package.json)"
+        else
+            print_success "Copied: Busca Vagas server ($js_count JavaScript files, $dirs_count subdirectories)"
+            print_warning "  package.json not found at $package_json_source"
+        fi
         
         if [[ "$VERBOSE" == "true" ]]; then
             print_info "  Source: $source_dir"
             print_info "  Destination: $dest_dir"
+            if [[ -f "$package_json_dest" ]]; then
+                print_info "  Package.json: $package_json_dest"
+            fi
             print_info "  JavaScript files: $js_count"
             print_info "  Subdirectories: $dirs_count"
             
@@ -959,6 +974,13 @@ copy_busca_vagas_server() {
         fi
     else
         print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
+        
+        # Check if package.json would be copied
+        if [[ -f "$package_json_source" ]]; then
+            print_info "[DRY RUN] Would copy: $package_json_source → $package_json_dest"
+        else
+            print_warning "[DRY RUN] package.json not found at $package_json_source"
+        fi
         
         if [[ "$VERBOSE" == "true" ]]; then
             print_info "  JavaScript files to copy: $js_count"

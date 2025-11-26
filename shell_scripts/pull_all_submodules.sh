@@ -9,9 +9,9 @@
 # Version: 1.0.0
 #
 # This script follows the git best practices guide for submodule management:
-# 1. Main repository first
+# 1. Main repository first (detects current branch dynamically)
 # 2. All submodules with recursive flag
-# 3. Individual verification for nested submodules
+# 3. Individual verification for nested submodules using absolute paths
 # 4. Safe stash management for local changes
 # =============================================================================
 
@@ -102,7 +102,7 @@ restore_stash() {
 pull_main_repo() {
     log_step "Step 1: Pulling main repository"
     
-    # Get current branch name
+    # Get current branch name dynamically (supports any branch, not just main)
     local current_branch
     current_branch=$(git rev-parse --abbrev-ref HEAD)
     
@@ -153,7 +153,8 @@ verify_submodules() {
         return 0
     fi
     
-    # Get list of all submodules recursively
+    # Get list of all initialized submodules recursively using git submodule foreach
+    # This is more reliable than parsing .gitmodules as it only includes initialized submodules
     local submodules
     submodules=$(git submodule foreach --quiet --recursive 'echo $displaypath' 2>/dev/null || echo "")
     
@@ -163,7 +164,7 @@ verify_submodules() {
     fi
     
     while IFS= read -r submodule; do
-        # Convert to absolute path
+        # Convert to absolute path for reliable directory access across nested structures
         local submodule_path="$REPO_ROOT/$submodule"
         
         if [ -d "$submodule_path" ]; then

@@ -586,11 +586,13 @@ The following are library modules (not meant to be executed directly):
 **Purpose**: Pulls the main repository and all submodules in proper hierarchical order
 
 **Features**:
-- ✅ Pulls main repository first
+- ✅ Dynamic branch detection (works with any branch, not just main)
+- ✅ Pulls main repository on current branch first
 - ✅ Recursively fetches and updates all submodules  
-- ✅ Handles nested submodules properly
+- ✅ Enhanced recursive submodule discovery using `git submodule foreach`
+- ✅ Handles nested submodules with absolute path resolution
 - ✅ Safe stash management for local changes
-- ✅ Comprehensive status verification
+- ✅ Comprehensive status verification for initialized submodules
 - ✅ Colored output for better visibility
 
 **Usage**:
@@ -601,12 +603,13 @@ The following are library modules (not meant to be executed directly):
 ```
 
 **Order of Operations**:
-1. Fetch and pull main repository
-2. Fetch all submodules recursively
-3. Update all submodules to latest remote versions
-4. Verify individual submodule status
-5. Initialize any missing submodules
-6. Show final status summary
+1. Detect current branch and fetch from origin
+2. Pull main repository on current branch
+3. Recursively fetch all initialized submodules
+4. Update all submodules to latest remote versions
+5. Verify individual submodule status with absolute paths
+6. Initialize any missing submodules
+7. Show final status summary
 
 ---
 
