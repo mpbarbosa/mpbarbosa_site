@@ -8,7 +8,7 @@ This is a professional portfolio website built with modern web standards, featur
 - **HTML5 UP Dimension Template** - Fully responsive design with smooth modal transitions
 - **Font Awesome Integration** - Professional iconography with brands, regular, and solid icon sets
 - **Responsive Design** for all devices with breakpoint optimization
-- **Personal Projects** showcase via Git submodules
+- **Personal Projects** showcase via Git submodules and sibling projects
 - **Contact Form** with JavaScript interactivity
 - **Clean Architecture** with separation of concerns
 
@@ -92,24 +92,13 @@ mpbarbosa_site/
 │   ├── scripts/main.js               # DEPRECATED: Legacy JavaScript (unused, template uses assets/js/)
 │   ├── components/                   # Individual HTML components
 │   ├── pages/                        # Project redirect pages
-│   │   ├── music_in_numbers.html     # Music in Numbers redirect
-│   │   ├── guia_turistico.html       # Guia Turístico redirect
-│   │   └── monitora_vagas.html       # Monitora Vagas redirect
-│   ├── submodules/                   # Personal projects (Git submodules)
+│   │   ├── music_in_numbers.html     # Music in Numbers redirect (git submodule)
+│   │   ├── guia_turistico.html       # Guia Turístico redirect (git submodule)
+│   │   ├── monitora_vagas.html       # Monitora Vagas redirect (sibling project)
+│   │   └── busca_vagas.html          # Busca Vagas redirect (sibling project)
+│   ├── submodules/                   # Git submodules (personal projects)
 │   │   ├── music_in_numbers/         # 🎵 Music analytics platform
-│   │   ├── guia_turistico/           # 🗺️ Travel guide application
-│   │   ├── monitora_vagas/           # 💼 Job monitoring application
-│   │   └── busca_vagas/              # 🔍 Full-stack job search application
-│   │       ├── client/               # React frontend
-│   │       │   └── public/           # Client HTML and assets
-│   │       └── src/                  # Express.js backend API
-│   │           ├── config/           # Database and server configuration
-│   │           ├── controllers/      # API controllers
-│   │           ├── middlewares/      # Auth and validation
-│   │           ├── models/           # Data models
-│   │           ├── routes/           # API routes
-│   │           ├── services/         # Business logic
-│   │           └── utils/            # Helper utilities
+│   │   └── guia_turistico/           # 🗺️ Travel guide application
 │   └── __tests__/                    # Jest test suites
 │       ├── main.test.js              # Main site functionality tests (495 lines)
 │       ├── documentation.test.js     # Documentation consistency tests (184 lines)
@@ -173,21 +162,20 @@ Individual timestamped reports have been archived into these consolidated files 
 - **Status**: Active development
 
 ### Monitora Vagas
-**Job Monitoring Application**
+**Job Monitoring Application** (Sibling Project)
 - Automated job search and monitoring
 - Custom filtering and alert systems
 - Professional opportunity tracking
 - **Status**: Active development
+- **Location**: `../monitora_vagas` (not a git submodule)
 
 ### Busca Vagas
-**Full-Stack Job Search Application**
-- React-based client with modern UI components
-- Express.js REST API with MVC architecture (ES modules with `express.json()` and `express.urlencoded()`)
-- Database integration with PostgreSQL support
-- Authentication and validation middleware
-- Advanced job search and filtering
-- **Architecture**: Client-server separation with independent deployment
+**Job Search Platform with Node.js Backend** (Sibling Project)
+- Full-stack job search application
+- Express.js API server with CORS support
+- Systemd service for production deployment
 - **Status**: Active development
+- **Location**: `../busca_vagas` (not a git submodule)
 
 ## 🛠 Development
 
@@ -235,11 +223,14 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 # Validate external links security compliance (manual review required)
 ./shell_scripts/validate_external_links.sh
 
-# Update all submodules from remote repositories
+# Update all git submodules from remote repositories
 ./shell_scripts/pull_all_submodules.sh
 
-# Deploy changes to all submodules
+# Deploy changes to all git submodules  
 ./shell_scripts/push_all_submodules.sh --handle-stash
+
+# Note: Sibling projects (Monitora Vagas, Busca Vagas) managed independently
+# at ../monitora_vagas and ../busca_vagas
 
 # Tests & documentation workflow automation (v2.0.0)
 ./shell_scripts/workflow/execute_tests_docs_workflow.sh                # Full 13-step workflow
@@ -256,9 +247,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - Configurable production directory (default: /var/www/html)
 - Automatic backup with 7-day retention for both public and production
 - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
-- Music in Numbers submodule support with complete module architecture
-- Busca Vagas full-stack deployment (React client + Express.js server API)
-- Systemd service configuration for Node.js API server (config/busca_vagas_node_app.service)
+- Music in Numbers and Guia Turístico git submodule support with complete module architecture
+- Busca Vagas full-stack deployment (client HTML + Node.js API server)
+- Monitora Vagas deployment from sibling project directory
 - Production environment validation with permission checks
 - Comprehensive error handling with colored output
 - Dry-run mode for validation

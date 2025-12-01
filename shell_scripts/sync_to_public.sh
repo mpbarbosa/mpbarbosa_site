@@ -368,8 +368,7 @@ FILES TO SYNC:
     - submodules/music_in_numbers/src/ (Music in Numbers HTML files)
     - submodules/music_in_numbers/src/scripts/ (Music in Numbers JavaScript modules)
     - submodules/music_in_numbers/src/styles/ (Music in Numbers CSS stylesheets)
-    - submodules/busca_vagas/client/public/ (Busca Vagas HTML and client files)
-    - submodules/busca_vagas/src/ (Busca Vagas server files and API)
+
     - submodules/monitora_vagas/src/ (Monitora Vagas HTML, JS, and subdirectories)
     - Additional resources can be added by extending this script
 
@@ -835,203 +834,11 @@ copy_music_in_numbers_styles() {
     return 0
 }
 
-# Copy Busca Vagas submodule files
-copy_busca_vagas_submodule() {
-    print_step "Copying Busca Vagas submodule files"
-    
-    local source_dir="$SOURCE_DIR/submodules/busca_vagas/client/public"
-    local dest_dir="$PUBLIC_DIR/submodules/busca_vagas/client/public"
-    
-    if [[ ! -d "$source_dir" ]]; then
-        print_warning "Busca Vagas client/public directory not found in source"
-        print_info "  Expected: $source_dir"
-        return 0
-    fi
-    
-    # Count files to copy
-    local html_count=$(find "$source_dir" -maxdepth 1 -type f -name "*.html" | wc -l)
-    local total_files=$(find "$source_dir" -maxdepth 1 -type f | wc -l)
-    
-    if [[ "$DRY_RUN" == "false" ]]; then
-        # Create destination directory if it doesn't exist
-        mkdir -p "$dest_dir"
-        
-        # Copy all files
-        cp -r "$source_dir"/* "$dest_dir/"
-        print_success "Copied: Busca Vagas submodule ($html_count HTML files, $total_files total files)"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_dir"
-            print_info "  Destination: $dest_dir"
-            print_info "  HTML files: $html_count"
-            print_info "  Total files: $total_files"
-            
-            # Show HTML files
-            local html_files=$(find "$dest_dir" -maxdepth 1 -name "*.html")
-            if [[ -n "$html_files" ]]; then
-                print_info "  HTML files copied:"
-                echo "$html_files" | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
-            fi
-        fi
-    else
-        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  HTML files to copy: $html_count"
-            print_info "  Total files to copy: $total_files"
-        fi
-    fi
-    
-    return 0
-}
-
-# Copy Busca Vagas server folder
-# Deploys the Express.js backend API with MVC architecture:
-# - config/ (database and server configuration)
-# - controllers/ (API request handlers)
-# - middlewares/ (authentication and validation)
-# - models/ (data models)
-# - routes/ (API routing)
-# - services/ (business logic)
-# - utils/ (helper utilities)
-# - server.js (Express application entry point)
-# - package.json (Node.js dependencies with ES module configuration)
-copy_busca_vagas_server() {
-    print_step "Copying Busca Vagas server folder"
-    
-    local source_dir="$SOURCE_DIR/submodules/busca_vagas/src"
-    local dest_dir="$PUBLIC_DIR/submodules/busca_vagas/src"
-    local package_json_source="$SOURCE_DIR/submodules/busca_vagas/package.json"
-    local package_json_dest="$PUBLIC_DIR/submodules/busca_vagas/package.json"
-    
-    if [[ ! -d "$source_dir" ]]; then
-        print_warning "Busca Vagas src directory not found in source"
-        print_info "  Expected: $source_dir"
-        return 0
-    fi
-    
-    # Count all JavaScript files
-    local js_count=$(find "$source_dir" -type f -name "*.js" | wc -l)
-    local dirs_count=$(find "$source_dir" -mindepth 1 -type d | wc -l)
-    
-    if [[ "$DRY_RUN" == "false" ]]; then
-        # Create destination directory if it doesn't exist
-        mkdir -p "$dest_dir"
-        mkdir -p "$(dirname "$package_json_dest")"
-        
-        # Copy all files and directories recursively
-        cp -r "$source_dir"/* "$dest_dir/"
-        
-        # Copy package.json to busca_vagas root for ES module support
-        if [[ -f "$package_json_source" ]]; then
-            cp "$package_json_source" "$package_json_dest"
-            print_success "Copied: Busca Vagas server ($js_count JavaScript files, $dirs_count subdirectories, package.json)"
-        else
-            print_success "Copied: Busca Vagas server ($js_count JavaScript files, $dirs_count subdirectories)"
-            print_warning "  package.json not found at $package_json_source"
-        fi
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_dir"
-            print_info "  Destination: $dest_dir"
-            if [[ -f "$package_json_dest" ]]; then
-                print_info "  Package.json: $package_json_dest"
-            fi
-            print_info "  JavaScript files: $js_count"
-            print_info "  Subdirectories: $dirs_count"
-            
-            # Show main JavaScript files (root level)
-            local main_js_files=$(find "$dest_dir" -maxdepth 1 -name "*.js")
-            if [[ -n "$main_js_files" ]]; then
-                print_info "  Main JavaScript files:"
-                echo "$main_js_files" | head -10 | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
-            fi
-            
-            # Show subdirectories
-            local subdirs=$(find "$dest_dir" -mindepth 1 -maxdepth 1 -type d)
-            if [[ -n "$subdirs" ]]; then
-                print_info "  Subdirectories:"
-                echo "$subdirs" | while read dir; do
-                    if [[ -d "$dir" ]]; then
-                        local dirname=$(basename "$dir")
-                        local files_in_dir=$(find "$dir" -name "*.js" | wc -l)
-                        print_info "    - $dirname/ ($files_in_dir files)"
-                    fi
-                done
-            fi
-        fi
-    else
-        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
-        
-        # Check if package.json would be copied
-        if [[ -f "$package_json_source" ]]; then
-            print_info "[DRY RUN] Would copy: $package_json_source → $package_json_dest"
-        else
-            print_warning "[DRY RUN] package.json not found at $package_json_source"
-        fi
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  JavaScript files to copy: $js_count"
-            print_info "  Subdirectories to copy: $dirs_count"
-            
-            # Show preview of main files
-            local main_js_files=$(find "$source_dir" -maxdepth 1 -name "*.js")
-            if [[ -n "$main_js_files" ]]; then
-                print_info "  Main JavaScript files to copy:"
-                echo "$main_js_files" | head -5 | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
-                
-                local main_count=$(echo "$main_js_files" | wc -l)
-                if [[ $main_count -gt 5 ]]; then
-                    print_info "    ... and $((main_count - 5)) more main files"
-                fi
-            fi
-            
-            # Show preview of subdirectories
-            local subdirs=$(find "$source_dir" -mindepth 1 -maxdepth 1 -type d)
-            if [[ -n "$subdirs" ]]; then
-                print_info "  Subdirectories to copy:"
-                echo "$subdirs" | head -3 | while read dir; do
-                    if [[ -d "$dir" ]]; then
-                        local dirname=$(basename "$dir")
-                        local files_in_dir=$(find "$dir" -name "*.js" | wc -l)
-                        print_info "    - $dirname/ ($files_in_dir files)"
-                    fi
-                done
-                
-                local subdir_count=$(echo "$subdirs" | wc -l)
-                if [[ $subdir_count -gt 3 ]]; then
-                    print_info "    ... and $((subdir_count - 3)) more subdirectories"
-                fi
-            fi
-        fi
-    fi
-    
-    return 0
-}
-
 # Copy Monitora Vagas submodule files
 copy_monitora_vagas_submodule() {
     print_step "Copying Monitora Vagas submodule files"
     
-    local source_dir="$SOURCE_DIR/submodules/monitora_vagas/src"
+    local source_dir="$PROJECT_ROOT/../monitora_vagas/src"
     local dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/src"
     
     if [[ ! -d "$source_dir" ]]; then
@@ -1136,7 +943,6 @@ validate_sync() {
         "$PUBLIC_DIR/submodules/music_in_numbers/src|Music in Numbers submodule|*.html|false"
         "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts|Music in Numbers scripts|js_files|false"
         "$PUBLIC_DIR/submodules/music_in_numbers/src/styles|Music in Numbers styles|*.css|false"
-        "$PUBLIC_DIR/submodules/busca_vagas/client/public|Busca Vagas submodule|*.html|false"
         "$PUBLIC_DIR/submodules/monitora_vagas/src|Monitora Vagas submodule|*.html|false"
     )
     
@@ -1257,11 +1063,6 @@ show_summary() {
                 local dirs_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -mindepth 1 -type d | wc -l)
                 echo -e "  ✓ Music in Numbers scripts ($js_count JS files, $dirs_count API architectures)"
             fi
-            if [[ -d "$PUBLIC_DIR/submodules/busca_vagas/client/public" ]]; then
-                local html_count=$(find "$PUBLIC_DIR/submodules/busca_vagas/client/public" -maxdepth 1 -name "*.html" | wc -l)
-                local total_files=$(find "$PUBLIC_DIR/submodules/busca_vagas/client/public" -maxdepth 1 -type f | wc -l)
-                echo -e "  ✓ Busca Vagas submodule ($html_count HTML files, $total_files total files)"
-            fi
             if [[ -d "$PUBLIC_DIR/submodules/monitora_vagas/src" ]]; then
                 local html_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -name "*.html" | wc -l)
                 local js_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
@@ -1285,9 +1086,6 @@ show_summary() {
             if [[ -d "$PRODUCTION_DIR/submodules/music_in_numbers" ]]; then
                 echo -e "  ✓ Music in Numbers submodule deployed"
             fi
-            if [[ -d "$PRODUCTION_DIR/submodules/busca_vagas" ]]; then
-                echo -e "  ✓ Busca Vagas submodule deployed"
-            fi
             if [[ -d "$PRODUCTION_DIR/submodules/monitora_vagas" ]]; then
                 echo -e "  ✓ Monitora Vagas submodule deployed"
             fi
@@ -1299,9 +1097,6 @@ show_summary() {
             if [[ $EUID -eq 0 ]]; then
                 if systemctl is-active --quiet nginx 2>/dev/null; then
                     echo -e "  ✓ Nginx service running"
-                fi
-                if systemctl is-active --quiet busca_vagas_node_app.service 2>/dev/null; then
-                    echo -e "  ✓ Busca Vagas API service running"
                 fi
             fi
             echo ""
@@ -1467,62 +1262,7 @@ copy_public_to_production() {
     fi
 }
 
-# Copy systemd service file to /etc/systemd/system/
-# Deploys the Busca Vagas Node.js API systemd service configuration
-copy_systemd_service() {
-    print_step "Deploying systemd service configuration"
-    
-    local source_file="$PROJECT_ROOT/config/busca_vagas_node_app.service"
-    local dest_file="/etc/systemd/system/busca_vagas_node_app.service"
-    
-    # Check if source file exists
-    if [[ ! -f "$source_file" ]]; then
-        print_warning "Systemd service file not found in source"
-        print_info "  Expected: $source_file"
-        print_info "  Skipping systemd service deployment"
-        return 0
-    fi
-    
-    # Check if we have permission to write to /etc/systemd/system/
-    if [[ "$DRY_RUN" == "false" ]]; then
-        if [[ ! -w "/etc/systemd/system/" ]]; then
-            print_warning "No write permission to /etc/systemd/system/"
-            print_info "  Skipping systemd service deployment"
-            print_info "  Run with sudo to deploy systemd service"
-            return 0
-        fi
-        
-        # Copy the service file
-        cp "$source_file" "$dest_file"
-        chmod 644 "$dest_file"
-        print_success "Systemd service deployed: $dest_file"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_file"
-            print_info "  Destination: $dest_file"
-            print_info "  Permissions: 644"
-            
-            # Provide instructions for enabling the service
-            echo ""
-            print_info "To enable and start the service, run:"
-            print_info "  sudo systemctl daemon-reload"
-            print_info "  sudo systemctl enable busca_vagas_node_app.service"
-            print_info "  sudo systemctl start busca_vagas_node_app.service"
-            echo ""
-        fi
-    else
-        print_info "[DRY RUN] Would copy: $source_file → $dest_file"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Permissions would be set to: 644"
-            print_info "  Would require sudo privileges"
-        fi
-    fi
-    
-    return 0
-}
-
-# Restart and enable system services (nginx and busca_vagas_node_app)
+# Restart and enable system services (nginx)
 # Executed at the end of Step 2 to activate deployed changes
 restart_system_services() {
     print_step "Restarting and enabling system services"
@@ -1536,8 +1276,6 @@ restart_system_services() {
             echo ""
             print_info "    sudo systemctl daemon-reload"
             print_info "    sudo systemctl restart nginx"
-            print_info "    sudo systemctl enable busca_vagas_node_app.service"
-            print_info "    sudo systemctl start busca_vagas_node_app.service"
             echo ""
             return 0
         fi
@@ -1558,43 +1296,11 @@ restart_system_services() {
             print_warning "Failed to restart nginx (may not be installed or running)"
         fi
         
-        # Enable Busca Vagas Node.js API service (auto-start on boot)
-        if [[ -f "/etc/systemd/system/busca_vagas_node_app.service" ]]; then
-            print_info "Enabling Busca Vagas API service..."
-            if systemctl enable busca_vagas_node_app.service 2>/dev/null; then
-                print_success "Busca Vagas API service enabled"
-            else
-                print_warning "Failed to enable Busca Vagas API service"
-            fi
-            
-            # Start Busca Vagas Node.js API service
-            print_info "Starting Busca Vagas API service..."
-            if systemctl start busca_vagas_node_app.service 2>/dev/null; then
-                print_success "Busca Vagas API service started"
-                
-                if [[ "$VERBOSE" == "true" ]]; then
-                    echo ""
-                    print_info "Service status:"
-                    systemctl status busca_vagas_node_app.service --no-pager --lines=5 2>/dev/null || true
-                    echo ""
-                fi
-            else
-                print_warning "Failed to start Busca Vagas API service"
-                print_info "  Check service configuration and logs:"
-                print_info "    sudo systemctl status busca_vagas_node_app.service"
-                print_info "    sudo journalctl -u busca_vagas_node_app.service -n 50"
-            fi
-        else
-            print_info "Busca Vagas API service file not found, skipping service start"
-        fi
-        
         print_success "System services restart completed"
     else
         print_info "[DRY RUN] Would execute service restart commands:"
         print_info "  sudo systemctl daemon-reload"
         print_info "  sudo systemctl restart nginx"
-        print_info "  sudo systemctl enable busca_vagas_node_app.service"
-        print_info "  sudo systemctl start busca_vagas_node_app.service"
     fi
 }
 
@@ -1669,8 +1375,6 @@ execute_step_1() {
     copy_music_in_numbers_submodule
     copy_music_in_numbers_scripts
     copy_music_in_numbers_styles
-    copy_busca_vagas_submodule
-    copy_busca_vagas_server
     copy_monitora_vagas_submodule
     copy_additional_resources
     

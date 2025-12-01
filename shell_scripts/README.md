@@ -1,6 +1,6 @@
 # Shell Scripts Directory
 
-This directory contains shell automation scripts for managing the MP Barbosa personal website project and its git submodules.
+This directory contains shell automation scripts for managing the MP Barbosa personal website project, its git submodules (Music in Numbers, Guia Turístico), and sibling projects (Monitora Vagas, Busca Vagas).
 
 ## 🗺️ Quick Script Selection Guide
 
@@ -31,10 +31,11 @@ What do you need to do?
 │  │        Purpose: Deploy public/ to /var/www/html
 │  │        When: Public directory already prepared
 │  │
-│  └─ Push submodule changes to remote?
+│  └─ Push git submodule changes to remote?
 │     └─ Run: ./shell_scripts/push_all_submodules.sh --handle-stash
-│        Purpose: Push all submodules hierarchically
-│        When: Changes made to submodule content
+│        Purpose: Push git submodules (music_in_numbers, guia_turistico) hierarchically
+│        When: Changes made to git submodule content
+│        Note: Sibling projects (monitora_vagas, busca_vagas) managed independently
 │
 ├─ 🧪 RUN TESTS & UPDATE DOCS?
 │  └─ Run: ./shell_scripts/workflow/execute_tests_docs_workflow.sh
@@ -658,7 +659,7 @@ The following are library modules (not meant to be executed directly):
 - ✅ Production directory configuration support (default: `/var/www/html`)
 - ✅ Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - ✅ Music in Numbers submodule support with complete module architecture
-- ✅ Busca Vagas full-stack deployment (React client + Express.js server API)
+
 - ✅ Enhanced backup system for both public and production deployments
 - ✅ Comprehensive validation and reporting for each step
 - ✅ Dry-run mode for safe operation preview
@@ -680,10 +681,12 @@ The following are library modules (not meant to be executed directly):
 1. Environment validation and backup creation
 2. Main HTML files (index.html, robots.txt, humans.txt)
 3. Asset directories (CSS, JS, SASS, webfonts, images)  
-4. Music in Numbers submodule (3 HTML files, 15+ JS modules, 4 CSS files)
-5. Busca Vagas submodule (React client HTML + Express.js server API with MVC architecture)
-6. Monitora Vagas submodule (React app with components and styles)
-7. Comprehensive validation of all copied resources
+4. Music in Numbers git submodule (3 HTML files, 15+ JS modules, 4 CSS files)
+5. Guia Turístico git submodule
+6. Monitora Vagas sibling project from ../monitora_vagas (React app)
+7. Busca Vagas sibling project from ../busca_vagas (full-stack app with Node.js API)
+8. Additional resources (extensible for future needs)
+9. Comprehensive validation of all copied resources
 
 **Step 2 (Public → Production)**:
 1. Production environment validation and permission checks
@@ -1189,18 +1192,21 @@ These scripts are designed for the MP Barbosa personal website project structure
 ```
 mpbarbosa_site/ (main repository)
 ├── shell_scripts/              # These automation scripts
-│   ├── pull_all_submodules.sh  # Repository synchronization
-│   ├── push_all_submodules.sh  # Repository publishing
-│   ├── deploy_to_webserver.sh  # Production deployment
+│   ├── pull_all_submodules.sh  # Git submodule synchronization
+│   ├── push_all_submodules.sh  # Git submodule publishing
+│   ├── sync_to_public.sh       # Two-step deployment (v2.0.0)
+│   ├── deploy_to_webserver.sh  # Legacy production deployment (v2.0.0)
 │   └── README.md               # This documentation
-├── src/submodules/
-│   ├── guia_turistico/        # Travel guide project
+├── src/submodules/             # Git submodules only
+│   ├── guia_turistico/        # Travel guide project (git submodule)
 │   │   └── src/libs/
 │   │       ├── guia_js/       # JavaScript library (nested)
 │   │       └── sidra/         # IBGE data library (nested) 
-│   ├── monitora_vagas/        # Job monitoring project
-│   └── music_in_numbers/      # Spotify analytics project
-└── docs/                      # Documentation including git best practices
+│   └── music_in_numbers/      # Spotify analytics project (git submodule)
+├── docs/                      # Documentation including git best practices
+└── ../                        # Sibling projects (not git submodules)
+    ├── monitora_vagas/        # Job monitoring project (sibling)
+    └── busca_vagas/           # Job search platform (sibling)
 ```
 
 ## Usage Examples

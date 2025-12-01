@@ -130,7 +130,8 @@ The Two-Step Deployment Architecture v2.0.0 represents a major enhancement to th
 **Step 1 Validation** (Public Staging):
 - ✅ HTML files presence (index.html, robots.txt, humans.txt)
 - ✅ Asset directories (CSS, JS, SASS, webfonts, images)
-- ✅ Submodule content (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
+- ✅ Git submodule content (Music in Numbers, Guia Turístico)
+- ✅ Sibling project content (Monitora Vagas, Busca Vagas)
 - ✅ File count verification
 - ✅ Directory structure integrity
 

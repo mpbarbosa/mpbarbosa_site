@@ -75,7 +75,6 @@ The `sync_to_public.sh` script is a comprehensive asset synchronization tool des
 
 #### **Submodule Integration**
 - **Music in Numbers**: Complete HTML, JavaScript modules, and CSS stylesheets
-- **Busca Vagas**: Full-stack deployment with React client, Express.js server API, and systemd service configuration
 - **Monitora Vagas**: React application with components and styles
 - **Guia Turístico**: Travel guide application assets
 - **Submodule Structure**: Maintains proper directory hierarchy for all subprojects

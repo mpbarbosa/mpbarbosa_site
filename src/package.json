@@ -34,8 +34,7 @@
     "collectCoverageFrom": [
       "scripts/**/*.{js,mjs}",
       "submodules/guia_turistico/src/libs/guia_js/src/**/*.js",
-      "submodules/music_in_numbers/src/**/*.js",
-      "submodules/monitora_vagas/src/**/*.js"
+      "submodules/music_in_numbers/src/**/*.js"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",

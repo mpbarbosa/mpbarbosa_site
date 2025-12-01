@@ -14,10 +14,9 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 
 **Architecture Highlights**:
 - **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
-- **Multi-project structure**: Main site + 4 specialized submodules (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
+- **Multi-project structure**: Main site + 2 git submodules (Music in Numbers, Guia Turístico) + 2 sibling projects (Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
-- **Full-stack architecture**: Client-side React apps + server-side Node.js/Express APIs (Busca Vagas)
 - **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
@@ -44,11 +43,12 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 
 ### Git Submodules (REQUIRES AUTHENTICATION)
 - **WARNING**: Submodules require GitHub authentication and will fail in environments without proper credentials
-- Four submodules exist for personal projects:
+- Two git submodules exist for personal projects:
   - `src/submodules/music_in_numbers` → Music in Numbers (Spotify analytics) project
   - `src/submodules/guia_turistico` → Guia Turístico (Travel Guide) project
-  - `src/submodules/monitora_vagas` → Monitora Vagas (Job monitoring) project
-  - `src/submodules/busca_vagas` → Busca Vagas (Full-stack job search app with React client + Express API)
+- Two sibling projects (not submodules):
+  - `../monitora_vagas` → Monitora Vagas (Job monitoring) project
+  - `../busca_vagas` → Busca Vagas (Job search) project with Node.js backend
 - To initialize submodules (when authenticated): `git submodule update --init --recursive`
 - Automated submodule management available: `./shell_scripts/pull_all_submodules.sh`
 - If submodules fail to initialize, the project links will show 404 errors but the main site will function normally
@@ -97,8 +97,6 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 mpbarbosa_site/
 ├── .github/                    # GitHub configuration and workflows
 │   └── copilot-instructions.md # These instructions
-├── config/                     # System configuration files
-│   └── busca_vagas_node_app.service  # Systemd service for Busca Vagas API server
 ├── shell_scripts/              # Automation and deployment scripts
 │   ├── sync_to_public.sh       # Two-step deployment script (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
@@ -139,26 +137,12 @@ mpbarbosa_site/
 │   ├── pages/                 # Redirect pages for projects
 │   │   ├── music_in_numbers.html    # Redirects to submodule
 │   │   ├── guia_turistico.html      # Redirects to submodule
-│   │   └── monitora_vagas.html      # Redirects to submodule
-│   └── submodules/            # Git submodules for projects (may be empty)
+│   │   ├── monitora_vagas.html      # Redirects to sibling project
+│   │   └── busca_vagas.html         # Redirects to sibling project
+│   └── submodules/            # Git submodules for projects
 │       ├── music_in_numbers/  # Spotify analytics (client-side)
-│       ├── guia_turistico/    # Travel guide (client-side)
-│       ├── monitora_vagas/    # Job monitoring (client-side)
-│       └── busca_vagas/       # Job search (full-stack)
-│           ├── client/        # React frontend
-│           │   └── public/    # Client HTML and assets
-│           └── src/           # Express.js backend API
-│               ├── server.js  # Express server with CORS and middleware
-│               ├── config/    # Database and server configuration
-│               ├── controllers/ # API controllers
-│               ├── middlewares/ # Auth and validation
-│               ├── models/    # Data models
-│               ├── routes/    # API routes
-│               ├── services/  # Business logic
-│               └── utils/     # Helper utilities
-├── config/                  # System configuration files
-│   └── busca_vagas_node_app.service  # Systemd service for Busca Vagas API
-├── .gitmodules               # Git submodule configuration
+│       └── guia_turistico/    # Travel guide (client-side)
+├── .gitmodules               # Git submodule configuration (music_in_numbers, guia_turistico)
 ├── index.html               # Simple redirect to mpbarbosa.com
 └── README.md               # Project documentation
 ```
@@ -217,10 +201,11 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 #### Busca Vagas API Server (Systemd Service)
 ```bash
 # Systemd service configuration for production Node.js API server
-# Location: config/busca_vagas_node_app.service
+# Note: Busca Vagas is now a sibling project at ../busca_vagas
+# Location: ../busca_vagas/config/busca_vagas_node_app.service
 
 # Install systemd service (production only)
-sudo cp config/busca_vagas_node_app.service /etc/systemd/system/
+sudo cp ../busca_vagas/config/busca_vagas_node_app.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable busca_vagas_node_app.service
 sudo systemctl start busca_vagas_node_app.service
@@ -280,15 +265,18 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 
 #### Submodule Management
 ```bash
-# Update all submodules from remote repositories
+# Update all git submodules (music_in_numbers, guia_turistico) from remote repositories
 ./shell_scripts/pull_all_submodules.sh
 
-# Deploy changes to all submodules
+# Deploy changes to all git submodules
 ./shell_scripts/push_all_submodules.sh --handle-stash
 
 # Preview submodule operations
 ./shell_scripts/pull_all_submodules.sh --dry-run
 ./shell_scripts/push_all_submodules.sh --dry-run
+
+# Note: Monitora Vagas and Busca Vagas are now sibling projects
+# Manage them independently at ../monitora_vagas and ../busca_vagas
 ```
 
 ### Important Notes
@@ -363,8 +351,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
     "collectCoverageFrom": [
       "scripts/**/*.{js,mjs}",
       "submodules/guia_turistico/src/libs/guia_js/src/**/*.js",
-      "submodules/music_in_numbers/src/**/*.js",
-      "submodules/monitora_vagas/src/**/*.js"
+      "submodules/music_in_numbers/src/**/*.js"
     ]
   }
 }
@@ -446,7 +433,7 @@ This project uses modern ES modules with Jest testing:
 - **Type**: `package.json` includes `"type": "module"`
 
 #### Express.js Middleware in ES Modules
-When working with Express.js in ES module projects (like Busca Vagas):
+When working with Express.js in ES module projects:
 - **Correct syntax**: Use `express.json()` and `express.urlencoded()` as methods on the express object
 - **Incorrect syntax**: ❌ `import { json, urlencoded } from 'express'` (causes TypeError)
 - **Example**:
@@ -462,7 +449,6 @@ When working with Express.js in ES module projects (like Busca Vagas):
   // import { json, urlencoded } from 'express';
   // app.use(json());  // TypeError: json is not a function
   ```
-- **Reference**: `public/submodules/busca_vagas/src/server.js` (lines 14-17)
 
 #### Testing Approach
 ```javascript
