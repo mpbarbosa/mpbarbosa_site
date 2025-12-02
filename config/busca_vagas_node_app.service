@@ -1,40 +1,29 @@
-# Systemd service configuration for Busca Vagas Node.js API server
-# 
-# NOTE: Busca Vagas is now a sibling project at ../busca_vagas
-# This file is kept for reference. Active service config is at:
-# ../busca_vagas/config/busca_vagas_node_app.service
-# 
-# Server Details:
-#   - Express.js API with ES module middleware (express.json(), express.urlencoded())
-#   - CORS support for cross-origin requests
-#   - Default port: 3000 (configurable via PORT environment variable)
-#
-# Installation:
-#   sudo cp ../busca_vagas/config/busca_vagas_node_app.service /etc/systemd/system/
-#   sudo systemctl daemon-reload
-#   sudo systemctl enable busca_vagas_node_app.service
-#   sudo systemctl start busca_vagas_node_app.service
-#
-# Management:
-#   sudo systemctl status busca_vagas_node_app.service
-#   sudo systemctl restart busca_vagas_node_app.service
-#   sudo systemctl stop busca_vagas_node_app.service
+[Unit]
+Description=Busca Vagas API
+Documentation=https://github.com/mpbarbosa/busca_vagas
+After=network.target
 
-    [Unit]
-    Description=Busca Vagas API
-    After=network.target
+[Service]
+Type=simple
+#User=ubuntu
+WorkingDirectory=/home/ubuntu/Documents/GitHub/busca_vagas
+ExecStart=/usr/bin/node /home/ubuntu/Documents/GitHub/busca_vagas/src/server.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=busca_vagas_api
 
-    [Service]
-    # IMPORTANT: Update ExecStart path to point to your actual server.js location
-    # Example: /var/www/html/submodules/busca_vagas/src/server.js
-    ExecStart=/usr/bin/node /home/ubuntu/Documents/Github/busca_vagas/package.json
-    # IMPORTANT: Update WorkingDirectory to match your deployment directory
-    WorkingDirectory=/home/ubuntu/Documents/Github/busca_vagas
-    Restart=always
-    # IMPORTANT: Replace 'user' with the actual system user running the service
-    #User=www # Replace 'user' with the desired user to run the service
-    # IMPORTANT: Replace 'user' with the actual system group
-    #Group=user # Replace 'user' with the desired group
+# Environment variables
+Environment=NODE_ENV=production
+Environment=PORT=3000
 
-    [Install]
-    WantedBy=multi-user.target
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Resource limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
