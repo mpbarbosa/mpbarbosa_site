@@ -164,11 +164,14 @@ Individual timestamped reports have been archived into these consolidated files 
 ### Monitora Vagas
 **AFPESP Hotel Vacancy Monitoring Application** (Sibling Project)
 - Automated weekend vacancy search for AFPESP hotels
-- React-based single-page application with API integration
-- BuscaVagasAPIClient service for backend communication
+- React-based single-page application with direct fetch API integration
+- Interactive hotel selection with dynamic dropdown population
+- Form-based search with Brazilian date format support (dd/mm/yyyy)
 - Environment-aware configuration (development/production)
+- Direct API integration with comprehensive error handling
+- AbortController-based timeout management for long-running searches
 - API testing tools for developers
-- **Status**: Active development with production API integration
+- **Status**: Production-ready with direct fetch implementation
 - **Location**: `../monitora_vagas` (not a git submodule)
 
 ### Busca Vagas

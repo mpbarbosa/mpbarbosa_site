@@ -175,6 +175,43 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 ---
 
+## Monitora Vagas Project Updates
+
+### December 2, 2025 - Direct Fetch API Integration
+**Recent Enhancements**:
+- ✅ Replaced API client service layer with direct fetch implementation
+- ✅ Added interactive hotel selection dropdown with dynamic population
+- ✅ Implemented form submission with comprehensive validation
+- ✅ Added Brazilian date format support (dd/mm/yyyy → ISO 8601 conversion)
+- ✅ Enhanced error handling with AbortController for timeout management
+- ✅ Added loading states and user feedback during API calls
+- ✅ Implemented result display with success/error alerts
+
+**Architecture Improvements**:
+- Simplified architecture by removing intermediate API client layer
+- Direct fetch calls with native error handling
+- Timeout management: 600s for weekend search, configurable for other operations
+- Comprehensive try-catch error handling with user-friendly messages
+- Visual feedback with disabled buttons during async operations
+
+**Component Updates**:
+- `index.html`: Full form submission implementation with hotel selection
+- `QuickSearch.js`: Direct fetch integration replacing apiClient dependency
+- `api-test.html`: Enhanced testing interface with updated endpoints
+
+**API Integration**:
+- `/api/vagas/hoteis` - Dynamic hotel list fetching
+- `/api/vagas/search?checkin=...&checkout=...` - Vacancy search with date parameters
+- `/api/vagas/search/weekends?count=N` - Multi-weekend search automation
+
+### November 27, 2025 - Hotel Selection API
+**Features Added** (Commit 2ec947c):
+- ✅ Hotel selection API endpoint integration
+- ✅ Guest counter functionality
+- ✅ Enhanced UI components for hotel search
+
+---
+
 ## Version Control Best Practices
 
 ### Semantic Versioning
@@ -200,4 +237,4 @@ All version references must be synchronized across:
 
 ---
 
-**Last Updated**: November 9, 2025
+**Last Updated**: December 2, 2025

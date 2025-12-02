@@ -119,10 +119,10 @@ mpbarbosa_site/
 │   └── submodules/            # Synchronized subproject content
 │       ├── monitora_vagas/    # AFPESP hotel monitoring React app
 │       │   └── src/
+│       │       ├── index.html           # Main UI with hotel search form
 │       │       ├── api-test.html        # API testing tool for Busca Vagas backend
 │       │       ├── config/environment.js # Browser-compatible env config with dynamic API URLs
-│       │       ├── services/apiClient.js # BuscaVagasAPIClient service class
-│       │       └── components/QuickSearch/ # Weekend vacancy search component
+│       │       └── components/QuickSearch/ # Weekend vacancy search component with direct fetch
 │       ├── music_in_numbers/  # Spotify analytics submodule
 │       └── guia_turistico/    # Travel guide submodule
 ├── src/                        # Main source directory 
@@ -393,13 +393,14 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 ## Modular Architecture Excellence
 
 ### Monitora Vagas (AFPESP Hotel Monitoring) Architecture
-The Monitora Vagas project showcases **production-ready React SPA with API integration**:
+The Monitora Vagas project showcases **production-ready React SPA with direct API integration**:
 
 #### Core Features
 - **React-based UI**: Single-page application for AFPESP hotel vacancy monitoring
-- **API Client Service**: Comprehensive BuscaVagasAPIClient for backend communication
+- **Direct Fetch API Integration**: Native fetch calls with comprehensive error handling
 - **Environment-Aware Configuration**: Dynamic API endpoint detection (development/production)
 - **Weekend Search**: Automated multi-weekend vacancy scanning with progress tracking
+- **Interactive Form**: Real-time hotel search with date selection and validation
 
 #### Key Components
 
@@ -409,22 +410,23 @@ The Monitora Vagas project showcases **production-ready React SPA with API integ
 - Feature flags based on environment (logging, analytics, caching)
 - Environment-specific configurations for security and performance
 
-**API Client Service** (`services/apiClient.js`):
-- `BuscaVagasAPIClient` class with singleton pattern
-- Health check endpoint: `/api/health`
-- Hotel list endpoints: `/api/vagas/hoteis` (cached), `/api/vagas/hoteis/scrape` (live)
-- Vacancy search: `/api/vagas/search?checkin=YYYY-MM-DD&checkout=YYYY-MM-DD`
-- Weekend search: `/api/vagas/search/weekends?count=1-12`
-- Configurable timeouts: 30s (default), 60s (search), 600s (weekend search)
-- Automatic retry with exponential backoff for server errors
-- 5-minute response caching with Map-based cache storage
-- ISO 8601 date formatting for API compliance
+**Main UI** (`index.html`):
+- **Hotel Selection Dropdown**: Dynamic hotel list loading from `/api/vagas/hoteis`
+- **Interactive Form Submission**: Full vacancy search with form validation
+- **Date Format Conversion**: Brazilian format (dd/mm/yyyy) to ISO 8601 (yyyy-mm-dd)
+- **Loading States**: Visual feedback with disabled buttons during API calls
+- **Result Display**: Success/error alerts with vacancy availability information
+- **Error Handling**: Comprehensive try-catch with user-friendly error messages
 
-**UI Components** (`components/QuickSearch/`):
-- `HotelVacancyService` class for weekend vacancy orchestration
-- Next weekend calculation (Friday-Sunday pattern)
-- API response transformation to component format
-- Comprehensive weekend summary display with availability statistics
+**QuickSearch Component** (`components/QuickSearch/QuickSearch.js`):
+- `HotelVacancyService` class with direct fetch implementation
+- **Hotel List Fetching**: Direct API call to `/api/vagas/hoteis` with error handling
+- **Weekend Search**: Direct fetch to `/api/vagas/search/weekends?count=N` 
+- **Vacancy Search**: Direct fetch to `/api/vagas/search?checkin=...&checkout=...`
+- **AbortController Integration**: Request timeout management (600s for weekend search)
+- **ISO 8601 Date Formatting**: Built-in date conversion for API compliance
+- **API Response Transformation**: Component format conversion for UI rendering
+- **Comprehensive Error Handling**: Network errors, timeouts, and API errors
 
 **Testing Tools** (`api-test.html`):
 - Standalone API testing interface for developers
@@ -432,6 +434,8 @@ The Monitora Vagas project showcases **production-ready React SPA with API integ
 - Real-time response display with formatted JSON
 - Visual feedback for success/error states
 - 10-minute timeout support for long-running weekend searches
+
+**Note on API Client**: The previous `services/apiClient.js` implementation has been replaced with direct fetch calls for simpler architecture and better performance.
 
 #### Integration with Busca Vagas Backend
 - **Backend Repository**: `../busca_vagas` (sibling project)
