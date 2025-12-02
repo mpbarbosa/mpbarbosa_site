@@ -1292,7 +1292,7 @@ copy_systemd_service() {
         
         # Copy service file to systemd directory
         print_info "Copying systemd service file..."
-        if cp "$service_file" "$systemd_dir/"; then
+        if sudo cp "$service_file" "$systemd_dir/"; then
             print_success "Systemd service file copied to $systemd_dir/"
             print_info "  Note: Service daemon-reload will occur during service restart"
         else
