@@ -1262,6 +1262,47 @@ copy_public_to_production() {
     fi
 }
 
+# Copy systemd service file for Busca Vagas Node.js API
+# Note: Busca Vagas is now a sibling project, this is kept for backward compatibility
+copy_systemd_service() {
+    print_step "Checking for systemd service configuration"
+    
+    local service_file="$PROJECT_ROOT/config/busca_vagas_node_app.service"
+    local systemd_dir="/etc/systemd/system"
+    
+    # Check if service file exists in config directory
+    if [[ ! -f "$service_file" ]]; then
+        print_info "No systemd service file found in config/ (expected for sibling project)"
+        return 0
+    fi
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Check if we have sudo privileges for systemd directory
+        if [[ $EUID -ne 0 ]]; then
+            print_warning "Not running as root - systemd service installation requires sudo"
+            print_info "  Service file available at: $service_file"
+            print_info "  To install manually, run:"
+            echo ""
+            print_info "    sudo cp $service_file $systemd_dir/"
+            print_info "    sudo systemctl daemon-reload"
+            print_info "    sudo systemctl enable busca_vagas_node_app.service"
+            echo ""
+            return 0
+        fi
+        
+        # Copy service file to systemd directory
+        print_info "Copying systemd service file..."
+        if cp "$service_file" "$systemd_dir/"; then
+            print_success "Systemd service file copied to $systemd_dir/"
+            print_info "  Note: Service daemon-reload will occur during service restart"
+        else
+            print_warning "Failed to copy systemd service file"
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $service_file → $systemd_dir/"
+    fi
+}
+
 # Restart and enable system services (nginx)
 # Executed at the end of Step 2 to activate deployed changes
 restart_system_services() {
