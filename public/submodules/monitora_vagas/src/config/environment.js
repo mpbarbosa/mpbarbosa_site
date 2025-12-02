@@ -4,18 +4,9 @@
 /**
  * Browser-compatible environment variables with defaults
  * Note: In browsers we don't have access to process.env, so we use defaults
- * 
- * Environment Detection Strategy:
- * - Development: localhost or 127.0.0.1 hostname
- * - Production: Any other hostname (mpbarbosa.com, etc.)
- * 
- * API Base URL Configuration:
- * - Development: http://localhost:3000/api (local Node.js server)
- * - Production: https://www.mpbarbosa.com/api (production nginx proxy)
  */
 const ENV_VARS = {
     // Application environment - detect based on hostname
-    // Development: localhost/127.0.0.1, Production: all other hostnames
     NODE_ENV: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? 'development' 
         : 'production',
@@ -24,7 +15,6 @@ const ENV_VARS = {
     PORT: 3000,
     
     // API endpoints - dynamically set based on environment
-    // Development uses local backend (port 3000), Production uses nginx proxy
     API_BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:3000/api'
         : 'https://www.mpbarbosa.com/api',

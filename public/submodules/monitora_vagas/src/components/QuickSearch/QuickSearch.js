@@ -1,21 +1,6 @@
 import { apiClient } from '../../services/apiClient.js';
 
-/**
- * Hotel Vacancy Query and Extraction Utilities
- * 
- * Purpose: Manages weekend vacancy search operations for AFPESP hotels
- * 
- * Key Features:
- * - Next weekend calculation (Friday-Sunday pattern)
- * - API integration for multi-weekend searches (1-12 weekends)
- * - Response transformation from API format to component format
- * - Comprehensive summary display with availability statistics
- * 
- * Integration:
- * - Uses BuscaVagasAPIClient for backend communication
- * - Supports configurable weekend count (default: 8 weekends)
- * - Provides detailed progress tracking and error reporting
- */
+// Hotel Vacancy Query and Extraction Utilities
 class HotelVacancyService {
     constructor() {
         this.apiClient = apiClient;
@@ -24,7 +9,6 @@ class HotelVacancyService {
     }
 
     // Calculate next Friday-Sunday weekend for default date values
-    // Returns the upcoming Friday and Sunday dates for weekend search
     getNextWeekend() {
         const today = new Date();
         const nextFriday = new Date(today);
@@ -42,17 +26,7 @@ class HotelVacancyService {
         return { friday: nextFriday, sunday: nextSunday };
     }
 
-    /**
-     * Search all weekends using backend API
-     * @param {number} count - Number of weekends to search (1-12, default: 8)
-     * @returns {Promise<Array>} Transformed weekend search results
-     * 
-     * Features:
-     * - Delegates to backend API for Puppeteer-based scraping
-     * - Transforms API response to component-compatible format
-     * - Displays comprehensive summary with availability statistics
-     * - Handles errors gracefully with detailed error messages
-     */
+    // Search all weekends using backend API
     async searchWeekendVacancies(count = 8) {
         console.log('\n🏨 COMPREHENSIVE WEEKEND HOTEL SEARCH');
         console.log(`🤖 Using backend API to search ${count} weekends`);
@@ -73,17 +47,7 @@ class HotelVacancyService {
         }
     }
 
-    /**
-     * Transform weekend API response to component format
-     * @param {object} apiData - Raw API response from backend
-     * @returns {Array} Transformed weekend results with component-compatible structure
-     * 
-     * Transformation:
-     * - Converts API weekend format to UI display format
-     * - Adds weekend numbering and date formatting
-     * - Calculates availability status and summaries
-     * - Preserves vacancy details and hotel groupings
-     */
+    // Transform weekend API response to component format
     transformWeekendAPIResponse(apiData) {
         const { weekendResults, availability, searchDetails } = apiData;
         

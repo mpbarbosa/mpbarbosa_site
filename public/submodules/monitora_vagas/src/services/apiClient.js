@@ -1,31 +1,12 @@
 /**
  * API Client Service for Busca Vagas API
- * Based on official API documentation v1.2.0
+ * Based on official API documentation v1.2.1
  * @see https://github.com/mpbarbosa/busca_vagas/blob/main/docs/API_CLIENT_DOCUMENTATION.md
- * 
- * Architecture:
- * - Singleton pattern for shared client instance
- * - Environment-aware base URL configuration (dev/prod)
- * - Configurable timeouts for different operation types
- * - Automatic retry with exponential backoff for transient failures
- * - Response caching with TTL for performance optimization
- * - Comprehensive error handling with timeout management
- * 
- * API Endpoints:
- * - GET /api/health - Health check
- * - GET /api/vagas/hoteis - Static hotel list (cached)
- * - GET /api/vagas/hoteis/scrape - Live hotel scraping
- * - GET /api/vagas/search?checkin=YYYY-MM-DD&checkout=YYYY-MM-DD - Vacancy search
- * - GET /api/vagas/search/weekends?count=1-12 - Weekend search
  */
 
 import { getEnvironment } from '../config/environment.js';
 
 export class BuscaVagasAPIClient {
-    /**
-     * Initialize API client with environment-aware configuration
-     * Sets up base URL, timeout configurations, and response cache
-     */
     constructor() {
         const env = getEnvironment();
         this.apiBaseUrl = env.isProduction 
@@ -59,12 +40,6 @@ export class BuscaVagasAPIClient {
      * @param {object} options - Fetch options
      * @param {number} timeoutMs - Timeout in milliseconds
      * @returns {Promise<object>} API response
-     * 
-     * Features:
-     * - AbortController for timeout management
-     * - HTTP status code validation
-     * - API success/error response handling
-     * - Timeout error detection and reporting
      */
     async fetchWithTimeout(url, options = {}, timeoutMs = this.timeout.default) {
         const controller = new AbortController();
@@ -111,11 +86,6 @@ export class BuscaVagasAPIClient {
      * @param {Function} fetchFn - Function that returns a fetch promise
      * @param {number} maxRetries - Maximum number of retry attempts
      * @returns {Promise<object>} API response
-     * 
-     * Retry Strategy:
-     * - Only retries on HTTP 5xx server errors
-     * - Exponential backoff: 1s, 2s, 4s between attempts
-     * - Fails immediately on client errors (4xx) or network issues
      */
     async fetchWithRetry(fetchFn, maxRetries = 3) {
         for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -180,7 +150,9 @@ export class BuscaVagasAPIClient {
 
     /**
      * Scrape hotel list from AFPESP website
-     * @returns {Promise<Array>} List of scraped hotels
+     * As of v1.2.1, this endpoint returns all dropdown options including "Todas"
+     * Each item has a 'type' field: "All" for "Todas", "Hotel" for actual hotels
+     * @returns {Promise<Array>} List of scraped hotels with type field
      */
     async scrapeHotels() {
         const url = `${this.apiBaseUrl}/vagas/hoteis/scrape`;
@@ -190,7 +162,7 @@ export class BuscaVagasAPIClient {
             () => this.fetchWithTimeout(url, {}, this.timeout.search)
         );
         
-        console.log(`✅ Scraped ${result.data.length} hotels from AFPESP`);
+        console.log(`✅ Scraped ${result.data.length} options from AFPESP (includes "Todas")`);
         return result.data;
     }
 
