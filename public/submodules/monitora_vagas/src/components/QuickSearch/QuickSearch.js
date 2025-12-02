@@ -1,14 +1,30 @@
-// Hotel Vacancy Query and Extraction Utilities
+import { apiClient } from '../../services/apiClient.js';
+
+/**
+ * Hotel Vacancy Query and Extraction Utilities
+ * 
+ * Purpose: Manages weekend vacancy search operations for AFPESP hotels
+ * 
+ * Key Features:
+ * - Next weekend calculation (Friday-Sunday pattern)
+ * - API integration for multi-weekend searches (1-12 weekends)
+ * - Response transformation from API format to component format
+ * - Comprehensive summary display with availability statistics
+ * 
+ * Integration:
+ * - Uses BuscaVagasAPIClient for backend communication
+ * - Supports configurable weekend count (default: 8 weekends)
+ * - Provides detailed progress tracking and error reporting
+ */
 class HotelVacancyService {
     constructor() {
-        // Use the selenium script URLs for proper CORS handling
-        this.afpespFormUrl = 'https://www.afpesp.org.br/hotel/vagas.php';
-        this.afpespPageUrl = 'https://associadoh.afpesp.org.br/Servicos/Reservas/Vagas-disponiveis.aspx';
+        this.apiClient = apiClient;
         this.isSearching = false;
-        console.log('✅ HotelVacancyService initialized with CORS-aware URLs');
+        console.log('✅ HotelVacancyService initialized with API client');
     }
 
-    // Calculate next Friday-Sunday weekend (exact selenium-script.js logic)
+    // Calculate next Friday-Sunday weekend for default date values
+    // Returns the upcoming Friday and Sunday dates for weekend search
     getNextWeekend() {
         const today = new Date();
         const nextFriday = new Date(today);
@@ -26,94 +42,70 @@ class HotelVacancyService {
         return { friday: nextFriday, sunday: nextSunday };
     }
 
-    // Get all Friday-Sunday weekends for the next months (selenium-script.js function)
-    getNextWeekends(monthsAhead = 2) {
-        console.log(`🗓️ Calculating weekends for next ${monthsAhead} months (selenium-script.js logic)...`);
+    /**
+     * Search all weekends using backend API
+     * @param {number} count - Number of weekends to search (1-12, default: 8)
+     * @returns {Promise<Array>} Transformed weekend search results
+     * 
+     * Features:
+     * - Delegates to backend API for Puppeteer-based scraping
+     * - Transforms API response to component-compatible format
+     * - Displays comprehensive summary with availability statistics
+     * - Handles errors gracefully with detailed error messages
+     */
+    async searchWeekendVacancies(count = 8) {
+        console.log('\n🏨 COMPREHENSIVE WEEKEND HOTEL SEARCH');
+        console.log(`🤖 Using backend API to search ${count} weekends`);
         
-        const weekends = [];
-        const today = new Date();
-        const endDate = new Date(today);
-        endDate.setMonth(today.getMonth() + monthsAhead);
-        
-        let currentFriday = new Date(today);
-        const daysUntilFriday = (5 - today.getDay() + 7) % 7;
-        
-        if (daysUntilFriday === 0 && today.getDay() !== 5) {
-            currentFriday.setDate(today.getDate() + 7);
-        } else {
-            currentFriday.setDate(today.getDate() + daysUntilFriday);
-        }
-        
-        while (currentFriday <= endDate) {
-            const currentSunday = new Date(currentFriday);
-            currentSunday.setDate(currentFriday.getDate() + 2);
+        try {
+            const results = await this.apiClient.searchWeekendVacancies(count);
             
-            weekends.push({
-                friday: new Date(currentFriday),
-                sunday: new Date(currentSunday),
-                weekend: `${currentFriday.toLocaleDateString()} to ${currentSunday.toLocaleDateString()}`
-            });
+            // Transform API response
+            const searchResults = this.transformWeekendAPIResponse(results);
             
-            // Move to next Friday (7 days later)
-            currentFriday.setDate(currentFriday.getDate() + 7);
+            // Display comprehensive summary
+            this.displayWeekendSummary(searchResults);
+            return searchResults;
+            
+        } catch (error) {
+            console.error('❌ Weekend search failed:', error.message);
+            throw error;
         }
-        
-        console.log(`📊 Found ${weekends.length} weekends to search`);
-        return weekends;
     }
 
-    // Search all weekends (selenium-script.js searchWeekendVacancies equivalent)
-    async searchWeekendVacancies() {
-        console.log('\n🏨 COMPREHENSIVE WEEKEND HOTEL SEARCH');
-        console.log('🤖 JavaScript equivalent of selenium-script.js searchWeekendVacancies()');
+    /**
+     * Transform weekend API response to component format
+     * @param {object} apiData - Raw API response from backend
+     * @returns {Array} Transformed weekend results with component-compatible structure
+     * 
+     * Transformation:
+     * - Converts API weekend format to UI display format
+     * - Adds weekend numbering and date formatting
+     * - Calculates availability status and summaries
+     * - Preserves vacancy details and hotel groupings
+     */
+    transformWeekendAPIResponse(apiData) {
+        const { weekendResults, availability, searchDetails } = apiData;
         
-        const weekends = this.getNextWeekends(2);
-        console.log(`\n🔍 Starting search across ${weekends.length} weekends...`);
-        
-        const searchResults = [];
-        
-        for (let i = 0; i < weekends.length; i++) {
-            const weekend = weekends[i];
-            console.log(`\n${'='.repeat(60)}`);
-            console.log(`🔍 WEEKEND ${i + 1}/${weekends.length}: ${weekend.weekend}`);
-            console.log(`${'='.repeat(60)}`);
-            
-            try {
-                const result = await this.performAfpespSearch(weekend.friday, weekend.sunday);
-                
-                searchResults.push({
-                    weekendNumber: i + 1,
-                    dates: weekend.weekend,
-                    friday: weekend.friday,
-                    sunday: weekend.sunday,
-                    result: result || 'No availability detected',
-                    status: result && result.hasAvailability ? 'AVAILABLE' : 'NO AVAILABILITY'
-                });
-                
-                console.log(`✅ Weekend ${i + 1} search completed`);
-                
-            } catch (error) {
-                console.error(`❌ Error searching weekend ${i + 1}: ${error.message}`);
-                searchResults.push({
-                    weekendNumber: i + 1,
-                    dates: weekend.weekend,
-                    friday: weekend.friday,
-                    sunday: weekend.sunday,
-                    result: `Error: ${error.message}`,
-                    status: 'ERROR'
-                });
-            }
-            
-            // Respectful delay between searches
-            if (i < weekends.length - 1) {
-                console.log(`⏳ Waiting 2 seconds before next search...`);
-                await new Promise(resolve => setTimeout(resolve, 2000));
-            }
+        if (!weekendResults || weekendResults.length === 0) {
+            return [];
         }
         
-        // Display comprehensive summary
-        this.displayWeekendSummary(searchResults);
-        return searchResults;
+        return weekendResults.map((weekend, index) => ({
+            weekendNumber: index + 1,
+            dates: `${weekend.dates?.checkin || ''} to ${weekend.dates?.checkout || ''}`,
+            friday: new Date(weekend.dates?.checkin),
+            sunday: new Date(weekend.dates?.checkout),
+            result: {
+                hasAvailability: weekend.availability?.hasVacancies || false,
+                summary: weekend.availability?.hasVacancies 
+                    ? `${weekend.availability.availableHotels} hotel(s) disponível(is)`
+                    : 'Sem disponibilidade',
+                vacancies: weekend.vacancies || [],
+                hotelGroups: weekend.hotelGroups || {}
+            },
+            status: weekend.availability?.hasVacancies ? 'AVAILABLE' : 'NO AVAILABILITY'
+        }));
     }
 
     // Display weekend search summary (selenium-script.js displayWeekendSummary equivalent)
@@ -154,7 +146,7 @@ class HotelVacancyService {
         console.log(`${'='.repeat(80)}`);
     }
 
-    // Format date for Brazilian DD/MM/YYYY format
+    // Format date for Brazilian DD/MM/YYYY format (for display only)
     formatDateBR(date) {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -162,7 +154,12 @@ class HotelVacancyService {
         return `${day}/${month}/${year}`;
     }
 
-    // Query AFPESP for hotel vacancies (migrated from selenium-script.js)
+    // Format date to ISO 8601 (YYYY-MM-DD) for API calls
+    formatDateISO(date) {
+        return this.apiClient.formatDateISO(date);
+    }
+
+    // Query AFPESP for hotel vacancies using backend API
     async queryVacancies(startDate, endDate) {
         console.log('🔍 Starting vacancy query...');
         if (this.isSearching) {
@@ -172,20 +169,14 @@ class HotelVacancyService {
         this.isSearching = true;
         
         try {
-            console.log(`🔍 Querying AFPESP for ${this.formatDateBR(startDate)} to ${this.formatDateBR(endDate)}`);
+            console.log(`🔍 Querying API for ${this.formatDateBR(startDate)} to ${this.formatDateBR(endDate)}`);
 
-            // Try to perform real AFPESP search (migrated from selenium logic)
-            try {
-                const realResults = await this.performAfpespSearch(startDate, endDate);
-                console.log('✅ Real AFPESP search completed successfully');
-                return realResults;
-            } catch (corsError) {
-                console.warn('⚠️ Real AFPESP search failed (likely CORS), falling back to simulation:', corsError.message);
-                
-                // Fallback to simulation with realistic data based on selenium patterns
-                const mockResponse = await this.simulateVacancyQuery(startDate, endDate);
-                return mockResponse;
-            }
+            // Use the real API client
+            const results = await this.apiClient.searchVacancies(startDate, endDate);
+            console.log('✅ Real API search completed successfully');
+            
+            // Transform API response to component format
+            return this.transformAPIResponse(results, startDate, endDate);
             
         } catch (error) {
             console.error('❌ Vacancy query failed:', error.message);
@@ -193,6 +184,29 @@ class HotelVacancyService {
         } finally {
             this.isSearching = false;
         }
+    }
+
+    // Transform API response to component format
+    transformAPIResponse(apiData, startDate, endDate) {
+        const { availability, vacancies, searchDetails, hotelGroups } = apiData;
+        
+        return {
+            hasAvailability: availability?.hasVacancies || false,
+            status: availability?.hasVacancies ? 'AVAILABLE' : 'NO AVAILABILITY',
+            summary: availability?.hasVacancies 
+                ? `Encontradas vagas em ${availability.availableHotels} hotel(s)`
+                : 'No período escolhido não há nenhum quarto disponível',
+            vacancies: vacancies || [],
+            hotelGroups: hotelGroups || {},
+            queryDetails: {
+                startDate: this.formatDateBR(startDate),
+                endDate: this.formatDateBR(endDate),
+                searchType: 'real_api_search',
+                hotelsFound: availability?.availableHotels || 0,
+                totalHotelsSearched: searchDetails?.totalHotelsSearched || 0,
+                totalVacanciesFound: searchDetails?.totalVacanciesFound || 0
+            }
+        };
     }
 
     // JavaScript equivalent of selenium-script.js search procedure
@@ -1090,16 +1104,10 @@ export function QuickSearch() {
                             <span class="loading-spinner" style="display: none;">⏳</span>
                         </button>
                         
-                        <button type="button" class="quick-search-button selenium-search" id="weekend-search-button">
-                            <span class="search-icon">🤖</span>
-                            <span class="search-text">Busca Selenium (Todos Fins de Semana)</span>
+                        <button type="button" class="quick-search-button weekend-search" id="weekend-search-button">
+                            <span class="search-icon">📅</span>
+                            <span class="search-text">Buscar Próximos Fins de Semana</span>
                             <span class="loading-spinner" style="display: none;">🔄</span>
-                        </button>
-                        
-                        <button type="button" class="quick-search-button popup-search" id="popup-search-button">
-                            <span class="search-icon">🪟</span>
-                            <span class="search-text">Busca com Popup (Experimental)</span>
-                            <span class="loading-spinner" style="display: none;">⏳</span>
                         </button>
                     </div>
                     
@@ -1155,18 +1163,9 @@ export function initializeQuickSearch() {
         });
     }
     
-    // Handle popup window search (experimental)
-    const popupSearchButton = document.getElementById('popup-search-button');
-    if (popupSearchButton) {
-        popupSearchButton.addEventListener('click', async (e) => {
-            e.preventDefault();
-            await handlePopupSearch(vacancyService);
-        });
-    }
-    
-    console.log('✅ QuickSearch initialized with vacancy query functionality');
-    console.log('🤖 Selenium-equivalent weekend search available');
-    console.log('🪟 Popup window search available (experimental)');
+    console.log('✅ QuickSearch initialized with API client');
+    console.log('🔍 Real-time AFPESP vacancy search enabled');
+    console.log('📅 Weekend search available');
 }
 
 // Handle quick search form submission
@@ -1323,9 +1322,9 @@ function displayError(message) {
     }
 }
 
-// Handle comprehensive weekend search (selenium-script.js equivalent)
+// Handle comprehensive weekend search using backend API
 async function handleWeekendSearch(vacancyService) {
-    console.log('🤖 Starting comprehensive weekend search (selenium-script.js equivalent)...');
+    console.log('📅 Starting comprehensive weekend search via API...');
     
     const weekendButton = document.getElementById('weekend-search-button');
     const searchText = weekendButton.querySelector('.search-text');
@@ -1343,18 +1342,18 @@ async function handleWeekendSearch(vacancyService) {
         resultsContainer.style.display = 'block';
         resultsContent.innerHTML = `
             <div class="searching-state">
-                <h4>🤖 Executando Busca Selenium Completa</h4>
-                <p>Replicando o procedimento do selenium-script.js em JavaScript puro...</p>
-                <p>🔍 Buscando todos os fins de semana dos próximos 2 meses</p>
+                <h4>📅 Buscando Fins de Semana</h4>
+                <p>Consultando API do backend (Puppeteer)...</p>
+                <p>🔍 Verificando próximos 8 fins de semana</p>
                 <div class="progress-message">
-                    <p>⚡ Esta busca replica exatamente o mesmo processo do selenium-script.js</p>
-                    <p>📊 Verificando disponibilidade para múltiplos fins de semana</p>
+                    <p>⏳ Esta busca pode levar vários minutos...</p>
+                    <p>📊 Aguarde enquanto verificamos a disponibilidade</p>
                 </div>
             </div>
         `;
         
-        // Execute comprehensive weekend search
-        const searchResults = await vacancyService.searchWeekendVacancies();
+        // Execute comprehensive weekend search (default 8 weekends)
+        const searchResults = await vacancyService.searchWeekendVacancies(8);
         
         // Display results
         displayWeekendSearchResults(searchResults, resultsContent);
@@ -1416,8 +1415,7 @@ function displayWeekendSearchResults(searchResults, container) {
             <div class="search-info">
                 <h5>🤖 Detalhes da Busca</h5>
                 <ul>
-                    <li><strong>Método:</strong> JavaScript equivalente ao selenium-script.js</li>
-                    <li><strong>Período:</strong> Próximos 2 meses</li>
+                    <li><strong>Método:</strong> Backend API (Puppeteer)</li>
                     <li><strong>Fins de semana verificados:</strong> ${searchResults.length}</li>
                     <li><strong>Concluído:</strong> ${new Date().toLocaleString()}</li>
                 </ul>

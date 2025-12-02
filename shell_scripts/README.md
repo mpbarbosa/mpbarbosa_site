@@ -683,10 +683,11 @@ The following are library modules (not meant to be executed directly):
 3. Asset directories (CSS, JS, SASS, webfonts, images)  
 4. Music in Numbers git submodule (3 HTML files, 15+ JS modules, 4 CSS files)
 5. Guia Turístico git submodule
-6. Monitora Vagas sibling project from ../monitora_vagas (React app)
+6. Monitora Vagas sibling project from ../monitora_vagas (React app with API client)
 7. Busca Vagas sibling project from ../busca_vagas (full-stack app with Node.js API)
-8. Additional resources (extensible for future needs)
-9. Comprehensive validation of all copied resources
+8. Systemd service deployment with sudo privilege handling for system directories
+9. Additional resources (extensible for future needs)
+10. Comprehensive validation of all copied resources
 
 **Step 2 (Public → Production)**:
 1. Production environment validation and permission checks

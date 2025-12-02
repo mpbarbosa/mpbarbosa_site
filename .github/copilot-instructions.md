@@ -47,8 +47,8 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
   - `src/submodules/music_in_numbers` → Music in Numbers (Spotify analytics) project
   - `src/submodules/guia_turistico` → Guia Turístico (Travel Guide) project
 - Two sibling projects (not submodules):
-  - `../monitora_vagas` → Monitora Vagas (Job monitoring) project
-  - `../busca_vagas` → Busca Vagas (Job search) project with Node.js backend
+  - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - React SPA with API client
+  - `../busca_vagas` → Busca Vagas (backend API service) - Node.js/Express with Puppeteer scraping
 - To initialize submodules (when authenticated): `git submodule update --init --recursive`
 - Automated submodule management available: `./shell_scripts/pull_all_submodules.sh`
 - If submodules fail to initialize, the project links will show 404 errors but the main site will function normally
@@ -115,7 +115,16 @@ mpbarbosa_site/
 ├── public/                     # Deployment staging directory (sync_to_public.sh output)
 │   ├── index.html             # Synchronized main page
 │   ├── assets/                # Synchronized HTML5 UP Dimension assets
+│   ├── api/                   # Busca Vagas API proxy (symlink to backend in production)
 │   └── submodules/            # Synchronized subproject content
+│       ├── monitora_vagas/    # AFPESP hotel monitoring React app
+│       │   └── src/
+│       │       ├── api-test.html        # API testing tool for Busca Vagas backend
+│       │       ├── config/environment.js # Browser-compatible env config with dynamic API URLs
+│       │       ├── services/apiClient.js # BuscaVagasAPIClient service class
+│       │       └── components/QuickSearch/ # Weekend vacancy search component
+│       ├── music_in_numbers/  # Spotify analytics submodule
+│       └── guia_turistico/    # Travel guide submodule
 ├── src/                        # Main source directory 
 │   ├── index.html             # Main landing page (HTML5 UP Dimension template)
 │   ├── package.json           # Node.js dependencies and scripts
@@ -178,7 +187,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers submodule support with complete module architecture
+# - Monitora Vagas deployment with API client configuration and testing tools
 # - Busca Vagas full-stack deployment (client HTML + server API)
+# - Systemd service deployment with sudo privilege handling for system directories
 # - Enhanced backup system for both public and production directories
 # - Production environment validation with permission checks  
 # - Comprehensive error handling with colored output
@@ -380,6 +391,54 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
   - See: `shell_scripts/workflow/README.md` for module documentation
 
 ## Modular Architecture Excellence
+
+### Monitora Vagas (AFPESP Hotel Monitoring) Architecture
+The Monitora Vagas project showcases **production-ready React SPA with API integration**:
+
+#### Core Features
+- **React-based UI**: Single-page application for AFPESP hotel vacancy monitoring
+- **API Client Service**: Comprehensive BuscaVagasAPIClient for backend communication
+- **Environment-Aware Configuration**: Dynamic API endpoint detection (development/production)
+- **Weekend Search**: Automated multi-weekend vacancy scanning with progress tracking
+
+#### Key Components
+
+**Configuration Layer** (`config/environment.js`):
+- Browser-compatible environment detection (no Node.js process.env dependency)
+- Dynamic API base URL: `http://localhost:3000/api` (dev) or `https://www.mpbarbosa.com/api` (prod)
+- Feature flags based on environment (logging, analytics, caching)
+- Environment-specific configurations for security and performance
+
+**API Client Service** (`services/apiClient.js`):
+- `BuscaVagasAPIClient` class with singleton pattern
+- Health check endpoint: `/api/health`
+- Hotel list endpoints: `/api/vagas/hoteis` (cached), `/api/vagas/hoteis/scrape` (live)
+- Vacancy search: `/api/vagas/search?checkin=YYYY-MM-DD&checkout=YYYY-MM-DD`
+- Weekend search: `/api/vagas/search/weekends?count=1-12`
+- Configurable timeouts: 30s (default), 60s (search), 600s (weekend search)
+- Automatic retry with exponential backoff for server errors
+- 5-minute response caching with Map-based cache storage
+- ISO 8601 date formatting for API compliance
+
+**UI Components** (`components/QuickSearch/`):
+- `HotelVacancyService` class for weekend vacancy orchestration
+- Next weekend calculation (Friday-Sunday pattern)
+- API response transformation to component format
+- Comprehensive weekend summary display with availability statistics
+
+**Testing Tools** (`api-test.html`):
+- Standalone API testing interface for developers
+- Interactive buttons for all API endpoints
+- Real-time response display with formatted JSON
+- Visual feedback for success/error states
+- 10-minute timeout support for long-running weekend searches
+
+#### Integration with Busca Vagas Backend
+- **Backend Repository**: `../busca_vagas` (sibling project)
+- **API Server**: Node.js/Express with Puppeteer-based scraping
+- **Production Deployment**: Systemd service at `/etc/systemd/system/busca_vagas_node_app.service`
+- **Port**: 3000 (configurable via PORT environment variable)
+- **CORS**: Configured for `http://localhost:5173` (development)
 
 ### Music in Numbers Subproject Structure
 The Music in Numbers project demonstrates **professional-grade modular architecture**:

@@ -162,15 +162,24 @@ Individual timestamped reports have been archived into these consolidated files 
 - **Status**: Active development
 
 ### Monitora Vagas
-**Job Monitoring Application** (Sibling Project)
-- Automated job search and monitoring
-- Custom filtering and alert systems
-- Professional opportunity tracking
-- **Status**: Active development
+**AFPESP Hotel Vacancy Monitoring Application** (Sibling Project)
+- Automated weekend vacancy search for AFPESP hotels
+- React-based single-page application with API integration
+- BuscaVagasAPIClient service for backend communication
+- Environment-aware configuration (development/production)
+- API testing tools for developers
+- **Status**: Active development with production API integration
 - **Location**: `../monitora_vagas` (not a git submodule)
 
 ### Busca Vagas
-**Job Search Platform with Node.js Backend** (Sibling Project)
+**AFPESP Hotel Vacancy Search Backend API** (Sibling Project)
+- Node.js/Express API server with Puppeteer-based scraping
+- RESTful API endpoints for hotel search and vacancy queries
+- Weekend search automation with configurable ranges (1-12 weekends)
+- Health check, hotel list, and vacancy search endpoints
+- Systemd service integration for production deployment
+- **Status**: Production-ready with systemd deployment
+- **Location**: `../busca_vagas` (not a git submodule)
 - Full-stack job search application
 - Express.js API server with CORS support
 - Systemd service for production deployment
@@ -249,7 +258,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - Music in Numbers and Guia Turístico git submodule support with complete module architecture
 - Busca Vagas full-stack deployment (client HTML + Node.js API server)
-- Monitora Vagas deployment from sibling project directory
+- Monitora Vagas deployment from sibling project directory with API client configuration
+- Systemd service deployment with sudo privilege handling for system directories
 - Production environment validation with permission checks
 - Comprehensive error handling with colored output
 - Dry-run mode for validation
@@ -350,4 +360,5 @@ The site now uses the **HTML5 UP Dimension** template with:
 **Note**: Subprojects may use different design systems:
 - **Music in Numbers**: Custom Material Design implementation with theme switching
 - **Guia Turístico**: Brazilian Portuguese Material Design UX
-- **Monitora Vagas**: Custom design
+- **Monitora Vagas**: React-based UI with environment-aware API configuration
+- **Busca Vagas**: Backend API service (no UI, RESTful endpoints)
