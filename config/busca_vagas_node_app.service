@@ -1,12 +1,16 @@
 # Systemd service configuration for Busca Vagas Node.js API server
 # 
+# NOTE: Busca Vagas is now a sibling project at ../busca_vagas
+# This file is kept for reference. Active service config is at:
+# ../busca_vagas/config/busca_vagas_node_app.service
+# 
 # Server Details:
 #   - Express.js API with ES module middleware (express.json(), express.urlencoded())
 #   - CORS support for cross-origin requests
 #   - Default port: 3000 (configurable via PORT environment variable)
 #
 # Installation:
-#   sudo cp config/busca_vagas_node_app.service /etc/systemd/system/
+#   sudo cp ../busca_vagas/config/busca_vagas_node_app.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable busca_vagas_node_app.service
 #   sudo systemctl start busca_vagas_node_app.service

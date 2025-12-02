@@ -103,13 +103,15 @@ mpbarbosa_site/                    # Main repository
 │   ├── index.html                 # Main landing page
 │   ├── package.json               # Dependencies and scripts
 │   ├── pages/                     # Project redirect pages
-│   │   ├── music_in_numbers.html  # Music in Numbers redirect
-│   │   ├── guia_turistico.html    # Guia Turístico redirect
-│   │   └── monitora_vagas.html    # Monitora Vagas redirect
-│   └── submodules/                # Git submodules (require auth)
+│   │   ├── music_in_numbers.html  # Music in Numbers redirect (git submodule)
+│   │   ├── guia_turistico.html    # Guia Turístico redirect (git submodule)
+│   │   ├── monitora_vagas.html    # Monitora Vagas redirect (sibling project)
+│   │   └── busca_vagas.html       # Busca Vagas redirect (sibling project)
+│   └── submodules/                # Git submodules only (require auth)
 │       ├── music_in_numbers/      # Music analysis project
-│       ├── guia_turistico/        # Travel guide with extracted classes
-│       └── monitora_vagas/        # Job monitoring project
+│       └── guia_turistico/        # Travel guide with extracted classes
+├── ../monitora_vagas/             # Job monitoring (sibling project)
+├── ../busca_vagas/                # Job search platform (sibling project)
 └── .github/                       # GitHub configuration
     └── copilot-instructions.md    # Development guidelines
 ```
@@ -144,11 +146,12 @@ Following the MP Barbosa development guidelines:
 1. **Homepage Loading**: Verify HTML5 UP Dimension template loads correctly with Font Awesome icons
 2. **Navigation Testing**: Test modal-style article navigation and smooth transitions
 3. **Responsive Design**: Verify template breakpoints work correctly across viewport sizes
-4. **Project Links**: Access three featured projects:
-   - **Music in Numbers**: Spotify analytics with advanced modular architecture
-   - **Guia Turístico**: Travel guide with extracted class architecture
-   - **Monitora Vagas**: Job monitoring application
-   - May show 404 without submodule authentication (expected behavior)
+4. **Project Links**: Access four featured projects:
+   - **Music in Numbers**: Spotify analytics with advanced modular architecture (git submodule)
+   - **Guia Turístico**: Travel guide with extracted class architecture (git submodule)
+   - **Monitora Vagas**: Job monitoring application (sibling project)
+   - **Busca Vagas**: Job search platform with Node.js backend (sibling project)
+   - Git submodule projects may show 404 without authentication (expected behavior)
 
 ### Deployment and Automation
 The project includes comprehensive shell scripts for production deployment:
