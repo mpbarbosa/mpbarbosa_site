@@ -63,13 +63,21 @@
                     <!-- Results Display Area -->
                     <div id="results-container" style="display: none; margin-top: 30px;">
                         <h3 style="color: #333; margin-bottom: 15px;">📊 Resultados da Busca</h3>
-                        
-                        <!-- Hotels Cards Container -->
-                        <div id="hotels-cards-container" style="display: flex; flex-direction: column; gap: 20px;">
-                            <!-- Hotel cards will be inserted here dynamically -->
-                        </div>
-                        
-                        <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <textarea id="results-textarea" 
+                                  readonly
+                                  style="width: 100%; 
+                                         min-height: 400px; 
+                                         padding: 15px; 
+                                         border: 2px solid #e0e0e0; 
+                                         border-radius: 8px; 
+                                         font-family: 'Courier New', monospace; 
+                                         font-size: 13px; 
+                                         line-height: 1.6; 
+                                         background: #f8f9fa;
+                                         resize: vertical;
+                                         color: #333;">
+                        </textarea>
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
                             <button id="copy-results-btn" 
                                     style="padding: 10px 20px; 
                                            background: #4CAF50; 
@@ -180,9 +188,9 @@
             
             // Hide previous results
             const resultsContainer = document.getElementById('results-container');
-            const hotelsCardsContainer = document.getElementById('hotels-cards-container');
+            const resultsTextarea = document.getElementById('results-textarea');
             resultsContainer.style.display = 'none';
-            hotelsCardsContainer.innerHTML = '';
+            resultsTextarea.value = '';
             
             try {
                 // STEP 4: POST the data to API (using GET as per API spec)
@@ -230,134 +238,118 @@
             }
         });
         
-        // Function to display formatted results in hotel cards
+        // Function to display formatted results in textarea
         function displayResults(apiResponse, checkinBR, checkoutBR, hotel) {
             const resultsContainer = document.getElementById('results-container');
-            const hotelsCardsContainer = document.getElementById('hotels-cards-container');
+            const resultsTextarea = document.getElementById('results-textarea');
             
             const { data } = apiResponse;
             const { result } = data;
             
-            // Clear previous results
-            hotelsCardsContainer.innerHTML = '';
+            let output = '';
+            
+            // Header
+            output += '═'.repeat(80) + '\n';
+            output += '         🏨 BUSCA DE VAGAS EM HOTÉIS SINDICAIS - AFPESP\n';
+            output += '═'.repeat(80) + '\n\n';
+            
+            // Search Parameters
+            output += '📋 PARÂMETROS DA BUSCA:\n';
+            output += '─'.repeat(80) + '\n';
+            output += `  Hotel:     ${hotel === '-1' ? 'Todos os Hotéis' : hotel}\n`;
+            output += `  Check-in:  ${checkinBR}\n`;
+            output += `  Check-out: ${checkoutBR}\n`;
+            output += `  Data/Hora: ${new Date().toLocaleString('pt-BR')}\n`;
+            output += '\n';
+            
+            // API Metadata
+            output += '🤖 INFORMAÇÕES DA API:\n';
+            output += '─'.repeat(80) + '\n';
+            output += `  Método:           ${apiResponse.method || 'N/A'}\n`;
+            output += `  Modo Headless:    ${apiResponse.headlessMode ? 'Sim' : 'Não'}\n`;
+            output += `  Economia:         ${apiResponse.resourceSavings || 'N/A'}\n`;
+            output += `  Filtro de Hotel:  ${apiResponse.hotelFilter || 'N/A'}\n`;
+            output += '\n';
+            
+            // Results Summary
+            output += '📊 RESUMO DOS RESULTADOS:\n';
+            output += '─'.repeat(80) + '\n';
+            output += `  Status:              ${result.status || 'N/A'}\n`;
+            output += `  Disponibilidade:     ${data.hasAvailability ? '✅ SIM' : '❌ NÃO'}\n`;
+            output += `  Data da Busca:       ${data.date || 'N/A'}\n`;
+            output += `  Total de Vagas:      ${result.vacancies?.length || 0}\n`;
+            output += `  Hotéis Encontrados:  ${Object.keys(result.hotelGroups || {}).length}\n`;
+            output += '\n';
+            
+            // Summary Message
+            output += '💬 MENSAGEM:\n';
+            output += '─'.repeat(80) + '\n';
+            output += `  ${result.summary || 'Sem informações'}\n`;
+            output += '\n';
             
             // Detailed Vacancies
-            // Note: hasAvailability is at data level, not data.result level (fixed Dec 2025)
             if (data.hasAvailability && result.vacancies && result.vacancies.length > 0) {
+                output += '═'.repeat(80) + '\n';
+                output += '🏨 VAGAS DISPONÍVEIS POR HOTEL\n';
+                output += '═'.repeat(80) + '\n\n';
+                
                 // Group by hotel
                 const hotelGroups = result.hotelGroups || {};
                 
                 Object.keys(hotelGroups).forEach((hotelName, index) => {
+                    output += `\n📍 HOTEL ${index + 1}: ${hotelName}\n`;
+                    output += '─'.repeat(80) + '\n';
+                    
                     const vacancies = hotelGroups[hotelName];
-                    
-                    // Create hotel card
-                    const hotelCard = document.createElement('div');
-                    hotelCard.style.cssText = `
-                        background: white;
-                        border: 2px solid #e0e0e0;
-                        border-radius: 12px;
-                        padding: 20px;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                    `;
-                    
-                    // Hotel header
-                    const hotelHeader = document.createElement('div');
-                    hotelHeader.style.cssText = `
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        margin-bottom: 15px;
-                        padding-bottom: 15px;
-                        border-bottom: 2px solid #f0f0f0;
-                    `;
-                    hotelHeader.innerHTML = `
-                        <span style="font-size: 24px;">🏨</span>
-                        <h4 style="margin: 0; color: #333; font-size: 18px; font-weight: 600;">
-                            ${hotelName}
-                        </h4>
-                        <span style="margin-left: auto; background: #4CAF50; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">
-                            ${vacancies.length} ${vacancies.length === 1 ? 'vaga' : 'vagas'}
-                        </span>
-                    `;
-                    hotelCard.appendChild(hotelHeader);
-                    
-                    // Vacancies list
-                    const vacanciesList = document.createElement('div');
-                    vacanciesList.style.cssText = `
-                        display: flex;
-                        flex-direction: column;
-                        gap: 10px;
-                    `;
-                    
                     vacancies.forEach((vacancy, vIndex) => {
-                        const vacancyItem = document.createElement('div');
-                        vacancyItem.style.cssText = `
-                            padding: 12px;
-                            background: #f8f9fa;
-                            border-radius: 8px;
-                            border-left: 4px solid #4CAF50;
-                            font-family: 'Roboto', sans-serif;
-                            font-size: 14px;
-                            color: #555;
-                        `;
-                        vacancyItem.innerHTML = `
-                            <span style="font-weight: 600; color: #333; margin-right: 8px;">${vIndex + 1}.</span>
-                            ${vacancy}
-                        `;
-                        vacanciesList.appendChild(vacancyItem);
+                        output += `   ${vIndex + 1}. ${vacancy}\n`;
                     });
-                    
-                    hotelCard.appendChild(vacanciesList);
-                    
-                    // FlexReserva link
-                    const flexReservaLink = document.createElement('a');
-                    flexReservaLink.href = 'https://www.flexreserva.org.br/';
-                    flexReservaLink.target = '_blank';
-                    flexReservaLink.rel = 'noopener noreferrer';
-                    flexReservaLink.textContent = 'Ir para o FlexReserva';
-                    flexReservaLink.style.cssText = `
-                        display: inline-block;
-                        margin-top: 15px;
-                        padding: 10px 20px;
-                        background: #2196F3;
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 6px;
-                        font-weight: 500;
-                        font-size: 14px;
-                        transition: background 0.3s;
-                    `;
-                    flexReservaLink.addEventListener('mouseover', () => {
-                        flexReservaLink.style.background = '#1976D2';
-                    });
-                    flexReservaLink.addEventListener('mouseout', () => {
-                        flexReservaLink.style.background = '#2196F3';
-                    });
-                    hotelCard.appendChild(flexReservaLink);
-                    
-                    hotelsCardsContainer.appendChild(hotelCard);
+                });
+                
+                output += '\n';
+                output += '═'.repeat(80) + '\n';
+                output += '📋 LISTA COMPLETA DE VAGAS\n';
+                output += '═'.repeat(80) + '\n\n';
+                
+                result.vacancies.forEach((vacancy, index) => {
+                    output += `${(index + 1).toString().padStart(3, ' ')}. ${vacancy}\n`;
                 });
                 
             } else {
-                // Show empty state
-                const emptyState = document.createElement('div');
-                emptyState.style.cssText = `
-                    background: white;
-                    border: 2px solid #e0e0e0;
-                    border-radius: 12px;
-                    padding: 40px;
-                    text-align: center;
-                    color: #666;
-                `;
-                emptyState.innerHTML = `
-                    <div style="font-size: 48px; margin-bottom: 16px;">😔</div>
-                    <h4 style="margin: 0 0 10px 0; color: #333; font-size: 20px;">Nenhuma Vaga Encontrada</h4>
-                    <p style="margin: 0; color: #666;">Não há quartos disponíveis para o período selecionado.</p>
-                `;
-                hotelsCardsContainer.appendChild(emptyState);
+                output += '═'.repeat(80) + '\n';
+                output += '😔 NENHUMA VAGA ENCONTRADA\n';
+                output += '═'.repeat(80) + '\n\n';
+                output += 'Não há quartos disponíveis para o período selecionado.\n\n';
+                output += '💡 SUGESTÕES:\n';
+                output += '  • Tente datas diferentes\n';
+                output += '  • Considere estadias no meio da semana\n';
+                output += '  • Verifique hotéis específicos individualmente\n';
+                output += '  • Entre em contato diretamente com o sindicato\n';
             }
             
+            // Footer
+            output += '\n';
+            output += '═'.repeat(80) + '\n';
+            output += '📞 PRÓXIMOS PASSOS:\n';
+            output += '─'.repeat(80) + '\n';
+            if (data.hasAvailability) {
+                output += '  1. 📲 Entre em contato com seu sindicato para realizar a reserva\n';
+                output += '  2. ⚡ Reserve imediatamente - vagas limitadas!\n';
+                output += '  3. 📋 Tenha seus documentos em mãos\n';
+                output += '  4. 💰 Confirme tarifas especiais para sindicalizados\n';
+            } else {
+                output += '  1. 🔄 Tente novamente com outras datas\n';
+                output += '  2. 📅 Considere períodos alternativos\n';
+                output += '  3. 📱 Entre em contato com o sindicato para verificar cancelamentos\n';
+            }
+            output += '\n';
+            output += '═'.repeat(80) + '\n';
+            output += '🌐 Powered by: https://www.mpbarbosa.com/api\n';
+            output += `📅 Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
+            output += '═'.repeat(80) + '\n';
+            
             // Display results
+            resultsTextarea.value = output;
             resultsContainer.style.display = 'block';
             
             // Scroll to results
@@ -370,42 +362,25 @@
         document.addEventListener('DOMContentLoaded', () => {
             const copyBtn = document.getElementById('copy-results-btn');
             const clearBtn = document.getElementById('clear-results-btn');
-            const hotelsCardsContainer = document.getElementById('hotels-cards-container');
+            const resultsTextarea = document.getElementById('results-textarea');
             const resultsContainer = document.getElementById('results-container');
             
             if (copyBtn) {
                 copyBtn.addEventListener('click', () => {
-                    // Get all text content from hotel cards
-                    const textContent = hotelsCardsContainer.innerText;
+                    resultsTextarea.select();
+                    document.execCommand('copy');
                     
-                    // Copy to clipboard
-                    navigator.clipboard.writeText(textContent).then(() => {
-                        const originalText = copyBtn.textContent;
-                        copyBtn.textContent = '✅ Copiado!';
-                        setTimeout(() => {
-                            copyBtn.textContent = originalText;
-                        }, 2000);
-                    }).catch(err => {
-                        // Fallback for older browsers
-                        const textarea = document.createElement('textarea');
-                        textarea.value = textContent;
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textarea);
-                        
-                        const originalText = copyBtn.textContent;
-                        copyBtn.textContent = '✅ Copiado!';
-                        setTimeout(() => {
-                            copyBtn.textContent = originalText;
-                        }, 2000);
-                    });
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = '✅ Copiado!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
                 });
             }
             
             if (clearBtn) {
                 clearBtn.addEventListener('click', () => {
-                    hotelsCardsContainer.innerHTML = '';
+                    resultsTextarea.value = '';
                     resultsContainer.style.display = 'none';
                 });
             }
