@@ -838,69 +838,91 @@ copy_music_in_numbers_styles() {
 copy_monitora_vagas_submodule() {
     print_step "Copying Monitora Vagas submodule files"
     
-    local source_dir="$PROJECT_ROOT/../monitora_vagas/src"
-    local dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/src"
+    local monitora_root="$PROJECT_ROOT/../monitora_vagas"
+    local src_source_dir="$monitora_root/src"
+    local public_source_dir="$monitora_root/public"
+    local src_dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/src"
+    local public_dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/public"
     
-    if [[ ! -d "$source_dir" ]]; then
-        print_warning "Monitora Vagas src directory not found in source"
-        print_info "  Expected: $source_dir"
+    # Check if monitora_vagas directory exists
+    if [[ ! -d "$monitora_root" ]]; then
+        print_warning "Monitora Vagas directory not found"
+        print_info "  Expected: $monitora_root"
         return 0
     fi
     
-    # Count files to copy
-    local html_count=$(find "$source_dir" -maxdepth 1 -type f -name "*.html" | wc -l)
-    local js_count=$(find "$source_dir" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
-    local dirs_count=$(find "$source_dir" -mindepth 1 -maxdepth 1 -type d | wc -l)
-    
-    if [[ "$DRY_RUN" == "false" ]]; then
-        # Create destination directory if it doesn't exist
-        mkdir -p "$dest_dir"
+    # Copy src folder
+    if [[ -d "$src_source_dir" ]]; then
+        # Count files to copy from src
+        local src_html_count=$(find "$src_source_dir" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+        local src_js_count=$(find "$src_source_dir" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+        local src_dirs_count=$(find "$src_source_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
         
-        # Copy all files and directories recursively
-        cp -r "$source_dir"/* "$dest_dir/"
-        print_success "Copied: Monitora Vagas submodule ($html_count HTML files, $js_count JS files, $dirs_count subdirectories)"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_dir"
-            print_info "  Destination: $dest_dir"
-            print_info "  HTML files: $html_count"
-            print_info "  JavaScript files: $js_count"
-            print_info "  Subdirectories: $dirs_count"
+        if [[ "$DRY_RUN" == "false" ]]; then
+            # Create destination directory if it doesn't exist
+            mkdir -p "$src_dest_dir"
             
-            # Show main HTML files
-            local html_files=$(find "$dest_dir" -maxdepth 1 -name "*.html")
-            if [[ -n "$html_files" ]]; then
-                print_info "  HTML files copied:"
-                echo "$html_files" | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
+            # Copy all files and directories recursively
+            cp -r "$src_source_dir"/* "$src_dest_dir/"
+            print_success "Copied: Monitora Vagas src folder ($src_html_count HTML files, $src_js_count JS files, $src_dirs_count subdirectories)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $src_source_dir"
+                print_info "  Destination: $src_dest_dir"
+                print_info "  HTML files: $src_html_count"
+                print_info "  JavaScript files: $src_js_count"
+                print_info "  Subdirectories: $src_dirs_count"
             fi
+        else
+            print_info "[DRY RUN] Would copy: $src_source_dir → $src_dest_dir"
             
-            # Show main JS files
-            local js_files=$(find "$dest_dir" -maxdepth 1 \( -name "*.js" -o -name "*.mjs" \))
-            if [[ -n "$js_files" ]]; then
-                print_info "  JavaScript files copied:"
-                echo "$js_files" | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  HTML files to copy: $src_html_count"
+                print_info "  JavaScript files to copy: $src_js_count"
+                print_info "  Subdirectories to copy: $src_dirs_count"
             fi
         fi
     else
-        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
+        print_warning "Monitora Vagas src directory not found"
+        print_info "  Expected: $src_source_dir"
+    fi
+    
+    # Copy public folder
+    if [[ -d "$public_source_dir" ]]; then
+        # Count files to copy from public (excluding symlinks in count display)
+        local public_html_count=$(find "$public_source_dir" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+        local public_js_count=$(find "$public_source_dir" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+        local public_dirs_count=$(find "$public_source_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
         
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  HTML files to copy: $html_count"
-            print_info "  JavaScript files to copy: $js_count"
-            print_info "  Subdirectories to copy: $dirs_count"
+        if [[ "$DRY_RUN" == "false" ]]; then
+            # Create destination directory if it doesn't exist
+            mkdir -p "$public_dest_dir"
+            
+            # Copy all files and directories recursively (follows symlinks by default)
+            cp -rL "$public_source_dir"/* "$public_dest_dir/"
+            print_success "Copied: Monitora Vagas public folder ($public_html_count HTML files, $public_js_count JS files, $public_dirs_count subdirectories)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $public_source_dir"
+                print_info "  Destination: $public_dest_dir"
+                print_info "  HTML files: $public_html_count"
+                print_info "  JavaScript files: $public_js_count"
+                print_info "  Subdirectories: $public_dirs_count"
+                print_info "  Note: Symlinks resolved and content copied"
+            fi
+        else
+            print_info "[DRY RUN] Would copy: $public_source_dir → $public_dest_dir"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  HTML files to copy: $public_html_count"
+                print_info "  JavaScript files to copy: $public_js_count"
+                print_info "  Subdirectories to copy: $public_dirs_count"
+                print_info "  Note: Symlinks will be resolved and content copied"
+            fi
         fi
+    else
+        print_warning "Monitora Vagas public directory not found"
+        print_info "  Expected: $public_source_dir"
     fi
     
     return 0
@@ -943,7 +965,8 @@ validate_sync() {
         "$PUBLIC_DIR/submodules/music_in_numbers/src|Music in Numbers submodule|*.html|false"
         "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts|Music in Numbers scripts|js_files|false"
         "$PUBLIC_DIR/submodules/music_in_numbers/src/styles|Music in Numbers styles|*.css|false"
-        "$PUBLIC_DIR/submodules/monitora_vagas/src|Monitora Vagas submodule|*.html|false"
+        "$PUBLIC_DIR/submodules/monitora_vagas/src|Monitora Vagas src folder|*.js|false"
+        "$PUBLIC_DIR/submodules/monitora_vagas/public|Monitora Vagas public folder|*.html|false"
     )
     
     # Validate each path using the generic validation function

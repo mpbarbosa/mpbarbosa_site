@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Colrolib Templates">
+    <meta name="author" content="colorlib.com">
+    <meta name="keywords" content="Colrolib Templates">
+
+    <!-- Title Page-->
+    <title>Au Form Wizard</title>
+
+    <!-- Icons font CSS-->
+    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+    <!-- Vendor CSS-->
+    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="css/main.css" rel="stylesheet" media="all">
+<meta name="robots" content="noindex, follow">
+</head>
+
+<body>
+    <div class="page-wrapper bg-color-1 p-t-395 p-b-120">
+        <div class="wrapper wrapper--w1070">
+            <div class="card card-7">
+                <div class="card-body">
+                    <form class="form" method="POST" action="#">
+                        <div class="input-group input--large">
+                            <label class="label">Hotéis</label>
+                            <select class="input--style-1" name="going" id="hotel-select">
+                                <option value="">Loading hotels...</option>
+                            </select>
+                        </div>
+                        <div class="input-group input--medium">
+                            <label class="label">Check-In</label>
+                            <input class="input--style-1" type="date" name="checkin" id="input-checkin">
+                        </div>
+                        <div class="input-group input--medium">
+                            <label class="label">Check-Out</label>
+                            <input class="input--style-1" type="date" name="checkout" id="input-checkout">
+                        </div>
+                        <div class="input-group input--medium">
+                            <label class="label">hóspedes</label>
+                            <div class="input-group-icon js-number-input">
+                                <div class="icon-con">
+                                    <span class="plus">+</span>
+                                    <span class="minus">-</span>
+                                </div>
+                                <input class="input--style-1 quantity" type="text" name="guests" value="2 Hóspedes">
+                            </div>
+                        </div>
+                        <button class="btn-submit" type="submit" id="search-button">busca vagas</button>
+                    </form>
+                    
+                    <!-- Results Display Area -->
+                    <div id="results-container" style="display: none; margin-top: 30px;">
+                        <h3 style="color: #333; margin-bottom: 15px;">📊 Resultados da Busca</h3>
+                        
+                        <!-- Hotels Cards Container -->
+                        <div id="hotels-cards-container" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Hotel cards will be inserted here dynamically -->
+                        </div>
+                        
+                        <div style="margin-top: 20px; display: flex; gap: 10px;">
+                            <button id="copy-results-btn" 
+                                    style="padding: 10px 20px; 
+                                           background: #4CAF50; 
+                                           color: white; 
+                                           border: none; 
+                                           border-radius: 5px; 
+                                           cursor: pointer;
+                                           font-size: 14px;">
+                                📋 Copiar Resultados
+                            </button>
+                            <button id="clear-results-btn" 
+                                    style="padding: 10px 20px; 
+                                           background: #f44336; 
+                                           color: white; 
+                                           border: none; 
+                                           border-radius: 5px; 
+                                           cursor: pointer;
+                                           font-size: 14px;">
+                                🗑️ Limpar Resultados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery JS-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <!-- Vendor JS-->
+    <script src="vendor/select2/select2.min.js"></script>
+    <script src="vendor/jquery-validate/jquery.validate.min.js"></script>
+    <script src="vendor/bootstrap-wizard/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+    <script src="vendor/datepicker/moment.min.js"></script>
+    <script src="vendor/datepicker/daterangepicker.js"></script>
+
+    <!-- Main JS-->
+    <script src="js/global.js"></script>
+    <script src="js/guestCounter.js"></script>
+    <script type="module">
+        import { apiClient } from './services/apiClient.js';
+        
+        // Load hotels using API client
+        apiClient.getHotels()
+            .then(hotels => {
+                const select = document.getElementById('hotel-select');
+                select.innerHTML = '<option value="">Select a hotel</option>';
+                hotels.forEach(hotel => {
+                    const option = document.createElement('option');
+                    option.value = hotel.hotelId;
+                    option.textContent = hotel.name;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading hotels:', error);
+                document.getElementById('hotel-select').innerHTML = '<option value="">Error loading hotels</option>';
+            });
+
+        // Handle form submission
+        const form = document.querySelector('.form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            console.log('🚀 Starting vacancy search flow...');
+            
+            // STEP 2: Get input parameters from web page UI
+            const hotelSelect = document.getElementById('hotel-select');
+            const checkinInput = document.getElementById('input-checkin');
+            const checkoutInput = document.getElementById('input-checkout');
+            
+            const hotel = hotelSelect.value || '-1'; // Default to all hotels
+            const checkinBR = checkinInput.value; // dd/mm/yyyy
+            const checkoutBR = checkoutInput.value; // dd/mm/yyyy
+            
+            console.log('📝 Input parameters:', { hotel, checkinBR, checkoutBR });
+            
+            // Validate inputs
+            if (!checkinBR || !checkoutBR) {
+                alert('Por favor, selecione as datas de check-in e check-out');
+                return;
+            }
+            
+            // Convert Brazilian date format (dd/mm/yyyy) to ISO 8601 (yyyy-mm-dd)
+            const formatDateToISO = (dateStr) => {
+                const parts = dateStr.split('/');
+                if (parts.length !== 3) return null;
+                const [day, month, year] = parts;
+                return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            };
+            
+            const checkin = formatDateToISO(checkinBR);
+            const checkout = formatDateToISO(checkoutBR);
+            
+            if (!checkin || !checkout) {
+                alert('Formato de data inválido. Use dd/mm/aaaa');
+                return;
+            }
+            
+            console.log('✅ Dates converted to ISO format:', { checkin, checkout });
+            
+            // STEP 3: Show loading state when button is clicked
+            const submitButton = document.getElementById('search-button');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = '🔍 Buscando...';
+            submitButton.disabled = true;
+            
+            // Hide previous results
+            const resultsContainer = document.getElementById('results-container');
+            const hotelsCardsContainer = document.getElementById('hotels-cards-container');
+            resultsContainer.style.display = 'none';
+            hotelsCardsContainer.innerHTML = '';
+            
+            try {
+                // STEP 4: POST the data to API (using GET as per API spec)
+                const apiUrl = `https://www.mpbarbosa.com/api/vagas/search?hotel=${encodeURIComponent(hotel)}&checkin=${checkin}&checkout=${checkout}`;
+                console.log('🌐 API Request URL:', apiUrl);
+                console.log('📤 Posting data to API...');
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                // STEP 5: Fetch the API data
+                console.log('📥 Fetching API response...');
+                const result = await response.json();
+                console.log('✅ API Response received:', result);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'API returned error');
+                }
+                
+                // STEP 6: Show the formatted data in the textarea
+                console.log('📊 Formatting and displaying results...');
+                displayResults(result, checkinBR, checkoutBR, hotel);
+                
+            } catch (error) {
+                console.error('❌ Search failed:', error);
+                
+                // Display error in textarea
+                resultsTextarea.value = `❌ ERRO NA BUSCA\n\n${error.message}\n\nPor favor, tente novamente.`;
+                resultsContainer.style.display = 'block';
+                
+                alert(`Erro na busca: ${error.message}`);
+            } finally {
+                // Restore button state
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+        
+        // Function to display formatted results in hotel cards
+        function displayResults(apiResponse, checkinBR, checkoutBR, hotel) {
+            const resultsContainer = document.getElementById('results-container');
+            const hotelsCardsContainer = document.getElementById('hotels-cards-container');
+            
+            const { data } = apiResponse;
+            const { result } = data;
+            
+            // Clear previous results
+            hotelsCardsContainer.innerHTML = '';
+            
+            // Detailed Vacancies
+            if (data.hasAvailability && result.vacancies && result.vacancies.length > 0) {
+                // Group by hotel
+                const hotelGroups = result.hotelGroups || {};
+                
+                Object.keys(hotelGroups).forEach((hotelName, index) => {
+                    const vacancies = hotelGroups[hotelName];
+                    
+                    // Create hotel card
+                    const hotelCard = document.createElement('div');
+                    hotelCard.style.cssText = `
+                        background: white;
+                        border: 2px solid #e0e0e0;
+                        border-radius: 12px;
+                        padding: 20px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    `;
+                    
+                    // Hotel header
+                    const hotelHeader = document.createElement('div');
+                    hotelHeader.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 15px;
+                        padding-bottom: 15px;
+                        border-bottom: 2px solid #f0f0f0;
+                    `;
+                    hotelHeader.innerHTML = `
+                        <span style="font-size: 24px;">🏨</span>
+                        <h4 style="margin: 0; color: #333; font-size: 18px; font-weight: 600;">
+                            ${hotelName}
+                        </h4>
+                        <span style="margin-left: auto; background: #4CAF50; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                            ${vacancies.length} ${vacancies.length === 1 ? 'vaga' : 'vagas'}
+                        </span>
+                    `;
+                    hotelCard.appendChild(hotelHeader);
+                    
+                    // Vacancies list
+                    const vacanciesList = document.createElement('div');
+                    vacanciesList.style.cssText = `
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                    `;
+                    
+                    vacancies.forEach((vacancy, vIndex) => {
+                        const vacancyItem = document.createElement('div');
+                        vacancyItem.style.cssText = `
+                            padding: 12px;
+                            background: #f8f9fa;
+                            border-radius: 8px;
+                            border-left: 4px solid #4CAF50;
+                            font-family: 'Roboto', sans-serif;
+                            font-size: 14px;
+                            color: #555;
+                        `;
+                        vacancyItem.innerHTML = `
+                            <span style="font-weight: 600; color: #333; margin-right: 8px;">${vIndex + 1}.</span>
+                            ${vacancy}
+                        `;
+                        vacanciesList.appendChild(vacancyItem);
+                    });
+                    
+                    hotelCard.appendChild(vacanciesList);
+                    
+                    // FlexReserva link
+                    const flexReservaLink = document.createElement('a');
+                    flexReservaLink.href = 'https://www.flexreserva.org.br/';
+                    flexReservaLink.target = '_blank';
+                    flexReservaLink.rel = 'noopener noreferrer';
+                    flexReservaLink.textContent = 'Ir para o FlexReserva';
+                    flexReservaLink.style.cssText = `
+                        display: inline-block;
+                        margin-top: 15px;
+                        padding: 10px 20px;
+                        background: #2196F3;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-weight: 500;
+                        font-size: 14px;
+                        transition: background 0.3s;
+                    `;
+                    flexReservaLink.addEventListener('mouseover', () => {
+                        flexReservaLink.style.background = '#1976D2';
+                    });
+                    flexReservaLink.addEventListener('mouseout', () => {
+                        flexReservaLink.style.background = '#2196F3';
+                    });
+                    hotelCard.appendChild(flexReservaLink);
+                    
+                    hotelsCardsContainer.appendChild(hotelCard);
+                });
+                
+            } else {
+                // Show empty state
+                const emptyState = document.createElement('div');
+                emptyState.style.cssText = `
+                    background: white;
+                    border: 2px solid #e0e0e0;
+                    border-radius: 12px;
+                    padding: 40px;
+                    text-align: center;
+                    color: #666;
+                `;
+                emptyState.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 16px;">😔</div>
+                    <h4 style="margin: 0 0 10px 0; color: #333; font-size: 20px;">Nenhuma Vaga Encontrada</h4>
+                    <p style="margin: 0; color: #666;">Não há quartos disponíveis para o período selecionado.</p>
+                `;
+                hotelsCardsContainer.appendChild(emptyState);
+            }
+            
+            // Display results
+            resultsContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            console.log('✅ Results displayed successfully');
+        }
+        
+        // Copy results to clipboard
+        document.addEventListener('DOMContentLoaded', () => {
+            const copyBtn = document.getElementById('copy-results-btn');
+            const clearBtn = document.getElementById('clear-results-btn');
+            const hotelsCardsContainer = document.getElementById('hotels-cards-container');
+            const resultsContainer = document.getElementById('results-container');
+            
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    // Get all text content from hotel cards
+                    const textContent = hotelsCardsContainer.innerText;
+                    
+                    // Copy to clipboard
+                    navigator.clipboard.writeText(textContent).then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = '✅ Copiado!';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                        }, 2000);
+                    }).catch(err => {
+                        // Fallback for older browsers
+                        const textarea = document.createElement('textarea');
+                        textarea.value = textContent;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = '✅ Copiado!';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                        }, 2000);
+                    });
+                });
+            }
+            
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    hotelsCardsContainer.innerHTML = '';
+                    resultsContainer.style.display = 'none';
+                });
+            }
+        });
+    </script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-23581568-13');
+</script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+</html>
+<!-- end document-->
