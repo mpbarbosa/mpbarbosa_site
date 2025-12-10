@@ -164,14 +164,18 @@ Individual timestamped reports have been archived into these consolidated files 
 ### Monitora Vagas
 **AFPESP Hotel Vacancy Monitoring Application** (Sibling Project)
 - Automated weekend vacancy search for AFPESP hotels
-- React-based single-page application with direct fetch API integration
+- Vanilla JavaScript single-page application with direct fetch API integration
+- Modern card-based UI for vacancy results display
 - Interactive hotel selection with dynamic dropdown population
 - Form-based search with Brazilian date format support (dd/mm/yyyy)
-- Environment-aware configuration (development/production)
+- Real-time results with copy/clear functionality
+- Environment-aware configuration (development/production with URL override)
 - Direct API integration with comprehensive error handling
+- 6-step vacancy search flow with detailed console logging
+- Material Design 3 styling (md3-components, md3-results-cards, md3-theme)
 - AbortController-based timeout management for long-running searches
-- API testing tools for developers
-- **Status**: Production-ready with direct fetch implementation
+- API testing tools for developers (api-test.html)
+- **Status**: Production-ready with card-based UI and inline search
 - **Location**: `../monitora_vagas` (not a git submodule)
 
 ### Busca Vagas
@@ -261,7 +265,11 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 - Music in Numbers and Guia Turístico git submodule support with complete module architecture
 - Busca Vagas full-stack deployment (client HTML + Node.js API server)
-- Monitora Vagas deployment from sibling project directory with API client configuration
+- Monitora Vagas deployment from sibling project with:
+  - Card-based vacancy results UI
+  - Material Design 3 styling (md3-components.css, md3-results-cards.css, md3-theme.css)
+  - API client configuration and testing tools
+  - Copy/clear functionality for results management
 - Systemd service deployment with sudo privilege handling for system directories
 - Production environment validation with permission checks
 - Comprehensive error handling with colored output
@@ -363,5 +371,5 @@ The site now uses the **HTML5 UP Dimension** template with:
 **Note**: Subprojects may use different design systems:
 - **Music in Numbers**: Custom Material Design implementation with theme switching
 - **Guia Turístico**: Brazilian Portuguese Material Design UX
-- **Monitora Vagas**: React-based UI with environment-aware API configuration
+- **Monitora Vagas**: Vanilla JavaScript with Material Design 3 styling and card-based results UI
 - **Busca Vagas**: Backend API service (no UI, RESTful endpoints)

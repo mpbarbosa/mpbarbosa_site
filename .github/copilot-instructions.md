@@ -117,12 +117,22 @@ mpbarbosa_site/
 │   ├── assets/                # Synchronized HTML5 UP Dimension assets
 │   ├── api/                   # Busca Vagas API proxy (symlink to backend in production)
 │   └── submodules/            # Synchronized subproject content
-│       ├── monitora_vagas/    # AFPESP hotel monitoring React app
+│       ├── monitora_vagas/    # AFPESP hotel monitoring vanilla JavaScript app
 │       │   └── src/
-│       │       ├── index.html           # Main UI with hotel search form
+│       │       ├── index.html           # Main UI with hotel search form and card-based results
 │       │       ├── api-test.html        # API testing tool for Busca Vagas backend
 │       │       ├── config/environment.js # Browser-compatible env config with dynamic API URLs
-│       │       └── components/QuickSearch/ # Weekend vacancy search component with direct fetch
+│       │       ├── components/QuickSearch/QuickSearch.js # Weekend vacancy search service class
+│       │       ├── services/apiClient.js # API client singleton for hotel data fetching
+│       │       ├── js/
+│       │       │   ├── global.js        # Global JavaScript utilities
+│       │       │   └── guestCounter.js  # Guest counter widget
+│       │       ├── css/
+│       │       │   ├── main.css         # Main stylesheet
+│       │       │   ├── md3-components.css   # Material Design 3 components
+│       │       │   ├── md3-results-cards.css # Card-based results styling
+│       │       │   └── md3-theme.css    # Material Design 3 theme
+│       │       └── vendor/              # Third-party libraries (jQuery, datepicker, etc.)
 │       ├── music_in_numbers/  # Spotify analytics submodule
 │       └── guia_turistico/    # Travel guide submodule
 ├── src/                        # Main source directory 
@@ -187,7 +197,12 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers submodule support with complete module architecture
-# - Monitora Vagas deployment with API client configuration and testing tools
+# - Monitora Vagas deployment with:
+#   - Card-based results UI with dynamic hotel vacancy display
+#   - API client configuration for hotel data fetching
+#   - Testing tools (api-test.html) for backend validation
+#   - Material Design 3 styling (md3-components.css, md3-results-cards.css, md3-theme.css)
+#   - Copy/clear functionality for results management
 # - Busca Vagas full-stack deployment (client HTML + server API)
 # - Systemd service deployment with sudo privilege handling for system directories
 # - Enhanced backup system for both public and production directories
@@ -393,30 +408,41 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 ## Modular Architecture Excellence
 
 ### Monitora Vagas (AFPESP Hotel Monitoring) Architecture
-The Monitora Vagas project showcases **production-ready React SPA with direct API integration**:
+The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA with direct API integration**:
 
 #### Core Features
-- **React-based UI**: Single-page application for AFPESP hotel vacancy monitoring
+- **Vanilla JavaScript UI**: Single-page application for AFPESP hotel vacancy monitoring (no React framework)
 - **Direct Fetch API Integration**: Native fetch calls with comprehensive error handling
 - **Environment-Aware Configuration**: Dynamic API endpoint detection (development/production)
 - **Weekend Search**: Automated multi-weekend vacancy scanning with progress tracking
 - **Interactive Form**: Real-time hotel search with date selection and validation
+- **Card-Based Results Display**: Modern UI with hotel vacancy cards, copy/clear functionality
 
 #### Key Components
 
 **Configuration Layer** (`config/environment.js`):
 - Browser-compatible environment detection (no Node.js process.env dependency)
-- Dynamic API base URL: `http://localhost:3000/api` (dev) or `https://www.mpbarbosa.com/api` (prod)
+- Dynamic API base URL: `http://localhost:3001/api` (dev) or `https://www.mpbarbosa.com/api` (prod)
 - Feature flags based on environment (logging, analytics, caching)
 - Environment-specific configurations for security and performance
+- URL parameter override: `?useProductionAPI=true` forces production API in development
 
 **Main UI** (`index.html`):
-- **Hotel Selection Dropdown**: Dynamic hotel list loading from `/api/vagas/hoteis`
-- **Interactive Form Submission**: Full vacancy search with form validation
+- **Hotel Selection Dropdown**: Dynamic hotel list loading from `/api/vagas/hoteis` via ES module import
+- **Interactive Form Submission**: Full vacancy search with inline form validation
 - **Date Format Conversion**: Brazilian format (dd/mm/yyyy) to ISO 8601 (yyyy-mm-dd)
-- **Loading States**: Visual feedback with disabled buttons during API calls
-- **Result Display**: Success/error alerts with vacancy availability information
-- **Error Handling**: Comprehensive try-catch with user-friendly error messages
+- **Loading States**: Visual feedback with disabled buttons and loading text during API calls
+- **Card-Based Results Display**: Dynamic hotel vacancy cards with:
+  - Hotel name header with vacancy count badge
+  - Grouped vacancy listings by hotel
+  - FlexReserva direct booking links
+  - Empty state for no results
+  - Smooth scroll to results
+- **Copy/Clear Functionality**: 
+  - Copy results to clipboard (with modern Clipboard API and legacy fallback)
+  - Clear results button to reset display
+- **Comprehensive Logging**: Step-by-step console logging for debugging (6-step flow)
+- **Error Handling**: Try-catch with user-friendly error messages in both alerts and result display
 
 **QuickSearch Component** (`components/QuickSearch/QuickSearch.js`):
 - `HotelVacancyService` class with direct fetch implementation
@@ -428,6 +454,25 @@ The Monitora Vagas project showcases **production-ready React SPA with direct AP
 - **API Response Transformation**: Component format conversion for UI rendering
 - **Comprehensive Error Handling**: Network errors, timeouts, and API errors
 
+**Inline Search Implementation** (`index.html` module script):
+- **6-Step Vacancy Search Flow**:
+  1. Initial logging setup
+  2. Extract input parameters from UI (hotel, checkin, checkout)
+  3. Show loading state (button disabled, loading text)
+  4. POST data to API (using GET with query parameters)
+  5. Fetch and validate API response
+  6. Display formatted results in card UI
+- **displayResults() Function**: Dynamic hotel card generation
+  - Parse API response structure (data.hasAvailability, data.result.hotelGroups)
+  - Create styled hotel cards with vacancy listings
+  - FlexReserva booking links for each hotel
+  - Empty state handling with friendly messaging
+  - **Critical Fix (Dec 2025)**: hasAvailability at data level, not data.result level
+- **Copy/Clear Event Handlers**: 
+  - DOMContentLoaded listeners for results manipulation
+  - Modern Clipboard API with legacy execCommand fallback
+  - Visual feedback (✅ Copiado!) with 2-second timeout
+
 **Testing Tools** (`api-test.html`):
 - Standalone API testing interface for developers
 - Interactive buttons for all API endpoints
@@ -435,7 +480,11 @@ The Monitora Vagas project showcases **production-ready React SPA with direct AP
 - Visual feedback for success/error states
 - 10-minute timeout support for long-running weekend searches
 
-**Note on API Client**: The previous `services/apiClient.js` implementation has been replaced with direct fetch calls for simpler architecture and better performance.
+**API Client Service** (`services/apiClient.js`):
+- ES module export of apiClient singleton
+- scrapeHotels() method for hotel list fetching
+- Used by index.html for initial hotel dropdown population
+- Maintains compatibility with existing code patterns
 
 #### Integration with Busca Vagas Backend
 - **Backend Repository**: `../busca_vagas` (sibling project)
