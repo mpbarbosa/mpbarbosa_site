@@ -138,9 +138,9 @@ expect(value).toBeDefined();                  // Existence check
 
 1. **HTML Files - NO TESTS**
    - `src/index.html` (main landing page)
-   - `src/pages/music_in_numbers.html`
-   - `src/pages/guia_turistico.html`
-   - `src/pages/monitora_vagas.html`
+   - `src/pages/music-in-numbers.html`
+   - `src/pages/guia-turistico.html`
+   - `src/pages/monitora-vagas.html`
    - `src/components/*.html` (4 component files)
 
    **Risk:** HTML structure changes could break navigation, accessibility, SEO

@@ -1,0 +1,15 @@
+# Markdownlint Configuration
+# Configure rules to match project standards
+
+# Rule Configuration
+rules "~MD013", "~MD029", "~MD001", "~MD002", "~MD022", "~MD031", "~MD032", "~MD012"
+
+# Rule Explanations:
+# MD001 - Header levels should only increment by one level at a time (disabled - AI sometimes generates H3 after H1)
+# MD002 - First header should be a top level header (disabled - some docs start with H2 or H3)
+# MD012 - Multiple consecutive blank lines (disabled - used for visual separation in large docs)
+# MD013 - Line length (disabled - long URLs and code blocks exceed limits)
+# MD022 - Headers should be surrounded by blank lines (disabled - compact formatting preference)
+# MD029 - Ordered list item prefix (disabled - allows flexible numbering styles)
+# MD031 - Fenced code blocks should be surrounded by blank lines (disabled - compact formatting)
+# MD032 - Lists should be surrounded by blank lines (disabled - compact formatting)

@@ -415,7 +415,7 @@ describe('Project Navigation End-to-End', () => {
         });
 
         test('should have proper redirect page structure', () => {
-            const redirectPath = path.join(__dirname, '../pages/music_in_numbers.html');
+            const redirectPath = path.join(__dirname, '../pages/music-in-numbers.html');
             if (fs.existsSync(redirectPath)) {
                 const redirectHTML = fs.readFileSync(redirectPath, 'utf8');
                 expect(redirectHTML).toContain('<meta');
@@ -1162,7 +1162,7 @@ scenarios:
       - get:
           url: '/'
       - get:
-          url: '/pages/music_in_numbers.html'
+          url: '/pages/music-in-numbers.html'
 ```
 
 ---

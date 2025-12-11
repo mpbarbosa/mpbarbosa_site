@@ -95,9 +95,9 @@ describe('Project Navigation Integration Tests', () => {
 
   describe('Project Redirect Pages Structure', () => {
     const redirectPages = [
-      { file: 'music_in_numbers.html', project: 'music_in_numbers' },
-      { file: 'guia_turistico.html', project: 'guia_turistico' },
-      { file: 'monitora_vagas.html', project: 'monitora_vagas' }
+      { file: 'music-in-numbers.html', project: 'music_in_numbers' },
+      { file: 'guia-turistico.html', project: 'guia_turistico' },
+      { file: 'monitora-vagas.html', project: 'monitora_vagas' }
     ];
 
     redirectPages.forEach(({ file, project }) => {
@@ -255,7 +255,7 @@ describe('Project Navigation Integration Tests', () => {
 
   describe('Performance and Loading Considerations', () => {
     test('should have minimal but functional redirect pages', () => {
-      const redirectPages = ['music_in_numbers.html', 'guia_turistico.html', 'monitora_vagas.html'];
+      const redirectPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
       
       redirectPages.forEach(page => {
         const pagePath = path.join(srcDir, 'pages', page);
@@ -272,7 +272,7 @@ describe('Project Navigation Integration Tests', () => {
     });
 
     test('should have reasonable redirect timing', () => {
-      const redirectPages = ['music_in_numbers.html', 'guia_turistico.html', 'monitora_vagas.html'];
+      const redirectPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
       
       redirectPages.forEach(page => {
         const pagePath = path.join(srcDir, 'pages', page);

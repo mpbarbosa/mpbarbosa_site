@@ -759,9 +759,9 @@ describe('Project Navigation Integration', () => {
       expect(fs.existsSync(pagesDir)).toBe(true);
       
       const requiredPages = [
-        'music_in_numbers.html',
-        'guia_turistico.html',
-        'monitora_vagas.html'
+        'music-in-numbers.html',
+        'guia-turistico.html',
+        'monitora-vagas.html'
       ];
 
       requiredPages.forEach(page => {
@@ -772,9 +772,9 @@ describe('Project Navigation Integration', () => {
 
     test('should have proper HTML structure in redirect pages', () => {
       const redirectPages = [
-        'music_in_numbers.html',
-        'guia_turistico.html',
-        'monitora_vagas.html'
+        'music-in-numbers.html',
+        'guia-turistico.html',
+        'monitora-vagas.html'
       ];
 
       redirectPages.forEach(page => {

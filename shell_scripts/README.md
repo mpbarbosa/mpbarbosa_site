@@ -1357,6 +1357,34 @@ To reduce repository clutter, historical validation reports have been consolidat
 
 **Cleanup Pattern**: Individual timestamped reports deleted after consolidation to maintain clean repository structure while preserving complete historical analysis.
 
+## Development Environment Documentation
+
+The project includes comprehensive development environment documentation in the `/docs` directory:
+
+### Development Tools Configuration
+- **[Dependabot Setup Guide](../docs/DEPENDABOT_SETUP.md)** - Automated dependency monitoring with weekly scans and intelligent PR grouping (`.github/dependabot.yml`)
+- **[Markdown Linting Guide](../docs/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation with `.mdlrc` configuration
+- **[Markdown Linting Solution Summary](../docs/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032 issues
+- **[Naming Convention Fix Report](../docs/NAMING_CONVENTION_FIX_REPORT.md)** - File naming standardization improvements and lessons learned
+
+### Test Environment Setup
+- **[Selenium E2E Setup Guide](../docs/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration with ChromeDriver/GeckoDriver setup (Status: Not Yet Configured)
+- **[Test Environment Configuration Report](../docs/TEST_ENVIRONMENT_CONFIGURATION_REPORT.md)** - Environment setup analysis and troubleshooting
+- **[Test Environment Final Report](../docs/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation with Jest configuration
+
+### Node.js Version Management
+The project uses **Node.js v25.2.1** with version management files:
+- `.node-version` - For fnm, nodenv, and asdf compatibility
+- `.nvmrc` - For nvm (Node Version Manager) compatibility
+
+### Editor Configuration
+The project includes `.editorconfig` for consistent coding styles:
+- Markdown: 4-space indentation, no max line length
+- JavaScript/TypeScript: 2-space indentation
+- Shell scripts: Tab indentation (4 spaces)
+- HTML/CSS: 2-space indentation
+- Automatic charset (UTF-8), line endings (LF), and trailing whitespace handling
+
 ## Contributing
 
 When contributing to these scripts:
@@ -1369,11 +1397,18 @@ When contributing to these scripts:
 
 ## Version History
 
+- **v2.0.0** (December 2025): Major development environment enhancements
+  - **New Configuration Files**: `.editorconfig`, `.mdlrc`, `.node-version`, `.nvmrc`, `.github/dependabot.yml`
+  - **Automated Dependency Management**: Weekly Dependabot scans with intelligent PR grouping
+  - **Markdown Linting**: Comprehensive `.mdlrc` configuration for AI-generated documentation
+  - **Node.js Version Lock**: v25.2.1 with nvm and fnm compatibility
+  - **Documentation Expansion**: 7 new guides (Dependabot, Markdown Linting, Selenium E2E, Test Environment, Naming Conventions)
+  - **Workflow Enhancements**: AI-powered Step 11 (Git Finalization) and Step 12 (Markdown Linting) improvements
 - **v1.0.0** (October 27, 2025): Initial release with full hierarchical submodule support
-- **Features**: Pull/push scripts with proper order, stash handling, comprehensive logging
+  - **Features**: Pull/push scripts with proper order, stash handling, comprehensive logging
 
 ---
 
 **Author**: MP Barbosa  
-**Last Updated**: November 9, 2025  
+**Last Updated**: December 11, 2025  
 **License**: Private project scripts

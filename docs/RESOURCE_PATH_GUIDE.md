@@ -66,8 +66,8 @@ Guia Turístico:   http://127.0.0.1:8080/submodules/guia_turistico/src/
 
 #### Method 2: Via Redirect Pages
 ```
-Music in Numbers: http://127.0.0.1:8080/pages/music_in_numbers.html
-Guia Turístico:   http://127.0.0.1:8080/pages/guia_turistico.html
+Music in Numbers: http://127.0.0.1:8080/pages/music-in-numbers.html
+Guia Turístico:   http://127.0.0.1:8080/pages/guia-turistico.html
 ```
 
 ## 🎯 Resource Path Strategies
@@ -166,7 +166,7 @@ submodules/project_name/src/
 open http://127.0.0.1:8080/submodules/music_in_numbers/src/
 
 # For main site integration testing
-open http://127.0.0.1:8080/pages/music_in_numbers.html
+open http://127.0.0.1:8080/pages/music-in-numbers.html
 ```
 
 ### Step 2: Verify Resource Paths

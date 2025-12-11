@@ -205,6 +205,13 @@ npm start
 ```
 The development server runs at `http://localhost:8080` with live reload.
 
+**Development Environment Configuration:**
+- **Node.js**: v25.2.1 (managed via `.node-version` and `.nvmrc`)
+- **EditorConfig**: Automatic code formatting via `.editorconfig`
+- **Markdown Linting**: Configured via `.mdlrc` for AI-generated docs
+- **Dependabot**: Automated weekly dependency updates (`.github/dependabot.yml`)
+- See: `docs/DEPENDABOT_SETUP.md`, `docs/MARKDOWN_LINTING_GUIDE.md` for details
+
 ### Testing and Quality
 
 ```bash
@@ -326,6 +333,15 @@ The project demonstrates **professional-grade architecture** with:
 - **Enterprise Patterns**: Functional Core, Imperative Shell architecture
 
 ### 📚 Architecture Documentation
+
+**Development Environment & Tools:**
+- **[Dependabot Setup Guide](docs/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates (`.github/dependabot.yml`)
+- **[Markdown Linting Guide](docs/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated docs and `.mdlrc` configuration
+- **[Markdown Linting Solution](docs/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring linting issues
+- **[Selenium E2E Setup Guide](docs/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
+- **[Test Environment Reports](docs/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
+
+**Architecture & Patterns:**
 - **[Comprehensive UX Documentation](docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
 - **[Two-Step Deployment Architecture v2.0.0](docs/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive parametrized deployment workflow guide
 - **[Tests & Docs Workflow Automation](docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - AI-powered 13-step automation workflow (Complete ✅)

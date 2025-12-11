@@ -148,6 +148,38 @@ confirm_action() {
     return 0
 }
 
+# Collect AI-generated output from user (single-line or multi-line)
+# Usage: collect_ai_output <prompt_message> <mode>
+# Modes: "single" (single-line input), "multi" (multi-line with END terminator)
+# Returns: Echoes collected content or empty string if none provided
+collect_ai_output() {
+    local prompt_message="$1"
+    local mode="${2:-single}"  # Default to single-line mode
+    
+    print_info "$prompt_message"
+    
+    if [[ "$mode" == "multi" ]]; then
+        # Multi-line input mode with END terminator
+        print_info "Type 'END' on a new line when finished:"
+        
+        local content=""
+        local line
+        while IFS= read -r line; do
+            if [[ "$line" == "END" ]]; then
+                break
+            fi
+            content+="${line}"$'\n'
+        done
+        
+        echo "$content"
+    else
+        # Single-line input mode
+        local single_line_input
+        read -p "$(echo -e "${YELLOW}Paste AI-generated content (or press Enter to skip): ${NC}")" single_line_input
+        echo "$single_line_input"
+    fi
+}
+
 # ==============================================================================
 # CLEANUP AND RESOURCE MANAGEMENT
 # ==============================================================================
@@ -190,5 +222,5 @@ show_progress() {
 # Export all utility functions
 export -f print_header print_success print_error print_warning print_info print_step
 export -f save_step_issues save_step_summary
-export -f confirm_action cleanup
+export -f confirm_action collect_ai_output cleanup
 export -f update_workflow_status show_progress

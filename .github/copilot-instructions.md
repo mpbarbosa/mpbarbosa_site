@@ -1,7 +1,7 @@
 # MP Barbosa Personal Website
 
 > **📄 File Size Note**  
-> This comprehensive instructions file is 552 lines (~27,600 characters, ~6,900 tokens).  
+> This comprehensive instructions file is 863 lines (~46,600 characters, ~11,650 tokens).  
 > Size is **intentional** to provide complete development context in a single file.  
 > Well within AI context limits (128K+ tokens for modern models).  
 > Alternative: Split into `/docs/` if file exceeds 1,000 lines or 200K characters.
@@ -34,6 +34,32 @@ The Music in Numbers subproject has achieved **outstanding architectural transfo
 2. Navigate to the src directory: `cd src`
 3. Install dependencies: `npm install` -- takes approximately 30 seconds. Set timeout to 60+ seconds.
 4. The build command is not yet implemented (`npm run build` only echoes a placeholder message)
+
+### Development Environment Configuration
+The project includes comprehensive development environment configuration:
+
+**EditorConfig** (`.editorconfig`):
+- Enforces consistent coding styles across editors and IDEs
+- Configures indentation, line endings, charset, and file endings
+- Supports: Markdown (4 spaces), JavaScript/TypeScript (2 spaces), Shell scripts (tabs), HTML/CSS (2 spaces)
+
+**Node.js Version Management** (`.node-version`, `.nvmrc`):
+- Project uses Node.js **v25.2.1**
+- Compatible with nvm, fnm, and other Node version managers
+- Ensures consistent runtime across development environments
+
+**Markdown Linting** (`.mdlrc`):
+- Configures markdownlint rules for AI-generated documentation
+- Disables problematic rules: MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032
+- Maintains critical rules: MD007 (indentation), MD009 (trailing spaces), MD026 (header punctuation), MD047 (file endings)
+- Run linting: `npm run lint:md` (requires Ruby gem: `gem install mdl`)
+
+**Automated Dependency Updates** (`.github/dependabot.yml`):
+- Weekly dependency scanning on Mondays at 09:00 (America/Sao_Paulo)
+- Monitors: NPM dependencies (`/src/package.json`) and GitHub Actions
+- Intelligent grouping: Separates dev vs production dependencies
+- Auto-assigns PRs to @mpbarbosa with conventional commit messages
+- See: `docs/DEPENDABOT_SETUP.md` for configuration details
 
 ### Running the Development Server
 - Start the development server: `npm start` -- starts instantly (under 5 seconds)
@@ -332,10 +358,13 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 ```
 
 ### Important Notes
-- **Linting Tools**: Markdown linting available via `npm run lint:md` (markdownlint); no ESLint or HTMLHint configured
+- **Linting Tools**: Markdown linting available via `npm run lint:md` (markdownlint with `.mdlrc` configuration); no ESLint or HTMLHint configured
 - **Jest Testing Framework**: Comprehensive test suite exists in `src/__tests__/` with coverage reporting
 - **ES Modules**: Project uses `"type": "module"` with `.mjs` files for modern JavaScript
-- **No CI/CD**: No GitHub Actions or other continuous integration configured
+- **Dependabot Integration**: Automated weekly dependency updates with PR grouping and security alerts (see `docs/DEPENDABOT_SETUP.md`)
+- **EditorConfig**: Code formatting standards enforced via `.editorconfig` for consistent style across editors
+- **Node.js Version**: Project uses v25.2.1 (managed via `.node-version` and `.nvmrc`)
+- **No CI/CD**: No GitHub Actions or other continuous integration configured yet
 - **HTML5 UP Dimension Template**: Uses responsive template with Font Awesome icons and jQuery utilities
 - **External dependencies**: Font Awesome webfonts bundled locally, jQuery and utilities included in assets
 - **Browser compatibility**: Designed for modern browsers supporting ES6+, CSS Grid, and HTML5 features
@@ -794,6 +823,15 @@ Step 11 showcases AI-assisted git best practices with complete modular implement
 ## 📖 Related Documentation References
 
 For comprehensive development guidance, consult these detailed documentation resources:
+
+### Development Environment & Tools
+- **[Dependabot Setup Guide](../docs/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates configuration
+- **[Markdown Linting Guide](../docs/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
+- **[Markdown Linting Solution Summary](../docs/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
+- **[Selenium E2E Setup Guide](../docs/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
+- **[Test Environment Configuration Report](../docs/TEST_ENVIRONMENT_CONFIGURATION_REPORT.md)** - Test environment setup analysis
+- **[Test Environment Final Report](../docs/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
+- **[Naming Convention Fix Report](../docs/NAMING_CONVENTION_FIX_REPORT.md)** - File naming standardization improvements
 
 ### Architecture & Development
 - **[Comprehensive UX Documentation](../docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide covering navigation patterns, accessibility features, responsive design, and interaction design across all project components

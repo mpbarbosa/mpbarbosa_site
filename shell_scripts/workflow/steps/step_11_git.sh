@@ -160,12 +160,15 @@ Dry run mode enabled. No actual git operations performed.
 - Inferred Scope: $commit_scope"
     
     # Sample changed files
-    local changed_files=$(git status --short | head -20)
+    local changed_files
+    changed_files=$(git status --short | head -20)
     
     # Get diff sample for context
-    local diff_sample=$(git diff --unified=3 HEAD | head -100)
+    local diff_sample
+    diff_sample=$(git diff --unified=3 HEAD | head -100)
     
-    local git_analysis_content=$(cat "$git_analysis" 2>/dev/null || echo "   No additional context")
+    local git_analysis_content
+    git_analysis_content=$(cat "$git_analysis" 2>/dev/null || echo "   No additional context")
     
     # Build comprehensive commit message generation prompt using AI helper function
     local copilot_prompt
@@ -233,9 +236,8 @@ Dry run mode enabled. No actual git operations performed.
                 extract_and_save_issues_from_log "11" "Git_Finalization" "$log_file"
                 echo ""
                 
-                # Ask user to provide the AI-generated message
-                print_info "Please copy the AI-generated commit message from Copilot session above"
-                read -p "$(echo -e "${YELLOW}Paste AI-generated commit message (or press Enter for default): ${NC}")" ai_commit_msg
+                # Collect AI-generated commit message using reusable function (multi-line)
+                ai_commit_msg=$(collect_ai_output "Please copy the AI-generated commit message from Copilot session above" "multi")
                 
                 if [[ -n "$ai_commit_msg" ]]; then
                     use_ai_message=true

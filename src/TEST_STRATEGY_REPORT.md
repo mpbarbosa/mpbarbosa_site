@@ -280,7 +280,7 @@ describe('Contact Form Validation', () => {
 describe('Project Redirect Pages', () => {
   test('should redirect to Music in Numbers after timeout', (done) => {
     // Load redirect page
-    const redirectHTML = fs.readFileSync('pages/music_in_numbers.html', 'utf8');
+    const redirectHTML = fs.readFileSync('pages/music-in-numbers.html', 'utf8');
     document.body.innerHTML = redirectHTML;
     
     // Mock window.location

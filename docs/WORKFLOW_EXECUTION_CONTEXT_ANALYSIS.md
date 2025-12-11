@@ -19,7 +19,7 @@
 **Technical Details**:
 ```html
 <!-- OLD Expected Pattern -->
-<a href="pages/music_in_numbers.html">Music in Numbers</a>
+<a href="pages/music-in-numbers.html">Music in Numbers</a>
 
 <!-- NEW Actual Pattern -->  
 <a href="submodules/music_in_numbers/src/music_in_numbers.html" target="_blank" rel="noopener noreferrer">Music in Numbers - Análise de dados Spotify</a>
@@ -121,9 +121,9 @@ Total Submodule Tests: Mixed (expected due to different environments)
 ### Navigation Pattern Changes
 | Element | Old Pattern | New Pattern | Status |
 |---------|-------------|-------------|---------|
-| **Music in Numbers** | `pages/music_in_numbers.html` | `submodules/music_in_numbers/src/music_in_numbers.html` | ✅ Updated |
-| **Guia Turístico** | `pages/guia_turistico.html` | Not currently linked | ⚠️ Not in main page |
-| **Monitora Vagas** | `pages/monitora_vagas.html` | Not currently linked | ⚠️ Not in main page |
+| **Music in Numbers** | `pages/music-in-numbers.html` | `submodules/music_in_numbers/src/music_in_numbers.html` | ✅ Updated |
+| **Guia Turístico** | `pages/guia-turistico.html` | Not currently linked | ⚠️ Not in main page |
+| **Monitora Vagas** | `pages/monitora-vagas.html` | Not currently linked | ⚠️ Not in main page |
 
 ## 📈 Success Metrics
 

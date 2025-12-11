@@ -329,17 +329,9 @@ Please generate complete, production-ready test code for the identified untested
                                     print_info "Starting Copilot CLI session for issue extraction..."
                                     copilot -p "$extract_prompt" --allow-all-tools
                                     
-                                    print_info "Please copy the organized issues from Copilot output."
-                                    print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                                    
-                                    local organized_issues=""
-                                    local line
-                                    while IFS= read -r line; do
-                                        if [[ "$line" == "END" ]]; then
-                                            break
-                                        fi
-                                        organized_issues+="${line}"$'\n'
-                                    done
+                                    # Collect organized issues using reusable function
+                                    local organized_issues
+                                    organized_issues=$(collect_ai_output "Please copy the organized issues from Copilot output." "multi")
                                     
                                     if [[ -n "$organized_issues" ]]; then
                                         save_step_issues "6" "Test_Generation" "$organized_issues"
