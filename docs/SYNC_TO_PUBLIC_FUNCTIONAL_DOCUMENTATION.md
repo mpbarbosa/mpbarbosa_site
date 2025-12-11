@@ -75,12 +75,16 @@ The `sync_to_public.sh` script is a comprehensive asset synchronization tool des
 
 #### **Submodule Integration**
 - **Music in Numbers**: Complete HTML, JavaScript modules, and CSS stylesheets
-- **Monitora Vagas**: Vanilla JavaScript application with:
-  - Card-based vacancy results UI
-  - Material Design 3 styling (md3-components.css, md3-results-cards.css, md3-theme.css)
-  - Direct fetch API integration
-  - Copy/clear functionality
-  - API testing tools (api-test.html)
+- **Monitora Vagas v2.0.0**: Dual-directory vanilla JavaScript application:
+  - **src/ folder**: Legacy implementation (backward compatibility)
+  - **public/ folder**: Modern architecture with:
+    - Configuration layer (app.js, constants.js, environment.js, index.js)
+    - BuscaVagasAPIClient class with fetch API and timeout handling
+    - Modular CSS (global/, components/, pages/)
+    - Archived UI versions (api-test.html, index-md3*.html)
+    - Service worker (sw.js) for PWA support
+    - Vendor libraries (jQuery, datepicker, Select2, Font Awesome 4.7, MDI Font)
+    - Symlink resolution with cp -rL flag
 - **Guia Turístico**: Travel guide application assets
 - **Submodule Structure**: Maintains proper directory hierarchy for all subprojects
 

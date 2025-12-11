@@ -118,21 +118,44 @@ mpbarbosa_site/
 │   ├── api/                   # Busca Vagas API proxy (symlink to backend in production)
 │   └── submodules/            # Synchronized subproject content
 │       ├── monitora_vagas/    # AFPESP hotel monitoring vanilla JavaScript app
-│       │   └── src/
-│       │       ├── index.html           # Main UI with hotel search form and card-based results
-│       │       ├── api-test.html        # API testing tool for Busca Vagas backend
-│       │       ├── config/environment.js # Browser-compatible env config with dynamic API URLs
-│       │       ├── components/QuickSearch/QuickSearch.js # Weekend vacancy search service class
-│       │       ├── services/apiClient.js # API client singleton for hotel data fetching
-│       │       ├── js/
-│       │       │   ├── global.js        # Global JavaScript utilities
-│       │       │   └── guestCounter.js  # Guest counter widget
-│       │       ├── css/
-│       │       │   ├── main.css         # Main stylesheet
-│       │       │   ├── md3-components.css   # Material Design 3 components
-│       │       │   ├── md3-results-cards.css # Card-based results styling
-│       │       │   └── md3-theme.css    # Material Design 3 theme
-│       │       └── vendor/              # Third-party libraries (jQuery, datepicker, etc.)
+│       │   ├── src/           # Legacy source files
+│       │   │   ├── services/apiClient.js    # Original API client implementation
+│       │   │   ├── services/hotelCache.js   # Original caching layer
+│       │   │   └── styles/main.css          # Original stylesheet
+│       │   └── public/        # Modern production build (v2.0.0)
+│       │       ├── index.html               # Main UI with hotel search form
+│       │       ├── archived-versions/       # Historical UI iterations
+│       │       │   ├── api-test.html        # API testing tool
+│       │       │   ├── index-md3-cards.html # Material Design 3 cards version
+│       │       │   ├── index-md3.html       # Material Design 3 version
+│       │       │   └── index-original-backup.html # Original backup
+│       │       ├── config/                  # Configuration layer architecture
+│       │       │   ├── app.js               # Application constants and metadata
+│       │       │   ├── constants.js         # Business logic constants
+│       │       │   ├── environment.js       # Environment detection and API URLs
+│       │       │   └── index.js             # Unified configuration exports
+│       │       ├── services/                # Service layer
+│       │       │   ├── apiClient.js         # BuscaVagasAPIClient class with fetch
+│       │       │   └── hotelCache.js        # Hotel data caching service
+│       │       ├── js/                      # Application scripts
+│       │       │   ├── global.js            # Global utilities
+│       │       │   ├── guestCounter.js      # Guest counter widget
+│       │       │   └── noScrollInterface.js # No-scroll UI optimization
+│       │       ├── css/                     # Modular CSS architecture
+│       │       │   ├── main.css             # Main stylesheet aggregator
+│       │       │   ├── global/              # Global styles (reset, base, variables)
+│       │       │   ├── components/          # Component styles (progress-bar, search-form)
+│       │       │   └── pages/               # Page-specific styles (home.css)
+│       │       ├── vendor/                  # Third-party libraries
+│       │       │   ├── jquery/              # jQuery 3.x
+│       │       │   ├── datepicker/          # Daterangepicker + Moment.js
+│       │       │   ├── select2/             # Select2 dropdown library
+│       │       │   ├── font-awesome-4.7/    # Font Awesome icons
+│       │       │   ├── mdi-font/            # Material Design Iconic Font
+│       │       │   ├── bootstrap-wizard/    # Bootstrap wizard components
+│       │       │   └── jquery-validate/     # jQuery validation plugin
+│       │       ├── sw.js                    # Service worker for PWA support
+│       │       └── favicon.ico              # Application favicon
 │       ├── music_in_numbers/  # Spotify analytics submodule
 │       └── guia_turistico/    # Travel guide submodule
 ├── src/                        # Main source directory 
@@ -197,12 +220,15 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers submodule support with complete module architecture
-# - Monitora Vagas deployment with:
-#   - Card-based results UI with dynamic hotel vacancy display
-#   - API client configuration for hotel data fetching
-#   - Testing tools (api-test.html) for backend validation
-#   - Material Design 3 styling (md3-components.css, md3-results-cards.css, md3-theme.css)
-#   - Copy/clear functionality for results management
+# - Monitora Vagas dual-directory deployment:
+#   - Both src/ (legacy) and public/ (modern v2.0.0) folder support
+#   - Modern configuration layer architecture (app.js, constants.js, environment.js, index.js)
+#   - BuscaVagasAPIClient class with fetch API and timeout handling
+#   - Modular CSS architecture (global/, components/, pages/)
+#   - Archived UI versions for historical reference
+#   - Service worker (sw.js) for PWA support
+#   - Complete vendor library bundling (jQuery, datepicker, Select2, Font Awesome 4.7, MDI Font)
+#   - Symlink resolution with -L flag for proper content copying
 # - Busca Vagas full-stack deployment (client HTML + server API)
 # - Systemd service deployment with sudo privilege handling for system directories
 # - Enhanced backup system for both public and production directories
@@ -407,84 +433,128 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 
 ## Modular Architecture Excellence
 
-### Monitora Vagas (AFPESP Hotel Monitoring) Architecture
-The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA with direct API integration**:
+### Monitora Vagas (AFPESP Hotel Monitoring) Architecture v2.0.0
+The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA with modern configuration architecture**:
 
-#### Core Features
+#### Directory Structure
+The project now maintains both legacy (`src/`) and modern (`public/`) directories:
+
+**Legacy Structure** (`src/`):
+- Original implementation with inline configuration
+- Direct API client without environment abstraction
+- Monolithic CSS architecture
+- Maintained for backward compatibility
+
+**Modern Structure v2.0.0** (`public/`):
+- **Configuration Layer**: Modular config architecture with separation of concerns
+- **Service Layer**: Enhanced API client with environment detection
+- **CSS Architecture**: Component-based styling with global, component, and page-specific modules
+- **Archived Versions**: Historical UI iterations for reference and rollback
+- **Vendor Management**: Comprehensive third-party library bundling
+
+#### Core Features (v2.0.0)
 - **Vanilla JavaScript UI**: Single-page application for AFPESP hotel vacancy monitoring (no React framework)
-- **Direct Fetch API Integration**: Native fetch calls with comprehensive error handling
-- **Environment-Aware Configuration**: Dynamic API endpoint detection (development/production)
-- **Weekend Search**: Automated multi-weekend vacancy scanning with progress tracking
-- **Interactive Form**: Real-time hotel search with date selection and validation
-- **Card-Based Results Display**: Modern UI with hotel vacancy cards, copy/clear functionality
+- **Environment-Aware Configuration**: Dynamic API endpoint detection with URL override support
+- **BuscaVagasAPIClient Class**: Modern fetch API implementation with timeout handling
+- **Modular CSS Architecture**: Separation of global styles, components, and pages
+- **PWA Support**: Service worker implementation for progressive web app capabilities
+- **Archived UI Versions**: Historical iterations preserved for reference
+- **Comprehensive Vendor Bundle**: All third-party dependencies included and optimized
 
-#### Key Components
+#### Configuration Layer Architecture (`config/`)
 
-**Configuration Layer** (`config/environment.js`):
-- Browser-compatible environment detection (no Node.js process.env dependency)
+**app.js** - Application Constants:
+- Application metadata (name, version, description)
+- Search configuration (default/max/min weekends, search types)
+- Hotel configuration (value, label, description arrays)
+- UI settings and feature flags
+- Build and deployment metadata
+
+**constants.js** - Business Logic Constants:
+- API endpoint paths and methods
+- HTTP status codes and error messages
+- Timeout configurations per operation type
+- Cache duration settings
+- Validation rules and constraints
+- Date format patterns
+
+**environment.js** - Environment Detection:
+- Browser-compatible environment detection (no Node.js process.env)
 - Dynamic API base URL: `http://localhost:3001/api` (dev) or `https://www.mpbarbosa.com/api` (prod)
+- URL parameter override: `?useProductionAPI=true` forces production API
 - Feature flags based on environment (logging, analytics, caching)
-- Environment-specific configurations for security and performance
-- URL parameter override: `?useProductionAPI=true` forces production API in development
+- Environment-specific security and performance configurations
+- `getEnvironment()` export for centralized environment access
 
-**Main UI** (`index.html`):
-- **Hotel Selection Dropdown**: Dynamic hotel list loading from `/api/vagas/hoteis` via ES module import
-- **Interactive Form Submission**: Full vacancy search with inline form validation
-- **Date Format Conversion**: Brazilian format (dd/mm/yyyy) to ISO 8601 (yyyy-mm-dd)
-- **Loading States**: Visual feedback with disabled buttons and loading text during API calls
-- **Card-Based Results Display**: Dynamic hotel vacancy cards with:
-  - Hotel name header with vacancy count badge
-  - Grouped vacancy listings by hotel
-  - FlexReserva direct booking links
-  - Empty state for no results
-  - Smooth scroll to results
-- **Copy/Clear Functionality**: 
-  - Copy results to clipboard (with modern Clipboard API and legacy fallback)
-  - Clear results button to reset display
-- **Comprehensive Logging**: Step-by-step console logging for debugging (6-step flow)
-- **Error Handling**: Try-catch with user-friendly error messages in both alerts and result display
+**index.js** - Unified Configuration Exports:
+- Central export point for all configuration modules
+- Tree-shakeable ES6 module exports
+- Single import point for application code
+- Maintains separation of concerns while providing convenience
 
-**QuickSearch Component** (`components/QuickSearch/QuickSearch.js`):
-- `HotelVacancyService` class with direct fetch implementation
-- **Hotel List Fetching**: Direct API call to `/api/vagas/hoteis` with error handling
-- **Weekend Search**: Direct fetch to `/api/vagas/search/weekends?count=N` 
-- **Vacancy Search**: Direct fetch to `/api/vagas/search?checkin=...&checkout=...`
-- **AbortController Integration**: Request timeout management (600s for weekend search)
-- **ISO 8601 Date Formatting**: Built-in date conversion for API compliance
-- **API Response Transformation**: Component format conversion for UI rendering
-- **Comprehensive Error Handling**: Network errors, timeouts, and API errors
+#### Service Layer (`services/`)
 
-**Inline Search Implementation** (`index.html` module script):
-- **6-Step Vacancy Search Flow**:
-  1. Initial logging setup
-  2. Extract input parameters from UI (hotel, checkin, checkout)
-  3. Show loading state (button disabled, loading text)
-  4. POST data to API (using GET with query parameters)
-  5. Fetch and validate API response
-  6. Display formatted results in card UI
-- **displayResults() Function**: Dynamic hotel card generation
-  - Parse API response structure (data.hasAvailability, data.result.hotelGroups)
-  - Create styled hotel cards with vacancy listings
-  - FlexReserva booking links for each hotel
-  - Empty state handling with friendly messaging
-  - **Critical Fix (Dec 2025)**: hasAvailability at data level, not data.result level
-- **Copy/Clear Event Handlers**: 
-  - DOMContentLoaded listeners for results manipulation
-  - Modern Clipboard API with legacy execCommand fallback
-  - Visual feedback (✅ Copiado!) with 2-second timeout
+**BuscaVagasAPIClient** (`apiClient.js`):
+- Class-based architecture with constructor initialization
+- Environment-aware API base URL configuration
+- Fetch API wrapper with timeout handling (30s default, 60s search, 600s weekend)
+- AbortController integration for request cancellation
+- ISO 8601 date formatting for API compliance
+- Generic `fetchWithTimeout()` method for all API calls
+- Comprehensive error handling with network, timeout, and API errors
+- Console logging for debugging and monitoring
+- Methods:
+  - `scrapeHotels()` - Fetch hotel list from `/api/vagas/hoteis`
+  - `searchVacancies()` - Search vacancies with checkin/checkout dates
+  - `searchWeekends()` - Multi-weekend search with count parameter
 
-**Testing Tools** (`api-test.html`):
-- Standalone API testing interface for developers
-- Interactive buttons for all API endpoints
-- Real-time response display with formatted JSON
-- Visual feedback for success/error states
-- 10-minute timeout support for long-running weekend searches
+**Hotel Cache Service** (`hotelCache.js`):
+- In-memory caching layer for hotel data
+- Cache duration management (5 minutes default)
+- Cache invalidation and refresh logic
+- Reduces redundant API calls
+- Improves application performance
 
-**API Client Service** (`services/apiClient.js`):
-- ES module export of apiClient singleton
-- scrapeHotels() method for hotel list fetching
-- Used by index.html for initial hotel dropdown population
-- Maintains compatibility with existing code patterns
+#### CSS Architecture (`css/`)
+
+**Global Styles** (`global/`):
+- `reset.css` - CSS reset for cross-browser consistency
+- `base.css` - Base typography, layout, and element styles
+- `variables.css` - CSS custom properties (colors, spacing, typography, breakpoints)
+
+**Component Styles** (`components/`):
+- `progress-bar.css` - Loading and progress indicators
+- `search-form.css` - Search form components and validation states
+
+**Page Styles** (`pages/`):
+- `home.css` - Home page specific styles and layout
+
+**Main Aggregator** (`main.css`):
+- Imports all global, component, and page styles
+- Provides single entry point for stylesheet loading
+- Optimized for HTTP/2 multiplexing
+
+**No-Scroll Optimizations** (`no-scroll-optimizations.css`):
+- Performance optimizations for scroll-free interfaces
+- Reduces layout thrashing
+- Improves rendering performance
+
+#### Archived Versions (`archived-versions/`)
+Historical UI iterations preserved for reference and potential rollback:
+- `api-test.html` - Standalone API testing interface
+- `index-md3-cards.html` - Material Design 3 with card-based results
+- `index-md3.html` - Material Design 3 base implementation
+- `index-original-backup.html` - Original UI before refactoring
+
+#### Vendor Libraries (`vendor/`)
+Comprehensive third-party library bundling:
+- **jQuery 3.x** - DOM manipulation and AJAX
+- **Moment.js + Daterangepicker** - Date selection and formatting
+- **Select2** - Enhanced dropdown functionality
+- **Font Awesome 4.7** - Icon library (webfonts: EOT, TTF, WOFF, WOFF2)
+- **Material Design Iconic Font** - MDI icons (TTF, WOFF, WOFF2)
+- **Bootstrap Wizard** - Multi-step form components
+- **jQuery Validate** - Form validation plugin
 
 #### Integration with Busca Vagas Backend
 - **Backend Repository**: `../busca_vagas` (sibling project)
@@ -492,6 +562,13 @@ The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA w
 - **Production Deployment**: Systemd service at `/etc/systemd/system/busca_vagas_node_app.service`
 - **Port**: 3000 (configurable via PORT environment variable)
 - **CORS**: Configured for `http://localhost:5173` (development)
+
+#### Deployment Strategy
+The `sync_to_public.sh` script (v2.0.0) handles dual-directory deployment:
+- **src/ folder**: Legacy implementation copied as-is
+- **public/ folder**: Modern implementation with symlink resolution (`cp -rL`)
+- **Validation**: Both directories validated for HTML and JS files
+- **Backward Compatibility**: Ensures smooth transition from legacy to modern architecture
 
 ### Music in Numbers Subproject Structure
 The Music in Numbers project demonstrates **professional-grade modular architecture**:

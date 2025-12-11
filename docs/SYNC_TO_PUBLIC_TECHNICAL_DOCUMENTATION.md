@@ -403,7 +403,7 @@ main()
 ├── copy_index_html() → copy_single_file()
 ├── copy_css_assets() → copy_directory()
 ├── copy_music_in_numbers_submodule() → copy_specific_files()
-├── copy_monitora_vagas_submodule() → copy_directory() [sibling project: ../monitora_vagas]
+├── copy_monitora_vagas_submodule() → copy_directory() [sibling project: ../monitora_vagas, dual-directory v2.0.0]
 ├── copy_busca_vagas_submodule() → copy_directory() [sibling project: ../busca_vagas]
 ├── validate_sync() → validate_path()
 └── show_summary()

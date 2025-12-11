@@ -162,20 +162,22 @@ Individual timestamped reports have been archived into these consolidated files 
 - **Status**: Active development
 
 ### Monitora Vagas
-**AFPESP Hotel Vacancy Monitoring Application** (Sibling Project)
-- Automated weekend vacancy search for AFPESP hotels
-- Vanilla JavaScript single-page application with direct fetch API integration
-- Modern card-based UI for vacancy results display
-- Interactive hotel selection with dynamic dropdown population
-- Form-based search with Brazilian date format support (dd/mm/yyyy)
-- Real-time results with copy/clear functionality
-- Environment-aware configuration (development/production with URL override)
-- Direct API integration with comprehensive error handling
-- 6-step vacancy search flow with detailed console logging
-- Material Design 3 styling (md3-components, md3-results-cards, md3-theme)
-- AbortController-based timeout management for long-running searches
-- API testing tools for developers (api-test.html)
-- **Status**: Production-ready with card-based UI and inline search
+**AFPESP Hotel Vacancy Monitoring Application v2.0.0** (Sibling Project)
+- **Modern Architecture**: Dual-directory structure (legacy src/ + modern public/)
+- **Configuration Layer**: Modular config architecture (app.js, constants.js, environment.js, index.js)
+- **BuscaVagasAPIClient Class**: Modern fetch API with timeout handling and environment detection
+- **Modular CSS**: Component-based styling (global/, components/, pages/)
+- **Service Worker**: PWA support with sw.js
+- **Archived Versions**: Historical UI iterations for reference and rollback
+- **Vendor Management**: Complete third-party library bundling (jQuery, datepicker, Select2, Font Awesome 4.7, MDI Font)
+- **Automated weekend vacancy search** for AFPESP hotels with configurable ranges
+- **Vanilla JavaScript SPA** with no framework dependencies
+- **Interactive Form**: Hotel selection with dynamic dropdown and date validation
+- **Real-time Results**: Card-based UI with copy/clear functionality
+- **Environment-Aware**: Dynamic API URLs (development/production with URL override)
+- **AbortController Integration**: Request timeout management (30s/60s/600s)
+- **Comprehensive Error Handling**: Network, timeout, and API error management
+- **Status**: Production-ready with modern v2.0.0 architecture
 - **Location**: `../monitora_vagas` (not a git submodule)
 
 ### Busca Vagas

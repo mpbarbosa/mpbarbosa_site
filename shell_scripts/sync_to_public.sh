@@ -838,6 +838,17 @@ copy_music_in_numbers_styles() {
 copy_monitora_vagas_submodule() {
     print_step "Copying Monitora Vagas submodule files"
     
+    # Monitora Vagas uses a dual-directory architecture (v2.0.0):
+    # - src/ folder: Legacy implementation (backward compatibility)
+    # - public/ folder: Modern implementation with:
+    #   * Configuration layer (app.js, constants.js, environment.js, index.js)
+    #   * BuscaVagasAPIClient class with fetch API
+    #   * Modular CSS architecture (global/, components/, pages/)
+    #   * Archived UI versions (api-test.html, index-md3*.html)
+    #   * Service worker (sw.js) for PWA support
+    #   * Vendor libraries (jQuery, datepicker, Select2, Font Awesome 4.7, MDI Font)
+    # Both directories are copied to support gradual migration and rollback scenarios
+    
     local monitora_root="$PROJECT_ROOT/../monitora_vagas"
     local src_source_dir="$monitora_root/src"
     local public_source_dir="$monitora_root/public"
