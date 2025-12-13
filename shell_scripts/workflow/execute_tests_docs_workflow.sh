@@ -122,6 +122,7 @@ DRY_RUN=false
 INTERACTIVE_MODE=true
 AUTO_MODE=false
 VERBOSE=false
+STOP_ON_COMPLETION=false
 WORKFLOW_START_TIME=$(date +%s)
 
 # Step execution control
@@ -289,6 +290,30 @@ print_step() {
     echo -e "\n${MAGENTA}▶ Step ${step_num}: ${step_name}${NC}"
 }
 
+# Prompt user for continuation after workflow completion
+# Uses STOP_ON_COMPLETION variable to control behavior
+prompt_for_continuation() {
+    if [[ "$STOP_ON_COMPLETION" == true ]]; then
+        echo ""
+        echo -e "${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${CYAN}║${NC}  ${YELLOW}Workflow Execution Complete${NC}                                ${CYAN}║${NC}"
+        echo -e "${CYAN}╠════════════════════════════════════════════════════════════════╣${NC}"
+        echo -e "${CYAN}║${NC}  ${GREEN}All selected steps have been executed successfully.${NC}        ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}                                                                ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}  Review the workflow summary and backlog reports above.      ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}  You can now proceed with follow-up actions such as:         ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}    • Reviewing and addressing identified issues              ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}    • Committing changes with git finalization                ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}    • Running additional validation steps                     ${CYAN}║${NC}"
+        echo -e "${CYAN}║${NC}    • Deploying to production environments                    ${CYAN}║${NC}"
+        echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
+        echo ""
+        echo -e "${YELLOW}Press Enter to continue or Ctrl+C to exit...${NC}"
+        read -r
+        log_to_workflow "INFO" "User acknowledged workflow completion"
+    fi
+}
+
 # ==============================================================================
 # WORKFLOW EXECUTION LOGGING
 # ==============================================================================
@@ -405,7 +430,8 @@ save_step_issues() {
     
     # Process content to convert \n to actual newlines
     # Use echo -e to interpret escape sequences
-    local processed_content=$(echo -e "${issues_content}")
+    local processed_content
+    processed_content=$(echo -e "${issues_content}")
     
     # Create markdown report
     cat > "$step_file" << EOF
@@ -4529,6 +4555,9 @@ execute_full_workflow() {
         
         # Create workflow summary file
         create_workflow_summary
+        
+        # Prompt for continuation if enabled
+        prompt_for_continuation
     fi
 }
 
@@ -4618,6 +4647,7 @@ OPTIONS:
     --interactive       Run in interactive mode (default)
     --verbose           Enable verbose output
     --steps STEPS       Execute specific steps (comma-separated, e.g., "0,1,2" or "all")
+    --stop              Enable continuation prompt on completion
     --help              Show this help message
     --version           Show script version
 
@@ -4700,6 +4730,11 @@ parse_arguments() {
             --verbose)
                 VERBOSE=true
                 print_info "Verbose mode enabled"
+                shift
+                ;;
+            --stop)
+                STOP_ON_COMPLETION=true
+                print_info "Continuation prompt enabled"
                 shift
                 ;;
             --steps)

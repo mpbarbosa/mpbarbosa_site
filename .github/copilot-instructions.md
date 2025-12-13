@@ -203,10 +203,9 @@ mpbarbosa_site/
 │   │   ├── header.html       # Standalone header component
 │   │   └── projects.html     # Standalone projects page
 │   ├── pages/                 # Redirect pages for projects
-│   │   ├── music_in_numbers.html    # Redirects to submodule
-│   │   ├── guia_turistico.html      # Redirects to submodule
-│   │   ├── monitora_vagas.html      # Redirects to sibling project
-│   │   └── busca_vagas.html         # Redirects to sibling project
+│   │   ├── music-in-numbers.html    # Redirects to submodule (renamed from music_in_numbers.html)
+│   │   ├── guia-turistico.html      # Redirects to submodule (renamed from guia_turistico.html)
+│   │   └── monitora-vagas.html      # Redirects to sibling project (renamed from monitora_vagas.html)
 │   └── submodules/            # Git submodules for projects
 │       ├── music_in_numbers/  # Spotify analytics (client-side)
 │       └── guia_turistico/    # Travel guide (client-side)
@@ -853,6 +852,9 @@ For comprehensive development guidance, consult these detailed documentation res
 ### Deployment
 - **[Sync to Public Functional Documentation](../docs/SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Two-step deployment architecture functional guide
 - **[Sync to Public Technical Documentation](../docs/SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details
+
+### Quality Assurance & Validation
+- **[Shell Script Validation Report](../docs/shell_script_validation_report.md)** - Current validation report (Dec 11, 2025): 43/44 scripts documented, metrics_validation.sh missing documentation
 
 ### Historical Validation Reports (v2.0.0 - Consolidated)
 - **[Directory Structure Validation History](../docs/DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md)** - 9 historical reports consolidated (Nov 13-25, 2025), all ✅ EXCELLENT status

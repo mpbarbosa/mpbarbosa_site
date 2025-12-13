@@ -31,8 +31,8 @@ mpbarbosa_site/
 │   │   │           └── spotify-api/
 │   │   └── guia_turistico/     # Travel Guide subproject
 │   └── pages/                  # Redirect pages
-│       ├── music_in_numbers.html
-│       └── guia_turistico.html
+│       ├── music-in-numbers.html  (renamed from music_in_numbers.html)
+│       └── guia-turistico.html   (renamed from guia_turistico.html)
 ```
 
 ## 🌐 Server Configuration

@@ -103,10 +103,9 @@ mpbarbosa_site/                    # Main repository
 │   ├── index.html                 # Main landing page
 │   ├── package.json               # Dependencies and scripts
 │   ├── pages/                     # Project redirect pages
-│   │   ├── music_in_numbers.html  # Music in Numbers redirect (git submodule)
-│   │   ├── guia_turistico.html    # Guia Turístico redirect (git submodule)
-│   │   ├── monitora_vagas.html    # Monitora Vagas redirect (sibling project)
-│   │   └── busca_vagas.html       # Busca Vagas redirect (sibling project)
+│   │   ├── music-in-numbers.html  # Music in Numbers redirect (renamed from music_in_numbers.html)
+│   │   ├── guia-turistico.html    # Guia Turístico redirect (renamed from guia_turistico.html)
+│   │   └── monitora-vagas.html    # Monitora Vagas redirect (renamed from monitora_vagas.html)
 │   └── submodules/                # Git submodules only (require auth)
 │       ├── music_in_numbers/      # Music analysis project
 │       └── guia_turistico/        # Travel guide with extracted classes

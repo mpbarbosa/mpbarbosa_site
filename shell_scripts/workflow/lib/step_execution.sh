@@ -26,11 +26,21 @@ execute_phase2_ai_analysis() {
     local optional_prompt_msg="${7:-No automated issues found}"
     local success_question="${8:-Did Copilot identify issues that need fixing?}"
     
-    # Check if Copilot CLI is available
+    # Check if Copilot CLI is available and authenticated
     if ! is_copilot_available; then
         print_warning "GitHub Copilot CLI not found - using basic checks only"
         print_info "Install from: https://github.com/github/gh-copilot"
         print_info "For deep analysis, use the prompt above manually with Copilot"
+        return 0
+    fi
+    
+    if ! is_copilot_authenticated; then
+        print_warning "GitHub Copilot CLI is not authenticated - using basic checks only"
+        print_info "Authentication options:"
+        print_info "  • Run 'copilot' and use the '/login' command"
+        print_info "  • Set COPILOT_GITHUB_TOKEN, GH_TOKEN, or GITHUB_TOKEN environment variable"
+        print_info "  • Run 'gh auth login' to authenticate with GitHub CLI"
+        print_info "For deep analysis, authenticate and run the workflow again"
         return 0
     fi
     

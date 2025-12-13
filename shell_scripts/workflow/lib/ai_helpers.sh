@@ -15,17 +15,46 @@ is_copilot_available() {
     command -v copilot &> /dev/null
 }
 
+# Check if Copilot CLI is authenticated
+# Returns: 0 if authenticated, 1 if not
+is_copilot_authenticated() {
+    if ! is_copilot_available; then
+        return 1
+    fi
+    
+    # Test authentication by running a simple command
+    # Redirect stderr to capture authentication errors
+    local auth_test
+    auth_test=$(copilot --version 2>&1)
+    
+    # Check for authentication error messages
+    if echo "$auth_test" | grep -q "No authentication information found"; then
+        return 1
+    fi
+    
+    return 0
+}
+
 # Validate Copilot CLI and provide user feedback
 # Usage: validate_copilot_cli
 validate_copilot_cli() {
-    if is_copilot_available; then
-        print_success "GitHub Copilot CLI detected"
-        return 0
-    else
+    if ! is_copilot_available; then
         print_warning "GitHub Copilot CLI not found"
         print_info "Install with: npm install -g @githubnext/github-copilot-cli"
         return 1
     fi
+    
+    if ! is_copilot_authenticated; then
+        print_warning "GitHub Copilot CLI is not authenticated"
+        print_info "Authentication options:"
+        print_info "  • Run 'copilot' and use the '/login' command"
+        print_info "  • Set COPILOT_GITHUB_TOKEN, GH_TOKEN, or GITHUB_TOKEN environment variable"
+        print_info "  • Run 'gh auth login' to authenticate with GitHub CLI"
+        return 1
+    fi
+    
+    print_success "GitHub Copilot CLI detected and authenticated"
+    return 0
 }
 
 # ==============================================================================
@@ -1491,6 +1520,15 @@ execute_copilot_prompt() {
         return 1
     fi
     
+    if ! is_copilot_authenticated; then
+        print_error "Copilot CLI is not authenticated"
+        print_info "Authentication options:"
+        print_info "  • Run 'copilot' and use the '/login' command"
+        print_info "  • Set COPILOT_GITHUB_TOKEN, GH_TOKEN, or GITHUB_TOKEN environment variable"
+        print_info "  • Run 'gh auth login' to authenticate with GitHub CLI"
+        return 1
+    fi
+    
     print_info "Executing Copilot CLI prompt..."
     
     # Write prompt to temporary file to avoid ARG_MAX limit
@@ -1542,6 +1580,12 @@ trigger_ai_step() {
         return 1
     fi
     
+    if ! is_copilot_authenticated; then
+        print_warning "Copilot CLI not authenticated for ${step_name}"
+        print_info "Run 'copilot' and use '/login' or set COPILOT_GITHUB_TOKEN"
+        return 1
+    fi
+    
     if ! confirm_action "Run Copilot CLI for ${step_name}?" "y"; then
         print_info "Skipped AI analysis for ${step_name}"
         return 0
@@ -1554,6 +1598,7 @@ trigger_ai_step() {
 
 # Export all AI helper functions
 export -f is_copilot_available
+export -f is_copilot_authenticated
 export -f validate_copilot_cli
 export -f build_ai_prompt
 export -f build_doc_analysis_prompt

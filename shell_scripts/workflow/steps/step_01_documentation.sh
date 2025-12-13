@@ -37,6 +37,69 @@ step1_get_version() {
     esac
 }
 
+# Determine target folder for documentation based on file path
+# Usage: determine_doc_folder <file_path>
+# Returns: Absolute path to target folder
+determine_doc_folder() {
+    local doc_file="$1"
+    local target_folder=""
+    
+    # Determine folder based on file path patterns
+    if [[ "$doc_file" =~ ^docs/ ]]; then
+        target_folder="$PROJECT_ROOT/docs"
+    elif [[ "$doc_file" =~ ^shell_scripts/ ]]; then
+        target_folder="$PROJECT_ROOT/shell_scripts"
+    elif [[ "$doc_file" =~ ^src/ ]]; then
+        target_folder="$PROJECT_ROOT/src"
+    elif [[ "$doc_file" == "README.md" ]] || [[ "$doc_file" =~ ^\.github/ ]]; then
+        target_folder="$PROJECT_ROOT"
+    else
+        # Default to docs folder for unknown types
+        target_folder="$PROJECT_ROOT/docs"
+    fi
+    
+    echo "$target_folder"
+}
+
+# Automatically save AI-generated documentation to proper folder
+# Usage: save_ai_generated_docs <ai_output_file> <target_doc_file>
+# Returns: 0 for success, 1 for failure
+save_ai_generated_docs() {
+    local ai_output="$1"
+    local target_doc="$2"
+    
+    if [[ ! -f "$ai_output" ]]; then
+        print_error "AI output file not found: $ai_output"
+        return 1
+    fi
+    
+    # Determine target folder
+    local target_folder
+    target_folder=$(determine_doc_folder "$target_doc")
+    
+    # Ensure target folder exists
+    mkdir -p "$target_folder"
+    
+    # Construct full target path
+    local target_path
+    if [[ "$target_doc" == /* ]]; then
+        # Absolute path provided
+        target_path="$target_doc"
+    else
+        # Relative path - construct full path
+        target_path="$PROJECT_ROOT/$target_doc"
+    fi
+    
+    # Save AI-generated content
+    if cp "$ai_output" "$target_path"; then
+        print_success "AI-generated documentation saved to: $target_path"
+        return 0
+    else
+        print_error "Failed to save AI-generated documentation to: $target_path"
+        return 1
+    fi
+}
+
 # Main step function - updates documentation based on git changes
 # Returns: 0 for success, 1 for failure
 step1_update_documentation() {
@@ -110,6 +173,30 @@ step1_update_documentation() {
                 print_success "GitHub Copilot CLI session completed"
                 print_info "Full session log saved to: $log_file"
                 
+                # Automatically save AI-generated documentation
+                print_info "Processing AI-generated documentation..."
+                for doc in "${docs_to_review[@]}"; do
+                    local doc_basename
+                    doc_basename=$(basename "$doc")
+                    local ai_output_file="${LOGS_RUN_DIR}/ai_generated_${doc_basename}_${log_timestamp}.md"
+                    
+                    # Check if AI generated content for this document
+                    if [[ -f "$ai_output_file" ]]; then
+                        if save_ai_generated_docs "$ai_output_file" "$doc"; then
+                            print_success "Automatically saved AI updates for: $doc"
+                        else
+                            print_warning "Could not auto-save AI updates for: $doc"
+                            # Save to backlog for manual review
+                            save_step_issues "1" "Update_Documentation_AutoSave_Failed" \
+                                "Failed to automatically save AI-generated content for \`$doc\`. Manual review required.\nAI output available at: $ai_output_file"
+                        fi
+                    else
+                        print_info "No AI-generated content found for: $doc"
+                    fi
+                done
+                
+                prompt_for_continuation
+                
                 # Extract and save issues using library function
                 extract_and_save_issues_from_log "1" "Update_Documentation" "$log_file"
             else
@@ -177,7 +264,41 @@ step1_update_documentation() {
         version_report+="3. Ensure all version references are consistent\n"
         
         save_step_issues "1" "Update_Documentation_Version_Check" "$(echo -e "$version_report")"
-        print_warning "Version inconsistencies saved to backlog for review"
+        print_warning "Version inconsistencies detected and saved to backlog"
+        
+        # Automatically attempt to fix version inconsistencies
+        print_info "Attempting automatic version update..."
+        local auto_fix_success=true
+        
+        if [[ "$DRY_RUN" != true ]]; then
+            # Fix README.md
+            if [[ -f "README.md" ]]; then
+                if sed -i.bak "s/workflow.*v1\.[0-9]\.0/workflow v${SCRIPT_VERSION}/g; s/automation.*v1\.[0-9]\.0/automation v${SCRIPT_VERSION}/g; s/execute_tests_docs_workflow.*v1\.[0-9]\.0/execute_tests_docs_workflow.sh v${SCRIPT_VERSION}/g" README.md; then
+                    print_success "Automatically updated version references in README.md"
+                else
+                    auto_fix_success=false
+                    print_warning "Failed to automatically update README.md"
+                fi
+            fi
+            
+            # Fix .github/copilot-instructions.md
+            if [[ -f ".github/copilot-instructions.md" ]]; then
+                if sed -i.bak "s/workflow.*v1\.[0-9]\.0/workflow v${SCRIPT_VERSION}/g; s/automation.*v1\.[0-9]\.0/automation v${SCRIPT_VERSION}/g; s/execute_tests_docs_workflow.*v1\.[0-9]\.0/execute_tests_docs_workflow.sh v${SCRIPT_VERSION}/g" .github/copilot-instructions.md; then
+                    print_success "Automatically updated version references in .github/copilot-instructions.md"
+                else
+                    auto_fix_success=false
+                    print_warning "Failed to automatically update .github/copilot-instructions.md"
+                fi
+            fi
+            
+            if [[ "$auto_fix_success" == true ]]; then
+                print_success "Version inconsistencies automatically resolved"
+            else
+                print_warning "Some version updates failed - manual review required"
+            fi
+        else
+            print_info "[DRY RUN] Would automatically update version references"
+        fi
     else
         print_success "Version consistency check passed"
     fi
@@ -277,8 +398,12 @@ Reviewed ${#docs_to_review[@]} documentation files for consistency with recent c
     save_step_issues "1" "Update_Documentation" "$step_backlog"
     
     update_workflow_status "step1" "✅"
+
+    prompt_for_continuation
 }
 
 # Export step functions
 export -f step1_update_documentation
 export -f step1_get_version
+export -f determine_doc_folder
+export -f save_ai_generated_docs

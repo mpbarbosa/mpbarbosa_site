@@ -92,10 +92,9 @@ mpbarbosa_site/
 │   ├── scripts/main.js               # DEPRECATED: Legacy JavaScript (unused, template uses assets/js/)
 │   ├── components/                   # Individual HTML components
 │   ├── pages/                        # Project redirect pages
-│   │   ├── music_in_numbers.html     # Music in Numbers redirect (git submodule)
-│   │   ├── guia_turistico.html       # Guia Turístico redirect (git submodule)
-│   │   ├── monitora_vagas.html       # Monitora Vagas redirect (sibling project)
-│   │   └── busca_vagas.html          # Busca Vagas redirect (sibling project)
+│   │   ├── music-in-numbers.html     # Music in Numbers redirect (git submodule) [renamed]
+│   │   ├── guia-turistico.html       # Guia Turístico redirect (git submodule) [renamed]
+│   │   └── monitora-vagas.html       # Monitora Vagas redirect (sibling project) [renamed]
 │   ├── submodules/                   # Git submodules (personal projects)
 │   │   ├── music_in_numbers/         # 🎵 Music analytics platform
 │   │   └── guia_turistico/           # 🗺️ Travel guide application
