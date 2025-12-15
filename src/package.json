@@ -7,9 +7,9 @@
   "scripts": {
     "start": "live-server .",
     "build": "echo 'Build step not defined yet.'",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js 2>&1 | grep -v 'localstorage-file'",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage 2>&1 | grep -v 'localstorage-file'",
     "lint:md": "mdl --git-recurse --ignore-front-matter ."
   },
   "keywords": [
@@ -28,8 +28,18 @@
     "jest-environment-jsdom": "^30.2.0",
     "live-server": "^1.2.1"
   },
+  "overrides": {
+    "braces": "^3.0.3",
+    "micromatch": "^4.0.8",
+    "glob": "^11.0.0"
+  },
   "jest": {
-    "testEnvironment": "jsdom",
+    "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.js",
+    "testEnvironmentOptions": {
+      "url": "http://localhost",
+      "storageQuota": 10000000,
+      "resources": "usable"
+    },
     "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
     "transform": {},
     "testMatch": [

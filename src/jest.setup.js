@@ -121,6 +121,40 @@ global.IS_TEST_ENV = true;
 global.IS_JSDOM = true;
 
 // ============================================================================
+// LocalStorage Mock (suppress jsdom warnings)
+// ============================================================================
+
+// jsdom provides localStorage, but we ensure it's properly configured
+// This prevents warnings about invalid --localstorage-file paths
+if (typeof global.localStorage === 'undefined') {
+    const localStorageMock = {
+        _data: {},
+        getItem(key) {
+            return this._data[key] || null;
+        },
+        setItem(key, value) {
+            this._data[key] = String(value);
+        },
+        removeItem(key) {
+            delete this._data[key];
+        },
+        clear() {
+            this._data = {};
+        },
+        get length() {
+            return Object.keys(this._data).length;
+        },
+        key(index) {
+            const keys = Object.keys(this._data);
+            return keys[index] || null;
+        }
+    };
+    
+    global.localStorage = localStorageMock;
+    global.sessionStorage = localStorageMock;
+}
+
+// ============================================================================
 // Cleanup
 // ============================================================================
 

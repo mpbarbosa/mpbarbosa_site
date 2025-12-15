@@ -756,7 +756,7 @@ step1_update_documentation() {
     local changed_files=$(get_git_diff_files_output)
     
     print_info "Changed files detected:"
-    echo "$changed_files" | head -20
+    echo "$changed_files" | head -50
     
     # Map files to documentation (intelligent routing)
     local docs_to_review=()
@@ -2450,7 +2450,7 @@ Coverage Metrics:
 $execution_summary
 
 **Test Output:**
-$(cat "$test_results_file" 2>/dev/null | head -100 || echo "Test output unavailable")
+$(cat "$test_results_file" 2>/dev/null | head -200 || echo "Test output unavailable")
 
 **Failed Tests:**
 $failed_test_list
@@ -2790,7 +2790,7 @@ step8_validate_dependencies() {
 - Outdated Packages: $(grep -c "Outdated" "$dependency_report" 2>/dev/null || echo "0")"
     
     # Extract actual dependencies
-    local prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -20)
+    local prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -50)
     local dev_deps=$(jq -r '.devDependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null)
     
     # AI PERSONA PROMPT: DevOps Engineer + Package Management Specialist
@@ -2824,7 +2824,7 @@ $dev_deps
 $(cat "$audit_output" 2>/dev/null | jq -r '.metadata // "No data"' || echo "Unable to parse audit results")
 
 **Outdated Packages:**
-$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -10 || echo "None or unable to parse")
+$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -20 || echo "None or unable to parse")
 
 **Analysis Tasks:**
 
@@ -3143,7 +3143,7 @@ step9_code_quality_validation() {
 File: $file
 Lines: $(wc -l < "$file" 2>/dev/null || echo 0)
 Preview:
-$(head -30 "$file" 2>/dev/null)
+$(head -50 "$file" 2>/dev/null)
 ---
 "
     done
@@ -3851,7 +3851,7 @@ step11_git_finalization() {
     local changed_files=$(git status --short | head -20)
     
     # Get diff sample for context
-    local diff_sample=$(git diff --unified=3 HEAD | head -100)
+    local diff_sample=$(git diff --unified=3 HEAD | head -200)
     
     # AI PERSONA PROMPT: Git Workflow Specialist + Technical Communication Expert
     # Specialized for conventional commit message generation

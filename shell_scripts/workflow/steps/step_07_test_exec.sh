@@ -113,7 +113,7 @@ Coverage Metrics:
 - Lines: ${coverage_lines}%"
     
     local test_output
-    test_output=$(cat "$test_results_file" 2>/dev/null | head -100 || echo "Test output unavailable")
+    test_output=$(cat "$test_results_file" 2>/dev/null | head -200 || echo "Test output unavailable")
     
     # Build comprehensive test analysis prompt using AI helper function
     local copilot_prompt

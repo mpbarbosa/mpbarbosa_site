@@ -582,7 +582,7 @@ step1_update_documentation() {
     changed_files=$(get_cached_git_diff)
     
     print_info "Changed files detected (from cache):"
-    echo "$changed_files" | head -20
+    echo "$changed_files" | head -50
     
     # PERFORMANCE OPTIMIZATION: Parallel grep for file pattern matching
     local docs_to_review=()

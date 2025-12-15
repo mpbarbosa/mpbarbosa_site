@@ -579,6 +579,57 @@ The following are library modules (not meant to be executed directly):
 **Executable**: ✅ Yes (now executable)  
 **Sourced by**: Workflow steps executing bash commands
 
+#### `workflow/lib/metrics_validation.sh`
+**Purpose**: Project metrics validation and consistency verification across documentation
+
+**Version**: 2.0.0
+
+**Features**:
+- Automatic metric calculation from source files
+- Line count validation for workflow modules
+- Cross-reference validation between documentation files
+- Module count verification
+- Formatted output with thousands separators
+- Standalone or workflow-integrated usage
+- Inconsistency detection and reporting
+
+**Core Functions**:
+- `calculate_workflow_metrics()` - Calculate actual line counts from workflow modules
+- `format_number()` - Format numbers with thousands separator (6993 → 6,993)
+- `validate_doc_metrics()` - Validate line count references in documentation
+- `validate_module_counts()` - Verify module count consistency
+- `validate_all_documentation_metrics()` - Comprehensive validation across all docs
+- `generate_metrics_report()` - Generate formatted metrics summary
+
+**Global Variables**:
+Sets the following variables after calling `calculate_workflow_metrics()`:
+- `ACTUAL_LIB_LINES` - Total lines in library modules
+- `ACTUAL_LIB_COUNT` - Number of library modules  
+- `ACTUAL_STEP_LINES` - Total lines in step modules
+- `ACTUAL_STEP_COUNT` - Number of step modules
+- `ACTUAL_TOTAL_LINES` - Total modular code lines
+- `ACTUAL_TOTAL_MODULES` - Total module count
+- `ACTUAL_MAIN_LINES` - Main workflow script lines
+
+**Usage Example**:
+```bash
+# Standalone usage
+source shell_scripts/workflow/lib/metrics_validation.sh
+calculate_workflow_metrics "shell_scripts/workflow"
+generate_metrics_report
+
+# Validate specific documentation file
+validate_doc_metrics "README.md" 6993 3045 3948
+
+# Comprehensive validation of all documentation
+validate_all_documentation_metrics
+```
+
+**Integration**: Used by Step 3 (Script References) in the workflow automation to detect documentation drift and ensure metric accuracy.
+
+**Executable**: ✅ Yes  
+**Sourced by**: Step 3 (script reference validation), standalone validation scripts
+
 ---
 
 ## Available Scripts
@@ -848,7 +899,7 @@ The workflow script now uses a fully modularized architecture with automatic mod
   - Execution orchestration and flow control
   - Progress tracking and workflow state management
 
-- **12 Library Modules**:
+- **13 Library Modules**:
   - `lib/config.sh` - Configuration and constants
   - `lib/colors.sh` - ANSI color definitions
   - `lib/utils.sh` - Utility functions
@@ -861,6 +912,7 @@ The workflow script now uses a fully modularized architecture with automatic mod
   - `lib/performance.sh` - Performance optimization
   - `lib/session_manager.sh` - Session state management
   - `lib/step_execution.sh` - Step execution framework
+  - `lib/metrics_validation.sh` - Project metrics validation and consistency checks
 
 - **13 Step Modules** (step_00 through step_12):
   - `steps/step_00_analyze.sh` - Pre-workflow change analysis

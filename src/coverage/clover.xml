@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1765764706140" clover="3.2.0">
-  <project timestamp="1765764706140" name="All files">
-    <metrics statements="11291" coveredstatements="1028" conditionals="9213" coveredconditionals="656" methods="2669" coveredmethods="235" elements="23173" coveredelements="1919" complexity="0" loc="11291" ncloc="11291" packages="27" files="107" classes="107"/>
+<coverage generated="1765770097279" clover="3.2.0">
+  <project timestamp="1765770097279" name="All files">
+    <metrics statements="11291" coveredstatements="598" conditionals="9213" coveredconditionals="346" methods="2669" coveredmethods="125" elements="23173" coveredelements="1069" complexity="0" loc="11291" ncloc="11291" packages="27" files="107" classes="107"/>
     <package name="scripts">
       <metrics statements="37" coveredstatements="21" conditionals="12" coveredconditionals="7" methods="10" coveredmethods="6"/>
       <file name="main.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/scripts/main.js">
@@ -262,59 +262,59 @@
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src">
-      <metrics statements="102" coveredstatements="83" conditionals="44" coveredconditionals="29" methods="15" coveredmethods="8"/>
+      <metrics statements="102" coveredstatements="70" conditionals="44" coveredconditionals="15" methods="15" coveredmethods="6"/>
       <file name="guia.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/guia.js">
-        <metrics statements="101" coveredstatements="82" conditionals="44" coveredconditionals="29" methods="14" coveredmethods="7"/>
-        <line num="56" count="58" type="stmt"/>
-        <line num="58" count="58" type="stmt"/>
-        <line num="59" count="58" type="stmt"/>
-        <line num="60" count="58" type="cond" truecount="2" falsecount="0"/>
-        <line num="62" count="14" type="cond" truecount="1" falsecount="1"/>
+        <metrics statements="101" coveredstatements="69" conditionals="44" coveredconditionals="15" methods="14" coveredmethods="5"/>
+        <line num="56" count="44" type="stmt"/>
+        <line num="58" count="44" type="stmt"/>
+        <line num="59" count="44" type="stmt"/>
+        <line num="60" count="44" type="cond" truecount="1" falsecount="1"/>
+        <line num="62" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="63" count="0" type="stmt"/>
-        <line num="69" count="58" type="stmt"/>
-        <line num="70" count="102" type="stmt"/>
-        <line num="71" count="102" type="cond" truecount="2" falsecount="0"/>
-        <line num="72" count="58" type="stmt"/>
-        <line num="73" count="58" type="cond" truecount="1" falsecount="1"/>
+        <line num="69" count="44" type="stmt"/>
+        <line num="70" count="44" type="stmt"/>
+        <line num="71" count="44" type="cond" truecount="1" falsecount="1"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="73" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="74" count="0" type="stmt"/>
-        <line num="82" count="58" type="stmt"/>
-        <line num="83" count="58" type="stmt"/>
-        <line num="85" count="58" type="cond" truecount="2" falsecount="0"/>
+        <line num="82" count="44" type="stmt"/>
+        <line num="83" count="44" type="stmt"/>
+        <line num="85" count="44" type="cond" truecount="2" falsecount="0"/>
         <line num="86" count="18" type="stmt"/>
-        <line num="89" count="40" type="stmt"/>
-        <line num="90" count="40" type="stmt"/>
-        <line num="91" count="40" type="stmt"/>
+        <line num="89" count="26" type="stmt"/>
+        <line num="90" count="26" type="stmt"/>
+        <line num="91" count="26" type="stmt"/>
         <line num="94" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="95" count="0" type="stmt"/>
         <line num="97" count="0" type="stmt"/>
         <line num="98" count="0" type="stmt"/>
         <line num="99" count="0" type="stmt"/>
-        <line num="101" count="58" type="stmt"/>
-        <line num="103" count="58" type="stmt"/>
-        <line num="105" count="44" type="stmt"/>
-        <line num="106" count="44" type="stmt"/>
+        <line num="101" count="44" type="stmt"/>
+        <line num="103" count="44" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
         <line num="110" count="0" type="stmt"/>
-        <line num="113" count="58" type="stmt"/>
-        <line num="118" count="58" type="cond" truecount="2" falsecount="0"/>
-        <line num="119" count="40" type="stmt"/>
-        <line num="121" count="40" type="stmt"/>
-        <line num="122" count="40" type="stmt"/>
-        <line num="125" count="40" type="stmt"/>
-        <line num="126" count="40" type="cond" truecount="1" falsecount="1"/>
-        <line num="127" count="40" type="stmt"/>
-        <line num="133" count="58" type="stmt"/>
-        <line num="134" count="58" type="stmt"/>
-        <line num="135" count="58" type="stmt"/>
-        <line num="136" count="58" type="stmt"/>
-        <line num="138" count="58" type="stmt"/>
+        <line num="113" count="44" type="stmt"/>
+        <line num="118" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="119" count="26" type="stmt"/>
+        <line num="121" count="26" type="stmt"/>
+        <line num="122" count="26" type="stmt"/>
+        <line num="125" count="26" type="stmt"/>
+        <line num="126" count="26" type="cond" truecount="1" falsecount="1"/>
+        <line num="127" count="26" type="stmt"/>
+        <line num="133" count="44" type="stmt"/>
+        <line num="134" count="44" type="stmt"/>
+        <line num="135" count="44" type="stmt"/>
+        <line num="136" count="44" type="stmt"/>
+        <line num="138" count="44" type="stmt"/>
         <line num="139" count="0" type="stmt"/>
-        <line num="146" count="58" type="cond" truecount="2" falsecount="0"/>
-        <line num="147" count="56" type="stmt"/>
-        <line num="148" count="56" type="cond" truecount="2" falsecount="0"/>
-        <line num="151" count="56" type="cond" truecount="2" falsecount="0"/>
-        <line num="152" count="56" type="stmt"/>
+        <line num="146" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="147" count="42" type="stmt"/>
+        <line num="148" count="42" type="cond" truecount="2" falsecount="0"/>
+        <line num="151" count="42" type="cond" truecount="2" falsecount="0"/>
+        <line num="152" count="42" type="stmt"/>
         <line num="155" count="2" type="stmt"/>
-        <line num="159" count="58" type="stmt"/>
+        <line num="159" count="44" type="stmt"/>
         <line num="272" count="0" type="stmt"/>
         <line num="275" count="0" type="stmt"/>
         <line num="279" count="0" type="stmt"/>
@@ -322,50 +322,50 @@
         <line num="282" count="0" type="stmt"/>
         <line num="283" count="0" type="stmt"/>
         <line num="293" count="0" type="stmt"/>
-        <line num="311" count="3" type="cond" truecount="5" falsecount="0"/>
-        <line num="312" count="1" type="stmt"/>
-        <line num="315" count="2" type="stmt"/>
-        <line num="316" count="2" type="stmt"/>
-        <line num="319" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="320" count="1" type="stmt"/>
-        <line num="324" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="311" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="312" count="0" type="stmt"/>
+        <line num="315" count="0" type="stmt"/>
+        <line num="316" count="0" type="stmt"/>
+        <line num="319" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="320" count="0" type="stmt"/>
+        <line num="324" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="326" count="0" type="stmt"/>
-        <line num="330" count="1" type="stmt"/>
+        <line num="330" count="0" type="stmt"/>
         <line num="345" count="0" type="stmt"/>
         <line num="360" count="0" type="stmt"/>
-        <line num="403" count="58" type="cond" truecount="2" falsecount="0"/>
-        <line num="404" count="40" type="stmt"/>
-        <line num="405" count="40" type="stmt"/>
-        <line num="406" count="40" type="stmt"/>
-        <line num="407" count="40" type="stmt"/>
-        <line num="408" count="40" type="stmt"/>
-        <line num="409" count="40" type="stmt"/>
-        <line num="410" count="40" type="stmt"/>
-        <line num="411" count="40" type="stmt"/>
-        <line num="412" count="40" type="stmt"/>
-        <line num="413" count="40" type="stmt"/>
-        <line num="414" count="40" type="stmt"/>
-        <line num="415" count="40" type="stmt"/>
-        <line num="416" count="40" type="stmt"/>
-        <line num="417" count="40" type="stmt"/>
-        <line num="418" count="40" type="stmt"/>
-        <line num="419" count="40" type="stmt"/>
-        <line num="420" count="40" type="stmt"/>
-        <line num="421" count="40" type="stmt"/>
-        <line num="422" count="40" type="stmt"/>
-        <line num="423" count="40" type="stmt"/>
-        <line num="424" count="40" type="stmt"/>
-        <line num="425" count="40" type="stmt"/>
-        <line num="426" count="40" type="stmt"/>
-        <line num="427" count="40" type="stmt"/>
-        <line num="428" count="40" type="stmt"/>
-        <line num="429" count="40" type="stmt"/>
-        <line num="430" count="40" type="stmt"/>
-        <line num="431" count="40" type="stmt"/>
-        <line num="432" count="40" type="stmt"/>
-        <line num="433" count="40" type="stmt"/>
-        <line num="434" count="40" type="stmt"/>
-        <line num="435" count="40" type="stmt"/>
+        <line num="403" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="404" count="26" type="stmt"/>
+        <line num="405" count="26" type="stmt"/>
+        <line num="406" count="26" type="stmt"/>
+        <line num="407" count="26" type="stmt"/>
+        <line num="408" count="26" type="stmt"/>
+        <line num="409" count="26" type="stmt"/>
+        <line num="410" count="26" type="stmt"/>
+        <line num="411" count="26" type="stmt"/>
+        <line num="412" count="26" type="stmt"/>
+        <line num="413" count="26" type="stmt"/>
+        <line num="414" count="26" type="stmt"/>
+        <line num="415" count="26" type="stmt"/>
+        <line num="416" count="26" type="stmt"/>
+        <line num="417" count="26" type="stmt"/>
+        <line num="418" count="26" type="stmt"/>
+        <line num="419" count="26" type="stmt"/>
+        <line num="420" count="26" type="stmt"/>
+        <line num="421" count="26" type="stmt"/>
+        <line num="422" count="26" type="stmt"/>
+        <line num="423" count="26" type="stmt"/>
+        <line num="424" count="26" type="stmt"/>
+        <line num="425" count="26" type="stmt"/>
+        <line num="426" count="26" type="stmt"/>
+        <line num="427" count="26" type="stmt"/>
+        <line num="428" count="26" type="stmt"/>
+        <line num="429" count="26" type="stmt"/>
+        <line num="430" count="26" type="stmt"/>
+        <line num="431" count="26" type="stmt"/>
+        <line num="432" count="26" type="stmt"/>
+        <line num="433" count="26" type="stmt"/>
+        <line num="434" count="26" type="stmt"/>
+        <line num="435" count="26" type="stmt"/>
       </file>
       <file name="guia_ibge.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/guia_ibge.js">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
@@ -376,124 +376,124 @@
       <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="defaults.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/config/defaults.js">
         <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="13" count="59" type="stmt"/>
-        <line num="19" count="58" type="stmt"/>
-        <line num="23" count="59" type="stmt"/>
-        <line num="24" count="59" type="stmt"/>
-        <line num="28" count="59" type="stmt"/>
-        <line num="31" count="59" type="stmt"/>
-        <line num="34" count="59" type="stmt"/>
-        <line num="38" count="59" type="stmt"/>
-        <line num="41" count="59" type="stmt"/>
-        <line num="50" count="59" type="stmt"/>
-        <line num="57" count="59" type="stmt"/>
-        <line num="64" count="59" type="stmt"/>
-        <line num="72" count="59" type="stmt"/>
-        <line num="83" count="117" type="stmt"/>
+        <line num="13" count="45" type="stmt"/>
+        <line num="19" count="44" type="stmt"/>
+        <line num="23" count="45" type="stmt"/>
+        <line num="24" count="45" type="stmt"/>
+        <line num="28" count="45" type="stmt"/>
+        <line num="31" count="45" type="stmt"/>
+        <line num="34" count="45" type="stmt"/>
+        <line num="38" count="45" type="stmt"/>
+        <line num="41" count="45" type="stmt"/>
+        <line num="50" count="45" type="stmt"/>
+        <line num="57" count="45" type="stmt"/>
+        <line num="64" count="45" type="stmt"/>
+        <line num="72" count="45" type="stmt"/>
+        <line num="83" count="89" type="stmt"/>
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.coordination">
-      <metrics statements="141" coveredstatements="74" conditionals="71" coveredconditionals="36" methods="41" coveredmethods="18"/>
+      <metrics statements="141" coveredstatements="3" conditionals="71" coveredconditionals="0" methods="41" coveredmethods="0"/>
       <file name="WebGeocodingManager.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/coordination/WebGeocodingManager.js">
-        <metrics statements="141" coveredstatements="74" conditionals="71" coveredconditionals="36" methods="41" coveredmethods="18"/>
-        <line num="114" count="58" type="stmt"/>
-        <line num="133" count="58" type="stmt"/>
-        <line num="134" count="58" type="stmt"/>
+        <metrics statements="141" coveredstatements="3" conditionals="71" coveredconditionals="0" methods="41" coveredmethods="0"/>
+        <line num="114" count="44" type="stmt"/>
+        <line num="133" count="44" type="stmt"/>
+        <line num="134" count="44" type="stmt"/>
         <line num="204" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="205" count="0" type="stmt"/>
         <line num="206" count="0" type="stmt"/>
         <line num="208" count="0" type="stmt"/>
         <line num="210" count="0" type="stmt"/>
-        <line num="274" count="44" type="cond" truecount="1" falsecount="1"/>
+        <line num="274" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="275" count="0" type="stmt"/>
-        <line num="277" count="44" type="cond" truecount="3" falsecount="1"/>
+        <line num="277" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="278" count="0" type="stmt"/>
-        <line num="282" count="44" type="stmt"/>
-        <line num="283" count="44" type="stmt"/>
-        <line num="284" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="285" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="288" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="289" count="44" type="stmt"/>
-        <line num="292" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="295" count="44" type="stmt"/>
-        <line num="298" count="44" type="stmt"/>
-        <line num="299" count="44" type="stmt"/>
-        <line num="302" count="44" type="stmt"/>
-        <line num="305" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="309" count="44" type="stmt"/>
-        <line num="312" count="44" type="stmt"/>
-        <line num="318" count="44" type="stmt"/>
-        <line num="319" count="44" type="stmt"/>
-        <line num="320" count="44" type="stmt"/>
-        <line num="330" count="44" type="stmt"/>
-        <line num="333" count="44" type="cond" truecount="3" falsecount="2"/>
-        <line num="337" count="44" type="cond" truecount="1" falsecount="1"/>
-        <line num="338" count="44" type="stmt"/>
-        <line num="339" count="44" type="stmt"/>
-        <line num="347" count="44" type="stmt"/>
+        <line num="282" count="0" type="stmt"/>
+        <line num="283" count="0" type="stmt"/>
+        <line num="284" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="285" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="288" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="289" count="0" type="stmt"/>
+        <line num="292" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="295" count="0" type="stmt"/>
+        <line num="298" count="0" type="stmt"/>
+        <line num="299" count="0" type="stmt"/>
+        <line num="302" count="0" type="stmt"/>
+        <line num="305" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="309" count="0" type="stmt"/>
+        <line num="312" count="0" type="stmt"/>
+        <line num="318" count="0" type="stmt"/>
+        <line num="319" count="0" type="stmt"/>
+        <line num="320" count="0" type="stmt"/>
+        <line num="330" count="0" type="stmt"/>
+        <line num="333" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="337" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="338" count="0" type="stmt"/>
+        <line num="339" count="0" type="stmt"/>
+        <line num="347" count="0" type="stmt"/>
         <line num="349" count="0" type="stmt"/>
         <line num="350" count="0" type="stmt"/>
         <line num="353" count="0" type="stmt"/>
-        <line num="357" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="372" count="44" type="stmt"/>
-        <line num="375" count="44" type="stmt"/>
-        <line num="379" count="44" type="stmt"/>
-        <line num="398" count="44" type="stmt"/>
-        <line num="399" count="44" type="stmt"/>
-        <line num="421" count="44" type="stmt"/>
-        <line num="422" count="44" type="stmt"/>
-        <line num="423" count="44" type="stmt"/>
-        <line num="431" count="44" type="stmt"/>
-        <line num="432" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="433" count="6" type="stmt"/>
-        <line num="434" count="6" type="stmt"/>
-        <line num="436" count="38" type="stmt"/>
-        <line num="445" count="44" type="stmt"/>
-        <line num="446" count="44" type="stmt"/>
-        <line num="454" count="44" type="stmt"/>
-        <line num="455" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="456" count="5" type="stmt"/>
+        <line num="357" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="372" count="0" type="stmt"/>
+        <line num="375" count="0" type="stmt"/>
+        <line num="379" count="0" type="stmt"/>
+        <line num="398" count="0" type="stmt"/>
+        <line num="399" count="0" type="stmt"/>
+        <line num="421" count="0" type="stmt"/>
+        <line num="422" count="0" type="stmt"/>
+        <line num="423" count="0" type="stmt"/>
+        <line num="431" count="0" type="stmt"/>
+        <line num="432" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="433" count="0" type="stmt"/>
+        <line num="434" count="0" type="stmt"/>
+        <line num="436" count="0" type="stmt"/>
+        <line num="445" count="0" type="stmt"/>
+        <line num="446" count="0" type="stmt"/>
+        <line num="454" count="0" type="stmt"/>
+        <line num="455" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="456" count="0" type="stmt"/>
         <line num="457" count="0" type="stmt"/>
-        <line num="460" count="39" type="stmt"/>
+        <line num="460" count="0" type="stmt"/>
         <line num="469" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="471" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="472" count="0" type="stmt"/>
         <line num="478" count="0" type="stmt"/>
         <line num="481" count="0" type="stmt"/>
-        <line num="490" count="44" type="stmt"/>
-        <line num="491" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="492" count="5" type="stmt"/>
+        <line num="490" count="0" type="stmt"/>
+        <line num="491" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="492" count="0" type="stmt"/>
         <line num="493" count="0" type="stmt"/>
-        <line num="496" count="39" type="stmt"/>
+        <line num="496" count="0" type="stmt"/>
         <line num="505" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="507" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="508" count="0" type="stmt"/>
         <line num="514" count="0" type="stmt"/>
         <line num="517" count="0" type="stmt"/>
-        <line num="526" count="44" type="stmt"/>
-        <line num="527" count="44" type="cond" truecount="2" falsecount="0"/>
-        <line num="528" count="5" type="stmt"/>
-        <line num="529" count="5" type="stmt"/>
-        <line num="530" count="5" type="stmt"/>
-        <line num="531" count="5" type="stmt"/>
-        <line num="533" count="39" type="stmt"/>
+        <line num="526" count="0" type="stmt"/>
+        <line num="527" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="528" count="0" type="stmt"/>
+        <line num="529" count="0" type="stmt"/>
+        <line num="530" count="0" type="stmt"/>
+        <line num="531" count="0" type="stmt"/>
+        <line num="533" count="0" type="stmt"/>
         <line num="543" count="0" type="stmt"/>
         <line num="544" count="0" type="stmt"/>
-        <line num="557" count="4" type="stmt"/>
-        <line num="570" count="4" type="stmt"/>
-        <line num="592" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="593" count="2" type="stmt"/>
-        <line num="594" count="2" type="stmt"/>
-        <line num="596" count="2" type="stmt"/>
-        <line num="606" count="1" type="stmt"/>
+        <line num="557" count="0" type="stmt"/>
+        <line num="570" count="0" type="stmt"/>
+        <line num="592" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="593" count="0" type="stmt"/>
+        <line num="594" count="0" type="stmt"/>
+        <line num="596" count="0" type="stmt"/>
+        <line num="606" count="0" type="stmt"/>
         <line num="618" count="0" type="stmt"/>
-        <line num="640" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="641" count="1" type="stmt"/>
-        <line num="642" count="1" type="stmt"/>
-        <line num="644" count="2" type="stmt"/>
-        <line num="645" count="2" type="stmt"/>
-        <line num="655" count="1" type="stmt"/>
-        <line num="667" count="1" type="stmt"/>
+        <line num="640" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="641" count="0" type="stmt"/>
+        <line num="642" count="0" type="stmt"/>
+        <line num="644" count="0" type="stmt"/>
+        <line num="645" count="0" type="stmt"/>
+        <line num="655" count="0" type="stmt"/>
+        <line num="667" count="0" type="stmt"/>
         <line num="683" count="0" type="stmt"/>
         <line num="687" count="0" type="stmt"/>
         <line num="688" count="0" type="stmt"/>
@@ -536,7 +536,7 @@
         <line num="898" count="0" type="stmt"/>
         <line num="899" count="0" type="stmt"/>
         <line num="909" count="0" type="stmt"/>
-        <line num="926" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="926" count="0" type="cond" truecount="0" falsecount="4"/>
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.core">
@@ -573,21 +573,21 @@
       </file>
       <file name="ObserverSubject.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/core/ObserverSubject.js">
         <metrics statements="21" coveredstatements="21" conditionals="8" coveredconditionals="7" methods="14" coveredmethods="14"/>
-        <line num="60" count="294" type="stmt"/>
-        <line num="61" count="294" type="stmt"/>
-        <line num="92" count="146" type="cond" truecount="2" falsecount="0"/>
-        <line num="93" count="142" type="stmt"/>
-        <line num="117" count="11" type="stmt"/>
-        <line num="131" count="3246" type="stmt"/>
-        <line num="132" count="3246" type="stmt"/>
-        <line num="133" count="21" type="cond" truecount="2" falsecount="0"/>
-        <line num="134" count="20" type="stmt"/>
-        <line num="135" count="20" type="stmt"/>
-        <line num="156" count="30" type="cond" truecount="2" falsecount="0"/>
-        <line num="157" count="28" type="stmt"/>
-        <line num="174" count="3" type="stmt"/>
-        <line num="175" count="4" type="stmt"/>
-        <line num="189" count="150" type="stmt"/>
+        <line num="60" count="70" type="stmt"/>
+        <line num="61" count="70" type="stmt"/>
+        <line num="92" count="31" type="cond" truecount="2" falsecount="0"/>
+        <line num="93" count="27" type="stmt"/>
+        <line num="117" count="7" type="stmt"/>
+        <line num="131" count="88" type="stmt"/>
+        <line num="132" count="88" type="stmt"/>
+        <line num="133" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="134" count="7" type="stmt"/>
+        <line num="135" count="7" type="stmt"/>
+        <line num="156" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="157" count="14" type="stmt"/>
+        <line num="174" count="1" type="stmt"/>
+        <line num="175" count="2" type="stmt"/>
+        <line num="189" count="67" type="stmt"/>
         <line num="190" count="3" type="cond" truecount="1" falsecount="1"/>
         <line num="191" count="3" type="stmt"/>
         <line num="202" count="11" type="stmt"/>
@@ -597,28 +597,28 @@
       </file>
       <file name="PositionManager.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/core/PositionManager.js">
         <metrics statements="65" coveredstatements="48" conditionals="41" coveredconditionals="33" methods="17" coveredmethods="10"/>
-        <line num="64" count="59" type="stmt"/>
+        <line num="64" count="45" type="stmt"/>
         <line num="71" count="0" type="stmt"/>
-        <line num="75" count="59" type="stmt"/>
-        <line num="76" count="59" type="stmt"/>
-        <line num="77" count="59" type="stmt"/>
+        <line num="75" count="45" type="stmt"/>
+        <line num="76" count="45" type="stmt"/>
+        <line num="77" count="45" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
-        <line num="110" count="59" type="stmt"/>
-        <line num="118" count="59" type="stmt"/>
-        <line num="126" count="59" type="stmt"/>
-        <line num="134" count="59" type="stmt"/>
-        <line num="166" count="161" type="cond" truecount="2" falsecount="0"/>
-        <line num="167" count="8" type="stmt"/>
-        <line num="168" count="153" type="cond" truecount="2" falsecount="0"/>
+        <line num="110" count="45" type="stmt"/>
+        <line num="118" count="45" type="stmt"/>
+        <line num="126" count="45" type="stmt"/>
+        <line num="134" count="45" type="stmt"/>
+        <line num="166" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="167" count="6" type="stmt"/>
+        <line num="168" count="14" type="cond" truecount="2" falsecount="0"/>
         <line num="169" count="2" type="stmt"/>
-        <line num="171" count="161" type="stmt"/>
-        <line num="195" count="20" type="stmt"/>
-        <line num="196" count="20" type="stmt"/>
-        <line num="197" count="20" type="stmt"/>
-        <line num="198" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="171" count="20" type="stmt"/>
+        <line num="195" count="18" type="stmt"/>
+        <line num="196" count="18" type="stmt"/>
+        <line num="197" count="18" type="stmt"/>
+        <line num="198" count="18" type="cond" truecount="2" falsecount="0"/>
         <line num="199" count="14" type="stmt"/>
         <line num="209" count="14" type="stmt"/>
-        <line num="237" count="106" type="stmt"/>
+        <line num="237" count="7" type="stmt"/>
         <line num="255" count="1" type="stmt"/>
         <line num="262" count="2" type="stmt"/>
         <line num="266" count="1" type="stmt"/>
@@ -665,187 +665,187 @@
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.data">
-      <metrics statements="318" coveredstatements="241" conditionals="202" coveredconditionals="180" methods="138" coveredmethods="67"/>
+      <metrics statements="318" coveredstatements="157" conditionals="202" coveredconditionals="116" methods="138" coveredmethods="38"/>
       <file name="AddressCache.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressCache.js">
-        <metrics statements="211" coveredstatements="159" conditionals="115" coveredconditionals="99" methods="86" coveredmethods="40"/>
-        <line num="31" count="58" type="stmt"/>
-        <line num="44" count="484" type="cond" truecount="2" falsecount="0"/>
-        <line num="45" count="11" type="stmt"/>
-        <line num="47" count="484" type="stmt"/>
-        <line num="61" count="11" type="stmt"/>
-        <line num="62" count="11" type="stmt"/>
-        <line num="63" count="11" type="stmt"/>
-        <line num="64" count="11" type="stmt"/>
-        <line num="65" count="11" type="stmt"/>
-        <line num="66" count="11" type="stmt"/>
-        <line num="67" count="11" type="stmt"/>
-        <line num="68" count="11" type="stmt"/>
-        <line num="69" count="11" type="stmt"/>
-        <line num="70" count="11" type="stmt"/>
-        <line num="71" count="11" type="stmt"/>
-        <line num="72" count="11" type="stmt"/>
-        <line num="73" count="11" type="stmt"/>
-        <line num="74" count="11" type="stmt"/>
-        <line num="99" count="153" type="cond" truecount="4" falsecount="0"/>
-        <line num="100" count="2" type="stmt"/>
-        <line num="103" count="151" type="stmt"/>
-        <line num="107" count="151" type="stmt"/>
-        <line num="117" count="151" type="stmt"/>
-        <line num="118" count="906" type="stmt"/>
-        <line num="122" count="151" type="cond" truecount="2" falsecount="0"/>
+        <metrics statements="211" coveredstatements="92" conditionals="115" coveredconditionals="42" methods="86" coveredmethods="23"/>
+        <line num="31" count="44" type="stmt"/>
+        <line num="44" count="89" type="cond" truecount="2" falsecount="0"/>
+        <line num="45" count="6" type="stmt"/>
+        <line num="47" count="89" type="stmt"/>
+        <line num="61" count="6" type="stmt"/>
+        <line num="62" count="6" type="stmt"/>
+        <line num="63" count="6" type="stmt"/>
+        <line num="64" count="6" type="stmt"/>
+        <line num="65" count="6" type="stmt"/>
+        <line num="66" count="6" type="stmt"/>
+        <line num="67" count="6" type="stmt"/>
+        <line num="68" count="6" type="stmt"/>
+        <line num="69" count="6" type="stmt"/>
+        <line num="70" count="6" type="stmt"/>
+        <line num="71" count="6" type="stmt"/>
+        <line num="72" count="6" type="stmt"/>
+        <line num="73" count="6" type="stmt"/>
+        <line num="74" count="6" type="stmt"/>
+        <line num="99" count="65" type="cond" truecount="3" falsecount="1"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="103" count="65" type="stmt"/>
+        <line num="107" count="65" type="stmt"/>
+        <line num="117" count="65" type="stmt"/>
+        <line num="118" count="390" type="stmt"/>
+        <line num="122" count="65" type="cond" truecount="1" falsecount="1"/>
         <line num="131" count="0" type="stmt"/>
-        <line num="145" count="122" type="cond" truecount="2" falsecount="0"/>
+        <line num="145" count="64" type="cond" truecount="2" falsecount="0"/>
         <line num="147" count="1" type="stmt"/>
         <line num="148" count="49" type="stmt"/>
         <line num="151" count="1" type="stmt"/>
         <line num="154" count="1" type="cond" truecount="2" falsecount="0"/>
         <line num="155" count="13" type="stmt"/>
-        <line num="168" count="128" type="stmt"/>
-        <line num="171" count="128" type="stmt"/>
-        <line num="172" count="1704" type="stmt"/>
+        <line num="168" count="65" type="stmt"/>
+        <line num="171" count="65" type="stmt"/>
+        <line num="172" count="1657" type="stmt"/>
         <line num="173" count="0" type="stmt"/>
-        <line num="175" count="128" type="stmt"/>
-        <line num="177" count="128" type="cond" truecount="1" falsecount="1"/>
+        <line num="175" count="65" type="stmt"/>
+        <line num="177" count="65" type="cond" truecount="1" falsecount="1"/>
         <line num="178" count="0" type="stmt"/>
         <line num="188" count="1" type="stmt"/>
-        <line num="198" count="121" type="stmt"/>
-        <line num="199" count="121" type="stmt"/>
-        <line num="200" count="121" type="stmt"/>
-        <line num="201" count="121" type="stmt"/>
-        <line num="202" count="121" type="stmt"/>
-        <line num="203" count="121" type="stmt"/>
-        <line num="204" count="121" type="stmt"/>
-        <line num="205" count="121" type="stmt"/>
-        <line num="214" count="120" type="stmt"/>
-        <line num="237" count="31" type="stmt"/>
-        <line num="246" count="30" type="stmt"/>
-        <line num="269" count="33" type="stmt"/>
-        <line num="278" count="33" type="stmt"/>
-        <line num="301" count="43" type="stmt"/>
-        <line num="310" count="43" type="stmt"/>
-        <line num="320" count="7" type="stmt"/>
-        <line num="329" count="6" type="stmt"/>
-        <line num="339" count="4" type="stmt"/>
-        <line num="348" count="4" type="stmt"/>
-        <line num="358" count="4" type="stmt"/>
-        <line num="367" count="4" type="stmt"/>
-        <line num="378" count="5" type="cond" truecount="4" falsecount="0"/>
-        <line num="379" count="2" type="stmt"/>
-        <line num="382" count="3" type="stmt"/>
-        <line num="384" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="385" count="1" type="stmt"/>
-        <line num="389" count="2" type="stmt"/>
-        <line num="392" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="198" count="13" type="stmt"/>
+        <line num="199" count="13" type="stmt"/>
+        <line num="200" count="13" type="stmt"/>
+        <line num="201" count="13" type="stmt"/>
+        <line num="202" count="13" type="stmt"/>
+        <line num="203" count="13" type="stmt"/>
+        <line num="204" count="13" type="stmt"/>
+        <line num="205" count="13" type="stmt"/>
+        <line num="214" count="12" type="stmt"/>
+        <line num="237" count="1" type="stmt"/>
+        <line num="246" count="0" type="stmt"/>
+        <line num="269" count="0" type="stmt"/>
+        <line num="278" count="0" type="stmt"/>
+        <line num="301" count="0" type="stmt"/>
+        <line num="310" count="0" type="stmt"/>
+        <line num="320" count="1" type="stmt"/>
+        <line num="329" count="0" type="stmt"/>
+        <line num="339" count="0" type="stmt"/>
+        <line num="348" count="0" type="stmt"/>
+        <line num="358" count="0" type="stmt"/>
+        <line num="367" count="0" type="stmt"/>
+        <line num="378" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="379" count="0" type="stmt"/>
+        <line num="382" count="0" type="stmt"/>
+        <line num="384" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="385" count="0" type="stmt"/>
+        <line num="389" count="0" type="stmt"/>
+        <line num="392" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="393" count="0" type="stmt"/>
-        <line num="397" count="2" type="stmt"/>
-        <line num="398" count="2" type="stmt"/>
+        <line num="397" count="0" type="stmt"/>
+        <line num="398" count="0" type="stmt"/>
         <line num="407" count="0" type="stmt"/>
-        <line num="418" count="23" type="cond" truecount="4" falsecount="0"/>
-        <line num="419" count="5" type="stmt"/>
-        <line num="422" count="18" type="stmt"/>
-        <line num="424" count="18" type="cond" truecount="2" falsecount="0"/>
-        <line num="425" count="2" type="stmt"/>
-        <line num="429" count="16" type="stmt"/>
-        <line num="432" count="16" type="cond" truecount="2" falsecount="0"/>
-        <line num="433" count="6" type="stmt"/>
-        <line num="437" count="10" type="stmt"/>
-        <line num="438" count="10" type="stmt"/>
-        <line num="447" count="15" type="stmt"/>
-        <line num="458" count="18" type="cond" truecount="4" falsecount="0"/>
-        <line num="459" count="6" type="stmt"/>
-        <line num="462" count="12" type="stmt"/>
-        <line num="464" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="465" count="3" type="stmt"/>
-        <line num="469" count="9" type="stmt"/>
-        <line num="472" count="9" type="cond" truecount="2" falsecount="0"/>
-        <line num="473" count="1" type="stmt"/>
-        <line num="477" count="8" type="stmt"/>
-        <line num="478" count="8" type="stmt"/>
-        <line num="487" count="9" type="stmt"/>
-        <line num="497" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="498" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="500" count="2" type="stmt"/>
+        <line num="418" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="419" count="0" type="stmt"/>
+        <line num="422" count="0" type="stmt"/>
+        <line num="424" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="425" count="0" type="stmt"/>
+        <line num="429" count="0" type="stmt"/>
+        <line num="432" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="433" count="0" type="stmt"/>
+        <line num="437" count="0" type="stmt"/>
+        <line num="438" count="0" type="stmt"/>
+        <line num="447" count="0" type="stmt"/>
+        <line num="458" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="459" count="0" type="stmt"/>
+        <line num="462" count="1" type="stmt"/>
+        <line num="464" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="465" count="0" type="stmt"/>
+        <line num="469" count="1" type="stmt"/>
+        <line num="472" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="473" count="0" type="stmt"/>
+        <line num="477" count="1" type="stmt"/>
+        <line num="478" count="1" type="stmt"/>
+        <line num="487" count="1" type="stmt"/>
+        <line num="497" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="498" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="500" count="0" type="stmt"/>
         <line num="518" count="0" type="stmt"/>
-        <line num="528" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="529" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="532" count="5" type="stmt"/>
-        <line num="533" count="5" type="stmt"/>
-        <line num="535" count="5" type="stmt"/>
-        <line num="555" count="1" type="stmt"/>
-        <line num="568" count="10" type="cond" truecount="3" falsecount="1"/>
+        <line num="528" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="529" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="532" count="0" type="stmt"/>
+        <line num="533" count="0" type="stmt"/>
+        <line num="535" count="0" type="stmt"/>
+        <line num="555" count="0" type="stmt"/>
+        <line num="568" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="569" count="0" type="stmt"/>
-        <line num="572" count="10" type="stmt"/>
-        <line num="573" count="10" type="cond" truecount="1" falsecount="1"/>
-        <line num="574" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="575" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="578" count="10" type="cond" truecount="5" falsecount="0"/>
-        <line num="579" count="1" type="stmt"/>
-        <line num="583" count="9" type="cond" truecount="1" falsecount="3"/>
-        <line num="593" count="6" type="cond" truecount="1" falsecount="1"/>
-        <line num="594" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="595" count="6" type="cond" truecount="1" falsecount="1"/>
-        <line num="596" count="6" type="cond" truecount="1" falsecount="1"/>
-        <line num="598" count="6" type="stmt"/>
-        <line num="618" count="3" type="stmt"/>
-        <line num="632" count="152" type="stmt"/>
-        <line num="634" count="152" type="cond" truecount="2" falsecount="0"/>
-        <line num="636" count="127" type="stmt"/>
-        <line num="639" count="127" type="stmt"/>
-        <line num="640" count="127" type="cond" truecount="2" falsecount="0"/>
-        <line num="641" count="5" type="stmt"/>
-        <line num="642" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="644" count="5" type="stmt"/>
-        <line num="646" count="5" type="stmt"/>
-        <line num="647" count="5" type="stmt"/>
-        <line num="649" count="5" type="stmt"/>
+        <line num="572" count="0" type="stmt"/>
+        <line num="573" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="574" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="575" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="578" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="579" count="0" type="stmt"/>
+        <line num="583" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="593" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="594" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="595" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="596" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="598" count="1" type="stmt"/>
+        <line num="618" count="1" type="stmt"/>
+        <line num="632" count="64" type="stmt"/>
+        <line num="634" count="64" type="cond" truecount="1" falsecount="1"/>
+        <line num="636" count="64" type="stmt"/>
+        <line num="639" count="64" type="stmt"/>
+        <line num="640" count="64" type="cond" truecount="1" falsecount="1"/>
+        <line num="641" count="0" type="stmt"/>
+        <line num="642" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="644" count="0" type="stmt"/>
+        <line num="646" count="0" type="stmt"/>
+        <line num="647" count="0" type="stmt"/>
+        <line num="649" count="0" type="stmt"/>
         <line num="652" count="0" type="stmt"/>
-        <line num="658" count="147" type="stmt"/>
-        <line num="661" count="147" type="cond" truecount="2" falsecount="0"/>
-        <line num="663" count="122" type="stmt"/>
-        <line num="665" count="122" type="stmt"/>
-        <line num="666" count="122" type="stmt"/>
-        <line num="674" count="122" type="stmt"/>
-        <line num="675" count="122" type="stmt"/>
-        <line num="676" count="122" type="stmt"/>
-        <line num="677" count="122" type="stmt"/>
-        <line num="681" count="122" type="stmt"/>
-        <line num="682" count="122" type="stmt"/>
-        <line num="683" count="122" type="stmt"/>
-        <line num="687" count="122" type="cond" truecount="4" falsecount="0"/>
-        <line num="689" count="2" type="stmt"/>
-        <line num="690" count="2" type="stmt"/>
-        <line num="691" count="2" type="stmt"/>
-        <line num="692" count="2" type="stmt"/>
+        <line num="658" count="64" type="stmt"/>
+        <line num="661" count="64" type="cond" truecount="1" falsecount="1"/>
+        <line num="663" count="64" type="stmt"/>
+        <line num="665" count="64" type="stmt"/>
+        <line num="666" count="64" type="stmt"/>
+        <line num="674" count="64" type="stmt"/>
+        <line num="675" count="64" type="stmt"/>
+        <line num="676" count="64" type="stmt"/>
+        <line num="677" count="64" type="stmt"/>
+        <line num="681" count="64" type="stmt"/>
+        <line num="682" count="64" type="stmt"/>
+        <line num="683" count="64" type="stmt"/>
+        <line num="687" count="64" type="cond" truecount="2" falsecount="2"/>
+        <line num="689" count="0" type="stmt"/>
+        <line num="690" count="0" type="stmt"/>
+        <line num="691" count="0" type="stmt"/>
+        <line num="692" count="0" type="stmt"/>
         <line num="694" count="0" type="stmt"/>
-        <line num="703" count="122" type="cond" truecount="4" falsecount="0"/>
-        <line num="705" count="4" type="stmt"/>
-        <line num="706" count="4" type="stmt"/>
-        <line num="707" count="4" type="stmt"/>
+        <line num="703" count="64" type="cond" truecount="2" falsecount="2"/>
+        <line num="705" count="0" type="stmt"/>
+        <line num="706" count="0" type="stmt"/>
+        <line num="707" count="0" type="stmt"/>
         <line num="709" count="0" type="stmt"/>
-        <line num="718" count="122" type="cond" truecount="4" falsecount="0"/>
-        <line num="720" count="3" type="stmt"/>
-        <line num="721" count="3" type="stmt"/>
-        <line num="722" count="3" type="stmt"/>
+        <line num="718" count="64" type="cond" truecount="2" falsecount="2"/>
+        <line num="720" count="0" type="stmt"/>
+        <line num="721" count="0" type="stmt"/>
+        <line num="722" count="0" type="stmt"/>
         <line num="724" count="0" type="stmt"/>
-        <line num="732" count="147" type="stmt"/>
-        <line num="734" count="147" type="stmt"/>
-        <line num="738" count="147" type="stmt"/>
-        <line num="747" count="152" type="stmt"/>
+        <line num="732" count="64" type="stmt"/>
+        <line num="734" count="64" type="stmt"/>
+        <line num="738" count="64" type="stmt"/>
+        <line num="747" count="64" type="stmt"/>
         <line num="751" count="0" type="stmt"/>
         <line num="764" count="0" type="stmt"/>
         <line num="768" count="0" type="stmt"/>
         <line num="777" count="0" type="stmt"/>
         <line num="781" count="0" type="stmt"/>
         <line num="790" count="0" type="stmt"/>
-        <line num="794" count="147" type="stmt"/>
+        <line num="794" count="64" type="stmt"/>
         <line num="803" count="0" type="stmt"/>
-        <line num="807" count="294" type="stmt"/>
+        <line num="807" count="128" type="stmt"/>
         <line num="816" count="0" type="stmt"/>
         <line num="820" count="0" type="stmt"/>
         <line num="829" count="0" type="stmt"/>
         <line num="833" count="0" type="stmt"/>
         <line num="842" count="0" type="stmt"/>
-        <line num="846" count="147" type="stmt"/>
+        <line num="846" count="64" type="stmt"/>
         <line num="855" count="0" type="stmt"/>
         <line num="864" count="4" type="stmt"/>
         <line num="873" count="0" type="stmt"/>
@@ -875,35 +875,35 @@
         <line num="1089" count="0" type="stmt"/>
         <line num="1098" count="0" type="stmt"/>
         <line num="1107" count="0" type="stmt"/>
-        <line num="1114" count="58" type="stmt"/>
+        <line num="1114" count="44" type="stmt"/>
         <line num="1115" count="0" type="stmt"/>
-        <line num="1119" count="58" type="cond" truecount="2" falsecount="0"/>
+        <line num="1119" count="44" type="cond" truecount="1" falsecount="1"/>
         <line num="1120" count="44" type="stmt"/>
       </file>
       <file name="AddressDataExtractor.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js">
-        <metrics statements="44" coveredstatements="21" conditionals="0" coveredconditionals="0" methods="39" coveredmethods="16"/>
+        <metrics statements="44" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="39" coveredmethods="5"/>
         <line num="53" count="13" type="stmt"/>
         <line num="54" count="13" type="stmt"/>
         <line num="55" count="13" type="stmt"/>
         <line num="56" count="13" type="stmt"/>
         <line num="57" count="13" type="stmt"/>
         <line num="65" count="0" type="stmt"/>
-        <line num="73" count="116" type="stmt"/>
-        <line num="81" count="30" type="stmt"/>
-        <line num="89" count="33" type="stmt"/>
-        <line num="97" count="43" type="stmt"/>
-        <line num="105" count="6" type="stmt"/>
-        <line num="113" count="4" type="stmt"/>
-        <line num="121" count="4" type="stmt"/>
+        <line num="73" count="8" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="121" count="0" type="stmt"/>
         <line num="129" count="0" type="stmt"/>
-        <line num="137" count="15" type="stmt"/>
-        <line num="145" count="9" type="stmt"/>
+        <line num="137" count="0" type="stmt"/>
+        <line num="145" count="1" type="stmt"/>
         <line num="153" count="0" type="stmt"/>
-        <line num="161" count="1" type="stmt"/>
-        <line num="169" count="3" type="stmt"/>
-        <line num="178" count="90" type="stmt"/>
+        <line num="161" count="0" type="stmt"/>
+        <line num="169" count="1" type="stmt"/>
+        <line num="178" count="2" type="stmt"/>
         <line num="188" count="0" type="stmt"/>
-        <line num="195" count="58" type="stmt"/>
+        <line num="195" count="44" type="stmt"/>
         <line num="197" count="0" type="stmt"/>
         <line num="198" count="0" type="stmt"/>
         <line num="201" count="0" type="stmt"/>
@@ -913,14 +913,14 @@
         <line num="209" count="0" type="stmt"/>
         <line num="210" count="0" type="stmt"/>
         <line num="213" count="0" type="stmt"/>
-        <line num="214" count="22" type="stmt"/>
+        <line num="214" count="0" type="stmt"/>
         <line num="217" count="0" type="stmt"/>
-        <line num="218" count="28" type="stmt"/>
+        <line num="218" count="0" type="stmt"/>
         <line num="221" count="0" type="stmt"/>
         <line num="222" count="0" type="stmt"/>
         <line num="225" count="0" type="stmt"/>
         <line num="226" count="0" type="stmt"/>
-        <line num="229" count="3" type="stmt"/>
+        <line num="229" count="0" type="stmt"/>
         <line num="230" count="0" type="stmt"/>
         <line num="233" count="0" type="stmt"/>
         <line num="234" count="0" type="stmt"/>
@@ -928,225 +928,225 @@
         <line num="238" count="0" type="stmt"/>
       </file>
       <file name="AddressExtractor.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressExtractor.js">
-        <metrics statements="23" coveredstatements="22" conditionals="48" coveredconditionals="48" methods="4" coveredmethods="3"/>
-        <line num="35" count="164" type="stmt"/>
-        <line num="36" count="164" type="stmt"/>
-        <line num="37" count="164" type="stmt"/>
-        <line num="38" count="164" type="stmt"/>
-        <line num="59" count="149" type="cond" truecount="4" falsecount="0"/>
-        <line num="60" count="135" type="stmt"/>
-        <line num="64" count="14" type="stmt"/>
-        <line num="65" count="14" type="cond" truecount="2" falsecount="0"/>
-        <line num="81" count="164" type="cond" truecount="4" falsecount="0"/>
-        <line num="82" count="14" type="stmt"/>
-        <line num="85" count="150" type="stmt"/>
-        <line num="89" count="150" type="cond" truecount="5" falsecount="0"/>
-        <line num="93" count="150" type="cond" truecount="3" falsecount="0"/>
-        <line num="97" count="150" type="cond" truecount="5" falsecount="0"/>
-        <line num="101" count="150" type="cond" truecount="6" falsecount="0"/>
-        <line num="107" count="150" type="cond" truecount="3" falsecount="0"/>
-        <line num="112" count="150" type="cond" truecount="3" falsecount="0"/>
-        <line num="115" count="150" type="cond" truecount="4" falsecount="0"/>
-        <line num="116" count="58" type="stmt"/>
-        <line num="121" count="150" type="cond" truecount="3" falsecount="0"/>
-        <line num="124" count="150" type="cond" truecount="6" falsecount="0"/>
-        <line num="126" count="150" type="stmt"/>
+        <metrics statements="23" coveredstatements="22" conditionals="48" coveredconditionals="45" methods="4" coveredmethods="3"/>
+        <line num="35" count="81" type="stmt"/>
+        <line num="36" count="81" type="stmt"/>
+        <line num="37" count="81" type="stmt"/>
+        <line num="38" count="81" type="stmt"/>
+        <line num="59" count="73" type="cond" truecount="4" falsecount="0"/>
+        <line num="60" count="69" type="stmt"/>
+        <line num="64" count="4" type="stmt"/>
+        <line num="65" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="81" count="81" type="cond" truecount="4" falsecount="0"/>
+        <line num="82" count="12" type="stmt"/>
+        <line num="85" count="69" type="stmt"/>
+        <line num="89" count="69" type="cond" truecount="2" falsecount="3"/>
+        <line num="93" count="69" type="cond" truecount="3" falsecount="0"/>
+        <line num="97" count="69" type="cond" truecount="5" falsecount="0"/>
+        <line num="101" count="69" type="cond" truecount="6" falsecount="0"/>
+        <line num="107" count="69" type="cond" truecount="3" falsecount="0"/>
+        <line num="112" count="69" type="cond" truecount="3" falsecount="0"/>
+        <line num="115" count="69" type="cond" truecount="4" falsecount="0"/>
+        <line num="116" count="5" type="stmt"/>
+        <line num="121" count="69" type="cond" truecount="3" falsecount="0"/>
+        <line num="124" count="69" type="cond" truecount="6" falsecount="0"/>
+        <line num="126" count="69" type="stmt"/>
         <line num="136" count="0" type="stmt"/>
       </file>
       <file name="BrazilianStandardAddress.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/data/BrazilianStandardAddress.js">
-        <metrics statements="20" coveredstatements="19" conditionals="12" coveredconditionals="7" methods="6" coveredmethods="5"/>
-        <line num="33" count="179" type="stmt"/>
-        <line num="34" count="179" type="stmt"/>
-        <line num="35" count="179" type="stmt"/>
-        <line num="36" count="179" type="stmt"/>
-        <line num="37" count="179" type="stmt"/>
-        <line num="38" count="179" type="stmt"/>
-        <line num="39" count="179" type="stmt"/>
-        <line num="40" count="179" type="stmt"/>
-        <line num="41" count="179" type="stmt"/>
-        <line num="51" count="10" type="cond" truecount="1" falsecount="1"/>
-        <line num="52" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="53" count="7" type="stmt"/>
-        <line num="55" count="3" type="stmt"/>
+        <metrics statements="20" coveredstatements="18" conditionals="12" coveredconditionals="6" methods="6" coveredmethods="5"/>
+        <line num="33" count="94" type="stmt"/>
+        <line num="34" count="94" type="stmt"/>
+        <line num="35" count="94" type="stmt"/>
+        <line num="36" count="94" type="stmt"/>
+        <line num="37" count="94" type="stmt"/>
+        <line num="38" count="94" type="stmt"/>
+        <line num="39" count="94" type="stmt"/>
+        <line num="40" count="94" type="stmt"/>
+        <line num="41" count="94" type="stmt"/>
+        <line num="51" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="52" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="5" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
         <line num="65" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="75" count="10" type="cond" truecount="1" falsecount="1"/>
-        <line num="76" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="77" count="8" type="stmt"/>
-        <line num="79" count="2" type="stmt"/>
-        <line num="90" count="8" type="stmt"/>
+        <line num="75" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="76" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="77" count="6" type="stmt"/>
+        <line num="79" count="0" type="stmt"/>
+        <line num="90" count="5" type="stmt"/>
         <line num="101" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
       <file name="ReferencePlace.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/data/ReferencePlace.js">
-        <metrics statements="20" coveredstatements="20" conditionals="27" coveredconditionals="26" methods="3" coveredmethods="3"/>
-        <line num="47" count="58" type="stmt"/>
-        <line num="74" count="189" type="cond" truecount="3" falsecount="0"/>
-        <line num="75" count="189" type="cond" truecount="3" falsecount="0"/>
-        <line num="76" count="189" type="cond" truecount="3" falsecount="0"/>
-        <line num="77" count="189" type="stmt"/>
-        <line num="78" count="189" type="stmt"/>
-        <line num="93" count="189" type="cond" truecount="4" falsecount="0"/>
-        <line num="94" count="157" type="stmt"/>
-        <line num="98" count="32" type="cond" truecount="2" falsecount="0"/>
-        <line num="99" count="3" type="stmt"/>
-        <line num="102" count="29" type="cond" truecount="3" falsecount="1"/>
-        <line num="104" count="29" type="cond" truecount="4" falsecount="0"/>
-        <line num="106" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="107" count="21" type="stmt"/>
-        <line num="109" count="3" type="stmt"/>
-        <line num="115" count="5" type="stmt"/>
-        <line num="133" count="3" type="stmt"/>
-        <line num="134" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="135" count="1" type="stmt"/>
-        <line num="137" count="2" type="stmt"/>
+        <metrics statements="20" coveredstatements="15" conditionals="27" coveredconditionals="23" methods="3" coveredmethods="2"/>
+        <line num="47" count="44" type="stmt"/>
+        <line num="74" count="75" type="cond" truecount="3" falsecount="0"/>
+        <line num="75" count="75" type="cond" truecount="3" falsecount="0"/>
+        <line num="76" count="75" type="cond" truecount="3" falsecount="0"/>
+        <line num="77" count="75" type="stmt"/>
+        <line num="78" count="75" type="stmt"/>
+        <line num="93" count="75" type="cond" truecount="4" falsecount="0"/>
+        <line num="94" count="70" type="stmt"/>
+        <line num="98" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="102" count="4" type="cond" truecount="3" falsecount="1"/>
+        <line num="104" count="4" type="cond" truecount="3" falsecount="1"/>
+        <line num="106" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="107" count="3" type="stmt"/>
+        <line num="109" count="1" type="stmt"/>
+        <line num="115" count="0" type="stmt"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="134" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="135" count="0" type="stmt"/>
+        <line num="137" count="0" type="stmt"/>
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.html">
-      <metrics statements="276" coveredstatements="182" conditionals="238" coveredconditionals="163" methods="40" coveredmethods="25"/>
+      <metrics statements="276" coveredstatements="47" conditionals="238" coveredconditionals="35" methods="40" coveredmethods="5"/>
       <file name="DisplayerFactory.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/html/DisplayerFactory.js">
-        <metrics statements="12" coveredstatements="11" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="4"/>
-        <line num="71" count="1298" type="stmt"/>
-        <line num="72" count="1298" type="stmt"/>
-        <line num="105" count="1286" type="stmt"/>
-        <line num="106" count="1286" type="stmt"/>
-        <line num="140" count="1277" type="stmt"/>
-        <line num="141" count="1277" type="stmt"/>
-        <line num="160" count="1" type="stmt"/>
-        <line num="165" count="59" type="stmt"/>
+        <metrics statements="12" coveredstatements="4" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="0"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="141" count="0" type="stmt"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="165" count="44" type="stmt"/>
         <line num="166" count="0" type="stmt"/>
-        <line num="170" count="59" type="stmt"/>
-        <line num="177" count="59" type="cond" truecount="2" falsecount="0"/>
-        <line num="178" count="41" type="stmt"/>
+        <line num="170" count="44" type="stmt"/>
+        <line num="177" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="178" count="26" type="stmt"/>
       </file>
       <file name="HTMLAddressDisplayer.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/html/HTMLAddressDisplayer.js">
-        <metrics statements="39" coveredstatements="39" conditionals="30" coveredconditionals="29" methods="4" coveredmethods="4"/>
-        <line num="60" count="1351" type="stmt"/>
-        <line num="61" count="1351" type="stmt"/>
-        <line num="62" count="1351" type="stmt"/>
-        <line num="96" count="1145" type="stmt"/>
-        <line num="98" count="1145" type="cond" truecount="2" falsecount="0"/>
-        <line num="99" count="2" type="stmt"/>
-        <line num="103" count="1143" type="cond" truecount="4" falsecount="0"/>
-        <line num="104" count="2" type="stmt"/>
-        <line num="105" count="2" type="stmt"/>
-        <line num="109" count="1143" type="stmt"/>
-        <line num="113" count="1143" type="stmt"/>
-        <line num="118" count="1143" type="stmt"/>
-        <line num="119" count="2307" type="cond" truecount="1" falsecount="1"/>
-        <line num="120" count="2307" type="stmt"/>
-        <line num="121" count="2307" type="cond" truecount="4" falsecount="0"/>
-        <line num="123" count="1141" type="stmt"/>
-        <line num="126" count="1166" type="stmt"/>
-        <line num="130" count="1143" type="stmt"/>
-        <line num="133" count="1143" type="cond" truecount="2" falsecount="0"/>
-        <line num="134" count="1139" type="stmt"/>
-        <line num="140" count="1143" type="stmt"/>
-        <line num="141" count="1143" type="stmt"/>
-        <line num="184" count="1013" type="stmt"/>
-        <line num="186" count="1013" type="cond" truecount="2" falsecount="0"/>
-        <line num="187" count="1" type="stmt"/>
-        <line num="188" count="1" type="stmt"/>
-        <line num="192" count="1012" type="cond" truecount="2" falsecount="0"/>
-        <line num="193" count="4" type="stmt"/>
-        <line num="194" count="4" type="stmt"/>
-        <line num="198" count="1008" type="cond" truecount="2" falsecount="0"/>
-        <line num="199" count="2" type="stmt"/>
-        <line num="200" count="2" type="stmt"/>
-        <line num="204" count="1006" type="cond" truecount="5" falsecount="0"/>
-        <line num="205" count="1004" type="stmt"/>
-        <line num="208" count="1004" type="stmt"/>
-        <line num="209" count="1004" type="stmt"/>
-        <line num="232" count="129" type="cond" truecount="2" falsecount="0"/>
-        <line num="241" count="60" type="cond" truecount="2" falsecount="0"/>
-        <line num="242" count="42" type="stmt"/>
+        <metrics statements="39" coveredstatements="2" conditionals="30" coveredconditionals="2" methods="4" coveredmethods="0"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="98" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="99" count="0" type="stmt"/>
+        <line num="103" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="118" count="0" type="stmt"/>
+        <line num="119" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="121" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="126" count="0" type="stmt"/>
+        <line num="130" count="0" type="stmt"/>
+        <line num="133" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="134" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="141" count="0" type="stmt"/>
+        <line num="184" count="0" type="stmt"/>
+        <line num="186" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="187" count="0" type="stmt"/>
+        <line num="188" count="0" type="stmt"/>
+        <line num="192" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="193" count="0" type="stmt"/>
+        <line num="194" count="0" type="stmt"/>
+        <line num="198" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="199" count="0" type="stmt"/>
+        <line num="200" count="0" type="stmt"/>
+        <line num="204" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="205" count="0" type="stmt"/>
+        <line num="208" count="0" type="stmt"/>
+        <line num="209" count="0" type="stmt"/>
+        <line num="232" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="241" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="242" count="26" type="stmt"/>
       </file>
       <file name="HTMLPositionDisplayer.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/html/HTMLPositionDisplayer.js">
-        <metrics statements="40" coveredstatements="40" conditionals="52" coveredconditionals="52" methods="5" coveredmethods="5"/>
-        <line num="52" count="1337" type="stmt"/>
-        <line num="53" count="1337" type="stmt"/>
-        <line num="78" count="1018" type="cond" truecount="4" falsecount="0"/>
-        <line num="79" count="2" type="stmt"/>
-        <line num="82" count="1016" type="stmt"/>
-        <line num="83" count="1016" type="stmt"/>
-        <line num="84" count="1016" type="stmt"/>
-        <line num="86" count="1016" type="stmt"/>
-        <line num="89" count="1016" type="stmt"/>
-        <line num="94" count="1016" type="stmt"/>
-        <line num="101" count="1016" type="stmt"/>
-        <line num="108" count="1016" type="cond" truecount="5" falsecount="0"/>
-        <line num="109" count="7" type="stmt"/>
-        <line num="113" count="7" type="cond" truecount="4" falsecount="0"/>
-        <line num="114" count="6" type="stmt"/>
-        <line num="116" count="7" type="stmt"/>
-        <line num="120" count="1016" type="cond" truecount="5" falsecount="0"/>
-        <line num="121" count="7" type="stmt"/>
-        <line num="122" count="7" type="stmt"/>
-        <line num="126" count="7" type="cond" truecount="4" falsecount="0"/>
-        <line num="127" count="6" type="stmt"/>
-        <line num="129" count="7" type="stmt"/>
-        <line num="132" count="1016" type="stmt"/>
-        <line num="133" count="1016" type="stmt"/>
-        <line num="152" count="1125" type="stmt"/>
-        <line num="159" count="1125" type="cond" truecount="2" falsecount="0"/>
-        <line num="193" count="1009" type="cond" truecount="2" falsecount="0"/>
-        <line num="194" count="3" type="stmt"/>
-        <line num="195" count="3" type="stmt"/>
-        <line num="199" count="1006" type="cond" truecount="2" falsecount="0"/>
-        <line num="200" count="1" type="stmt"/>
-        <line num="201" count="1" type="stmt"/>
-        <line num="205" count="1005" type="cond" truecount="4" falsecount="0"/>
-        <line num="206" count="1004" type="cond" truecount="4" falsecount="0"/>
-        <line num="207" count="1002" type="stmt"/>
-        <line num="208" count="1002" type="stmt"/>
-        <line num="210" count="2" type="stmt"/>
-        <line num="231" count="121" type="cond" truecount="2" falsecount="0"/>
-        <line num="240" count="60" type="cond" truecount="2" falsecount="0"/>
-        <line num="241" count="42" type="stmt"/>
+        <metrics statements="40" coveredstatements="2" conditionals="52" coveredconditionals="2" methods="5" coveredmethods="0"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="78" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="79" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="94" count="0" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="108" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="113" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="116" count="0" type="stmt"/>
+        <line num="120" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="121" count="0" type="stmt"/>
+        <line num="122" count="0" type="stmt"/>
+        <line num="126" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="127" count="0" type="stmt"/>
+        <line num="129" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="159" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="193" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="194" count="0" type="stmt"/>
+        <line num="195" count="0" type="stmt"/>
+        <line num="199" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="200" count="0" type="stmt"/>
+        <line num="201" count="0" type="stmt"/>
+        <line num="205" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="206" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="207" count="0" type="stmt"/>
+        <line num="208" count="0" type="stmt"/>
+        <line num="210" count="0" type="stmt"/>
+        <line num="231" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="240" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="241" count="26" type="stmt"/>
       </file>
       <file name="HTMLReferencePlaceDisplayer.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/html/HTMLReferencePlaceDisplayer.js">
-        <metrics statements="43" coveredstatements="43" conditionals="37" coveredconditionals="34" methods="4" coveredmethods="4"/>
-        <line num="59" count="1331" type="stmt"/>
-        <line num="60" count="1331" type="stmt"/>
-        <line num="61" count="1331" type="stmt"/>
-        <line num="90" count="1138" type="cond" truecount="2" falsecount="0"/>
-        <line num="91" count="3" type="stmt"/>
-        <line num="95" count="1135" type="cond" truecount="4" falsecount="0"/>
-        <line num="96" count="3" type="stmt"/>
-        <line num="100" count="1132" type="stmt"/>
-        <line num="103" count="1132" type="stmt"/>
-        <line num="106" count="1132" type="cond" truecount="2" falsecount="0"/>
-        <line num="107" count="1131" type="stmt"/>
-        <line num="110" count="1131" type="cond" truecount="4" falsecount="0"/>
-        <line num="111" count="1028" type="stmt"/>
-        <line num="113" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="115" count="1" type="stmt"/>
-        <line num="118" count="1132" type="stmt"/>
-        <line num="121" count="1132" type="cond" truecount="4" falsecount="0"/>
-        <line num="122" count="8" type="stmt"/>
-        <line num="123" count="8" type="cond" truecount="1" falsecount="1"/>
-        <line num="124" count="8" type="stmt"/>
-        <line num="126" count="8" type="cond" truecount="1" falsecount="1"/>
-        <line num="127" count="8" type="stmt"/>
-        <line num="129" count="8" type="stmt"/>
-        <line num="132" count="1132" type="stmt"/>
-        <line num="133" count="1132" type="stmt"/>
-        <line num="176" count="1010" type="stmt"/>
-        <line num="178" count="1010" type="cond" truecount="2" falsecount="0"/>
-        <line num="179" count="1004" type="stmt"/>
-        <line num="180" count="1004" type="stmt"/>
-        <line num="184" count="1010" type="cond" truecount="2" falsecount="0"/>
-        <line num="185" count="2" type="stmt"/>
-        <line num="186" count="2" type="stmt"/>
-        <line num="190" count="1008" type="cond" truecount="2" falsecount="0"/>
-        <line num="191" count="2" type="stmt"/>
-        <line num="192" count="2" type="stmt"/>
-        <line num="196" count="1006" type="cond" truecount="4" falsecount="0"/>
-        <line num="197" count="1003" type="stmt"/>
-        <line num="200" count="1003" type="stmt"/>
-        <line num="203" count="1003" type="stmt"/>
-        <line num="204" count="1003" type="stmt"/>
-        <line num="227" count="129" type="cond" truecount="2" falsecount="0"/>
-        <line num="236" count="60" type="cond" truecount="2" falsecount="0"/>
-        <line num="237" count="42" type="stmt"/>
+        <metrics statements="43" coveredstatements="2" conditionals="37" coveredconditionals="2" methods="4" coveredmethods="0"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="90" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="95" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="103" count="0" type="stmt"/>
+        <line num="106" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="107" count="0" type="stmt"/>
+        <line num="110" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="111" count="0" type="stmt"/>
+        <line num="113" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="115" count="0" type="stmt"/>
+        <line num="118" count="0" type="stmt"/>
+        <line num="121" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="122" count="0" type="stmt"/>
+        <line num="123" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="124" count="0" type="stmt"/>
+        <line num="126" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="127" count="0" type="stmt"/>
+        <line num="129" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="176" count="0" type="stmt"/>
+        <line num="178" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="179" count="0" type="stmt"/>
+        <line num="180" count="0" type="stmt"/>
+        <line num="184" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="185" count="0" type="stmt"/>
+        <line num="186" count="0" type="stmt"/>
+        <line num="190" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="191" count="0" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="196" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="200" count="0" type="stmt"/>
+        <line num="203" count="0" type="stmt"/>
+        <line num="204" count="0" type="stmt"/>
+        <line num="227" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="236" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="237" count="26" type="stmt"/>
       </file>
       <file name="HtmlSpeechSynthesisDisplayer.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/html/HtmlSpeechSynthesisDisplayer.js">
         <metrics statements="130" coveredstatements="37" conditionals="98" coveredconditionals="27" methods="19" coveredmethods="5"/>
@@ -1282,112 +1282,112 @@
         <line num="786" count="0" type="stmt"/>
       </file>
       <file name="HtmlText.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/html/HtmlText.js">
-        <metrics statements="12" coveredstatements="12" conditionals="17" coveredconditionals="17" methods="3" coveredmethods="3"/>
-        <line num="58" count="48" type="stmt"/>
-        <line num="59" count="48" type="stmt"/>
-        <line num="62" count="48" type="stmt"/>
-        <line num="67" count="48" type="stmt"/>
-        <line num="98" count="1026" type="cond" truecount="2" falsecount="0"/>
-        <line num="99" count="1025" type="cond" truecount="2" falsecount="0"/>
-        <line num="100" count="3" type="stmt"/>
-        <line num="101" count="1022" type="cond" truecount="2" falsecount="0"/>
-        <line num="102" count="1" type="stmt"/>
-        <line num="103" count="1021" type="cond" truecount="4" falsecount="0"/>
-        <line num="105" count="1017" type="stmt"/>
-        <line num="126" count="6" type="cond" truecount="2" falsecount="0"/>
+        <metrics statements="12" coveredstatements="0" conditionals="17" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="67" count="0" type="stmt"/>
+        <line num="98" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="99" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="101" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="103" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="126" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.services">
-      <metrics statements="197" coveredstatements="87" conditionals="93" coveredconditionals="31" methods="62" coveredmethods="30"/>
+      <metrics statements="197" coveredstatements="55" conditionals="93" coveredconditionals="21" methods="62" coveredmethods="16"/>
       <file name="ChangeDetectionCoordinator.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js">
-        <metrics statements="55" coveredstatements="43" conditionals="16" coveredconditionals="9" methods="22" coveredmethods="18"/>
-        <line num="30" count="76" type="stmt"/>
-        <line num="31" count="76" type="stmt"/>
-        <line num="32" count="76" type="stmt"/>
-        <line num="36" count="76" type="stmt"/>
+        <metrics statements="55" coveredstatements="11" conditionals="16" coveredconditionals="2" methods="22" coveredmethods="4"/>
+        <line num="30" count="3" type="stmt"/>
+        <line num="31" count="3" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
         <line num="49" count="0" type="stmt"/>
-        <line num="59" count="3" type="stmt"/>
-        <line num="72" count="2" type="stmt"/>
-        <line num="73" count="2" type="stmt"/>
-        <line num="74" count="2" type="stmt"/>
-        <line num="86" count="1" type="stmt"/>
-        <line num="87" count="1" type="stmt"/>
-        <line num="88" count="1" type="stmt"/>
-        <line num="101" count="6" type="cond" truecount="1" falsecount="1"/>
-        <line num="102" count="6" type="stmt"/>
-        <line num="103" count="6" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="101" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="103" count="0" type="stmt"/>
         <line num="106" count="0" type="stmt"/>
         <line num="107" count="0" type="stmt"/>
-        <line num="120" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="120" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="121" count="0" type="stmt"/>
-        <line num="133" count="4" type="cond" truecount="1" falsecount="1"/>
-        <line num="134" count="4" type="stmt"/>
-        <line num="135" count="4" type="stmt"/>
+        <line num="133" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="134" count="0" type="stmt"/>
+        <line num="135" count="0" type="stmt"/>
         <line num="138" count="0" type="stmt"/>
         <line num="139" count="0" type="stmt"/>
-        <line num="149" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="149" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="150" count="0" type="stmt"/>
-        <line num="162" count="4" type="cond" truecount="1" falsecount="1"/>
-        <line num="163" count="4" type="stmt"/>
-        <line num="164" count="4" type="stmt"/>
+        <line num="162" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="163" count="0" type="stmt"/>
+        <line num="164" count="0" type="stmt"/>
         <line num="167" count="0" type="stmt"/>
         <line num="168" count="0" type="stmt"/>
-        <line num="178" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="178" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="179" count="0" type="stmt"/>
-        <line num="196" count="2" type="stmt"/>
-        <line num="197" count="2" type="stmt"/>
-        <line num="199" count="1" type="stmt"/>
-        <line num="219" count="1" type="stmt"/>
-        <line num="220" count="1" type="stmt"/>
+        <line num="196" count="0" type="stmt"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="199" count="0" type="stmt"/>
+        <line num="219" count="0" type="stmt"/>
+        <line num="220" count="0" type="stmt"/>
         <line num="222" count="0" type="stmt"/>
-        <line num="242" count="1" type="stmt"/>
-        <line num="243" count="1" type="stmt"/>
+        <line num="242" count="0" type="stmt"/>
+        <line num="243" count="0" type="stmt"/>
         <line num="245" count="0" type="stmt"/>
-        <line num="272" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="273" count="4" type="stmt"/>
-        <line num="278" count="12" type="stmt"/>
-        <line num="279" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="280" count="5" type="stmt"/>
-        <line num="285" count="11" type="stmt"/>
-        <line num="300" count="11" type="stmt"/>
-        <line num="301" count="4" type="stmt"/>
-        <line num="302" count="4" type="stmt"/>
-        <line num="309" count="2" type="stmt"/>
-        <line num="327" count="8" type="stmt"/>
-        <line num="345" count="2" type="stmt"/>
-        <line num="363" count="2" type="stmt"/>
+        <line num="272" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="273" count="0" type="stmt"/>
+        <line num="278" count="1" type="stmt"/>
+        <line num="279" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="280" count="1" type="stmt"/>
+        <line num="285" count="1" type="stmt"/>
+        <line num="300" count="1" type="stmt"/>
+        <line num="301" count="0" type="stmt"/>
+        <line num="302" count="0" type="stmt"/>
+        <line num="309" count="0" type="stmt"/>
+        <line num="327" count="1" type="stmt"/>
+        <line num="345" count="0" type="stmt"/>
+        <line num="363" count="0" type="stmt"/>
       </file>
       <file name="GeolocationService.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/services/GeolocationService.js">
-        <metrics statements="90" coveredstatements="23" conditionals="47" coveredconditionals="11" methods="22" coveredmethods="5"/>
-        <line num="50" count="58" type="stmt"/>
+        <metrics statements="90" coveredstatements="23" conditionals="47" coveredconditionals="8" methods="22" coveredmethods="5"/>
+        <line num="50" count="44" type="stmt"/>
         <line num="52" count="0" type="stmt"/>
         <line num="68" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="81" count="58" type="stmt"/>
+        <line num="81" count="44" type="stmt"/>
         <line num="82" count="0" type="stmt"/>
         <line num="84" count="0" type="stmt"/>
         <line num="85" count="0" type="stmt"/>
         <line num="86" count="0" type="stmt"/>
         <line num="87" count="0" type="stmt"/>
         <line num="89" count="0" type="stmt"/>
-        <line num="110" count="58" type="stmt"/>
+        <line num="110" count="44" type="stmt"/>
         <line num="112" count="0" type="stmt"/>
         <line num="119" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="138" count="58" type="stmt"/>
+        <line num="138" count="44" type="stmt"/>
         <line num="140" count="0" type="stmt"/>
         <line num="143" count="0" type="stmt"/>
-        <line num="171" count="58" type="stmt"/>
+        <line num="171" count="44" type="stmt"/>
         <line num="173" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="183" count="58" type="stmt"/>
+        <line num="183" count="44" type="stmt"/>
         <line num="184" count="1" type="cond" truecount="2" falsecount="0"/>
-        <line num="250" count="45" type="stmt"/>
-        <line num="253" count="45" type="stmt"/>
-        <line num="254" count="45" type="stmt"/>
-        <line num="255" count="45" type="stmt"/>
-        <line num="256" count="45" type="stmt"/>
-        <line num="261" count="45" type="stmt"/>
-        <line num="267" count="45" type="stmt"/>
-        <line num="275" count="45" type="cond" truecount="3" falsecount="1"/>
-        <line num="281" count="45" type="cond" truecount="2" falsecount="0"/>
+        <line num="250" count="3" type="stmt"/>
+        <line num="253" count="3" type="stmt"/>
+        <line num="254" count="3" type="stmt"/>
+        <line num="255" count="3" type="stmt"/>
+        <line num="256" count="3" type="stmt"/>
+        <line num="261" count="3" type="stmt"/>
+        <line num="267" count="3" type="stmt"/>
+        <line num="275" count="3" type="cond" truecount="1" falsecount="3"/>
+        <line num="281" count="3" type="cond" truecount="1" falsecount="1"/>
         <line num="303" count="1" type="stmt"/>
         <line num="304" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="305" count="1" type="stmt"/>
@@ -1452,14 +1452,14 @@
       </file>
       <file name="ReverseGeocoder.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/services/ReverseGeocoder.js">
         <metrics statements="52" coveredstatements="21" conditionals="30" coveredconditionals="11" methods="18" coveredmethods="7"/>
-        <line num="48" count="58" type="stmt"/>
+        <line num="48" count="44" type="stmt"/>
         <line num="49" count="5" type="stmt"/>
-        <line num="89" count="51" type="stmt"/>
-        <line num="92" count="51" type="stmt"/>
-        <line num="99" count="51" type="stmt"/>
+        <line num="89" count="10" type="stmt"/>
+        <line num="92" count="10" type="stmt"/>
+        <line num="99" count="10" type="stmt"/>
         <line num="100" count="0" type="stmt"/>
         <line num="102" count="0" type="stmt"/>
-        <line num="108" count="51" type="stmt"/>
+        <line num="108" count="10" type="stmt"/>
         <line num="121" count="1" type="stmt"/>
         <line num="129" count="0" type="stmt"/>
         <line num="130" count="0" type="stmt"/>
@@ -1507,116 +1507,116 @@
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.speech">
-      <metrics statements="267" coveredstatements="130" conditionals="168" coveredconditionals="79" methods="64" coveredmethods="29"/>
+      <metrics statements="267" coveredstatements="51" conditionals="168" coveredconditionals="33" methods="64" coveredmethods="8"/>
       <file name="SpeechItem.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/speech/SpeechItem.js">
-        <metrics statements="15" coveredstatements="15" conditionals="13" coveredconditionals="13" methods="3" coveredmethods="3"/>
-        <line num="80" count="4768" type="cond" truecount="2" falsecount="0"/>
-        <line num="81" count="7" type="stmt"/>
-        <line num="83" count="4761" type="cond" truecount="2" falsecount="0"/>
-        <line num="84" count="4" type="stmt"/>
-        <line num="86" count="4757" type="cond" truecount="2" falsecount="0"/>
-        <line num="87" count="3" type="stmt"/>
-        <line num="91" count="4754" type="stmt"/>
-        <line num="92" count="4754" type="stmt"/>
-        <line num="93" count="4754" type="stmt"/>
-        <line num="96" count="4754" type="stmt"/>
-        <line num="138" count="486977" type="stmt"/>
-        <line num="171" count="14" type="cond" truecount="2" falsecount="0"/>
-        <line num="174" count="14" type="stmt"/>
-        <line num="183" count="61" type="cond" truecount="2" falsecount="0"/>
-        <line num="184" count="43" type="stmt"/>
+        <metrics statements="15" coveredstatements="2" conditionals="13" coveredconditionals="2" methods="3" coveredmethods="0"/>
+        <line num="80" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="83" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="86" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="138" count="0" type="stmt"/>
+        <line num="171" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="174" count="0" type="stmt"/>
+        <line num="183" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="184" count="26" type="stmt"/>
       </file>
       <file name="SpeechQueue.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/speech/SpeechQueue.js">
-        <metrics statements="79" coveredstatements="73" conditionals="44" coveredconditionals="43" methods="23" coveredmethods="19"/>
-        <line num="71" count="123" type="cond" truecount="5" falsecount="0"/>
-        <line num="72" count="7" type="stmt"/>
-        <line num="75" count="116" type="cond" truecount="5" falsecount="0"/>
-        <line num="76" count="5" type="stmt"/>
-        <line num="79" count="111" type="cond" truecount="1" falsecount="1"/>
+        <metrics statements="79" coveredstatements="8" conditionals="44" coveredconditionals="9" methods="23" coveredmethods="1"/>
+        <line num="71" count="8" type="cond" truecount="4" falsecount="1"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="75" count="8" type="cond" truecount="4" falsecount="1"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="79" count="8" type="cond" truecount="1" falsecount="1"/>
         <line num="80" count="0" type="stmt"/>
-        <line num="88" count="111" type="stmt"/>
-        <line num="95" count="111" type="stmt"/>
-        <line num="102" count="111" type="stmt"/>
-        <line num="109" count="111" type="stmt"/>
-        <line num="116" count="111" type="stmt"/>
-        <line num="132" count="10" type="stmt"/>
-        <line num="145" count="6" type="stmt"/>
+        <line num="88" count="8" type="stmt"/>
+        <line num="95" count="8" type="stmt"/>
+        <line num="102" count="8" type="stmt"/>
+        <line num="109" count="8" type="stmt"/>
+        <line num="116" count="8" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="145" count="0" type="stmt"/>
         <line num="155" count="0" type="stmt"/>
         <line num="166" count="0" type="stmt"/>
         <line num="177" count="0" type="stmt"/>
         <line num="190" count="0" type="stmt"/>
         <line num="191" count="0" type="stmt"/>
-        <line num="212" count="14" type="cond" truecount="2" falsecount="0"/>
-        <line num="213" count="2" type="stmt"/>
-        <line num="214" count="2" type="stmt"/>
-        <line num="217" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="218" count="2" type="stmt"/>
-        <line num="221" count="10" type="stmt"/>
-        <line num="230" count="2" type="stmt"/>
-        <line num="242" count="3075" type="stmt"/>
-        <line num="260" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="261" count="2" type="stmt"/>
-        <line num="262" count="2" type="stmt"/>
-        <line num="265" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="266" count="2" type="stmt"/>
-        <line num="269" count="8" type="stmt"/>
-        <line num="278" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="279" count="2" type="stmt"/>
-        <line num="280" count="2" type="stmt"/>
-        <line num="283" count="1" type="stmt"/>
-        <line num="295" count="3075" type="stmt"/>
-        <line num="296" count="6" type="stmt"/>
-        <line num="297" count="6" type="stmt"/>
-        <line num="299" count="2" type="stmt"/>
-        <line num="323" count="2073" type="cond" truecount="2" falsecount="0"/>
-        <line num="324" count="5" type="stmt"/>
-        <line num="327" count="2068" type="cond" truecount="2" falsecount="0"/>
-        <line num="328" count="4" type="stmt"/>
-        <line num="331" count="2064" type="cond" truecount="4" falsecount="0"/>
-        <line num="332" count="7" type="stmt"/>
-        <line num="336" count="2057" type="stmt"/>
-        <line num="339" count="2057" type="stmt"/>
-        <line num="342" count="2057" type="stmt"/>
-        <line num="343" count="2057" type="stmt"/>
-        <line num="344" count="152599" type="cond" truecount="2" falsecount="0"/>
-        <line num="345" count="866" type="stmt"/>
-        <line num="346" count="866" type="stmt"/>
-        <line num="348" count="151733" type="stmt"/>
-        <line num="352" count="2057" type="stmt"/>
-        <line num="355" count="2057" type="cond" truecount="2" falsecount="0"/>
-        <line num="356" count="911" type="stmt"/>
-        <line num="360" count="2057" type="stmt"/>
-        <line num="361" count="2057" type="stmt"/>
-        <line num="381" count="1014" type="stmt"/>
-        <line num="384" count="1014" type="cond" truecount="2" falsecount="0"/>
-        <line num="387" count="1014" type="stmt"/>
-        <line num="388" count="1014" type="stmt"/>
-        <line num="390" count="1014" type="stmt"/>
-        <line num="408" count="943" type="stmt"/>
-        <line num="409" count="943" type="stmt"/>
-        <line num="424" count="369" type="stmt"/>
-        <line num="425" count="369" type="stmt"/>
-        <line num="438" count="4389" type="stmt"/>
-        <line num="441" count="485942" type="stmt"/>
-        <line num="443" count="4389" type="stmt"/>
-        <line num="444" count="4389" type="cond" truecount="4" falsecount="0"/>
-        <line num="446" count="1" type="stmt"/>
-        <line num="460" count="4" type="stmt"/>
-        <line num="463" count="4" type="stmt"/>
-        <line num="464" count="4" type="stmt"/>
-        <line num="477" count="2" type="stmt"/>
-        <line num="494" count="6" type="stmt"/>
-        <line num="495" count="6" type="stmt"/>
+        <line num="212" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="213" count="0" type="stmt"/>
+        <line num="214" count="0" type="stmt"/>
+        <line num="217" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="218" count="0" type="stmt"/>
+        <line num="221" count="0" type="stmt"/>
+        <line num="230" count="0" type="stmt"/>
+        <line num="242" count="0" type="stmt"/>
+        <line num="260" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="261" count="0" type="stmt"/>
+        <line num="262" count="0" type="stmt"/>
+        <line num="265" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="266" count="0" type="stmt"/>
+        <line num="269" count="0" type="stmt"/>
+        <line num="278" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="279" count="0" type="stmt"/>
+        <line num="280" count="0" type="stmt"/>
+        <line num="283" count="0" type="stmt"/>
+        <line num="295" count="0" type="stmt"/>
+        <line num="296" count="0" type="stmt"/>
+        <line num="297" count="0" type="stmt"/>
+        <line num="299" count="0" type="stmt"/>
+        <line num="323" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="324" count="0" type="stmt"/>
+        <line num="327" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="328" count="0" type="stmt"/>
+        <line num="331" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="332" count="0" type="stmt"/>
+        <line num="336" count="0" type="stmt"/>
+        <line num="339" count="0" type="stmt"/>
+        <line num="342" count="0" type="stmt"/>
+        <line num="343" count="0" type="stmt"/>
+        <line num="344" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="345" count="0" type="stmt"/>
+        <line num="346" count="0" type="stmt"/>
+        <line num="348" count="0" type="stmt"/>
+        <line num="352" count="0" type="stmt"/>
+        <line num="355" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="356" count="0" type="stmt"/>
+        <line num="360" count="0" type="stmt"/>
+        <line num="361" count="0" type="stmt"/>
+        <line num="381" count="0" type="stmt"/>
+        <line num="384" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="387" count="0" type="stmt"/>
+        <line num="388" count="0" type="stmt"/>
+        <line num="390" count="0" type="stmt"/>
+        <line num="408" count="0" type="stmt"/>
+        <line num="409" count="0" type="stmt"/>
+        <line num="424" count="0" type="stmt"/>
+        <line num="425" count="0" type="stmt"/>
+        <line num="438" count="0" type="stmt"/>
+        <line num="441" count="0" type="stmt"/>
+        <line num="443" count="0" type="stmt"/>
+        <line num="444" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="446" count="0" type="stmt"/>
+        <line num="460" count="0" type="stmt"/>
+        <line num="463" count="0" type="stmt"/>
+        <line num="464" count="0" type="stmt"/>
+        <line num="477" count="0" type="stmt"/>
+        <line num="494" count="0" type="stmt"/>
+        <line num="495" count="0" type="stmt"/>
       </file>
       <file name="SpeechSynthesisManager.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/speech/SpeechSynthesisManager.js">
-        <metrics statements="173" coveredstatements="42" conditionals="111" coveredconditionals="23" methods="38" coveredmethods="7"/>
-        <line num="73" count="58" type="stmt"/>
-        <line num="96" count="58" type="stmt"/>
-        <line num="161" count="9" type="cond" truecount="1" falsecount="1"/>
+        <metrics statements="173" coveredstatements="41" conditionals="111" coveredconditionals="22" methods="38" coveredmethods="7"/>
+        <line num="73" count="44" type="stmt"/>
+        <line num="96" count="44" type="stmt"/>
+        <line num="161" count="8" type="cond" truecount="1" falsecount="1"/>
         <line num="162" count="0" type="stmt"/>
-        <line num="166" count="9" type="stmt"/>
-        <line num="169" count="9" type="cond" truecount="4" falsecount="0"/>
-        <line num="170" count="1" type="stmt"/>
+        <line num="166" count="8" type="stmt"/>
+        <line num="169" count="8" type="cond" truecount="3" falsecount="1"/>
+        <line num="170" count="0" type="stmt"/>
         <line num="174" count="8" type="stmt"/>
         <line num="177" count="8" type="stmt"/>
         <line num="178" count="8" type="stmt"/>
@@ -1786,40 +1786,40 @@
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.status">
-      <metrics statements="18" coveredstatements="18" conditionals="14" coveredconditionals="14" methods="6" coveredmethods="6"/>
+      <metrics statements="18" coveredstatements="2" conditionals="14" coveredconditionals="2" methods="6" coveredmethods="0"/>
       <file name="SingletonStatusManager.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/status/SingletonStatusManager.js">
-        <metrics statements="18" coveredstatements="18" conditionals="14" coveredconditionals="14" methods="6" coveredmethods="6"/>
-        <line num="86" count="89" type="cond" truecount="2" falsecount="0"/>
-        <line num="87" count="13" type="stmt"/>
-        <line num="91" count="76" type="stmt"/>
-        <line num="94" count="76" type="stmt"/>
-        <line num="131" count="10157" type="stmt"/>
-        <line num="178" count="20443" type="cond" truecount="2" falsecount="0"/>
-        <line num="179" count="56" type="stmt"/>
-        <line num="183" count="20387" type="stmt"/>
-        <line num="187" count="20387" type="cond" truecount="4" falsecount="0"/>
-        <line num="188" count="20385" type="cond" truecount="2" falsecount="0"/>
-        <line num="189" count="10201" type="stmt"/>
-        <line num="191" count="10184" type="stmt"/>
-        <line num="237" count="12325" type="cond" truecount="2" falsecount="0"/>
-        <line num="238" count="12325" type="stmt"/>
-        <line num="269" count="152" type="stmt"/>
-        <line num="296" count="17" type="stmt"/>
-        <line num="304" count="60" type="cond" truecount="2" falsecount="0"/>
-        <line num="305" count="42" type="stmt"/>
+        <metrics statements="18" coveredstatements="2" conditionals="14" coveredconditionals="2" methods="6" coveredmethods="0"/>
+        <line num="86" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="94" count="0" type="stmt"/>
+        <line num="131" count="0" type="stmt"/>
+        <line num="178" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="179" count="0" type="stmt"/>
+        <line num="183" count="0" type="stmt"/>
+        <line num="187" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="188" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="189" count="0" type="stmt"/>
+        <line num="191" count="0" type="stmt"/>
+        <line num="237" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="238" count="0" type="stmt"/>
+        <line num="269" count="0" type="stmt"/>
+        <line num="296" count="0" type="stmt"/>
+        <line num="304" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="305" count="26" type="stmt"/>
       </file>
     </package>
     <package name="submodules.guia_turistico.src.libs.guia_js.src.timing">
       <metrics statements="53" coveredstatements="53" conditionals="39" coveredconditionals="38" methods="11" coveredmethods="11"/>
       <file name="Chronometer.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/timing/Chronometer.js">
         <metrics statements="53" coveredstatements="53" conditionals="39" coveredconditionals="38" methods="11" coveredmethods="11"/>
-        <line num="62" count="69" type="stmt"/>
-        <line num="63" count="69" type="stmt"/>
-        <line num="64" count="69" type="stmt"/>
-        <line num="65" count="69" type="stmt"/>
-        <line num="66" count="69" type="stmt"/>
-        <line num="67" count="69" type="stmt"/>
-        <line num="70" count="69" type="stmt"/>
+        <line num="62" count="63" type="stmt"/>
+        <line num="63" count="63" type="stmt"/>
+        <line num="64" count="63" type="stmt"/>
+        <line num="65" count="63" type="stmt"/>
+        <line num="66" count="63" type="stmt"/>
+        <line num="67" count="63" type="stmt"/>
+        <line num="70" count="63" type="stmt"/>
         <line num="93" count="41" type="cond" truecount="2" falsecount="0"/>
         <line num="94" count="40" type="stmt"/>
         <line num="95" count="40" type="stmt"/>
@@ -1872,24 +1872,24 @@
       <metrics statements="31" coveredstatements="30" conditionals="23" coveredconditionals="22" methods="8" coveredmethods="5"/>
       <file name="device.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/utils/device.js">
         <metrics statements="13" coveredstatements="13" conditionals="23" coveredconditionals="22" methods="1" coveredmethods="1"/>
-        <line num="75" count="58" type="cond" truecount="1" falsecount="0"/>
-        <line num="77" count="73" type="cond" truecount="4" falsecount="0"/>
-        <line num="78" count="73" type="cond" truecount="4" falsecount="0"/>
-        <line num="81" count="73" type="cond" truecount="4" falsecount="0"/>
+        <line num="75" count="44" type="cond" truecount="1" falsecount="0"/>
+        <line num="77" count="59" type="cond" truecount="4" falsecount="0"/>
+        <line num="78" count="59" type="cond" truecount="4" falsecount="0"/>
+        <line num="81" count="59" type="cond" truecount="4" falsecount="0"/>
         <line num="82" count="17" type="stmt"/>
-        <line num="87" count="56" type="cond" truecount="4" falsecount="0"/>
-        <line num="89" count="56" type="stmt"/>
-        <line num="90" count="56" type="stmt"/>
-        <line num="94" count="56" type="cond" truecount="2" falsecount="0"/>
-        <line num="98" count="56" type="cond" truecount="2" falsecount="0"/>
-        <line num="99" count="56" type="stmt"/>
-        <line num="102" count="56" type="stmt"/>
-        <line num="104" count="56" type="stmt"/>
+        <line num="87" count="42" type="cond" truecount="4" falsecount="0"/>
+        <line num="89" count="42" type="stmt"/>
+        <line num="90" count="42" type="stmt"/>
+        <line num="94" count="42" type="cond" truecount="2" falsecount="0"/>
+        <line num="98" count="42" type="cond" truecount="2" falsecount="0"/>
+        <line num="99" count="42" type="stmt"/>
+        <line num="102" count="42" type="stmt"/>
+        <line num="104" count="42" type="stmt"/>
       </file>
       <file name="distance.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/utils/distance.js">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
-        <line num="13" count="59" type="stmt"/>
-        <line num="49" count="59" type="stmt"/>
+        <line num="13" count="45" type="stmt"/>
+        <line num="49" count="45" type="stmt"/>
         <line num="50" count="10" type="stmt"/>
         <line num="51" count="10" type="stmt"/>
         <line num="52" count="10" type="stmt"/>
@@ -1898,16 +1898,16 @@
         <line num="57" count="10" type="stmt"/>
         <line num="59" count="10" type="stmt"/>
         <line num="61" count="10" type="stmt"/>
-        <line num="75" count="59" type="stmt"/>
+        <line num="75" count="45" type="stmt"/>
       </file>
       <file name="logger.js" path="/home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/guia_turistico/src/libs/guia_js/src/utils/logger.js">
         <metrics statements="7" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="3"/>
-        <line num="23" count="3522" type="stmt"/>
-        <line num="37" count="61" type="stmt"/>
-        <line num="38" count="3362" type="stmt"/>
-        <line num="53" count="61" type="stmt"/>
-        <line num="54" count="160" type="stmt"/>
-        <line num="69" count="61" type="stmt"/>
+        <line num="23" count="97" type="stmt"/>
+        <line num="37" count="45" type="stmt"/>
+        <line num="38" count="95" type="stmt"/>
+        <line num="53" count="45" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="69" count="45" type="stmt"/>
         <line num="70" count="0" type="stmt"/>
       </file>
     </package>

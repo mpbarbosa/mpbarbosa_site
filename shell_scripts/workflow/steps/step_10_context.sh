@@ -163,7 +163,7 @@ step10_context_analysis() {
     local recent_commits
     recent_commits=$(git log --oneline -5 2>/dev/null || echo "No recent commits")
     local git_status_sample
-    git_status_sample=$(get_git_status_short_output | head -10 || echo "None")
+    git_status_sample=$(get_git_status_short_output | head -20 || echo "None")
     local context_report_content
     context_report_content=$(cat "$context_report" 2>/dev/null || echo "   No additional context")
     

@@ -161,7 +161,7 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
     
     # Extract actual dependencies
     local prod_deps
-    prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -20)
+    prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -50)
     local dev_deps
     dev_deps=$(jq -r '.devDependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null)
     
@@ -170,7 +170,7 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
     local audit_summary
     audit_summary=$(cat "$audit_output" 2>/dev/null | jq -r '.metadata // "No data"' || echo "Unable to parse audit results")
     local outdated_list
-    outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -10 || echo "None or unable to parse")
+    outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -20 || echo "None or unable to parse")
     
     # Build comprehensive dependency analysis prompt using AI helper function
     local copilot_prompt

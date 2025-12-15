@@ -80,7 +80,7 @@ step12_markdown_linting() {
             
             # Show summary
             print_info "Markdown linting violations:"
-            head -20 "$mdl_output" | while read -r line; do
+            head -50 "$mdl_output" | while read -r line; do
                 echo "  $line"
             done
             

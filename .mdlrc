@@ -2,11 +2,13 @@
 # Configure rules to match project standards
 
 # Rule Configuration
-rules "~MD013", "~MD029", "~MD001", "~MD002", "~MD022", "~MD031", "~MD032", "~MD012"
+rules "~MD013", "~MD029", "~MD001", "~MD002", "~MD022", "~MD031", "~MD032", "~MD012", "~MD005", "~MD007"
 
 # Rule Explanations:
 # MD001 - Header levels should only increment by one level at a time (disabled - AI sometimes generates H3 after H1)
 # MD002 - First header should be a top level header (disabled - some docs start with H2 or H3)
+# MD005 - Inconsistent indentation for list items (disabled - mixed bullet/numbered lists need different indentation)
+# MD007 - Unordered list indentation (disabled - conflicts with MD005 for mixed list styles)
 # MD012 - Multiple consecutive blank lines (disabled - used for visual separation in large docs)
 # MD013 - Line length (disabled - long URLs and code blocks exceed limits)
 # MD022 - Headers should be surrounded by blank lines (disabled - compact formatting preference)

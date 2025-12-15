@@ -45,10 +45,14 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Step 3 Log File Pattern](implementation-reports/STEP3_LOG_FILE_PATTERN.md)** - Script reference validation logging
 - **[Step 4 Log File Pattern](implementation-reports/STEP4_LOG_FILE_PATTERN.md)** - Directory validation logging patterns
 
+### AI Integration & Prompt Engineering
+
+- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library (v1.0.0) ⭐ **NEW**
+- **[Copilot Prompt Scoping Guide](ai-prompts/COPILOT_PROMPT_SCOPING_GUIDE.md)** - Best practices for GitHub Copilot prompt design and context management ⭐ **NEW**
+- **[Prompt Extraction Refactoring](ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - Refactoring patterns for AI prompt centralization and reusability ⭐ **NEW**
+
 ### Documentation Standards & Best Practices
 
-- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Standardized AI prompt extraction patterns ⭐ **NEW**
-- **[Prompt Extraction Refactoring](ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - AI helper module refactoring guide ⭐ **NEW**
 - **[Markdown Best Practices](documentation-standards/MARKDOWN_BEST_PRACTICES.md)** - Comprehensive markdown style guide ⭐ **NEW**
 - **[Markdown Linting Implementation](documentation-standards/MARKDOWN_LINTING_IMPLEMENTATION.md)** - Automated markdown linting workflow ⭐ **NEW**
 - **[Documentation Style Guide](documentation-standards/DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure

@@ -106,8 +106,18 @@ mpbarbosa_site/
 │       ├── shell_scripts.test.js     # Shell script integration tests (849 lines)
 │       └── sync_to_public.test.js    # Deployment script tests (713 lines)
 ├── docs/                             # Project documentation
+│   ├── ai-prompts/                   # AI integration and prompt standards
+│   │   ├── AI_PROMPT_EXTRACTION_STANDARD.md      # Prompt extraction project standard
+│   │   ├── COPILOT_PROMPT_SCOPING_GUIDE.md       # GitHub Copilot best practices
+│   │   └── PROMPT_EXTRACTION_REFACTORING.md      # Refactoring patterns for prompts
+│   ├── deployment-architecture/      # Deployment guides and architecture docs
+│   ├── development-guides/           # Development environment and tools
+│   ├── documentation-standards/      # Documentation best practices
+│   ├── implementation-reports/       # Feature implementation reports
+│   ├── validation-reports/           # Quality validation reports
+│   ├── workflow-automation/          # Workflow automation documentation
 │   ├── EXTERNAL_LINKS_POLICY.md      # Security standards for external links
-│   ├── GIT_BEST_PRACTICES_GUIDE.md   # Version control workflow guide
+│   ├── GIT_BEST_PRACTICES_GUIDE.MD   # Version control workflow guide
 │   ├── TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md # v2.0.0 deployment guide
 │   ├── TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md # Workflow automation plan
 │   ├── DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md # 9 historical reports ⭐ NEW
@@ -346,6 +356,11 @@ The project demonstrates **professional-grade architecture** with:
 - **[Markdown Linting Solution](docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring linting issues
 - **[Selenium E2E Setup Guide](docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
 - **[Test Environment Reports](docs/development-guides/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
+
+**AI Integration & Prompts:**
+- **[AI Prompt Extraction Standard](docs/ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library (v1.0.0)
+- **[Copilot Prompt Scoping Guide](docs/ai-prompts/COPILOT_PROMPT_SCOPING_GUIDE.md)** - Best practices for GitHub Copilot prompt design and context management
+- **[Prompt Extraction Refactoring](docs/ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - Refactoring patterns for AI prompt centralization and reusability
 
 **Architecture & Patterns:**
 - **[Comprehensive UX Documentation](docs/development-guides/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns

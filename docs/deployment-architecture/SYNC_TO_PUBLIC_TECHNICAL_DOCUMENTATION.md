@@ -18,7 +18,8 @@ The `sync_to_public.sh` script is a modular Bash application implementing advanc
 ## 🏗️ Technical Architecture
 
 ### Code Structure
-```
+
+```text
 sync_to_public.sh (1,345 lines)
 ├── Configuration Section (50 lines)
 ├── Utility Functions (100 lines)
@@ -31,6 +32,7 @@ sync_to_public.sh (1,345 lines)
 ```
 
 ### Design Patterns Implemented
+
 1. **Template Method Pattern**: Generic functions with specific implementations
 2. **Strategy Pattern**: Different copy strategies for files, directories, and specific files
 3. **Factory Pattern**: Dynamic path resolution and service creation
@@ -41,6 +43,7 @@ sync_to_public.sh (1,345 lines)
 ## 🔧 Technical Implementation Details
 
 ### 1. Shell Configuration
+
 ```bash
 #!/bin/bash
 set -e  # Exit immediately on any error
@@ -48,11 +51,13 @@ set -u  # Exit on undefined variables
 ```
 
 **Safety Features:**
+
 - **Strict Error Handling**: Script terminates on first error
 - **Variable Safety**: Prevents undefined variable usage
 - **Path Resolution**: Dynamic script location detection
 
 ### 2. Configuration Management
+
 ```bash
 # Dynamic path resolution
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -72,6 +77,7 @@ CREATE_BACKUP=true
 ```
 
 **Technical Features:**
+
 - **Relative Path Independence**: Works from any execution directory
 - **Configuration Variables**: Runtime behavior modification
 - **Step Control**: Parametrized execution of deployment phases
@@ -79,6 +85,7 @@ CREATE_BACKUP=true
 - **BASH_SOURCE[0]** usage for reliable script location detection
 
 ### 3. Color System Implementation
+
 ```bash
 # ANSI color codes for terminal output
 RED='\033[0;31m'
@@ -92,6 +99,7 @@ NC='\033[0m' # No Color
 ```
 
 **Implementation Notes:**
+
 - **ANSI Escape Sequences**: Standard terminal color support
 - **Cross-platform Compatibility**: Works on Linux, macOS, and WSL
 - **Graceful Degradation**: Functions without color support in non-terminal environments
@@ -101,6 +109,7 @@ NC='\033[0m' # No Color
 ## 🔄 Generic Function Architecture
 
 ### 1. Single File Copy Function
+
 ```bash
 copy_single_file() {
     local source_file="$1"
@@ -125,12 +134,14 @@ copy_single_file() {
 ```
 
 **Technical Features:**
+
 - **Parameter Validation**: Required/optional file handling
 - **Directory Auto-creation**: `mkdir -p` for destination paths
 - **Conditional Execution**: Dry-run mode support
 - **Return Code Management**: Proper exit status handling
 
 ### 2. Directory Copy Function
+
 ```bash
 copy_directory() {
     local source_dir="$1"
@@ -153,12 +164,14 @@ copy_directory() {
 ```
 
 **Advanced Features:**
+
 - **Pattern Matching**: Flexible file filtering with glob patterns
 - **Performance Optimization**: Limits verbose output for large directories
 - **Pipeline Processing**: Uses shell pipelines for efficient data processing
 - **Subshell Management**: Proper variable scoping in while loops
 
 ### 3. Specific Files Copy Function
+
 ```bash
 copy_specific_files() {
     local files="$4"
@@ -174,6 +187,7 @@ copy_specific_files() {
 ```
 
 **Implementation Details:**
+
 - **Array Processing**: String-to-array conversion for file lists
 - **Loop Counter**: Arithmetic expansion for file counting
 - **Conditional Logic**: File existence checking before copy operations
@@ -183,6 +197,7 @@ copy_specific_files() {
 ## 🔍 Validation System Architecture
 
 ### Path Validation Function
+
 ```bash
 validate_path() {
     local path="$1"
@@ -207,12 +222,14 @@ validate_path() {
 ```
 
 **Technical Implementation:**
+
 - **Cross-platform Compatibility**: Different `stat` commands for Linux/macOS
 - **Pattern-based Counting**: Flexible file pattern matching
 - **Conditional Metadata**: Platform-specific file information retrieval
 - **Error Suppression**: `2>/dev/null` for graceful failure handling
 
 ### Array-Driven Validation System
+
 ```bash
 local validations=(
     "$PUBLIC_DIR/index.html|index.html||true"
@@ -227,6 +244,7 @@ done
 ```
 
 **Advanced Features:**
+
 - **Configuration-Driven**: Validation rules stored as data, not code
 - **IFS Manipulation**: Internal Field Separator for string parsing
 - **Here-String Usage**: `<<<` for efficient string processing
@@ -237,6 +255,7 @@ done
 ## 💾 Backup System Implementation
 
 ### Timestamp-based Backup Creation
+
 ```bash
 create_backup() {
     local backup_timestamp=$(date +"%Y%m%d_%H%M%S")
@@ -254,6 +273,7 @@ create_backup() {
 ```
 
 **Technical Features:**
+
 - **ISO 8601 Timestamps**: Sortable timestamp format
 - **Find Command Usage**: Complex file selection with exclusion patterns
 - **Automatic Retention**: Self-managing backup cleanup
@@ -264,6 +284,7 @@ create_backup() {
 ## 📊 Command-Line Argument Processing
 
 ### Argument Parsing Implementation (v2.0.0 - Two-Step Architecture)
+
 ```bash
 main() {
     while [[ $# -gt 0 ]]; do
@@ -311,6 +332,7 @@ main() {
 ```
 
 **Implementation Details:**
+
 - **Parameter Shifting**: `shift` command for argument consumption
 - **Case Statement**: Efficient option matching
 - **Default Handling**: Unknown option error management
@@ -321,6 +343,7 @@ main() {
 ## 🔧 Advanced Technical Features
 
 ### 1. Error Handling Strategy
+
 ```bash
 set -e  # Global error handling
 set -u  # Undefined variable detection
@@ -335,6 +358,7 @@ fi
 ```
 
 ### 2. Platform Compatibility
+
 ```bash
 # Cross-platform stat command
 local file_modified=$(stat -c %y "$path" 2>/dev/null || stat -f %Sm "$path" 2>/dev/null)
@@ -348,6 +372,7 @@ fi
 ```
 
 ### 3. Performance Optimizations
+
 ```bash
 # Efficient file counting without subprocess spawning
 local files_array=($files)
@@ -364,12 +389,14 @@ done
 ## 📈 Code Quality Metrics
 
 ### Modularization Achievements
+
 - **Lines of Code**: ~600 lines total
 - **Function Count**: 15+ functions
 - **Code Reuse**: 50% reduction through generic functions
 - **Cyclomatic Complexity**: Low complexity through modular design
 
 ### Best Practices Implemented
+
 1. **DRY Principle**: Generic functions eliminate code duplication
 2. **Single Responsibility**: Each function has one clear purpose
 3. **Error Handling**: Comprehensive error detection and reporting
@@ -377,6 +404,7 @@ done
 5. **Testability**: Dry-run mode enables safe testing
 
 ### Security Considerations
+
 - **Path Validation**: Prevents directory traversal attacks
 - **Input Sanitization**: Safe handling of user inputs
 - **Permission Checks**: Validates write access before operations
@@ -387,7 +415,8 @@ done
 ## 🔄 Execution Flow
 
 ### Script Execution Sequence
-```
+
+```text
 1. Argument Parsing → 2. Environment Validation → 3. Backup Creation
          ↓
 4. File Operations → 5. Validation Phase → 6. Summary Generation
@@ -396,7 +425,8 @@ done
 ```
 
 ### Function Call Hierarchy
-```
+
+```text
 main()
 ├── validate_environment()
 ├── create_backup()
@@ -414,12 +444,14 @@ main()
 ## 🛠️ Development and Maintenance
 
 ### Extension Points
+
 1. **New Asset Types**: Add functions following `copy_*_assets()` pattern
 2. **Validation Rules**: Extend validation array with new entries
 3. **Output Formats**: Add new print functions for different output types
 4. **Backup Strategies**: Modify `create_backup()` for different retention policies
 
 ### Testing Strategies
+
 ```bash
 # Dry-run testing
 ./sync_to_public.sh --step1 --dry-run --verbose
@@ -432,7 +464,9 @@ copy_single_file "/test/source" "/test/dest" "test file" "false"
 ```
 
 ### Automated Test Coverage
+
 The script is backed by a comprehensive Jest test suite:
+
 - **Test File**: `src/__tests__/shell_scripts.test.js` (849 lines)
 - **Test Coverage**: 53 tests total, 52/53 passing (98.1% pass rate)
 - **Test Categories**:
@@ -448,6 +482,7 @@ The script is backed by a comprehensive Jest test suite:
   - Production directory configuration
 
 **Key Test Scenarios**:
+
 ```javascript
 // Step 1 execution validation
 test('should support --step1 parameter for source to public sync')
@@ -463,6 +498,7 @@ test('should support --production-dir parameter')
 ```
 
 ### Performance Monitoring
+
 - **File System Operations**: Monitor copy operation efficiency
 - **Memory Usage**: Track script memory footprint
 - **Execution Time**: Measure total script runtime
@@ -473,18 +509,21 @@ test('should support --production-dir parameter')
 ## 📋 Technical Specifications
 
 ### System Requirements
+
 - **Shell**: Bash 4.0+ (for array support)
 - **Commands**: `find`, `cp`, `mkdir`, `du`, `stat`, `date`
 - **Permissions**: Write access to destination directory
 - **Disk Space**: Sufficient for file copies and backups
 
 ### Performance Characteristics
+
 - **Time Complexity**: O(n) where n = number of files
 - **Space Complexity**: O(1) for script variables, O(m) for backups
 - **Scalability**: Handles directories with thousands of files
 - **Resource Usage**: Minimal memory footprint, CPU-bound operations
 
 ### Error Recovery
+
 - **Backup Restoration**: Manual recovery from `.backups` directory
 - **Partial Failures**: Individual file failures don't block other operations
 - **State Validation**: Post-operation validation ensures consistency
@@ -497,18 +536,21 @@ test('should support --production-dir parameter')
 The `sync_to_public.sh` script demonstrates **enterprise-grade shell scripting** with:
 
 ### **Architectural Excellence**
+
 - **Modular Design**: 85% code reduction through generic functions
 - **Design Patterns**: Template Method, Strategy, Factory, and Command patterns
 - **Error Handling**: Comprehensive failure detection and recovery
 - **Platform Compatibility**: Cross-platform shell script implementation
 
 ### **Advanced Features**
+
 - **Array-Driven Configuration**: Data-driven validation and processing
 - **Performance Optimization**: Efficient file operations and output limiting
 - **Security Implementation**: Path validation and input sanitization
 - **Backup Management**: Automated retention and cleanup systems
 
 ### **Production Quality**
+
 - **Safety Features**: Dry-run mode and backup creation
 - **User Experience**: Color-coded output and detailed progress reporting
 - **Maintainability**: Clear code structure and extension points
@@ -531,7 +573,8 @@ Monitora Vagas v2.0.0 represents a **complete architectural transformation** fro
 ### 📁 Directory Structure Evolution
 
 #### Legacy Architecture (`src/`)
-```
+
+```text
 src/
 ├── index.html           # Monolithic UI (inline JavaScript)
 ├── services/
@@ -542,13 +585,15 @@ src/
 ```
 
 **Legacy Limitations:**
+
 - Inline configuration mixed with business logic
 - Hardcoded environment values
 - No separation of concerns
 - Difficult to test and maintain
 
 #### Modern Architecture v2.0.0 (`public/`)
-```
+
+```text
 public/
 ├── index.html                 # Clean semantic HTML
 ├── config/                    # Configuration Layer (NEW)
@@ -644,6 +689,7 @@ export const APP_CONFIG = {
 ```
 
 **Technical Features:**
+
 - **Nested Object Structure**: Hierarchical configuration organization
 - **Type Safety**: Documented value types and constraints
 - **Feature Flags**: Toggle features without code changes
@@ -720,6 +766,7 @@ export const ERROR_MESSAGES = {
 ```
 
 **Technical Features:**
+
 - **Centralized Constants**: Single source of truth for API configuration
 - **Timeout Strategy**: Operation-specific timeout values
 - **Validation Rules**: Declarative validation configuration
@@ -812,6 +859,7 @@ export const ENV_CONFIG = {
 ```
 
 **Technical Features:**
+
 - **No Node.js Dependencies**: Pure browser-compatible JavaScript
 - **Dynamic Detection**: Hostname-based environment identification
 - **URL Parameter Override**: Manual environment selection via query string
@@ -819,7 +867,8 @@ export const ENV_CONFIG = {
 - **Security**: Production API only accessible in production environment
 
 **Environment Detection Algorithm:**
-```
+
+```text
 1. Check URL parameter: ?useProductionAPI=true → Force production
 2. Check hostname:
    - localhost/127.0.0.1 → Development
@@ -866,6 +915,7 @@ export const CONFIG = {
 ```
 
 **Technical Features:**
+
 - **Single Import Point**: `import { CONFIG } from './config/index.js'`
 - **Tree-Shaking Support**: ES6 named exports for bundle optimization
 - **Convenience API**: Nested CONFIG object for quick access
@@ -1018,6 +1068,7 @@ export class BuscaVagasAPIClient {
 ```
 
 **Technical Features:**
+
 - **Class-Based Architecture**: Encapsulated state and behavior
 - **Environment-Aware**: Dynamic API URL from configuration layer
 - **Timeout Management**: AbortController for all HTTP requests
@@ -1027,7 +1078,8 @@ export class BuscaVagasAPIClient {
 - **Timeout Strategy**: Operation-specific timeout values (30s/60s/10m)
 
 **Timeout Architecture:**
-```
+
+```text
 Default:  30 seconds  → General API calls
 Search:   60 seconds  → Single vacancy search
 Weekends: 10 minutes  → Multi-weekend batch operations
@@ -1106,6 +1158,7 @@ export const hotelCache = new HotelCache();
 ```
 
 **Technical Features:**
+
 - **Map-Based Storage**: Efficient key-value storage
 - **Automatic Expiration**: Time-based cache invalidation (5 minutes)
 - **Cache Miss Handling**: Returns null for expired/missing entries
@@ -1121,6 +1174,7 @@ The CSS layer implements a **component-based architecture** with proper separati
 #### Global Styles (`css/global/`)
 
 **reset.css** - CSS Reset
+
 ```css
 /* Box sizing and margin reset */
 *,
@@ -1193,6 +1247,7 @@ body {
 #### Component Styles (`css/components/`)
 
 **progress-bar.css** - Progress Indicator Component
+
 ```css
 .progress-bar {
   width: 100%;
@@ -1220,6 +1275,7 @@ body {
 ```
 
 **search-form.css** - Search Form Component
+
 ```css
 .search-form {
   display: flex;
@@ -1258,6 +1314,7 @@ body {
 #### Page Styles (`css/pages/`)
 
 **home.css** - Home Page Specific Styles
+
 ```css
 .home {
   min-height: 100vh;
@@ -1298,6 +1355,7 @@ body {
 ```
 
 **Technical Features:**
+
 - **HTTP/2 Multiplexing**: Multiple CSS files load in parallel
 - **Component Isolation**: Each component has independent styles
 - **CSS Custom Properties**: Theming and configuration via variables
@@ -1311,7 +1369,8 @@ body {
 The project includes comprehensive third-party library bundling:
 
 #### jQuery Ecosystem
-```
+
+```text
 vendor/jquery/
 ├── jquery-3.x.min.js          # Core jQuery library
 ├── jquery.min.map             # Source map for debugging
@@ -1329,7 +1388,8 @@ vendor/select2/
 ```
 
 #### Icon Libraries
-```
+
+```text
 vendor/font-awesome-4.7/
 ├── css/
 │   └── font-awesome.min.css   # Icon stylesheet
@@ -1349,7 +1409,8 @@ vendor/mdi-font/
 ```
 
 #### UI Components
-```
+
+```text
 vendor/bootstrap-wizard/
 ├── jquery.bootstrap.wizard.js  # Multi-step form wizard
 └── prettify.js                 # Code syntax highlighting
@@ -1360,6 +1421,7 @@ vendor/jquery-validate/
 ```
 
 **Bundle Strategy:**
+
 - **Local Hosting**: All dependencies self-hosted for reliability
 - **Version Locking**: Specific versions prevent breaking changes
 - **Font Format Coverage**: Multiple formats for browser compatibility
@@ -1440,6 +1502,7 @@ copy_monitora_vagas_submodule() {
 ```
 
 **Deployment Features:**
+
 - **Backward Compatibility**: Supports legacy `src/` structure
 - **Modern Architecture**: Full v2.0.0 `public/` structure deployment
 - **Symlink Resolution**: `-L` flag resolves symlinks during copy
@@ -1450,6 +1513,7 @@ copy_monitora_vagas_submodule() {
 #### Production Nginx Configuration
 
 **Monitora Vagas Production Setup:**
+
 ```nginx
 # /etc/nginx/sites-available/mpbarbosa.com
 server {
@@ -1502,6 +1566,7 @@ server {
 ```
 
 **Nginx Features:**
+
 - **SPA Support**: Fallback to index.html for client-side routing
 - **Static Caching**: Aggressive caching for immutable assets
 - **API Proxying**: Backend Node.js service integration
@@ -1511,6 +1576,7 @@ server {
 #### Busca Vagas Backend (Systemd Service)
 
 **Service Configuration:**
+
 ```ini
 # /etc/systemd/system/busca_vagas_node_app.service
 [Unit]
@@ -1537,6 +1603,7 @@ WantedBy=multi-user.target
 ```
 
 **Backend Architecture:**
+
 ```javascript
 // server.js - Express API server
 import express from 'express';
@@ -1572,6 +1639,7 @@ app.listen(PORT, () => {
 ```
 
 **Systemd Management:**
+
 ```bash
 # Service management commands
 sudo systemctl daemon-reload
@@ -1646,7 +1714,7 @@ curl -I https://www.mpbarbosa.com/
 
 #### Bundle Size Analysis
 
-```
+```text
 Monitora Vagas v2.0.0 Bundle Sizes:
 
 Configuration Layer:
@@ -1715,6 +1783,7 @@ Gzipped Estimate: ~135 KB
 ### 🎯 Technical Summary: Monitora Vagas v2.0.0
 
 **Architectural Transformation:**
+
 - ✅ **Configuration Layer**: 4-module separation of concerns
 - ✅ **Environment Detection**: Browser-compatible, URL-override capable
 - ✅ **Service Layer**: Class-based API client with timeout management
@@ -1725,6 +1794,7 @@ Gzipped Estimate: ~135 KB
 - ✅ **Production Ready**: Nginx + Systemd + automated deployment
 
 **Key Innovations:**
+
 1. **No Node.js Dependencies**: Pure browser JavaScript for configuration
 2. **Dynamic API Resolution**: Hostname-based environment detection
 3. **Timeout Architecture**: Operation-specific timeout strategies

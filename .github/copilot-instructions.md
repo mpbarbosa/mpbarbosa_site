@@ -1,9 +1,9 @@
 # MP Barbosa Personal Website
 
-> **📄 File Size Note**  
-> This comprehensive instructions file is 863 lines (~46,600 characters, ~11,650 tokens).  
-> Size is **intentional** to provide complete development context in a single file.  
-> Well within AI context limits (128K+ tokens for modern models).  
+> **📄 File Size Note**
+> This comprehensive instructions file is 863 lines (~46,600 characters, ~11,650 tokens).
+> Size is **intentional** to provide complete development context in a single file.
+> Well within AI context limits (128K+ tokens for modern models).
 > Alternative: Split into `/docs/` if file exceeds 1,000 lines or 200K characters.
 
 **ALWAYS** reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the information here.
@@ -23,7 +23,7 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 The Music in Numbers subproject has achieved **outstanding architectural transformation**:
 - **Overall Code Reduction**: 85.8% (2,161 → 306 lines across major pages)
 - **Index.html**: 84.5% reduction (1,581 → 246 lines) with 9 JavaScript modules
-- **Artist.html**: 89.7% reduction (580 → 60 lines) with 3 specialized modules  
+- **Artist.html**: 89.7% reduction (580 → 60 lines) with 3 specialized modules
 - **Development Efficiency**: 50% faster implementation using established patterns
 - **Architecture Excellence**: Professional modular structure with zero functionality loss
 
@@ -90,7 +90,7 @@ The project includes comprehensive development environment configuration:
    - Background image and overlay render correctly
    - Responsive preloader animation displays
 
-2. **Navigation Testing**: 
+2. **Navigation Testing**:
    - Click "Intro", "Projetos (IA)", "About", and "Contact" navigation links
    - Verify smooth transitions and modal-style article displays
    - Test close button (X) on each article overlay
@@ -102,7 +102,7 @@ The project includes comprehensive development environment configuration:
    - Submit form and verify expected behavior
    - Test form validation for required fields
 
-4. **Project Links**: 
+4. **Project Links**:
    - Navigate to "Projetos (IA)" section
    - Click "Scripts de automação", "Music in Numbers", and "Monitora Vagas" project links
    - **Expected behavior**: Submodule links will show 404 errors unless submodules are properly initialized
@@ -132,7 +132,7 @@ mpbarbosa_site/
 │   ├── fix_documentation_consistency.sh  # Documentation consistency fixes
 │   ├── workflow/               # Modular workflow architecture (v2.0.0)
 │   │   ├── execute_tests_docs_workflow.sh  # Main workflow script (4,740 lines)
-│   │   ├── lib/               # 12 library modules
+│   │   ├── lib/               # 13 library modules
 │   │   ├── steps/             # 13 step modules (step_00 through step_12)
 │   │   ├── backlog/           # Workflow execution history
 │   │   ├── logs/              # Workflow execution logs
@@ -185,7 +185,7 @@ mpbarbosa_site/
 │       │       └── favicon.ico              # Application favicon
 │       ├── music_in_numbers/  # Spotify analytics submodule
 │       └── guia_turistico/    # Travel guide submodule
-├── src/                        # Main source directory 
+├── src/                        # Main source directory
 │   ├── index.html             # Main landing page (HTML5 UP Dimension template)
 │   ├── package.json           # Node.js dependencies and scripts
 │   ├── assets/                # HTML5 UP Dimension template assets
@@ -231,7 +231,7 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 # Step 1: Source → Public (staging)
 ./shell_scripts/sync_to_public.sh --step1 --verbose
 
-# Step 2: Public → Production (deployment) 
+# Step 2: Public → Production (deployment)
 ./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/html
 
 # Combined deployment (both steps)
@@ -258,7 +258,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Busca Vagas full-stack deployment (client HTML + server API)
 # - Systemd service deployment with sudo privilege handling for system directories
 # - Enhanced backup system for both public and production directories
-# - Production environment validation with permission checks  
+# - Production environment validation with permission checks
 # - Comprehensive error handling with colored output
 # - Dry-run mode for safe operation preview
 # - Proper web server permissions (755 for directories, 644 for files)
@@ -327,12 +327,12 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 # - Smart triggering (auto/interactive/optional modes)
 # - Comprehensive error handling with colored output
 # - Progress tracking and workflow state management
-# 
+#
 # Architecture (v2.0.0 - Complete Modularization ✅):
-# - Fully modularized: 26 modules (13 libraries [12 .sh + ai_helpers.yaml] + 13 steps)
+# - Fully modularized: 27 modules (14 libraries [13 .sh + ai_helpers.yaml] + 13 steps)
 # - Main workflow script: 4,740 lines with module loading architecture
-# - Library modules: 13 files (ai_helpers.sh + ai_helpers.yaml, backlog, colors, config,
-#   file_operations, git_cache, performance, session_manager, step_execution, summary, utils, validation)
+# - Library modules: 14 files (ai_helpers.sh + ai_helpers.yaml, backlog, colors, config,
+#   file_operations, git_cache, metrics_validation, performance, session_manager, step_execution, summary, utils, validation)
 # - Step modules: 13 files (step_00 through step_12)
 # - Total modular code: 6,993 lines extracted from monolithic architecture
 # - YAML configuration system: Externalized AI prompt templates (762 lines)
@@ -380,7 +380,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
    <!-- ✅ CORRECT for submodule files -->
    <link rel="stylesheet" href="styles/themes.css">
    <script defer src="scripts/utils.js"></script>
-   
+
    <!-- ❌ WRONG - causes 404 errors -->
    <link rel="stylesheet" href="submodules/music_in_numbers/src/styles/themes.css">
    ```
@@ -679,11 +679,11 @@ When working with Express.js in ES module projects:
   ```javascript
   import express from 'express';
   const app = express();
-  
+
   // ✅ Correct: Call middleware as express methods
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  
+
   // ❌ Incorrect: Named imports don't work for middleware
   // import { json, urlencoded } from 'express';
   // app.use(json());  // TypeError: json is not a function
@@ -781,7 +781,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 # Workflow locations: backlog/, logs/, summaries/ all in shell_scripts/workflow/
 ```
 
-**Key Patterns**: 
+**Key Patterns**:
 - Always use `--dry-run` first to preview operations before executing
 - For deployment: Use `sync_to_public.sh --step1` to prepare files in /public directory
 - Step 2 options: Either `sync_to_public.sh --step2` or legacy `deploy_to_webserver.sh` (v2.0.0)
@@ -882,6 +882,11 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Test Environment Final Report](../docs/development-guides/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
 - **[Naming Convention Fix Report](../docs/implementation-reports/NAMING_CONVENTION_FIX_REPORT.md)** - File naming standardization improvements
 
+### AI Integration & Prompts
+- **[AI Prompt Extraction Standard](../docs/ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library
+- **[Copilot Prompt Scoping Guide](../docs/ai-prompts/COPILOT_PROMPT_SCOPING_GUIDE.md)** - Best practices for GitHub Copilot prompt design and context management
+- **[Prompt Extraction Refactoring](../docs/ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - Refactoring patterns for AI prompt centralization
+
 ### Architecture & Development
 - **[Comprehensive UX Documentation](../docs/development-guides/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide covering navigation patterns, accessibility features, responsive design, and interaction design across all project components
 - **[Resource Path Guide](../docs/deployment-architecture/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and troubleshooting for submodule deployment
@@ -890,7 +895,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Dependency Injection Best Practices](../docs/development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 ### Workflow Automation
-- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
+- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v1.5.0 (current script: v2.0.0 with complete modularization)
 - **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
 - **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
 - **[Workflow Modularization Phase 1 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md)** - Library modules extraction completion

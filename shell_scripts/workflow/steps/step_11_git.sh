@@ -161,11 +161,11 @@ Dry run mode enabled. No actual git operations performed.
     
     # Sample changed files
     local changed_files
-    changed_files=$(git status --short | head -20)
+    changed_files=$(git status --short | head -50)
     
     # Get diff sample for context
     local diff_sample
-    diff_sample=$(git diff --unified=3 HEAD | head -100)
+    diff_sample=$(git diff --unified=3 HEAD | head -200)
     
     local git_analysis_content
     git_analysis_content=$(cat "$git_analysis" 2>/dev/null || echo "   No additional context")

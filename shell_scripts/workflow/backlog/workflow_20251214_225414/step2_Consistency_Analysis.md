@@ -14,8 +14,8 @@
 
 ### Details
 
-```
-docs/workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md: /[^
+```text
+docs/workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md: /^
 docs/workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md: /path/to/file.md
 docs/workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md: /images/pic.png
 docs/workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md: /absolute/path/to/file.md
