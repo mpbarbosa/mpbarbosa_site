@@ -59,7 +59,7 @@ The project includes comprehensive development environment configuration:
 - Monitors: NPM dependencies (`/src/package.json`) and GitHub Actions
 - Intelligent grouping: Separates dev vs production dependencies
 - Auto-assigns PRs to @mpbarbosa with conventional commit messages
-- See: `docs/DEPENDABOT_SETUP.md` for configuration details
+- See: `docs/development-guides/DEPENDABOT_SETUP.md` for configuration details
 
 ### Running the Development Server
 - Start the development server: `npm start` -- starts instantly (under 5 seconds)
@@ -165,7 +165,8 @@ mpbarbosa_site/
 │       │       │   └── hotelCache.js        # Hotel data caching service
 │       │       ├── js/                      # Application scripts
 │       │       │   ├── global.js            # Global utilities
-│       │       │   ├── guestCounter.js      # Guest counter widget
+│       │       │   ├── guestCounter.js      # Guest counter widget with filter state management (FR-004A)
+│       │       │   ├── guestNumberFilter.js # Client-side guest number filtering (FR-004B)
 │       │       │   └── noScrollInterface.js # No-scroll UI optimization
 │       │       ├── css/                     # Modular CSS architecture
 │       │       │   ├── main.css             # Main stylesheet aggregator
@@ -317,9 +318,11 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 # Features:
 # - Complete tests & documentation update automation
 # - AI-powered analysis with GitHub Copilot CLI integration
+# - Copilot CLI authentication validation with graceful degradation
 # - 13 workflow steps (Step 0-12) with specialized AI personas
 # - AI-powered conventional commit message generation (Step 11)
 # - Markdown linting automation with AI assistance (Step 12)
+# - Automatic documentation saving to proper folders (Step 1)
 # - Two-phase validation (automated + AI-powered)
 # - Smart triggering (auto/interactive/optional modes)
 # - Comprehensive error handling with colored output
@@ -337,7 +340,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 # - Comprehensive automated test coverage (54 tests, 100% pass rate)
 # - Reusable components across scripts
 # - Module Documentation: shell_scripts/workflow/README.md
-# - Completion Report: docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md
+# - Completion Report: docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md
 ```
 
 #### Submodule Management
@@ -360,7 +363,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 - **Linting Tools**: Markdown linting available via `npm run lint:md` (markdownlint with `.mdlrc` configuration); no ESLint or HTMLHint configured
 - **Jest Testing Framework**: Comprehensive test suite exists in `src/__tests__/` with coverage reporting
 - **ES Modules**: Project uses `"type": "module"` with `.mjs` files for modern JavaScript
-- **Dependabot Integration**: Automated weekly dependency updates with PR grouping and security alerts (see `docs/DEPENDABOT_SETUP.md`)
+- **Dependabot Integration**: Automated weekly dependency updates with PR grouping and security alerts (see `docs/development-guides/DEPENDABOT_SETUP.md`)
 - **EditorConfig**: Code formatting standards enforced via `.editorconfig` for consistent style across editors
 - **Node.js Version**: Project uses v25.2.1 (managed via `.node-version` and `.nvmrc`)
 - **No CI/CD**: No GitHub Actions or other continuous integration configured yet
@@ -390,7 +393,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 
 4. **Resource Validation**: Verify no 404 errors in browser console and live-server logs show successful GET requests
 
-**Reference**: See `/docs/RESOURCE_PATH_GUIDE.md` for comprehensive path resolution documentation.
+**Reference**: See `/docs/deployment-architecture/RESOURCE_PATH_GUIDE.md` for comprehensive path resolution documentation.
 
 ## Troubleshooting
 
@@ -462,7 +465,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 ## Modular Architecture Excellence
 
 ### Monitora Vagas (AFPESP Hotel Monitoring) Architecture v2.0.0
-The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA with modern configuration architecture**:
+The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA with modern configuration architecture and client-side filtering**:
 
 #### Directory Structure
 The project now maintains both legacy (`src/`) and modern (`public/`) directories:
@@ -482,6 +485,9 @@ The project now maintains both legacy (`src/`) and modern (`public/`) directorie
 
 #### Core Features (v2.0.0)
 - **Vanilla JavaScript UI**: Single-page application for AFPESP hotel vacancy monitoring (no React framework)
+- **Client-Side Guest Filtering**: Real-time vacancy filtering based on guest count (FR-004)
+- **Filter State Management**: Intelligent filter enable/disable based on search state (FR-004A)
+- **Capacity Parsing**: Regex-based extraction of "até N pessoas" from vacancy text (FR-004B)
 - **Environment-Aware Configuration**: Dynamic API endpoint detection with URL override support
 - **BuscaVagasAPIClient Class**: Modern fetch API implementation with timeout handling
 - **Modular CSS Architecture**: Separation of global styles, components, and pages
@@ -583,6 +589,22 @@ Comprehensive third-party library bundling:
 - **Material Design Iconic Font** - MDI icons (TTF, WOFF, WOFF2)
 - **Bootstrap Wizard** - Multi-step form components
 - **jQuery Validate** - Form validation plugin
+
+#### JavaScript Module Architecture
+
+**guestCounter.js** (FR-004A - Filter State Management):
+- GuestFilterStateManager class for filter enable/disable control
+- Filter disabled on page load, enabled after first search
+- Visual feedback with CSS state classes (filter-enabled/disabled)
+- Interactive element control (readonly attribute management)
+- Plus/minus button handlers with filter state validation
+
+**guestNumberFilter.js** (FR-004B - Client-Side Filtering):
+- GuestNumberFilter class for vacancy filtering logic
+- parseCapacity() method: Regex extraction of "até N pessoas" pattern
+- applyFilter() method: Hide/show vacancies based on guest count
+- Filter statistics tracking (visible/hidden hotels and vacancies)
+- Graceful degradation: Show vacancies without capacity info
 
 #### Integration with Busca Vagas Backend
 - **Backend Repository**: `../busca_vagas` (sibling project)
@@ -780,6 +802,9 @@ The `execute_tests_docs_workflow.sh` script demonstrates professional AI integra
 - **Provide comprehensive context**: AI quality depends on repository state, diff analysis, and categorized changes
 
 #### Modern Copilot CLI Integration
+- **Authentication Validation**: Automatic checks for Copilot CLI authentication status
+- **Multiple Auth Methods**: Supports COPILOT_GITHUB_TOKEN, GH_TOKEN, GITHUB_TOKEN, or gh CLI
+- **Graceful Error Handling**: Clear guidance when authentication fails
 - **Use `copilot -p` for interactive workflows**: Embrace the conversation UI rather than fighting it
 - **Copy-paste workflow**: Let AI generate in its UI, then user copies/pastes the result
 - **Smart triggering**: Auto mode skips interactive AI, Interactive mode prompts, Optional mode provides choice
@@ -819,47 +844,72 @@ Step 11 showcases AI-assisted git best practices with complete modular implement
 
 **Module**: `shell_scripts/workflow/steps/step_11_git.sh` (417 lines)
 
+#### Step 1 - Documentation Update Enhancements
+Step 1 now includes automatic documentation saving, version consistency management, and improved AI integration:
+
+**Auto-Save Documentation Feature**:
+- `determine_doc_folder()` - Intelligent folder detection based on file path
+- `save_ai_generated_docs()` - Automatic saving to proper location
+- Supports docs/, shell_scripts/, src/, and root directory files
+- Creates target folders automatically if they don't exist
+- Fallback to backlog for manual review if auto-save fails
+
+**Automatic Version Consistency Updates**:
+- Detects version mismatches across documentation files
+- Automatically updates version references in README.md and .github/copilot-instructions.md
+- Uses sed with backup (.bak) for safe automated updates
+- Reports success/failure for each file updated
+- Saves version inconsistencies to backlog for tracking
+
+**AI Integration**:
+- Copilot CLI authentication validation before execution
+- Multiple authentication method support
+- Clear error messages with authentication instructions
+- Graceful fallback when CLI unavailable
+
+**Module**: `shell_scripts/workflow/steps/step_01_documentation.sh` (417 lines with auto-save and version management)
+
 ## 📖 Related Documentation References
 
 For comprehensive development guidance, consult these detailed documentation resources:
 
 ### Development Environment & Tools
-- **[Dependabot Setup Guide](../docs/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates configuration
-- **[Markdown Linting Guide](../docs/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
-- **[Markdown Linting Solution Summary](../docs/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
-- **[Selenium E2E Setup Guide](../docs/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
-- **[Test Environment Configuration Report](../docs/TEST_ENVIRONMENT_CONFIGURATION_REPORT.md)** - Test environment setup analysis
-- **[Test Environment Final Report](../docs/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
-- **[Naming Convention Fix Report](../docs/NAMING_CONVENTION_FIX_REPORT.md)** - File naming standardization improvements
+- **[Dependabot Setup Guide](../docs/development-guides/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates configuration
+- **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
+- **[Markdown Linting Solution Summary](../docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
+- **[Selenium E2E Setup Guide](../docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
+- **[Test Environment Configuration Report](../docs/development-guides/TEST_ENVIRONMENT_CONFIGURATION_REPORT.md)** - Test environment setup analysis
+- **[Test Environment Final Report](../docs/development-guides/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
+- **[Naming Convention Fix Report](../docs/implementation-reports/NAMING_CONVENTION_FIX_REPORT.md)** - File naming standardization improvements
 
 ### Architecture & Development
-- **[Comprehensive UX Documentation](../docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide covering navigation patterns, accessibility features, responsive design, and interaction design across all project components
-- **[Resource Path Guide](../docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and troubleshooting for submodule deployment
-- **[Path Resolution Fix Report](../docs/PATH_RESOLUTION_FIX_COMPLETION_REPORT.md)** - Technical incident report and lessons learned
-- **[Modularization Achievements](../docs/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Architecture improvements and code reduction metrics
-- **[Dependency Injection Best Practices](../docs/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
+- **[Comprehensive UX Documentation](../docs/development-guides/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide covering navigation patterns, accessibility features, responsive design, and interaction design across all project components
+- **[Resource Path Guide](../docs/deployment-architecture/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and troubleshooting for submodule deployment
+- **[Path Resolution Fix Report](../docs/deployment-architecture/PATH_RESOLUTION_FIX_COMPLETION_REPORT.md)** - Technical incident report and lessons learned
+- **[Modularization Achievements](../docs/development-guides/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Architecture improvements and code reduction metrics
+- **[Dependency Injection Best Practices](../docs/development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 ### Workflow Automation
-- **[Workflow Automation Version Evolution](../docs/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
-- **[Tests & Docs Workflow Plan](../docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
-- **[Workflow Automation Phase 2 Completion](../docs/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
-- **[Workflow Modularization Phase 1 Completion](../docs/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md)** - Library modules extraction completion
-- **[Workflow Modularization Phase 2 Completion](../docs/WORKFLOW_MODULARIZATION_PHASE2_COMPLETION.md)** - Additional library modules completion
-- **[Workflow Modularization Phase 3 Completion](../docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All step modules extraction COMPLETE ✅
-- **[Step 11 Git Enhancement](../docs/STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation
-- **[Workflow Execution Context](../docs/WORKFLOW_EXECUTION_CONTEXT_ANALYSIS.md)** - Execution context and best practices analysis
+- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
+- **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
+- **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+- **[Workflow Modularization Phase 1 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md)** - Library modules extraction completion
+- **[Workflow Modularization Phase 2 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE2_COMPLETION.md)** - Additional library modules completion
+- **[Workflow Modularization Phase 3 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All step modules extraction COMPLETE ✅
+- **[Step 11 Git Enhancement](../docs/workflow-automation/STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation
+- **[Workflow Execution Context](../docs/workflow-automation/WORKFLOW_EXECUTION_CONTEXT_ANALYSIS.md)** - Execution context and best practices analysis
 
 ### Deployment
-- **[Sync to Public Functional Documentation](../docs/SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Two-step deployment architecture functional guide
-- **[Sync to Public Technical Documentation](../docs/SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details
+- **[Sync to Public Functional Documentation](../docs/deployment-architecture/SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Two-step deployment architecture functional guide
+- **[Sync to Public Technical Documentation](../docs/deployment-architecture/SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details
 
 ### Quality Assurance & Validation
-- **[Shell Script Validation Report](../docs/shell_script_validation_report.md)** - Current validation report (Dec 11, 2025): 43/44 scripts documented, metrics_validation.sh missing documentation
+- **[Shell Script Validation Report](../docs/validation-reports/shell_script_validation_report.md)** - Current validation report (Dec 11, 2025): 43/44 scripts documented, metrics_validation.sh missing documentation
 
 ### Historical Validation Reports (v2.0.0 - Consolidated)
-- **[Directory Structure Validation History](../docs/DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md)** - 9 historical reports consolidated (Nov 13-25, 2025), all ✅ EXCELLENT status
-- **[Documentation Consistency History](../docs/DOCUMENTATION_CONSISTENCY_HISTORY_CONSOLIDATED.md)** - Historical cross-reference and terminology tracking
-- **[Shell Script Validation History](../docs/SHELL_SCRIPT_VALIDATION_HISTORY_CONSOLIDATED.md)** - Shell script quality and best practices compliance history
+- **[Directory Structure Validation History](../docs/validation-reports/DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md)** - 9 historical reports consolidated (Nov 13-25, 2025), all ✅ EXCELLENT status
+- **[Documentation Consistency History](../docs/documentation-standards/DOCUMENTATION_CONSISTENCY_HISTORY_CONSOLIDATED.md)** - Historical cross-reference and terminology tracking
+- **[Shell Script Validation History](../docs/validation-reports/SHELL_SCRIPT_VALIDATION_HISTORY_CONSOLIDATED.md)** - Shell script quality and best practices compliance history
 
 **Note**: Individual timestamped validation reports have been archived into consolidated files to maintain repository cleanliness while preserving complete historical analysis.
 

@@ -163,6 +163,11 @@ Individual timestamped reports have been archived into these consolidated files 
 ### Monitora Vagas
 **AFPESP Hotel Vacancy Monitoring Application v2.0.0** (Sibling Project)
 - **Modern Architecture**: Dual-directory structure (legacy src/ + modern public/)
+- **Client-Side Guest Filtering**: Real-time vacancy filtering by guest count (FR-004)
+  - **Filter State Management**: Intelligent enable/disable based on search state (FR-004A)
+  - **Capacity Parsing**: Regex-based "até N pessoas" extraction (FR-004B)
+  - **Visual Feedback**: CSS state classes and interactive element control
+  - **Statistics Tracking**: Visible/hidden hotel and vacancy counts
 - **Configuration Layer**: Modular config architecture (app.js, constants.js, environment.js, index.js)
 - **BuscaVagasAPIClient Class**: Modern fetch API with timeout handling and environment detection
 - **Modular CSS**: Component-based styling (global/, components/, pages/)
@@ -209,7 +214,7 @@ The development server runs at `http://localhost:8080` with live reload.
 - **EditorConfig**: Automatic code formatting via `.editorconfig`
 - **Markdown Linting**: Configured via `.mdlrc` for AI-generated docs
 - **Dependabot**: Automated weekly dependency updates (`.github/dependabot.yml`)
-- See: `docs/DEPENDABOT_SETUP.md`, `docs/MARKDOWN_LINTING_GUIDE.md` for details
+- See: `docs/development-guides/DEPENDABOT_SETUP.md`, `docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md` for details
 
 ### Testing and Quality
 
@@ -292,6 +297,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh         # Deploy to nginx
 - Professional separation of concerns with single responsibility per module
 - 13-step comprehensive workflow (Step 0-12: analysis → documentation → testing → markdown linting → git finalization)
 - AI-powered with GitHub Copilot CLI (specialized personas for each step)
+- **Copilot CLI authentication validation**: Automatic checks with multiple auth method support
+- **Step 1 auto-save documentation**: Intelligent folder detection and automatic file saving
 - Conventional commit message generation with comprehensive git context (Step 11)
 - Markdown linting automation with AI assistance (Step 12)
 - Smart execution modes: Interactive (default), Auto (CI/CD), Dry-run (preview)
@@ -334,22 +341,22 @@ The project demonstrates **professional-grade architecture** with:
 ### 📚 Architecture Documentation
 
 **Development Environment & Tools:**
-- **[Dependabot Setup Guide](docs/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates (`.github/dependabot.yml`)
-- **[Markdown Linting Guide](docs/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated docs and `.mdlrc` configuration
-- **[Markdown Linting Solution](docs/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring linting issues
-- **[Selenium E2E Setup Guide](docs/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
-- **[Test Environment Reports](docs/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
+- **[Dependabot Setup Guide](docs/development-guides/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates (`.github/dependabot.yml`)
+- **[Markdown Linting Guide](docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated docs and `.mdlrc` configuration
+- **[Markdown Linting Solution](docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring linting issues
+- **[Selenium E2E Setup Guide](docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
+- **[Test Environment Reports](docs/development-guides/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
 
 **Architecture & Patterns:**
-- **[Comprehensive UX Documentation](docs/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
-- **[Two-Step Deployment Architecture v2.0.0](docs/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive parametrized deployment workflow guide
-- **[Tests & Docs Workflow Automation](docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - AI-powered 13-step automation workflow (Complete ✅)
+- **[Comprehensive UX Documentation](docs/development-guides/COMPREHENSIVE_UX_DOCUMENTATION.md)** - Complete user experience design guide with accessibility standards and interaction patterns
+- **[Two-Step Deployment Architecture v2.0.0](docs/deployment-architecture/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive parametrized deployment workflow guide
+- **[Tests & Docs Workflow Automation](docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - AI-powered 13-step automation workflow (Complete ✅)
 - **[Workflow Modular Architecture](shell_scripts/workflow/README.md)** - Complete module documentation (26 modules: 13 libraries + 13 steps)
-- **[Workflow Phase 3 Completion](docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - Modularization completion report ⭐
-- **[External Links Policy](docs/EXTERNAL_LINKS_POLICY.md)** - Security and UX standards for external hyperlinks with tabnapping prevention
-- **[Functional Core, Imperative Shell Guide](docs/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
-- **[Resource Path Guide](docs/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and deployment best practices
-- **[Git Best Practices](docs/GIT_BEST_PRACTICES_GUIDE.md)** - Comprehensive version control workflow guide
+- **[Workflow Phase 3 Completion](docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - Modularization completion report ⭐
+- **[External Links Policy](docs/documentation-standards/EXTERNAL_LINKS_POLICY.md)** - Security and UX standards for external hyperlinks with tabnapping prevention
+- **[Functional Core, Imperative Shell Guide](docs/development-guides/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide
+- **[Resource Path Guide](docs/deployment-architecture/RESOURCE_PATH_GUIDE.md)** - Detailed path resolution strategies and deployment best practices
+- **[Git Best Practices](docs/development-guides/GIT_BEST_PRACTICES_GUIDE.md)** - Comprehensive version control workflow guide
 - **[Complete Documentation](docs/README.md)** - Full technical documentation
 - **[Development Guidelines](.github/copilot-instructions.md)** - Coding standards and workflow
 

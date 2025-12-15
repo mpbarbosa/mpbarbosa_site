@@ -125,6 +125,12 @@ VERBOSE=false
 STOP_ON_COMPLETION=false
 WORKFLOW_START_TIME=$(date +%s)
 
+# Export mode variables so they're available in step functions
+export DRY_RUN
+export INTERACTIVE_MODE
+export AUTO_MODE
+export VERBOSE
+
 # Step execution control
 EXECUTE_STEPS="all"  # Default: execute all steps
 declare -a SELECTED_STEPS
@@ -293,6 +299,12 @@ print_step() {
 # Prompt user for continuation after workflow completion
 # Uses STOP_ON_COMPLETION variable to control behavior
 prompt_for_continuation() {
+    # Skip prompt in AUTO_MODE
+    if [[ "$AUTO_MODE" == true ]]; then
+        log_to_workflow "INFO" "AUTO_MODE: Skipping continuation prompt"
+        return 0
+    fi
+    
     if [[ "$STOP_ON_COMPLETION" == true ]]; then
         echo ""
         echo -e "${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
@@ -2954,7 +2966,7 @@ $(cat "$audit_output")
             step_issues+="### Outdated Packages
 
 \`\`\`
-$(cat "$outdated_file")
+$(cat "$outdated_output")
 \`\`\`
 "
         fi
@@ -4713,18 +4725,23 @@ parse_arguments() {
         case $1 in
             --dry-run)
                 DRY_RUN=true
+                export DRY_RUN
                 print_info "Dry-run mode enabled"
                 shift
                 ;;
             --auto)
                 AUTO_MODE=true
                 INTERACTIVE_MODE=false
+                export AUTO_MODE
+                export INTERACTIVE_MODE
                 print_info "Automatic mode enabled"
                 shift
                 ;;
             --interactive)
                 INTERACTIVE_MODE=true
                 AUTO_MODE=false
+                export INTERACTIVE_MODE
+                export AUTO_MODE
                 shift
                 ;;
             --verbose)

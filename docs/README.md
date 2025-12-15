@@ -6,58 +6,69 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ## 📋 Documentation Standards
 
-- **[Documentation Style Guide](DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure best practices
+- **[Documentation Style Guide](documentation-standards/DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure best practices
 
 ## Documentation Structure
 
 ### Main Project Documentation
+
 - **[Project Overview](../README.md)** - Main repository information
 - **[Source Structure](../src/README.md)** - Source code organization
 - **[Development Guidelines](../.github/copilot-instructions.md)** - Coding standards and workflow
 
 ### Shell Scripts and Deployment
+
 - **[Shell Scripts Documentation](../shell_scripts/README.md)** - Automation and deployment script documentation
-- **[Two-Step Deployment Architecture v2.0.0](TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive guide to parametrized deployment workflow
-- **[Sync to Public - Functional Documentation](SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Website synchronization workflow and process documentation
-- **[Sync to Public - Technical Documentation](SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details and architecture
+- **[Two-Step Deployment Architecture v2.0.0](deployment-architecture/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Comprehensive guide to parametrized deployment workflow
+- **[Sync to Public - Functional Documentation](deployment-architecture/SYNC_TO_PUBLIC_FUNCTIONAL_DOCUMENTATION.md)** - Website synchronization workflow and process documentation
+- **[Sync to Public - Technical Documentation](deployment-architecture/SYNC_TO_PUBLIC_TECHNICAL_DOCUMENTATION.md)** - Technical implementation details and architecture
 
 ### Workflow Automation
-- **[Workflow Automation Version Evolution](WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
-- **[Tests & Documentation Workflow Plan](TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for automated workflow script (13 steps)
-- **[Workflow Modularization Phase 3 Completion](WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All 25 modules extracted (12 libraries + 13 steps) ⭐ **NEW**
+
+- **[Workflow Automation Version Evolution](workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v1.5.0 with migration guide
+- **[Tests & Documentation Workflow Plan](workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for automated workflow script (13 steps)
+- **[Workflow Modularization Phase 3 Completion](workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All 25 modules extracted (12 libraries + 13 steps) ⭐ **NEW**
 - **[Workflow Modular Architecture](../shell_scripts/workflow/README.md)** - Complete module documentation (v2.0.0)
-- **[Workflow Automation Phase 2 Completion](WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
-- **[Workflow Performance Optimization](WORKFLOW_PERFORMANCE_OPTIMIZATION.md)** - Performance analysis and optimization strategy (v1.4.0 → v1.5.0)
-- **[Workflow Performance Implementation](WORKFLOW_PERFORMANCE_OPTIMIZATION_IMPLEMENTATION.md)** - Completed git caching implementation (v1.5.0)
-- **[Step 11 Git Finalization Enhancement](STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation best practices
-- **[Workflow Execution Context Analysis](WORKFLOW_EXECUTION_CONTEXT_ANALYSIS.md)** - Execution context patterns and best practices
+- **[Workflow Automation Phase 2 Completion](workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+- **[Workflow Performance Optimization](workflow-automation/WORKFLOW_PERFORMANCE_OPTIMIZATION.md)** - Performance analysis and optimization strategy (v1.4.0 → v1.5.0)
+- **[Workflow Performance Implementation](workflow-automation/WORKFLOW_PERFORMANCE_OPTIMIZATION_IMPLEMENTATION.md)** - Completed git caching implementation (v1.5.0)
+- **[Step 11 Git Finalization Enhancement](workflow-automation/STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation best practices
+- **[Workflow Execution Context Analysis](workflow-automation/WORKFLOW_EXECUTION_CONTEXT_ANALYSIS.md)** - Execution context patterns and best practices
 
 ### Workflow Step Implementation Documentation
-- **[Step 1 Version Implementation](STEP1_VERSION_IMPLEMENTATION.md)** - Version checking and update logic ⭐ **NEW**
-- **[Step 2 Log File Pattern](STEP2_LOG_FILE_PATTERN.md)** - Consistency analysis logging patterns ⭐ **NEW**
-- **[Step 3 Log File Pattern](STEP3_LOG_FILE_PATTERN.md)** - Script reference validation logging ⭐ **NEW**
-- **[Step 4 Log File Pattern](STEP4_LOG_FILE_PATTERN.md)** - Directory validation logging patterns ⭐ **NEW**
+
+- **[Step 01 Functional Requirements](workflow-automation/STEP_01_FUNCTIONAL_REQUIREMENTS.md)** - Complete functional specification for documentation update automation with AI integration ⭐ **NEW**
+- **[Step 02 Functional Requirements](workflow-automation/STEP_02_FUNCTIONAL_REQUIREMENTS.md)** - Documentation consistency analysis requirements ⭐ **NEW**
+- **[Step 03 Functional Requirements](workflow-automation/STEP_03_FUNCTIONAL_REQUIREMENTS.md)** - Script reference validation requirements ⭐ **NEW**
+- **[Step 1 Version Implementation](implementation-reports/STEP1_VERSION_IMPLEMENTATION.md)** - Version checking and update logic
+- **[Step 2 Log File Pattern](implementation-reports/STEP2_LOG_FILE_PATTERN.md)** - Consistency analysis logging patterns
+- **[Step 3 Log File Pattern](implementation-reports/STEP3_LOG_FILE_PATTERN.md)** - Script reference validation logging
+- **[Step 4 Log File Pattern](implementation-reports/STEP4_LOG_FILE_PATTERN.md)** - Directory validation logging patterns
 
 ### Documentation Standards & Best Practices
-- **[AI Prompt Extraction Standard](AI_PROMPT_EXTRACTION_STANDARD.md)** - Standardized AI prompt extraction patterns ⭐ **NEW**
-- **[Prompt Extraction Refactoring](PROMPT_EXTRACTION_REFACTORING.md)** - AI helper module refactoring guide ⭐ **NEW**
-- **[Markdown Best Practices](MARKDOWN_BEST_PRACTICES.md)** - Comprehensive markdown style guide ⭐ **NEW**
-- **[Markdown Linting Implementation](MARKDOWN_LINTING_IMPLEMENTATION.md)** - Automated markdown linting workflow ⭐ **NEW**
-- **[Documentation Style Guide](DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure
+
+- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Standardized AI prompt extraction patterns ⭐ **NEW**
+- **[Prompt Extraction Refactoring](ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - AI helper module refactoring guide ⭐ **NEW**
+- **[Markdown Best Practices](documentation-standards/MARKDOWN_BEST_PRACTICES.md)** - Comprehensive markdown style guide ⭐ **NEW**
+- **[Markdown Linting Implementation](documentation-standards/MARKDOWN_LINTING_IMPLEMENTATION.md)** - Automated markdown linting workflow ⭐ **NEW**
+- **[Documentation Style Guide](documentation-standards/DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure
 
 ### Advanced Architecture Patterns
-- **[Functional Core, Imperative Shell Guide](FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies
-- **[Python Migration Plan](PYTHON_MIGRATION_PLAN.md)** - Strategic migration from shell to Python for enhanced functionality
-- **[Dependency Injection Best Practices](DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
+
+- **[Functional Core, Imperative Shell Guide](development-guides/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies
+- **[Python Migration Plan](implementation-reports/PYTHON_MIGRATION_PLAN.md)** - Strategic migration from shell to Python for enhanced functionality
+- **[Dependency Injection Best Practices](development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 ### Class Extraction Initiative
 
 #### **Phase 4: AddressDataExtractor Legacy Facade** ✅ **COMPLETED**
+
 - **[CLASS_EXTRACTION_PHASE_4.md](../src/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
 - **Status**: All 4 phases completed (October 16, 2025)
 - **Achievement**: 11 classes extracted with 100% backward compatibility
 
 #### Key Architectural Improvements
+
 1. **11 Focused Modules**: Each with single responsibility
 2. **Zero Breaking Changes**: Complete backward compatibility maintained
 3. **Modern Patterns**: Immutability, dependency injection, clean interfaces
@@ -70,6 +81,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 Located in submodules (requires authentication):
 
 #### Core Architecture Documentation
+
 - **[Class Extraction Summary](../src/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_SUMMARY.md)** - Overview of all 4 phases
 - **[JavaScript Async-Await Best Practices](../src/submodules/guia_turistico/src/libs/guia_js/docs/javascript-async-await-best-practices.md)** - Async programming patterns
 - **[Low Coupling Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
@@ -77,11 +89,13 @@ Located in submodules (requires authentication):
 - **[Referential Transparency Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
 
 #### Music in Numbers Project Documentation
+
 - **[JavaScript Modularization Report](../src/submodules/music_in_numbers/JAVASCRIPT_MODULARIZATION_COMPLETION_REPORT.md)** - Complete modularization achievements
 - **[Analytics API Extraction Report](../src/submodules/music_in_numbers/docs/ANALYTICS_API_EXTRACTION_COMPLETION_REPORT.md)** - Enterprise-grade analytics architecture
-- **[Modularization Achievements Summary](MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Overall project transformation results
+- **[Modularization Achievements Summary](development-guides/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Overall project transformation results
 
 #### Implementation Documentation
+
 - **[AddressDataExtractor Module](../src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
 - **[Integration Tests](../src/submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js)** - Comprehensive test coverage
 - **[Refactoring Summary](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFACTORING_SUMMARY.md)** - Complete initiative overview
@@ -89,7 +103,8 @@ Located in submodules (requires authentication):
 ## Project Architecture
 
 ### Repository Structure
-```
+
+```text
 mpbarbosa_site/                    # Main repository
 ├── docs/                          # Documentation (this folder)
 │   └── README.md                  # This file (documentation index)
@@ -116,6 +131,7 @@ mpbarbosa_site/                    # Main repository
 ```
 
 ### Technology Stack
+
 - **Frontend**: HTML5 UP Dimension responsive template with Font Awesome icons
 - **JavaScript**: ES6 modules with modern async patterns, jQuery 3.x utilities
 - **Styling**: SASS with compiled CSS, responsive design with breakpoints
@@ -127,6 +143,7 @@ mpbarbosa_site/                    # Main repository
 ## Quick Start
 
 ### Development Setup
+
 ```bash
 # Navigate to source directory
 cd src
@@ -140,6 +157,7 @@ npm start
 ```
 
 ### Validation Scenarios
+
 Following the MP Barbosa development guidelines:
 
 1. **Homepage Loading**: Verify HTML5 UP Dimension template loads correctly with Font Awesome icons
@@ -153,6 +171,7 @@ Following the MP Barbosa development guidelines:
    - Git submodule projects may show 404 without authentication (expected behavior)
 
 ### Deployment and Automation
+
 The project includes comprehensive shell scripts for production deployment:
 
 ```bash
@@ -179,6 +198,7 @@ The project includes comprehensive shell scripts for production deployment:
 ```
 
 **Two-Step Deployment Features** (v2.0.0):
+
 - **Flexible workflow**: Independent or combined step execution
 - **Staging environment**: Public folder acts as validation area
 - **Parametrized control**: --step1, --step2, or --both-steps options
@@ -188,6 +208,7 @@ The project includes comprehensive shell scripts for production deployment:
 - **Test coverage**: 849 lines of Jest tests across 12 test suites (55 tests, 96% passing)
 
 **Workflow Automation Features** (v2.0.0):
+
 - **Fully modularized architecture**: 25 modules (12 libraries + 13 steps, 6,893 lines)
 - **Professional separation of concerns**: Single responsibility per module
 - **13-step comprehensive workflow**: Analysis → Documentation → Testing → Git finalization
@@ -201,6 +222,7 @@ The project includes comprehensive shell scripts for production deployment:
 ## Class Extraction Achievement Summary
 
 ### **Total Initiative Results** (4 Phases Completed)
+
 - **Classes Extracted**: 11 total classes
 - **Modules Created**: 11 focused modules  
 - **File Size Reduction**: Significant reduction in main guia.js file
@@ -209,12 +231,14 @@ The project includes comprehensive shell scripts for production deployment:
 - **Test Coverage**: Comprehensive integration tests for all modules
 
 ### **Architectural Layers Established**
+
 1. **Core Domain Layer** (Phase 1): GeoPosition, ObserverSubject, PositionManager
 2. **Service Layer** (Phase 2): ReverseGeocoder, GeolocationService, ChangeDetectionCoordinator
 3. **Data Processing Layer** (Phase 3): BrazilianStandardAddress, ReferencePlace, AddressExtractor, AddressCache
 4. **Legacy Facade Layer** (Phase 4): AddressDataExtractor compatibility wrapper
 
 ### **Quality Improvements**
+
 ✅ **Clean Architecture**: Clear separation of concerns  
 ✅ **Single Responsibility**: Each module focuses on one concern  
 ✅ **Immutability**: Object.freeze() and immutable patterns  
@@ -227,6 +251,7 @@ The project includes comprehensive shell scripts for production deployment:
 ## Migration Guidance
 
 ### For New Development
+
 ```javascript
 // Preferred: Use specialized classes directly
 import AddressCache from './data/AddressCache.js';
@@ -234,6 +259,7 @@ const address = AddressCache.getBrazilianStandardAddress(data);
 ```
 
 ### For Legacy Code
+
 ```javascript
 // Still supported: Legacy facade maintains compatibility
 import { AddressDataExtractor } from './guia.js';
@@ -243,12 +269,14 @@ const extractor = new AddressDataExtractor(data);
 ## Future Development
 
 ### Recommendations
+
 1. **New Features**: Use the specialized classes from Phase 1-3
 2. **Refactoring**: Gradually migrate legacy code during updates
 3. **Testing**: Leverage the modular structure for easier unit testing
 4. **Documentation**: Reference the best practices guides for patterns
 
 ### Optional Future Phases
+
 - **Presentation Layer**: HTMLPositionDisplayer, HTMLAddressDisplayer, SpeechSynthesisManager
 - **Utility Layer**: Further extraction of utility functions
 - **Configuration**: Centralized configuration management
@@ -256,7 +284,9 @@ const extractor = new AddressDataExtractor(data);
 ## Contributing
 
 ### Development Guidelines
+
 Follow the established MP Barbosa coding standards:
+
 - **Referential Transparency**: Pure functions and immutable data
 - **Low Coupling**: Clear module boundaries with dependency injection  
 - **High Cohesion**: Single responsibility per module
@@ -265,6 +295,7 @@ Follow the established MP Barbosa coding standards:
 - **Material Design**: Brazilian Portuguese user experience (Guia Turístico subproject)
 
 ### Validation Requirements
+
 - All tests must pass (maintain 94%+ pass rate)
 - No breaking changes allowed
 - Documentation must be updated

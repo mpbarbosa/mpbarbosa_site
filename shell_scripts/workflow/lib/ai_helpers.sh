@@ -1621,9 +1621,13 @@ export -f trigger_ai_step
 # Issue Extraction Workflow
 # ============================================================================
 
-# Execute interactive issue extraction workflow from Copilot session logs
+# Execute issue extraction workflow from Copilot session logs
 # This function handles the complete workflow of extracting issues from a
 # Copilot CLI session log file and saving them to the backlog.
+#
+# Supports two modes:
+#   - AUTO_MODE: Automatically parses log file for issues (no user interaction)
+#   - INTERACTIVE: Uses Copilot CLI for extraction with user confirmation
 #
 # Usage: extract_and_save_issues_from_log <step_number> <step_name> <log_file>
 #
@@ -1635,16 +1639,17 @@ export -f trigger_ai_step
 # Returns:
 #   0 on success, 1 on error
 #
-# Workflow:
-#   1. Prompts user to confirm issue extraction
-#   2. Reads log file content
-#   3. Builds issue extraction prompt using build_issue_extraction_prompt
-#   4. Executes Copilot CLI with the prompt
-#   5. Accepts multi-line user input of organized issues (until "END")
-#   6. Saves issues to backlog using save_step_issues
+# Workflow (AUTO_MODE):
+#   1. Automatically parses log file for issues
+#   2. Extracts key sections (changes, recommendations, warnings)
+#   3. Saves formatted issues to backlog
 #
-# Note: This function requires interactive user input and should not be
-# called in automated/non-interactive contexts.
+# Workflow (INTERACTIVE):
+#   1. Prompts user to confirm issue extraction
+#   2. Builds issue extraction prompt
+#   3. Executes Copilot CLI with the prompt
+#   4. Accepts multi-line user input of organized issues
+#   5. Saves issues to backlog
 extract_and_save_issues_from_log() {
     local step_number="$1"
     local step_name="$2"
@@ -1656,40 +1661,107 @@ extract_and_save_issues_from_log() {
         return 1
     fi
     
+    # Check if log file exists
+    if [[ ! -f "$log_file" ]]; then
+        print_error "Log file not found: $log_file"
+        return 1
+    fi
+    
+    # AUTO MODE: Automatic issue extraction from log file
+    if [[ "${AUTO_MODE:-false}" == "true" ]]; then
+        print_info "AUTO MODE: Automatically extracting issues from log file..."
+        
+        local log_content
+        log_content=$(cat "$log_file")
+        
+        # Build automatic issue summary from log content
+        local auto_issues="## Automated Issue Extraction from Copilot Session\n\n"
+        auto_issues+="**Timestamp**: $(date '+%Y-%m-%d %H:%M:%S')\n"
+        auto_issues+="**Log File**: $(basename "$log_file")\n"
+        auto_issues+="**Step**: $step_number - $step_name\n\n"
+        
+        # Extract key sections from log
+        local has_content=false
+        
+        # Extract changes made
+        if echo "$log_content" | grep -qi "change\|update\|modif\|edit\|add\|remove"; then
+            auto_issues+="### Changes Detected\n\n"
+            echo "$log_content" | grep -i "change\|update\|modif\|edit" | head -10 | while read -r line; do
+                auto_issues+="- $line\n"
+            done
+            auto_issues+="\n"
+            has_content=true
+        fi
+        
+        # Extract recommendations
+        if echo "$log_content" | grep -qi "recommend\|should\|consider\|suggest"; then
+            auto_issues+="### Recommendations\n\n"
+            echo "$log_content" | grep -i "recommend\|should\|consider\|suggest" | head -10 | while read -r line; do
+                auto_issues+="- $line\n"
+            done
+            auto_issues+="\n"
+            has_content=true
+        fi
+        
+        # Extract warnings or issues
+        if echo "$log_content" | grep -qi "warning\|issue\|problem\|error\|fix"; then
+            auto_issues+="### Issues and Warnings\n\n"
+            echo "$log_content" | grep -i "warning\|issue\|problem\|error\|fix" | head -10 | while read -r line; do
+                auto_issues+="- $line\n"
+            done
+            auto_issues+="\n"
+            has_content=true
+        fi
+        
+        # Add note about full log
+        auto_issues+="### Full Details\n\n"
+        auto_issues+="Complete session log available at: \`$log_file\`\n\n"
+        auto_issues+="Review the full log file for detailed context and complete output.\n"
+        
+        # Save to backlog if content was found
+        if [[ "$has_content" == true ]]; then
+            save_step_issues "$step_number" "$step_name" "$(echo -e "$auto_issues")"
+            print_success "Issues automatically extracted and saved to backlog"
+        else
+            print_info "No significant issues detected in log file"
+            # Save minimal report
+            auto_issues+="No significant issues or warnings detected in automated scan.\n"
+            save_step_issues "$step_number" "$step_name" "$(echo -e "$auto_issues")"
+        fi
+        
+        return 0
+    fi
+    
+    # INTERACTIVE MODE: User-assisted issue extraction
     # Check if user wants to save issues
     if confirm_action "Do you want to save issues from the Copilot session to the backlog?" "n"; then
-        if [[ -f "$log_file" ]]; then
-            local log_content
-            log_content=$(cat "$log_file")
-            
-            # Build issue extraction prompt using helper function
-            local extract_prompt
-            extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
+        local log_content
+        log_content=$(cat "$log_file")
+        
+        # Build issue extraction prompt using helper function
+        local extract_prompt
+        extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
 
-            echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
-            echo -e "${YELLOW}${extract_prompt}${NC}\n"
+        echo -e "\n${CYAN}Issue Extraction Prompt:${NC}"
+        echo -e "${YELLOW}${extract_prompt}${NC}\n"
+        
+        if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
+            sleep 1
+            print_info "Starting Copilot CLI session for issue extraction..."
+            copilot -p "$extract_prompt" --allow-all-tools
             
-            if confirm_action "Run GitHub Copilot CLI to extract and organize issues from the log?" "y"; then
-                sleep 1
-                print_info "Starting Copilot CLI session for issue extraction..."
-                copilot -p "$extract_prompt" --allow-all-tools
-                
-                # Collect organized issues using reusable function
-                local organized_issues
-                organized_issues=$(collect_ai_output "Please copy the organized issues from Copilot output." "multi")
-                
-                if [[ -n "$organized_issues" ]]; then
-                    save_step_issues "$step_number" "$step_name" "$organized_issues"
-                    print_success "Issues extracted from log and saved to backlog"
-                else
-                    print_warning "No organized issues provided - skipping backlog save"
-                fi
+            # Collect organized issues using reusable function
+            local organized_issues
+            organized_issues=$(collect_ai_output "Please copy the organized issues from Copilot output." "multi")
+            
+            if [[ -n "$organized_issues" ]]; then
+                save_step_issues "$step_number" "$step_name" "$organized_issues"
+                print_success "Issues extracted from log and saved to backlog"
             else
-                print_warning "Skipped issue extraction - no backlog file created"
+                print_warning "No organized issues provided - skipping backlog save"
             fi
         else
-            print_error "Log file not found: $log_file"
-            print_warning "Cannot extract issues without log file"
+            print_warning "Skipped issue extraction - no backlog file created"
         fi
     fi
     

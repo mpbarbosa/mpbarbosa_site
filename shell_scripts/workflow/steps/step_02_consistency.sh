@@ -96,6 +96,82 @@ check_version_consistency() {
     return $inconsistencies
 }
 
+# Creates comprehensive consistency issue report and saves to backlog
+# Arguments: 
+#   $1 - issues_found count
+#   $2 - broken_refs_file path
+#   $3 - version_issues count
+#   $4 - metrics_issues count
+#   $5 - doc_count
+# Returns: 0 for success
+create_consistency_issue_report() {
+    local issues_found="$1"
+    local broken_refs_file="$2"
+    local version_issues="$3"
+    local metrics_issues="$4"
+    local doc_count="$5"
+    
+    # Only create report if issues were found
+    if [[ "$issues_found" -eq 0 ]]; then
+        return 0
+    fi
+    
+    local report="## Documentation Consistency Issues\n\n"
+    report+="**Timestamp**: $(date '+%Y-%m-%d %H:%M:%S')\n"
+    report+="**Documentation Files Checked**: ${doc_count}\n"
+    report+="**Total Issues Found**: ${issues_found}\n\n"
+    
+    # Add broken references section if any found
+    if [[ -s "$broken_refs_file" ]]; then
+        local broken_count
+        broken_count=$(wc -l < "$broken_refs_file")
+        report+="### Broken References (${broken_count} found)\n\n"
+        
+        while IFS=': ' read -r source_file broken_path; do
+            [[ -z "$source_file" ]] && continue
+            report+="⚠️  **BROKEN LINK**: \`${source_file}\` references missing file\n"
+            report+="   - Reference: \`${broken_path}\`\n"
+            report+="   - Action: Update reference or restore missing file\n\n"
+        done < "$broken_refs_file"
+    fi
+    
+    # Add version inconsistencies section if any found
+    if [[ "$version_issues" -gt 0 ]]; then
+        report+="### Version Inconsistencies (${version_issues} found)\n\n"
+        report+="⚠️  **VERSION MISMATCH**: Files contain inconsistent version formats\n"
+        report+="   - Check semantic versioning compliance (MAJOR.MINOR.PATCH)\n"
+        report+="   - Action: Standardize all version numbers to valid semver format\n"
+        report+="   - Review version_map output for details\n\n"
+    fi
+    
+    # Add metrics validation section if any found
+    if [[ "$metrics_issues" -gt 0 ]]; then
+        report+="### Metrics Validation (${metrics_issues} found)\n\n"
+        report+="⚠️  **METRICS MISMATCH**: Cross-document metrics inconsistency detected\n"
+        report+="   - Action: Reconcile metrics across documentation\n"
+        report+="   - Review metrics validation output for specific discrepancies\n\n"
+    fi
+    
+    # Add recommended actions
+    report+="### Recommended Actions\n\n"
+    if [[ -s "$broken_refs_file" ]]; then
+        report+="1. **Fix Broken References**: Update paths or restore missing files\n"
+    fi
+    if [[ "$version_issues" -gt 0 ]]; then
+        report+="2. **Standardize Versions**: Ensure all version numbers follow semantic versioning\n"
+    fi
+    if [[ "$metrics_issues" -gt 0 ]]; then
+        report+="3. **Validate Metrics**: Cross-check and update metrics for consistency\n"
+    fi
+    report+="4. **Re-run Consistency Check**: Verify all issues are resolved\n"
+    
+    # Automatically save report to backlog
+    save_step_issues "2" "Consistency_Analysis" "$(echo -e "$report")"
+    print_info "Consistency issues report saved to backlog"
+    
+    return 0
+}
+
 # Main step function - validates documentation consistency with AI assistance
 # Returns: 0 for success, 1 for failure
 step2_check_consistency() {
@@ -104,6 +180,8 @@ step2_check_consistency() {
     cd "$PROJECT_ROOT" || return 1
     
     local issues_found=0
+    local version_issues=0
+    local metrics_issues=0
     local broken_refs_file
     broken_refs_file=$(mktemp)
     TEMP_FILES+=("$broken_refs_file")
@@ -112,7 +190,6 @@ step2_check_consistency() {
     print_info "Phase 1: Automated broken link detection..."
     
     # Check semantic version consistency
-    local version_issues=0
     check_version_consistency || version_issues=$?
     if [[ $version_issues -gt 0 ]]; then
         print_warning "Found $version_issues semantic versioning issue(s)"
@@ -132,6 +209,7 @@ step2_check_consistency() {
         # Run metrics validation
         if ! validate_all_documentation_metrics; then
             print_warning "Documentation metrics inconsistencies detected"
+            metrics_issues=1
             ((issues_found++)) || true
         else
             print_success "All documentation metrics are consistent ✅"
@@ -248,13 +326,22 @@ step2_check_consistency() {
         fi
     fi
     
+    # Generate comprehensive consistency issue report if issues found
+    if [[ "$issues_found" -gt 0 ]]; then
+        print_info "Generating comprehensive consistency issue report..."
+        create_consistency_issue_report "$issues_found" "$broken_refs_file" "$version_issues" "$metrics_issues" "$doc_count"
+        print_warning "Found ${issues_found} consistency issue(s) - review backlog for details"
+    else
+        print_success "No consistency issues detected ✅"
+    fi
+    
     # Save step results using shared library
     save_step_results \
         "2" \
         "Consistency_Analysis" \
         "$issues_found" \
-        "No broken references found in automated checks" \
-        "Found ${issues_found} broken references requiring attention. Review and fix broken links before proceeding." \
+        "No consistency issues found in automated checks" \
+        "Found ${issues_found} consistency issue(s) requiring attention. Review backlog report for details." \
         "$broken_refs_file" \
         "$doc_count"
     
@@ -266,3 +353,4 @@ export -f step2_check_consistency
 export -f validate_semver
 export -f extract_versions_from_file
 export -f check_version_consistency
+export -f create_consistency_issue_report

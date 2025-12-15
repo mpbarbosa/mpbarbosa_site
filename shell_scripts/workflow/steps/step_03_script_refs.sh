@@ -12,6 +12,98 @@ readonly STEP3_VERSION_MAJOR=2
 readonly STEP3_VERSION_MINOR=0
 readonly STEP3_VERSION_PATCH=0
 
+# Creates comprehensive script issue report and saves to backlog
+# Arguments: 
+#   $1 - issues_found count
+#   $2 - script_issues_file path
+#   $3 - missing_refs count
+#   $4 - permission_issues count
+#   $5 - undocumented count
+#   $6 - script_count
+# Returns: 0 for success
+create_script_issue_report() {
+    local issues_found="$1"
+    local script_issues_file="$2"
+    local missing_refs="$3"
+    local permission_issues="$4"
+    local undocumented="$5"
+    local script_count="$6"
+    
+    # Only create report if issues were found
+    if [[ "$issues_found" -eq 0 ]]; then
+        return 0
+    fi
+    
+    local report="## Script Reference Validation Issues\n\n"
+    report+="**Timestamp**: $(date '+%Y-%m-%d %H:%M:%S')\n"
+    report+="**Total Scripts Checked**: ${script_count}\n"
+    report+="**Total Issues Found**: ${issues_found}\n\n"
+    
+    # Parse issues file and categorize
+    local missing_refs_section=""
+    local permission_section=""
+    local undocumented_section=""
+    
+    while IFS= read -r line; do
+        [[ -z "$line" ]] && continue
+        
+        if [[ "$line" =~ ^Missing\ script\ reference:\ (.+)$ ]]; then
+            local script_path="${BASH_REMATCH[1]}"
+            missing_refs_section+="⚠️  **BROKEN REFERENCE**: Documentation references non-existent script\n"
+            missing_refs_section+="   - Reference: \`${script_path}\`\n"
+            missing_refs_section+="   - Source: \`shell_scripts/README.md\`\n"
+            missing_refs_section+="   - Action: Remove reference or restore missing script\n\n"
+        elif [[ "$line" =~ ^Non-executable:\ (.+)$ ]]; then
+            local script_path="${BASH_REMATCH[1]}"
+            permission_section+="⚠️  **NON-EXECUTABLE**: Script lacks executable permission\n"
+            permission_section+="   - Script: \`${script_path}\`\n"
+            permission_section+="   - Action: Run \`chmod +x ${script_path}\`\n\n"
+        elif [[ "$line" =~ ^Undocumented:\ (.+)$ ]]; then
+            local script_path="${BASH_REMATCH[1]}"
+            undocumented_section+="⚠️  **MISSING DOCUMENTATION**: Script not documented in README\n"
+            undocumented_section+="   - Script: \`${script_path}\`\n"
+            undocumented_section+="   - Action: Add documentation to \`shell_scripts/README.md\`\n\n"
+        fi
+    done < "$script_issues_file"
+    
+    # Add missing references section if any found
+    if [[ "$missing_refs" -gt 0 ]]; then
+        report+="### Missing Script References (${missing_refs} found)\n\n"
+        report+="$missing_refs_section"
+    fi
+    
+    # Add permission issues section if any found
+    if [[ "$permission_issues" -gt 0 ]]; then
+        report+="### Permission Issues (${permission_issues} found)\n\n"
+        report+="$permission_section"
+    fi
+    
+    # Add undocumented scripts section if any found
+    if [[ "$undocumented" -gt 0 ]]; then
+        report+="### Undocumented Scripts (${undocumented} found)\n\n"
+        report+="$undocumented_section"
+    fi
+    
+    # Add recommended actions
+    report+="### Recommended Actions\n\n"
+    if [[ "$missing_refs" -gt 0 ]]; then
+        report+="1. **Remove or Update Broken References**: Update documentation or restore missing scripts\n"
+    fi
+    if [[ "$permission_issues" -gt 0 ]]; then
+        report+="2. **Fix Executable Permissions**: Run \`chmod +x [script_path]\` for each affected script\n"
+    fi
+    if [[ "$undocumented" -gt 0 ]]; then
+        report+="3. **Document Scripts**: Add descriptions to \`shell_scripts/README.md\`\n"
+    fi
+    report+="4. **Re-run Validation**: Verify all issues are resolved\n"
+    
+    # Automatically save report to backlog
+    save_step_issues "3" "Script_Reference_Validation" "$(echo -e "$report")"
+    print_info "Script validation issues report saved to backlog"
+    
+    return 0
+}
+
 # Main step function - validates script references with AI assistance
 # Returns: 0 for success, 1 for failure
 step3_validate_script_references() {
@@ -20,6 +112,9 @@ step3_validate_script_references() {
     cd "$PROJECT_ROOT" || return 1
     
     local issues=0
+    local missing_refs=0
+    local permission_issues=0
+    local undocumented=0
     local script_issues_file
     script_issues_file=$(mktemp)
     TEMP_FILES+=("$script_issues_file")
@@ -38,6 +133,7 @@ step3_validate_script_references() {
             if [[ ! -f "$script" ]]; then
                 print_warning "Referenced script not found: $script"
                 echo "Missing script reference: $script" >> "$script_issues_file"
+                ((missing_refs++))
                 ((issues++))
             fi
         done <<< "$script_refs"
@@ -54,6 +150,7 @@ step3_validate_script_references() {
         while IFS= read -r script; do
             [[ -z "$script" ]] && continue
             echo "Non-executable: $script" >> "$script_issues_file"
+            ((permission_issues++))
         done <<< "$non_executable"
         ((issues++))
     fi
@@ -67,7 +164,6 @@ step3_validate_script_references() {
     
     # Check 4: Undocumented script detection
     print_info "Checking for undocumented scripts..."
-    local undocumented=0
     while IFS= read -r script; do
         [[ -z "$script" ]] && continue
         local script_name
@@ -139,18 +235,28 @@ step3_validate_script_references() {
         fi
     fi
     
+    # Generate comprehensive script issue report if issues found
+    if [[ "$issues" -gt 0 ]]; then
+        print_info "Generating comprehensive script validation issue report..."
+        create_script_issue_report "$issues" "$script_issues_file" "$missing_refs" "$permission_issues" "$undocumented" "$script_count"
+        print_warning "Found ${issues} script validation issue(s) - review backlog for details"
+    else
+        print_success "No script validation issues detected ✅"
+    fi
+    
     # Save step results using shared library
     save_step_results \
         "3" \
         "Script_Reference_Validation" \
         "$issues" \
         "All script references valid in automated checks" \
-        "Found ${issues} script reference issues. Review missing scripts, permission problems, or documentation gaps." \
+        "Found ${issues} script validation issue(s). Review missing scripts, permission problems, or documentation gaps." \
         "$script_issues_file" \
         "$script_count"
     
     update_workflow_status "step3" "✅"
 }
 
-# Export step function
+# Export step function and helper functions
 export -f step3_validate_script_references
+export -f create_script_issue_report
