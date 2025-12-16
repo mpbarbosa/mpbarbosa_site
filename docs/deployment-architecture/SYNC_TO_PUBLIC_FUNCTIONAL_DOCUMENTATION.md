@@ -1,10 +1,10 @@
 # 📋 Sync to Public - Functional Documentation
 
-**Script:** `shell_scripts/sync_to_public.sh`  
-**Version:** 2.0.0  
-**Author:** MP Barbosa  
-**Created:** November 4, 2025  
-**Updated:** November 4, 2025 (Two-Step Deployment Architecture)  
+**Script:** `shell_scripts/sync_to_public.sh`
+**Version:** 2.0.0
+**Author:** MP Barbosa
+**Created:** November 4, 2025
+**Updated:** November 4, 2025 (Two-Step Deployment Architecture)
 **Purpose:** Website deployment preparation and asset synchronization
 
 ---
@@ -149,7 +149,7 @@ Start → Parse Arguments → Validate Environment → Create Backup
 
 ### 2. Asset Copying Phase
 ```
-Copy HTML Files → Copy CSS Assets → Copy JS Assets → 
+Copy HTML Files → Copy CSS Assets → Copy JS Assets →
 Copy SASS Assets → Copy Submodules → Additional Resources
 ```
 
@@ -280,7 +280,7 @@ copy_other_submodule() {
 # Step 1: Source → Public (staging)
 ./sync_to_public.sh --step1 --verbose
 
-# Step 2: Public → Production (deployment) 
+# Step 2: Public → Production (deployment)
 ./sync_to_public.sh --step2 --production-dir /var/www/html
 
 # Combined deployment (both steps)
@@ -429,6 +429,6 @@ This script represents a **mature, production-ready tool** that effectively brid
 
 ---
 
-**Last Updated**: November 4, 2025  
-**Documentation Status**: Complete  
+**Last Updated**: November 4, 2025
+**Documentation Status**: Complete
 **Script Version**: 1.0.0

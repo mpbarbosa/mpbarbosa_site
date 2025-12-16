@@ -376,6 +376,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 **ALWAYS** follow these path resolution rules to prevent critical resource loading failures:
 
 1. **Submodule HTML Files**: Use relative paths only
+
    ```html
    <!-- ✅ CORRECT for submodule files -->
    <link rel="stylesheet" href="styles/themes.css">
@@ -400,16 +401,23 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 ### Common Issues
 1. **404 errors for project links**: Normal when submodules aren't initialized
 2. **Template assets not loading**: Verify `assets/` directory structure is intact
-3. **npm vulnerabilities**: The project uses `live-server@1.2.1` which has known vulnerabilities but is only for development
-4. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
-5. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
-6. **Background image missing**: Verify `images/bg.jpg` and `images/overlay.png` exist
+3. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
+4. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
+5. **Background image missing**: Verify `images/bg.jpg` and `images/overlay.png` exist
+6. **Orphan files in root directory**: Workflow artifacts should be cleaned up periodically - these are temporary AI session files
+   - Common orphan files: "before attempting edits", "sues", "sed documentation sections", "in workflow configuration", "sue**: Multiple command...", etc.
+   - These files are created during AI-assisted workflow sessions
+   - Safe to delete - they are not tracked by git
+7. **Jest localStorage warnings**: Custom environment suppresses these automatically
+8. **npm audit vulnerabilities**: Should show 0 vulnerabilities - check overrides if issues appear
 
 ### Quick Fixes
 - **Server won't start**: Ensure you're in the `src/` directory and `npm install` was successful
 - **Changes not reflecting**: Check if live-server is running and browser is pointed to correct localhost URL
 - **Template styling broken**: Clear browser cache and verify `assets/css/main.css` exists
 - **JavaScript errors**: Check browser console for missing dependencies in `assets/js/`
+- **Test failures**: Check jest configuration and ensure all polyfills are loaded (`jest.setup.js`)
+- **Security vulnerabilities**: Run `npm audit` - should show 0 vulnerabilities with current overrides
 
 ## File Reference
 
@@ -419,13 +427,24 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
   "scripts": {
     "start": "live-server .",
     "build": "echo 'Build step not defined yet.'",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js 2>&1 | grep -v 'localstorage-file'",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage 2>&1 | grep -v 'localstorage-file'",
     "lint:md": "mdl --git-recurse --ignore-front-matter ."
   },
+  "overrides": {
+    "braces": "^3.0.3",
+    "micromatch": "^4.0.8",
+    "glob": "^11.0.0"
+  },
   "jest": {
-    "testEnvironment": "jsdom",
+    "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.js",
+    "testEnvironmentOptions": {
+      "url": "http://localhost",
+      "storageQuota": 10000000,
+      "resources": "usable"
+    },
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
     "transform": {},
     "testMatch": [
       "**/__tests__/**/*.test.js",
@@ -442,6 +461,20 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 
 ### Key Dependencies
 - `live-server@1.2.1` (development server with live reload)
+- `jest@30.2.0` (testing framework with ES modules support)
+- `jest-environment-jsdom@30.2.0` (browser environment for tests)
+
+### npm Security Overrides
+The project uses npm overrides to resolve transitive dependency vulnerabilities:
+```json
+"overrides": {
+  "braces": "^3.0.3",      // Fix: CVE-1098094 (High - ReDoS)
+  "micromatch": "^4.0.8",  // Fix: GHSA-952p-6rrq-rcjv (High - ReDoS)
+  "glob": "^11.0.0"        // Fix: GHSA-5j98-mcp5-4vw2 (High - Command Injection)
+}
+```
+**Status**: ✅ 0 vulnerabilities (verified December 15, 2025)  
+**See**: `docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md` for details
 
 ### External Resources Used
 - **HTML5 UP Dimension Template**: Responsive site template (html5up.net)
@@ -706,6 +739,29 @@ test('should set up smooth scrolling', () => {
 });
 ```
 
+#### Custom Jest Configuration
+The project uses a custom jsdom environment to suppress localStorage warnings:
+
+**Custom Environment** (`jest-environment-jsdom-no-warnings.js`):
+- Wraps `jest-environment-jsdom` to filter console warnings
+- Suppresses `--localstorage-file` warnings (in-memory storage is sufficient)
+- Maintains full jsdom functionality
+
+**Test Setup** (`jest.setup.js`):
+- **Response Polyfill**: Adds Response class for advanced error handling tests
+- **Headers Polyfill**: Implements Headers API for fetch simulation
+- **AbortController Polyfill**: Supports fetch timeout testing
+- **LocalStorage Mock**: Ensures proper localStorage configuration
+- **Environment Detection**: Sets `global.IS_TEST_ENV` and `global.IS_JSDOM` flags
+
+**Console Warning Suppression**:
+Test commands filter out localStorage warnings using grep:
+```bash
+npm test          # Filters stderr warnings
+npm test:coverage # Filters stderr warnings
+npm test:watch    # No filtering (interactive)
+```
+
 #### Key Testing Commands
 ```bash
 # Run all tests
@@ -779,6 +835,13 @@ sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 # Total modular code: 6,993 lines (excluding test/utility scripts)
 # YAML configuration: 762 lines of externalized AI prompt templates
 # Workflow locations: backlog/, logs/, summaries/ all in shell_scripts/workflow/
+#
+# Recent Improvements (December 15, 2025):
+# - Increased output limits for better debugging visibility:
+#   - Step 7 (Test Execution): Test output from 100 → 200 lines
+#   - Step 8 (Dependencies): Production deps from 20 → 50, outdated from 10 → 20 lines
+#   - Step 9 (Code Quality): File preview from 30 → 50 lines
+# - Enhanced AI context with more comprehensive data for analysis
 ```
 
 **Key Patterns**:
@@ -875,6 +938,7 @@ For comprehensive development guidance, consult these detailed documentation res
 
 ### Development Environment & Tools
 - **[Dependabot Setup Guide](../docs/development-guides/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates configuration
+- **[Security Vulnerability Resolution](../docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security audit resolution using package overrides (8 vulnerabilities fixed: 5 High, 3 Moderate)
 - **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
 - **[Markdown Linting Solution Summary](../docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
 - **[Selenium E2E Setup Guide](../docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)

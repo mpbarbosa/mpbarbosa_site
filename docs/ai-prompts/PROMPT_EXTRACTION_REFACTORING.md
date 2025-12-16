@@ -22,7 +22,7 @@ Successfully extracted the inline issue extraction prompt (lines 120-153) from `
 build_issue_extraction_prompt() {
     local log_file="$1"
     local log_content="$2"
-    
+
     build_ai_prompt \
         "You are a technical project manager specialized in issue extraction, categorization, and documentation organization." \
         "Analyze the following GitHub Copilot session log from a documentation update workflow and extract all issues, recommendations, and action items.
@@ -158,10 +158,12 @@ extract_prompt=$(build_issue_extraction_prompt "$log_file" "$log_content")
 - **Net change**: +7 lines (modular approach)
 
 ### Complexity Reduction
-- **Before**: Mixed concerns (step logic + prompt text)
-- **After**: Separated concerns (step logic | prompt builder)
-- **Cyclomatic complexity**: Unchanged
-- **Cognitive complexity**: Reduced (cleaner code)
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Concerns | Mixed (step logic + prompt text) | Separated (step logic pipe prompt builder) |
+| Cyclomatic complexity | Unchanged | Unchanged |
+| Cognitive complexity | Higher | Reduced (cleaner code) |
 
 ## Related Functions in ai_helpers.sh
 

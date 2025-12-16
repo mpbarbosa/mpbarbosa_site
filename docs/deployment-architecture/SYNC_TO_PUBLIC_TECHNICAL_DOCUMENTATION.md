@@ -1,10 +1,10 @@
 # 🔧 Sync to Public - Technical Documentation
 
-**Script:** `shell_scripts/sync_to_public.sh`  
-**Version:** 2.0.0  
-**Language:** Bash (Shell Script)  
-**Target Shell:** `/bin/bash`  
-**Created:** November 4, 2025  
+**Script:** `shell_scripts/sync_to_public.sh`
+**Version:** 2.0.0
+**Language:** Bash (Shell Script)
+**Target Shell:** `/bin/bash`
+**Created:** November 4, 2025
 **Updated:** November 9, 2025 (Two-Step Deployment Architecture with Comprehensive Test Coverage)
 
 ---
@@ -116,7 +116,7 @@ copy_single_file() {
     local dest_file="$2"
     local description="$3"
     local required="${4:-false}"
-    
+
     # Implementation with error handling
     if [[ ! -f "$source_file" ]]; then
         if [[ "$required" == "true" ]]; then
@@ -124,7 +124,7 @@ copy_single_file() {
             return 1
         fi
     fi
-    
+
     # Conditional execution based on DRY_RUN
     if [[ "$DRY_RUN" == "false" ]]; then
         mkdir -p "$(dirname "$dest_file")"
@@ -149,10 +149,10 @@ copy_directory() {
     local description="$3"
     local file_pattern="$4"
     local required="${5:-false}"
-    
+
     # Pattern-based file counting and listing
     local file_count=$(find "$dest_dir" -name "$file_pattern" | wc -l)
-    
+
     # Conditional verbose output
     if [[ $file_count -gt 0 && $file_count -le 10 ]]; then
         find "$dest_dir" -name "$file_pattern" -exec basename {} \; | while read -r file; do
@@ -176,7 +176,7 @@ copy_directory() {
 copy_specific_files() {
     local files="$4"
     local files_array=($files)  # String to array conversion
-    
+
     for file in "${files_array[@]}"; do
         if [[ -f "$source_dir/$file" ]]; then
             cp "$source_dir/$file" "$dest_dir/$file"
@@ -204,7 +204,7 @@ validate_path() {
     local description="$2"
     local pattern="$3"
     local required="${4:-false}"
-    
+
     if [[ -f "$path" ]]; then
         # File validation with metadata
         local file_size=$(du -h "$path" | cut -f1)
@@ -260,10 +260,10 @@ done
 create_backup() {
     local backup_timestamp=$(date +"%Y%m%d_%H%M%S")
     local backup_path="$PUBLIC_DIR/.backups/backup_$backup_timestamp"
-    
+
     # Selective file copying (excluding .backups directory)
     find "$PUBLIC_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" -exec cp -r {} "$backup_path/" \;
-    
+
     # Automatic cleanup (keep only last 5 backups)
     local backup_count=$(find "$PUBLIC_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
     if [[ $backup_count -gt 5 ]]; then
@@ -487,7 +487,7 @@ The script is backed by a comprehensive Jest test suite:
 // Step 1 execution validation
 test('should support --step1 parameter for source to public sync')
 
-// Step 2 execution validation  
+// Step 2 execution validation
 test('should support --step2 parameter for public to production sync')
 
 // Combined execution validation
@@ -645,7 +645,7 @@ export const APP_CONFIG = {
   name: 'Monitora Vagas',
   version: '2.0.0',
   description: 'AFPESP Hotel Vacancy Monitoring',
-  
+
   // Search configuration
   search: {
     defaultWeekends: 4,
@@ -653,7 +653,7 @@ export const APP_CONFIG = {
     minWeekends: 1,
     searchTypes: ['single', 'multi']
   },
-  
+
   // Hotel configuration
   hotels: {
     values: ['santaRita', 'guaruja', 'santosEliane', 'santosBeiraMar'],
@@ -665,21 +665,21 @@ export const APP_CONFIG = {
       'Santos Beira-Mar'
     ]
   },
-  
+
   // UI settings
   ui: {
     progressBarEnabled: true,
     guestCounterEnabled: true,
     animationsEnabled: true
   },
-  
+
   // Feature flags
   features: {
     multiWeekendSearch: true,
     cacheEnabled: true,
     serviceWorker: true
   },
-  
+
   // Build metadata
   build: {
     timestamp: '2025-11-09T00:00:00Z',
@@ -707,7 +707,7 @@ export const API_CONFIG = {
     search: '/api/vagas/search',
     weekends: '/api/vagas/weekends'
   },
-  
+
   // HTTP methods
   methods: {
     GET: 'GET',
@@ -715,7 +715,7 @@ export const API_CONFIG = {
     PUT: 'PUT',
     DELETE: 'DELETE'
   },
-  
+
   // HTTP status codes
   statusCodes: {
     OK: 200,
@@ -725,14 +725,14 @@ export const API_CONFIG = {
     NOT_FOUND: 404,
     INTERNAL_SERVER_ERROR: 500
   },
-  
+
   // Timeout configurations (milliseconds)
   timeouts: {
     default: 30000,      // 30 seconds
     search: 60000,       // 60 seconds (single search)
     weekends: 600000     // 10 minutes (multi-weekend search)
   },
-  
+
   // Cache duration (milliseconds)
   cache: {
     hotelList: 300000    // 5 minutes
@@ -784,21 +784,21 @@ export const ERROR_MESSAGES = {
 export function getEnvironment() {
   const hostname = window.location.hostname;
   const urlParams = new URLSearchParams(window.location.search);
-  
+
   // URL parameter override: ?useProductionAPI=true
   if (urlParams.get('useProductionAPI') === 'true') {
     return 'production';
   }
-  
+
   // Environment detection by hostname
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'development';
   }
-  
+
   if (hostname === 'www.mpbarbosa.com' || hostname === 'mpbarbosa.com') {
     return 'production';
   }
-  
+
   // Default to development for unknown hosts
   return 'development';
 }
@@ -808,12 +808,12 @@ export function getEnvironment() {
  */
 export function getApiBaseUrl() {
   const env = getEnvironment();
-  
+
   const urls = {
     development: 'http://localhost:3001/api',
     production: 'https://www.mpbarbosa.com/api'
   };
-  
+
   return urls[env] || urls.development;
 }
 
@@ -833,7 +833,7 @@ export const ENV_CONFIG = {
       console: false
     }
   },
-  
+
   analytics: {
     development: {
       enabled: false,
@@ -844,7 +844,7 @@ export const ENV_CONFIG = {
       trackingId: 'GA-XXXXXXX'
     }
   },
-  
+
   performance: {
     development: {
       caching: false,
@@ -890,17 +890,17 @@ export const ENV_CONFIG = {
 export { APP_CONFIG } from './app.js';
 
 // Business logic constants
-export { 
-  API_CONFIG, 
-  VALIDATION_RULES, 
-  ERROR_MESSAGES 
+export {
+  API_CONFIG,
+  VALIDATION_RULES,
+  ERROR_MESSAGES
 } from './constants.js';
 
 // Environment detection
-export { 
-  getEnvironment, 
-  getApiBaseUrl, 
-  ENV_CONFIG 
+export {
+  getEnvironment,
+  getApiBaseUrl,
+  ENV_CONFIG
 } from './environment.js';
 
 /**
@@ -942,7 +942,7 @@ export class BuscaVagasAPIClient {
     this.baseURL = getApiBaseUrl();
     this.defaultTimeout = API_CONFIG.timeouts.default;
   }
-  
+
   /**
    * Generic fetch wrapper with timeout handling
    * @param {string} url - Full URL or path relative to baseURL
@@ -954,34 +954,34 @@ export class BuscaVagasAPIClient {
     // Create AbortController for timeout management
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    
+
     try {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       // HTTP error handling
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       return await response.json();
-      
+
     } catch (error) {
       clearTimeout(timeoutId);
-      
+
       // Distinguish timeout vs network errors
       if (error.name === 'AbortError') {
         throw new Error('Request timeout - operation took too long');
       }
-      
+
       throw error;
     }
   }
-  
+
   /**
    * Fetch hotel list from API
    * @returns {Promise<Array>} - List of hotels
@@ -989,21 +989,21 @@ export class BuscaVagasAPIClient {
   async scrapeHotels() {
     const url = `${this.baseURL}${API_CONFIG.endpoints.hotels}`;
     console.log(`[API] Fetching hotels from: ${url}`);
-    
+
     try {
       const data = await this.fetchWithTimeout(url, {
         method: API_CONFIG.methods.GET
       });
-      
+
       console.log(`[API] Successfully fetched ${data.length} hotels`);
       return data;
-      
+
     } catch (error) {
       console.error('[API] Failed to fetch hotels:', error.message);
       throw error;
     }
   }
-  
+
   /**
    * Search vacancies for specific dates
    * @param {string} checkin - Check-in date (YYYY-MM-DD)
@@ -1013,13 +1013,13 @@ export class BuscaVagasAPIClient {
   async searchVacancies(checkin, checkout) {
     const url = `${this.baseURL}${API_CONFIG.endpoints.search}`;
     console.log(`[API] Searching vacancies: ${checkin} to ${checkout}`);
-    
+
     // ISO 8601 date format validation
     const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!isoDateRegex.test(checkin) || !isoDateRegex.test(checkout)) {
       throw new Error('Dates must be in ISO 8601 format (YYYY-MM-DD)');
     }
-    
+
     try {
       const data = await this.fetchWithTimeout(url, {
         method: API_CONFIG.methods.POST,
@@ -1028,16 +1028,16 @@ export class BuscaVagasAPIClient {
         },
         body: JSON.stringify({ checkin, checkout })
       }, API_CONFIG.timeouts.search);
-      
+
       console.log('[API] Vacancy search completed successfully');
       return data;
-      
+
     } catch (error) {
       console.error('[API] Vacancy search failed:', error.message);
       throw error;
     }
   }
-  
+
   /**
    * Search multiple weekends sequentially
    * @param {number} weekendCount - Number of weekends to search
@@ -1046,7 +1046,7 @@ export class BuscaVagasAPIClient {
   async searchWeekends(weekendCount) {
     const url = `${this.baseURL}${API_CONFIG.endpoints.weekends}`;
     console.log(`[API] Searching ${weekendCount} weekends`);
-    
+
     try {
       const data = await this.fetchWithTimeout(url, {
         method: API_CONFIG.methods.POST,
@@ -1055,10 +1055,10 @@ export class BuscaVagasAPIClient {
         },
         body: JSON.stringify({ weekendCount })
       }, API_CONFIG.timeouts.weekends);
-      
+
       console.log(`[API] Successfully searched ${data.length} weekends`);
       return data;
-      
+
     } catch (error) {
       console.error('[API] Weekend search failed:', error.message);
       throw error;
@@ -1101,7 +1101,7 @@ class HotelCache {
     this.cache = new Map();
     this.cacheDuration = API_CONFIG.cache.hotelList;
   }
-  
+
   /**
    * Get cached hotel data
    * @param {string} key - Cache key
@@ -1109,20 +1109,20 @@ class HotelCache {
    */
   get(key) {
     const entry = this.cache.get(key);
-    
+
     if (!entry) return null;
-    
+
     // Check expiration
     const now = Date.now();
     if (now - entry.timestamp > this.cacheDuration) {
       this.cache.delete(key);
       return null;
     }
-    
+
     console.log(`[Cache] Hit for key: ${key}`);
     return entry.data;
   }
-  
+
   /**
    * Set cache entry
    * @param {string} key - Cache key
@@ -1135,7 +1135,7 @@ class HotelCache {
     });
     console.log(`[Cache] Stored key: ${key}`);
   }
-  
+
   /**
    * Clear entire cache
    */
@@ -1143,7 +1143,7 @@ class HotelCache {
     this.cache.clear();
     console.log('[Cache] Cleared all entries');
   }
-  
+
   /**
    * Invalidate specific key
    * @param {string} key - Cache key to invalidate
@@ -1204,7 +1204,7 @@ a {
   --font-family-base: 'Roboto', system-ui, sans-serif;
   --font-size-base: 16px;
   --line-height-base: 1.5;
-  
+
   /* Layout */
   --container-max-width: 1200px;
   --section-padding: 2rem;
@@ -1228,14 +1228,14 @@ body {
   --color-success: #4caf50;
   --color-warning: #ff9800;
   --color-error: #f44336;
-  
+
   /* Spacing scale */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  
+
   /* Breakpoints */
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -1439,64 +1439,64 @@ vendor/jquery-validate/
 # Copy Monitora Vagas (dual-directory support)
 copy_monitora_vagas_submodule() {
     print_section "Monitora Vagas Submodule (Dual-Directory v2.0.0)"
-    
+
     local source="../monitora_vagas"
     local dest="$PUBLIC_DIR/submodules/monitora_vagas"
-    
+
     # Create destination directory
     mkdir -p "$dest"
-    
+
     # LEGACY DIRECTORY: src/ folder (backward compatibility)
     if [[ -d "$source/src" ]]; then
         print_info "Copying legacy src/ directory..."
         cp -rL "$source/src" "$dest/"
         validate_path "$dest/src" "Monitora Vagas legacy src/" "*.js" "true"
     fi
-    
+
     # MODERN DIRECTORY: public/ folder (v2.0.0 architecture)
     if [[ -d "$source/public" ]]; then
         print_info "Copying modern public/ directory (v2.0.0)..."
-        
+
         # Configuration layer
         cp -rL "$source/public/config" "$dest/"
         validate_path "$dest/config" "Monitora Vagas config/" "*.js" "true"
-        
+
         # Service layer
         cp -rL "$source/public/services" "$dest/"
         validate_path "$dest/services" "Monitora Vagas services/" "*.js" "true"
-        
+
         # Application scripts
         cp -rL "$source/public/js" "$dest/"
         validate_path "$dest/js" "Monitora Vagas js/" "*.js" "true"
-        
+
         # CSS architecture
         cp -rL "$source/public/css" "$dest/"
         validate_path "$dest/css" "Monitora Vagas css/" "*.css" "true"
-        
+
         # Vendor libraries (with symlink resolution via -L flag)
         cp -rL "$source/public/vendor" "$dest/"
         validate_path "$dest/vendor" "Monitora Vagas vendor/" "*" "true"
-        
+
         # Archived UI versions
         if [[ -d "$source/public/archived-versions" ]]; then
             cp -rL "$source/public/archived-versions" "$dest/"
         fi
-        
+
         # Main HTML file
         cp -L "$source/public/index.html" "$dest/"
         validate_path "$dest/index.html" "Monitora Vagas index.html" "" "true"
-        
+
         # Service worker
         if [[ -f "$source/public/sw.js" ]]; then
             cp -L "$source/public/sw.js" "$dest/"
         fi
-        
+
         # Favicon
         if [[ -f "$source/public/favicon.ico" ]]; then
             cp -L "$source/public/favicon.ico" "$dest/"
         fi
     fi
-    
+
     print_success "Monitora Vagas deployment complete (dual-directory support)"
 }
 ```
@@ -1519,27 +1519,27 @@ copy_monitora_vagas_submodule() {
 server {
     listen 80;
     server_name mpbarbosa.com www.mpbarbosa.com;
-    
+
     root /var/www/html;
     index index.html;
-    
+
     # Main site
     location / {
         try_files $uri $uri/ =404;
     }
-    
+
     # Monitora Vagas SPA
     location /submodules/monitora_vagas {
         alias /var/www/html/submodules/monitora_vagas;
         try_files $uri $uri/ /submodules/monitora_vagas/index.html;
-        
+
         # Static asset caching
         location ~* \.(js|css|png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot)$ {
             expires 1y;
             add_header Cache-Control "public, immutable";
         }
     }
-    
+
     # Busca Vagas API (proxied to Node.js backend)
     location /api {
         proxy_pass http://localhost:3000;
@@ -1550,13 +1550,13 @@ server {
         proxy_cache_bypass $http_upgrade;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        
+
         # Timeout configuration
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 600s;  # 10 minutes for weekend searches
     }
-    
+
     # Service Worker
     location /sw.js {
         add_header Cache-Control "no-cache";
@@ -1759,15 +1759,15 @@ Gzipped Estimate: ~135 KB
   <style>
     /* Above-the-fold styles */
   </style>
-  
+
   <!-- Preload critical resources -->
   <link rel="preload" href="config/environment.js" as="script">
   <link rel="preload" href="services/apiClient.js" as="script">
-  
+
   <!-- Vendor libraries (defer) -->
   <script src="vendor/jquery/jquery-3.x.min.js" defer></script>
   <script src="vendor/datepicker/moment.js" defer></script>
-  
+
   <!-- Application modules (ES6 modules) -->
   <script type="module" src="config/index.js"></script>
   <script type="module" src="services/apiClient.js"></script>
@@ -1805,7 +1805,7 @@ This architecture demonstrates **production-grade full-stack deployment** with c
 
 ---
 
-**Last Updated**: December 15, 2025  
-**Documentation Type**: Technical Implementation (Enhanced)  
-**Script Version**: 2.0.0  
+**Last Updated**: December 15, 2025
+**Documentation Type**: Technical Implementation (Enhanced)
+**Script Version**: 2.0.0
 **Monitora Vagas Version**: 2.0.0

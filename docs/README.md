@@ -57,6 +57,11 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Markdown Linting Implementation](documentation-standards/MARKDOWN_LINTING_IMPLEMENTATION.md)** - Automated markdown linting workflow ⭐ **NEW**
 - **[Documentation Style Guide](documentation-standards/DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure
 
+### Security & Dependency Management
+
+- **[Security Vulnerability Resolution](development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security audit resolution using package overrides (8 vulnerabilities fixed: 5 High, 3 Moderate) ⭐ **NEW**
+- **[Dependabot Configuration](../.github/dependabot.yml)** - Automated weekly dependency monitoring and security updates
+
 ### Advanced Architecture Patterns
 
 - **[Functional Core, Imperative Shell Guide](development-guides/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies

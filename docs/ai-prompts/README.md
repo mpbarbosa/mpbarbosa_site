@@ -179,11 +179,12 @@ personas:
 execute_ai_task() {
     local prompt_builder="$1"  # Function reference
     local context="$2"
-    
+
     local prompt=$($prompt_builder "$context")
     copilot -p "$prompt"
 }
 ```
+
 
 ## 📝 Contributing
 

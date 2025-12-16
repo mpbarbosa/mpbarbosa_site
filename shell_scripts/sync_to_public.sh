@@ -834,106 +834,76 @@ copy_music_in_numbers_styles() {
     return 0
 }
 
-# Copy Monitora Vagas submodule files
-copy_monitora_vagas_submodule() {
-    print_step "Copying Monitora Vagas submodule files"
+# Copy Guia Turistico repository content
+copy_guia_turistico_repository() {
+    print_step "Copying Guia Turistico repository content"
     
-    # Monitora Vagas uses a dual-directory architecture (v2.0.0):
-    # - src/ folder: Legacy implementation (backward compatibility)
-    # - public/ folder: Modern implementation with:
-    #   * Configuration layer (app.js, constants.js, environment.js, index.js)
-    #   * BuscaVagasAPIClient class with fetch API
-    #   * Modular CSS architecture (global/, components/, pages/)
-    #   * Archived UI versions (api-test.html, index-md3*.html)
-    #   * Service worker (sw.js) for PWA support
-    #   * Vendor libraries (jQuery, datepicker, Select2, Font Awesome 4.7, MDI Font)
-    # Both directories are copied to support gradual migration and rollback scenarios
+    # Guia Turistico repository content deployment
+    # Repository: https://github.com/mpbarbosa/guia_turistico
+    # Strategy: Download to /tmp, extract src folder content to public folder
     
-    local monitora_root="$PROJECT_ROOT/../monitora_vagas"
-    local src_source_dir="$monitora_root/src"
-    local public_source_dir="$monitora_root/public"
-    local src_dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/src"
-    local public_dest_dir="$PUBLIC_DIR/submodules/monitora_vagas/public"
+    local tmp_dir="/tmp/guia_turistico_download_$$"
+    local repo_url="https://github.com/mpbarbosa/guia_turistico"
+    local dest_dir="$PUBLIC_DIR/submodules/guia_turistico"
     
-    # Check if monitora_vagas directory exists
-    if [[ ! -d "$monitora_root" ]]; then
-        print_warning "Monitora Vagas directory not found"
-        print_info "  Expected: $monitora_root"
-        return 0
-    fi
-    
-    # Copy src folder
-    if [[ -d "$src_source_dir" ]]; then
-        # Count files to copy from src
-        local src_html_count=$(find "$src_source_dir" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
-        local src_js_count=$(find "$src_source_dir" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-        local src_dirs_count=$(find "$src_source_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Create temporary directory
+        mkdir -p "$tmp_dir"
         
-        if [[ "$DRY_RUN" == "false" ]]; then
-            # Create destination directory if it doesn't exist
-            mkdir -p "$src_dest_dir"
+        # Clone repository to temporary location
+        print_info "Downloading guia_turistico repository to temporary location..."
+        if git clone --depth 1 "$repo_url" "$tmp_dir" > /dev/null 2>&1; then
+            print_success "Repository downloaded successfully"
             
-            # Copy all files and directories recursively
-            cp -r "$src_source_dir"/* "$src_dest_dir/"
-            print_success "Copied: Monitora Vagas src folder ($src_html_count HTML files, $src_js_count JS files, $src_dirs_count subdirectories)"
-            
-            if [[ "$VERBOSE" == "true" ]]; then
-                print_info "  Source: $src_source_dir"
-                print_info "  Destination: $src_dest_dir"
-                print_info "  HTML files: $src_html_count"
-                print_info "  JavaScript files: $src_js_count"
-                print_info "  Subdirectories: $src_dirs_count"
+            # Check if src folder exists in the cloned repository
+            if [[ -d "$tmp_dir/src" ]]; then
+                # Count files to copy
+                local html_count=$(find "$tmp_dir/src" -type f -name "*.html" 2>/dev/null | wc -l)
+                local js_count=$(find "$tmp_dir/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+                local css_count=$(find "$tmp_dir/src" -type f -name "*.css" 2>/dev/null | wc -l)
+                local dirs_count=$(find "$tmp_dir/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+                
+                # Create destination directory
+                mkdir -p "$dest_dir"
+                
+                # Copy src folder content to destination
+                cp -r "$tmp_dir/src"/* "$dest_dir/"
+                print_success "Copied: Guia Turistico content ($html_count HTML, $js_count JS, $css_count CSS files, $dirs_count subdirectories)"
+                
+                if [[ "$VERBOSE" == "true" ]]; then
+                    print_info "  Repository: $repo_url"
+                    print_info "  Temp location: $tmp_dir"
+                    print_info "  Destination: $dest_dir"
+                    print_info "  HTML files: $html_count"
+                    print_info "  JavaScript files: $js_count"
+                    print_info "  CSS files: $css_count"
+                    print_info "  Subdirectories: $dirs_count"
+                fi
+            else
+                print_warning "src folder not found in guia_turistico repository"
+                print_info "  Checked: $tmp_dir/src"
             fi
+            
+            # Clean up temporary directory
+            rm -rf "$tmp_dir"
+            print_info "Temporary files cleaned up"
         else
-            print_info "[DRY RUN] Would copy: $src_source_dir → $src_dest_dir"
-            
-            if [[ "$VERBOSE" == "true" ]]; then
-                print_info "  HTML files to copy: $src_html_count"
-                print_info "  JavaScript files to copy: $src_js_count"
-                print_info "  Subdirectories to copy: $src_dirs_count"
-            fi
+            print_error "Failed to clone guia_turistico repository"
+            print_info "  Repository: $repo_url"
+            print_info "  Destination: $tmp_dir"
+            # Clean up on failure
+            rm -rf "$tmp_dir"
+            return 1
         fi
     else
-        print_warning "Monitora Vagas src directory not found"
-        print_info "  Expected: $src_source_dir"
-    fi
-    
-    # Copy public folder
-    if [[ -d "$public_source_dir" ]]; then
-        # Count files to copy from public (excluding symlinks in count display)
-        local public_html_count=$(find "$public_source_dir" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
-        local public_js_count=$(find "$public_source_dir" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-        local public_dirs_count=$(find "$public_source_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+        print_info "[DRY RUN] Would download: $repo_url → $tmp_dir"
+        print_info "[DRY RUN] Would copy: $tmp_dir/src/* → $dest_dir/"
         
-        if [[ "$DRY_RUN" == "false" ]]; then
-            # Create destination directory if it doesn't exist
-            mkdir -p "$public_dest_dir"
-            
-            # Copy all files and directories recursively (follows symlinks by default)
-            cp -rL "$public_source_dir"/* "$public_dest_dir/"
-            print_success "Copied: Monitora Vagas public folder ($public_html_count HTML files, $public_js_count JS files, $public_dirs_count subdirectories)"
-            
-            if [[ "$VERBOSE" == "true" ]]; then
-                print_info "  Source: $public_source_dir"
-                print_info "  Destination: $public_dest_dir"
-                print_info "  HTML files: $public_html_count"
-                print_info "  JavaScript files: $public_js_count"
-                print_info "  Subdirectories: $public_dirs_count"
-                print_info "  Note: Symlinks resolved and content copied"
-            fi
-        else
-            print_info "[DRY RUN] Would copy: $public_source_dir → $public_dest_dir"
-            
-            if [[ "$VERBOSE" == "true" ]]; then
-                print_info "  HTML files to copy: $public_html_count"
-                print_info "  JavaScript files to copy: $public_js_count"
-                print_info "  Subdirectories to copy: $public_dirs_count"
-                print_info "  Note: Symlinks will be resolved and content copied"
-            fi
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Repository URL: $repo_url"
+            print_info "  Temporary location: $tmp_dir"
+            print_info "  Final destination: $dest_dir"
         fi
-    else
-        print_warning "Monitora Vagas public directory not found"
-        print_info "  Expected: $public_source_dir"
     fi
     
     return 0
@@ -1450,7 +1420,7 @@ execute_step_1() {
     copy_music_in_numbers_submodule
     copy_music_in_numbers_scripts
     copy_music_in_numbers_styles
-    copy_monitora_vagas_submodule
+    copy_guia_turistico_repository
     copy_additional_resources
     
     if [[ "$DRY_RUN" == "false" ]]; then

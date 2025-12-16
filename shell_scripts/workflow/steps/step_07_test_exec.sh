@@ -113,6 +113,7 @@ Coverage Metrics:
 - Lines: ${coverage_lines}%"
     
     local test_output
+    # Increased from 100 to 200 lines (Dec 15, 2025) for better debugging visibility
     test_output=$(cat "$test_results_file" 2>/dev/null | head -200 || echo "Test output unavailable")
     
     # Build comprehensive test analysis prompt using AI helper function

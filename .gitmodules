@@ -1,6 +1,3 @@
 [submodule "src/submodules/music_in_numbers"]
 	path = src/submodules/music_in_numbers
 	url = git@github.com:mpbarbosa/music_in_numbers.git
-[submodule "src/submodules/guia_turistico"]
-	path = src/submodules/guia_turistico
-	url = git@github.com:mpbarbosa/guia_turistico.git

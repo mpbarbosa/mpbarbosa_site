@@ -134,7 +134,8 @@ This guide provides best practices for creating well-defined, scoped prompts whe
 
 **Action**: Add a null check for the voice parameter at the beginning of the speak() method.
 
-**Boundaries**: 
+**Boundaries**:
+
 - Modify only the speak() method
 - Do not change method signature
 - Do not modify any other methods in the class

@@ -151,7 +151,7 @@ step9_code_quality_validation() {
 File: $file
 Lines: $(wc -l < "$file" 2>/dev/null || echo 0)
 Preview:
-$(head -50 "$file" 2>/dev/null)
+$(head -50 "$file" 2>/dev/null)  # Increased from 30 lines (Dec 15, 2025) for better file preview
 ---
 "
     done

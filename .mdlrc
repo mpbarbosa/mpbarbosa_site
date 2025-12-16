@@ -2,7 +2,7 @@
 # Configure rules to match project standards
 
 # Rule Configuration
-rules "~MD013", "~MD029", "~MD001", "~MD002", "~MD022", "~MD031", "~MD032", "~MD012", "~MD005", "~MD007"
+rules "~MD013", "~MD029", "~MD001", "~MD002", "~MD022", "~MD031", "~MD032", "~MD012", "~MD005", "~MD007", "~MD046"
 
 # Rule Explanations:
 # MD001 - Header levels should only increment by one level at a time (disabled - AI sometimes generates H3 after H1)
@@ -15,3 +15,4 @@ rules "~MD013", "~MD029", "~MD001", "~MD002", "~MD022", "~MD031", "~MD032", "~MD
 # MD029 - Ordered list item prefix (disabled - allows flexible numbering styles)
 # MD031 - Fenced code blocks should be surrounded by blank lines (disabled - compact formatting)
 # MD032 - Lists should be surrounded by blank lines (disabled - compact formatting)
+# MD046 - Code block style (disabled - heredoc syntax inside bash blocks is valid)

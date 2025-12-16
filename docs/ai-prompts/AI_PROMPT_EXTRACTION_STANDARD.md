@@ -41,14 +41,14 @@ build_step2_consistency_prompt() {
     local modified_count="$3"
     local broken_refs_content="$4"
     local doc_files="$5"
-    
-    cat << EOF
+
+    cat << 'EOF'
 **Role**: You are a senior technical documentation specialist...
 **Task**: Perform a comprehensive documentation consistency analysis...
 EOF
 }
 
-# In step file: step_02_consistency.sh
+## In step file: step_02_consistency.sh
 local copilot_prompt
 copilot_prompt=$(build_step2_consistency_prompt \
     "$doc_count" \
@@ -84,12 +84,12 @@ All prompt builder functions MUST:
 **Template**:
 ```bash
 # Build {description} prompt (Step {N})
-# Usage: build_step{N}_{description}_prompt <param1> <param2> ...
+# Usage: build_step{N}_{description}_prompt [param1] [param2] ...
 build_step{N}_{description}_prompt() {
     local param1="$1"
     local param2="$2"
-    
-    cat << EOF
+
+    cat << 'EOF'
 **Role**: You are a {role description}
 
 **Task**: {task description}
@@ -107,7 +107,7 @@ build_step{N}_{description}_prompt() {
 EOF
 }
 
-# Export the function
+## Export the function
 export -f build_step{N}_{description}_prompt
 ```
 
@@ -184,8 +184,8 @@ build_step2_consistency_prompt() {
     local modified_count="$3"
     local broken_refs_content="$4"
     local doc_files="$5"
-    
-    cat << EOF
+
+    cat << 'EOF'
 **Role**: You are a senior technical documentation specialist...
 # ... complete prompt with parameter expansion ...
 EOF
@@ -204,7 +204,8 @@ copilot_prompt=$(build_step2_consistency_prompt \
     "$doc_files")
 ```
 
-**Result**: 
+**Result**:
+
 - Step file reduced by 53 lines
 - Prompt now reusable
 - Easier to maintain and test

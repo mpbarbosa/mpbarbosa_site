@@ -867,12 +867,19 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 5. **Step 4**: Validate Directory Structure - AI-powered software architect review
 6. **Step 5**: Review Existing Tests - AI-powered QA engineer analysis
 7. **Step 6**: Generate New Tests - AI-powered TDD expert test generation
-8. **Step 7**: Execute Test Suite - AI-powered CI/CD specialist execution & analysis
-9. **Step 8**: Validate Dependencies - AI-powered package management specialist
-10. **Step 9**: Code Quality Validation - AI-powered software quality engineer
+8. **Step 7**: Execute Test Suite - AI-powered CI/CD specialist execution & analysis (output: 200 lines)
+9. **Step 8**: Validate Dependencies - AI-powered package management specialist (deps: 50, outdated: 20)
+10. **Step 9**: Code Quality Validation - AI-powered software quality engineer (preview: 50 lines)
 11. **Step 10**: Context Analysis - AI-powered technical project manager summary
 12. **Step 11**: Git Finalization - AI-powered conventional commit message generation
 13. **Step 12**: Markdown Linting - AI-assisted markdown validation with mdl
+
+**Recent Improvements** (December 15, 2025):
+- 📊 **Enhanced Output Limits**: Increased visibility for AI analysis
+  - Step 7: Test output increased from 100 → 200 lines
+  - Step 8: Production dependencies from 20 → 50, outdated packages from 10 → 20 lines
+  - Step 9: File preview from 30 → 50 lines
+- 🧠 **Better AI Context**: More comprehensive debugging data for deeper analysis
 
 **AI-Enhanced Features**:
 - **12 Specialized AI Personas**: Each step uses domain-expert personas (Git Workflow Specialist, DevOps Engineer, QA Automation Engineer, etc.)

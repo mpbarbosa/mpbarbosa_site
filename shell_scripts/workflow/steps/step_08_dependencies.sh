@@ -161,6 +161,7 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
     
     # Extract actual dependencies
     local prod_deps
+    # Increased from 20 to 50 lines (Dec 15, 2025) for comprehensive dependency analysis
     prod_deps=$(jq -r '.dependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null | head -50)
     local dev_deps
     dev_deps=$(jq -r '.devDependencies // {} | to_entries[] | "\(.key)@\(.value)"' package.json 2>/dev/null)
@@ -170,6 +171,7 @@ CRITICAL: Invalid package.json syntax. Cannot validate dependencies.
     local audit_summary
     audit_summary=$(cat "$audit_output" 2>/dev/null | jq -r '.metadata // "No data"' || echo "Unable to parse audit results")
     local outdated_list
+    # Increased from 10 to 20 lines (Dec 15, 2025) for better outdated package visibility
     outdated_list=$(cat "$outdated_output" 2>/dev/null | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest) (wanted: \(.value.wanted))"' | head -20 || echo "None or unable to parse")
     
     # Build comprehensive dependency analysis prompt using AI helper function

@@ -886,23 +886,54 @@ ${log_content}
                             print_info "Starting Copilot CLI session for issue extraction..."
                             copilot -p "$extract_prompt" --allow-all-tools
                             
-                            print_info "Please copy the organized issues from Copilot output."
-                            print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
-                            
-                            local organized_issues=""
-                            local line
-                            while IFS= read -r line; do
-                                if [[ "$line" == "END" ]]; then
-                                    break
+                            # AUTO MODE: Parse issues from log automatically
+                            if [[ "$AUTO_MODE" == true ]]; then
+                                print_info "[AUTO MODE] Automatically extracting issues from Copilot log..."
+                                
+                                # Extract content between the Copilot response markers
+                                # Look for structured issue sections in the log
+                                local organized_issues=$(awk '
+                                    /### Critical Issues/,/^$/ { if (p) print; p=1 }
+                                    /### High Priority Issues/,/^$/ { if (p) print; p=1 }
+                                    /### Medium Priority Issues/,/^$/ { if (p) print; p=1 }
+                                    /### Low Priority Issues/,/^$/ { if (p) print; p=1 }
+                                    /### Recommendations/,/^$/ { if (p) print; p=1 }
+                                    /No issues identified/ { print; p=1 }
+                                ' "$log_file" 2>/dev/null || echo "")
+                                
+                                # If no structured issues found, extract summary from log
+                                if [[ -z "$organized_issues" ]]; then
+                                    organized_issues="### Auto-Extracted Summary\n\n"
+                                    organized_issues+="**Source**: Copilot session log (${log_file})\n\n"
+                                    organized_issues+="**Status**: $(tail -20 "$log_file" | grep -E "Total|changes|modified" || echo "Workflow completed")\n"
                                 fi
-                                organized_issues+="${line}"$'\n'
-                            done
-                            
-                            if [[ -n "$organized_issues" ]]; then
-                                save_step_issues "1" "Update_Documentation" "$organized_issues"
-                                print_success "Issues extracted from log and saved to backlog"
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "1" "Update_Documentation" "$organized_issues"
+                                    print_success "[AUTO MODE] Issues automatically extracted and saved to backlog"
+                                else
+                                    print_warning "[AUTO MODE] No issues extracted - log may not contain structured output"
+                                fi
                             else
-                                print_warning "No organized issues provided - skipping backlog save"
+                                # INTERACTIVE MODE: Manual copy-paste
+                                print_info "Please copy the organized issues from Copilot output."
+                                print_info "Paste the organized issues (multi-line input). Type 'END' on a new line when finished:"
+                                
+                                local organized_issues=""
+                                local line
+                                while IFS= read -r line; do
+                                    if [[ "$line" == "END" ]]; then
+                                        break
+                                    fi
+                                    organized_issues+="${line}"$'\n'
+                                done
+                                
+                                if [[ -n "$organized_issues" ]]; then
+                                    save_step_issues "1" "Update_Documentation" "$organized_issues"
+                                    print_success "Issues extracted from log and saved to backlog"
+                                else
+                                    print_warning "No organized issues provided - skipping backlog save"
+                                fi
                             fi
                         else
                             print_warning "Skipped issue extraction - no backlog file created"
