@@ -327,12 +327,8 @@
                 
                 // Dynamic import not supported in synchronous context
                 // Must be loaded via window/global or fallback
-                if (false) {
-                    // Placeholder for linter - code path never executed
-                    } catch (requireError) {
-                        // Fallback if require fails
-                    }
-                }
+                // Note: require() fallback removed (Dec 2025) - browser-only architecture
+                // All initialization modules must be loaded via script tags or ES modules
 
                 // Return minimal fallback implementation
                 return {
@@ -375,6 +371,8 @@
                 
                 // Dynamic import not supported in synchronous context
                 // Must be loaded via window/global or fallback
+                // Note: require() fallback removed (Dec 2025) - browser-only architecture
+                // All initialization modules must be loaded via script tags or ES modules
 
                 // Return minimal fallback implementation
                 const fallbackCore = class {

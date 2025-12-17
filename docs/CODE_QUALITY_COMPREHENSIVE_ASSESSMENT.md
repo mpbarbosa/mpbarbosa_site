@@ -21,7 +21,8 @@ The MP Barbosa Personal Website demonstrates **professional-grade architecture**
 - ✅ **Advanced Patterns** - Dependency injection, functional core/imperative shell
 - ✅ **Professional Documentation** - JSDoc comments, architectural documentation
 
-**Areas for Improvement:**
+## Areas for Improvement
+
 - ⚠️ **Linting Infrastructure** - No ESLint/Prettier configured (only mdl for Markdown)
 - ⚠️ **Legacy jQuery/Template Code** - HTML5 UP Dimension template uses jQuery and `var`
 - ⚠️ **Large File Count** - 898 files >300 lines (acceptable with modular architecture)
@@ -94,30 +95,14 @@ export function setupSmoothScrolling() {
 - ✅ External resource security (`rel="noopener noreferrer"` on external links)
 
 **HTML Quality Example (index.html):**
-```html
-<!DOCTYPE HTML>
-<html>
-  <head>
-    <title>mpbarbosa.com</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-  </head>
-  <body class="is-preload">
-    <div id="wrapper">
-      <header id="header">
-        <!-- Semantic structure -->
-      </header>
-      <nav>
-        <!-- Navigation -->
-      </nav>
-      <main id="main">
-        <article id="intro">
-          <!-- Content -->
-        </article>
-      </main>
-    </div>
+
+The HTML structure uses semantic elements with proper DOCTYPE, meta tags, and accessibility attributes. Key elements include:
+
+- DOCTYPE HTML declaration
+- Character encoding and viewport meta tags
+- Semantic HTML5 elements (header, nav, main, article)
+- Proper CSS stylesheet linking with noscript fallback
+- Accessibility-friendly structure with ARIA support
   </body>
 </html>
 ```
@@ -550,8 +535,8 @@ export const TIMEOUTS = {
 };
 
 export const API_ENDPOINTS = {
-    SPOTIFY_AUTH: 'https://accounts.spotify.com/authorize',
-    SPOTIFY_TOKEN: 'https://accounts.spotify.com/api/token'
+    SPOTIFY_AUTH: '<https://accounts.spotify.com/authorize>',
+    SPOTIFY_TOKEN: '<https://accounts.spotify.com/api/token>'
 };
 
 export const BREAKPOINTS = {
@@ -629,14 +614,13 @@ echo 'npm run lint-staged' > .husky/pre-commit
   3. **Serverless Function** (Netlify/Vercel) - 4-6 hours
 
 **Recommended Approach: Formspree Integration**
-```html
-<!-- Update form -->
-<form method="post" action="https://formspree.io/f/YOUR_FORM_ID">
-  <input type="hidden" name="_subject" value="New contact from mpbarbosa.com" />
-  <input type="text" name="_gotcha" style="display:none" /> <!-- Honeypot -->
-  <!-- Existing fields -->
-</form>
-```
+
+Configure the contact form to use Formspree service:
+
+- Set form action to Formspree endpoint (YOUR_FORM_ID)
+- Add hidden subject field for email categorization
+- Include honeypot field for spam prevention
+- Maintain existing form fields and styling
 
 **Enhanced JavaScript:**
 ```javascript

@@ -3052,9 +3052,9 @@ step9_code_quality_validation() {
     
     # Check 1: Enumerate code files
     print_info "Enumerating code files..."
-    local js_files=$(find . -name "*.js" -o -name "*.mjs" | wc -l)
-    local html_files=$(find . -name "*.html" | wc -l)
-    local css_files=$(find . -name "*.css" | wc -l)
+    local js_files=$(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o \( -name "*.js" -o -name "*.mjs" \) -print | wc -l)
+    local html_files=$(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o -name "*.html" -print | wc -l)
+    local css_files=$(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o -name "*.css" -print | wc -l)
     local total_files=$((js_files + html_files + css_files))
     
     print_info "Code files: $js_files JS, $html_files HTML, $css_files CSS (Total: $total_files)"
@@ -3075,7 +3075,7 @@ step9_code_quality_validation() {
             large_files_list+="  - $file ($line_count lines)\n"
             echo "Large file: $file ($line_count lines)" >> "$quality_report"
         fi
-    done < <(find . -name "*.js" -o -name "*.mjs" 2>/dev/null)
+    done < <(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o \( -name "*.js" -o -name "*.mjs" \) -print 2>/dev/null)
     
     if [[ $large_files_count -gt 0 ]]; then
         print_warning "Found $large_files_count large files (>300 lines) - may need refactoring"
@@ -3096,7 +3096,7 @@ step9_code_quality_validation() {
             ((naming_issues++))
             echo "Naming issue: $file (not kebab-case)" >> "$quality_report"
         fi
-    done < <(find . -name "*.html" 2>/dev/null)
+    done < <(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o -name "*.html" -print 2>/dev/null)
     
     if [[ $naming_issues -gt 0 ]]; then
         print_warning "Found $naming_issues naming convention issues"

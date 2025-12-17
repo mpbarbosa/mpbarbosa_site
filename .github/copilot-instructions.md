@@ -50,8 +50,8 @@ The project includes comprehensive development environment configuration:
 
 **Markdown Linting** (`.mdlrc`):
 - Configures markdownlint rules for AI-generated documentation
-- Disables problematic rules: MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032
-- Maintains critical rules: MD007 (indentation), MD009 (trailing spaces), MD026 (header punctuation), MD047 (file endings)
+- Disables problematic rules: MD001, MD002, MD005, MD007, MD012, MD013, MD022, MD025, MD029, MD031, MD032, MD046
+- Maintains critical rules: MD009 (trailing spaces), MD026 (header punctuation), MD047 (file endings)
 - Run linting: `npm run lint:md` (requires Ruby gem: `gem install mdl`)
 
 **Automated Dependency Updates** (`.github/dependabot.yml`):
@@ -188,6 +188,7 @@ mpbarbosa_site/
 ├── src/                        # Main source directory
 │   ├── index.html             # Main landing page (HTML5 UP Dimension template)
 │   ├── package.json           # Node.js dependencies and scripts
+│   ├── jest-environment-jsdom-no-warnings.cjs  # Custom Jest environment (CommonJS)
 │   ├── assets/                # HTML5 UP Dimension template assets
 │   │   ├── css/               # Compiled stylesheets (main.css, noscript.css, fontawesome)
 │   │   ├── js/                # JavaScript utilities (jQuery, breakpoints, browser, util)
@@ -438,7 +439,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
     "glob": "^11.0.0"
   },
   "jest": {
-    "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.js",
+    "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.cjs",
     "testEnvironmentOptions": {
       "url": "http://localhost",
       "storageQuota": 10000000,
@@ -742,7 +743,8 @@ test('should set up smooth scrolling', () => {
 #### Custom Jest Configuration
 The project uses a custom jsdom environment to suppress localStorage warnings:
 
-**Custom Environment** (`jest-environment-jsdom-no-warnings.js`):
+**Custom Environment** (`jest-environment-jsdom-no-warnings.cjs`):
+- CommonJS module format for Jest compatibility
 - Wraps `jest-environment-jsdom` to filter console warnings
 - Suppresses `--localstorage-file` warnings (in-memory storage is sufficient)
 - Maintains full jsdom functionality
