@@ -1,6 +1,6 @@
 # Immediate Test Fixes - Implementation Guide
 
-**Estimated Total Time:** 90 minutes  
+**Estimated Total Time:** 90 minutes
 **Expected Impact:** +23 test suites fixed (26% improvement)
 
 ---
@@ -262,7 +262,7 @@ npm pkg get type
 3. Fix #3 (Empty Suites) - **NOISE REDUCTION**
 4. Fix #4 (require() → import) - **STANDARD COMPLIANCE**
 
-**Total Time:** ~90 minutes  
+**Total Time:** ~90 minutes
 **Total Impact:** +27 test suites, +22 individual tests
 
 Good luck! 🚀

@@ -1,8 +1,8 @@
 # Test Generation Recommendations & Coverage Improvement Strategy
 
-**Date**: 2025-11-25  
-**Analyst**: Senior QA Engineer & Test Automation Specialist  
-**Project**: MP Barbosa Personal Website  
+**Date**: 2025-11-25
+**Analyst**: Senior QA Engineer & Test Automation Specialist
+**Project**: MP Barbosa Personal Website
 **Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)
 
 ---
@@ -209,30 +209,30 @@ describe('HTML5 UP Dimension Template - Main Functionality', () => {
     test('should show article on navigation link click', () => {
       // Test article modal-style display
     });
-    
+
     test('should hide article on close button click', () => {
       // Test article close functionality
     });
-    
+
     test('should apply background blur when article is active', () => {
       // Test CSS class application
     });
-    
+
     test('should handle ESC key to close articles', () => {
       // Test keyboard navigation
     });
   });
-  
+
   describe('Responsive Breakpoints', () => {
     test('should adjust layout for XLarge breakpoint (1281px-1680px)', () => {
       // Test responsive behavior
     });
-    
+
     test('should adjust layout for mobile breakpoint (<481px)', () => {
       // Test mobile layout
     });
   });
-  
+
   describe('IE Flexbox Fix', () => {
     test('should apply height fix for IE browsers', () => {
       // Test IE-specific workarounds
@@ -246,7 +246,7 @@ describe('HTML5 UP Utilities', () => {
     test('should safely query DOM elements', () => {});
     test('should handle missing elements gracefully', () => {});
   });
-  
+
   describe('Animation Utilities', () => {
     test('should trigger CSS transitions', () => {});
     test('should handle animation callbacks', () => {});
@@ -268,7 +268,7 @@ describe('Browser Detection', () => {
 });
 ```
 
-**Estimated Test Lines**: 800-1,200 lines  
+**Estimated Test Lines**: 800-1,200 lines
 **Estimated Test Count**: 40-60 tests
 
 #### Gap 2: HTML Components (No Tests)
@@ -290,26 +290,26 @@ describe('HTML Component Validation', () => {
     test('should have valid HTML structure', () => {
       // Validate HTML parsing
     });
-    
+
     test('should contain all required navigation links', () => {
       // Check nav structure
     });
-    
+
     test('should have accessible markup (ARIA labels)', () => {
       // Accessibility validation
     });
   });
-  
+
   describe('About Component', () => {
     test('should contain required sections', () => {});
     test('should have semantic HTML5 tags', () => {});
   });
-  
+
   describe('Projects Component', () => {
     test('should list all project links', () => {});
     test('should use consistent link patterns', () => {});
   });
-  
+
   describe('Contact Component', () => {
     test('should have form with required fields', () => {});
     test('should have proper form validation attributes', () => {});
@@ -321,18 +321,18 @@ describe('Component Integration', () => {
   test('should integrate all components into main page', () => {
     // Test component loading
   });
-  
+
   test('should maintain consistent styling across components', () => {
     // CSS class consistency
   });
-  
+
   test('should handle component interactions', () => {
     // Cross-component communication
   });
 });
 ```
 
-**Estimated Test Lines**: 300-500 lines  
+**Estimated Test Lines**: 300-500 lines
 **Estimated Test Count**: 20-30 tests
 
 #### Gap 3: Integration Testing (Limited Coverage)
@@ -347,19 +347,19 @@ describe('User Workflow Integration Tests', () => {
     test('should navigate through all articles', () => {});
     test('should submit contact form successfully', () => {});
   });
-  
+
   describe('Project Exploration Journey', () => {
     test('should navigate from homepage to Music in Numbers', () => {});
     test('should handle submodule 404 gracefully', () => {});
     test('should provide back navigation', () => {});
   });
-  
+
   describe('Mobile User Journey', () => {
     test('should adjust layout for mobile viewport', () => {});
     test('should handle touch events', () => {});
     test('should display mobile-optimized navigation', () => {});
   });
-  
+
   describe('Accessibility Journey', () => {
     test('should support keyboard-only navigation', () => {});
     test('should announce route changes to screen readers', () => {});
@@ -375,7 +375,7 @@ describe('Cross-Page Integration', () => {
 });
 ```
 
-**Estimated Test Lines**: 600-800 lines  
+**Estimated Test Lines**: 600-800 lines
 **Estimated Test Count**: 30-40 tests
 
 ### 2.2 MODERATE GAPS (Priority: MEDIUM)
@@ -396,21 +396,21 @@ describe('Deployment Script Integration', () => {
     test('should restore backup on failure', () => {});
     test('should validate permissions after sync', () => {});
     test('should handle dry-run mode correctly', () => {});
-    
+
     describe('Two-Step Architecture', () => {
       test('should execute step1 (source to public)', () => {});
       test('should execute step2 (public to production)', () => {});
       test('should execute both steps in sequence', () => {});
     });
   });
-  
+
   describe('deploy_to_webserver.sh', () => {
     test('should validate Git repository before deployment', () => {});
     test('should deploy to nginx directory', () => {});
     test('should set correct file permissions (644/755)', () => {});
     test('should create deployment backup', () => {});
   });
-  
+
   describe('Submodule Scripts', () => {
     test('pull_all_submodules.sh should update all submodules', () => {});
     test('push_all_submodules.sh should handle stash operations', () => {});
@@ -418,7 +418,7 @@ describe('Deployment Script Integration', () => {
 });
 ```
 
-**Estimated Test Lines**: 400-600 lines  
+**Estimated Test Lines**: 400-600 lines
 **Estimated Test Count**: 25-35 tests
 
 #### Gap 5: Error Handling Coverage
@@ -433,13 +433,13 @@ describe('Global Error Handling', () => {
     test('should handle runtime errors gracefully', () => {});
     test('should display user-friendly error messages', () => {});
   });
-  
+
   describe('Network Errors', () => {
     test('should handle offline mode', () => {});
     test('should retry failed requests', () => {});
     test('should cache for offline access', () => {});
   });
-  
+
   describe('Resource Loading Errors', () => {
     test('should handle missing CSS files', () => {});
     test('should handle missing JavaScript files', () => {});
@@ -448,7 +448,7 @@ describe('Global Error Handling', () => {
 });
 ```
 
-**Estimated Test Lines**: 300-400 lines  
+**Estimated Test Lines**: 300-400 lines
 **Estimated Test Count**: 15-20 tests
 
 ### 2.3 MINOR GAPS (Priority: LOW)
@@ -472,7 +472,7 @@ describe('Bundle Size Validation', () => {
 });
 ```
 
-**Estimated Test Lines**: 200-300 lines  
+**Estimated Test Lines**: 200-300 lines
 **Estimated Test Count**: 10-15 tests
 
 #### Gap 7: Cross-Browser Compatibility
@@ -488,7 +488,7 @@ describe('Browser Compatibility', () => {
 });
 ```
 
-**Estimated Test Lines**: 150-200 lines  
+**Estimated Test Lines**: 150-200 lines
 **Estimated Test Count**: 8-12 tests
 
 ---
@@ -575,7 +575,7 @@ test('should set up smooth scrolling for navigation links', () => {
   const linkCount = setupSmoothScrolling();
   const aboutLink = document.querySelector('a[href="#about"]');
   aboutLink.dispatchEvent(new Event('click'));
-  
+
   // ASSERT
   expect(linkCount).toBe(3);
   expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
@@ -747,43 +747,43 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
-    
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    
+
     - name: Install dependencies
       run: |
         cd src
         npm ci
-    
+
     - name: Run tests with coverage
       run: |
         cd src
         npm run test:coverage
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         files: ./src/coverage/coverage-final.json
         flags: unittests
         name: codecov-umbrella
-    
+
     - name: Check coverage thresholds
       run: |
         cd src
         npm run test:coverage -- --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
-    
+
     - name: Archive test results
       if: always()
       uses: actions/upload-artifact@v3
@@ -793,10 +793,10 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Lint Markdown files
       run: |
         cd src
@@ -995,12 +995,12 @@ open coverage/lcov-report/index.html
  */
 describe('HTML5 UP Template - Article Navigation', () => {
   let $;
-  
+
   beforeEach(() => {
     // Load jQuery and template code
     $ = require('jquery');
     global.$ = $;
-    
+
     // Setup DOM
     document.body.innerHTML = `
       <div id="wrapper">
@@ -1034,11 +1034,11 @@ describe('HTML5 UP Template - Article Navigation', () => {
     // Simulate template initialization
     const $main = $('#main');
     const $articles = $main.children('article');
-    
+
     // Click on "Intro" link
     const introLink = document.querySelector('a[href="#intro"]');
     introLink.click();
-    
+
     // Article should become active
     const introArticle = document.getElementById('intro');
     expect(introArticle.classList.contains('active')).toBe(true);
@@ -1050,11 +1050,11 @@ describe('HTML5 UP Template - Article Navigation', () => {
     const introArticle = document.getElementById('intro');
     introArticle.classList.add('active');
     introArticle.classList.remove('inactive');
-    
+
     // Click close button
     const closeButton = introArticle.querySelector('.close');
     closeButton.click();
-    
+
     // Article should become inactive
     expect(introArticle.classList.contains('inactive')).toBe(true);
     expect(introArticle.classList.contains('active')).toBe(false);
@@ -1062,11 +1062,11 @@ describe('HTML5 UP Template - Article Navigation', () => {
 
   test('should apply background blur when article is active', () => {
     const $body = $('body');
-    
+
     // Show article
     const introLink = document.querySelector('a[href="#intro"]');
     introLink.click();
-    
+
     // Body should have blur class
     expect($body.hasClass('is-article-visible')).toBe(true);
   });
@@ -1075,11 +1075,11 @@ describe('HTML5 UP Template - Article Navigation', () => {
     // Show article
     const introArticle = document.getElementById('intro');
     introArticle.classList.add('active');
-    
+
     // Press ESC key
     const escEvent = new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27 });
     document.dispatchEvent(escEvent);
-    
+
     // Article should close
     expect(introArticle.classList.contains('inactive')).toBe(true);
   });
@@ -1088,10 +1088,10 @@ describe('HTML5 UP Template - Article Navigation', () => {
     // Click first article
     document.querySelector('a[href="#intro"]').click();
     expect(document.getElementById('intro').classList.contains('active')).toBe(true);
-    
+
     // Click second article
     document.querySelector('a[href="#work"]').click();
-    
+
     // First should be inactive, second should be active
     expect(document.getElementById('intro').classList.contains('active')).toBe(false);
     expect(document.getElementById('work').classList.contains('active')).toBe(true);
@@ -1099,15 +1099,15 @@ describe('HTML5 UP Template - Article Navigation', () => {
 
   test('should handle rapid article switching', () => {
     const links = ['#intro', '#work', '#about', '#contact'];
-    
+
     // Rapidly click through all links
     links.forEach(hash => {
       document.querySelector(`a[href="${hash}"]`).click();
     });
-    
+
     // Last clicked article should be active
     expect(document.getElementById('contact').classList.contains('active')).toBe(true);
-    
+
     // Others should be inactive
     expect(document.getElementById('intro').classList.contains('active')).toBe(false);
     expect(document.getElementById('work').classList.contains('active')).toBe(false);
@@ -1116,10 +1116,10 @@ describe('HTML5 UP Template - Article Navigation', () => {
 
   test('should prevent body scrolling when article is active', () => {
     const $body = $('body');
-    
+
     // Show article
     document.querySelector('a[href="#intro"]').click();
-    
+
     // Body should have no-scroll class
     expect($body.hasClass('is-article-visible')).toBe(true);
     expect(window.getComputedStyle(document.body).overflow).toBe('hidden');
@@ -1127,11 +1127,11 @@ describe('HTML5 UP Template - Article Navigation', () => {
 
   test('should restore body scrolling when article is closed', () => {
     const $body = $('body');
-    
+
     // Show then hide article
     document.querySelector('a[href="#intro"]').click();
     document.querySelector('.close').click();
-    
+
     // Body should allow scrolling
     expect($body.hasClass('is-article-visible')).toBe(false);
     expect(window.getComputedStyle(document.body).overflow).toBe('auto');
@@ -1151,7 +1151,7 @@ describe('Responsive Breakpoints', () => {
   beforeEach(() => {
     // Load breakpoints utility
     breakpoints = require('../assets/js/breakpoints.min.js');
-    
+
     // Initialize breakpoints
     breakpoints({
       xlarge:   [ '1281px',  '1680px' ],
@@ -1171,7 +1171,7 @@ describe('Responsive Breakpoints', () => {
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
     }));
-    
+
     expect(breakpoints.active('xlarge')).toBe(true);
     expect(breakpoints.active('large')).toBe(false);
   });
@@ -1183,16 +1183,16 @@ describe('Responsive Breakpoints', () => {
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
     }));
-    
+
     expect(breakpoints.active('xsmall')).toBe(true);
     expect(breakpoints.active('>=medium')).toBe(false);
   });
 
   test('should trigger callback on breakpoint change', () => {
     const callback = jest.fn();
-    
+
     breakpoints.on('large', callback);
-    
+
     // Simulate breakpoint change
     window.matchMedia = jest.fn().mockImplementation(query => ({
       matches: query.includes('981px'),
@@ -1200,10 +1200,10 @@ describe('Responsive Breakpoints', () => {
       addEventListener: jest.fn((event, handler) => handler()),
       removeEventListener: jest.fn(),
     }));
-    
+
     // Trigger resize
     window.dispatchEvent(new Event('resize'));
-    
+
     expect(callback).toHaveBeenCalled();
   });
 
@@ -1214,7 +1214,7 @@ describe('Responsive Breakpoints', () => {
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
     }));
-    
+
     expect(breakpoints.active('>=medium')).toBe(true);
     expect(breakpoints.active('<=large')).toBe(true);
     expect(breakpoints.active('>xlarge')).toBe(false);
@@ -1226,11 +1226,11 @@ describe('Responsive Breakpoints', () => {
       medium: jest.fn(),
       small: jest.fn()
     };
-    
+
     breakpoints.on('large', callbacks.large);
     breakpoints.on('medium', callbacks.medium);
     breakpoints.on('small', callbacks.small);
-    
+
     // Only large should trigger
     window.matchMedia = jest.fn().mockImplementation(query => ({
       matches: query.includes('981px'),
@@ -1238,9 +1238,9 @@ describe('Responsive Breakpoints', () => {
       addEventListener: jest.fn((event, handler) => handler()),
       removeEventListener: jest.fn(),
     }));
-    
+
     window.dispatchEvent(new Event('resize'));
-    
+
     expect(callbacks.large).toHaveBeenCalled();
     expect(callbacks.medium).not.toHaveBeenCalled();
     expect(callbacks.small).not.toHaveBeenCalled();
@@ -1262,7 +1262,7 @@ describe('sync_to_public.sh - Integration Tests', () => {
   const projectRoot = path.resolve(__dirname, '../..');
   const syncScript = path.join(projectRoot, 'shell_scripts', 'sync_to_public.sh');
   const publicDir = path.join(projectRoot, 'public');
-  
+
   beforeAll(() => {
     // Ensure clean state
     if (fs.existsSync(publicDir)) {
@@ -1272,10 +1272,10 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   test('should create public directory on first run', () => {
     execSync(`bash ${syncScript} --step1 --dry-run`, { cwd: projectRoot });
-    
+
     // Dry-run shouldn't create directory
     expect(fs.existsSync(publicDir)).toBe(false);
-    
+
     // Actual run should create it
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
     expect(fs.existsSync(publicDir)).toBe(true);
@@ -1283,10 +1283,10 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   test('should sync HTML files to public directory', () => {
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     const indexHtml = path.join(publicDir, 'index.html');
     expect(fs.existsSync(indexHtml)).toBe(true);
-    
+
     // Verify content matches source
     const srcContent = fs.readFileSync(path.join(projectRoot, 'src', 'index.html'), 'utf8');
     const publicContent = fs.readFileSync(indexHtml, 'utf8');
@@ -1295,10 +1295,10 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   test('should sync assets directory with correct structure', () => {
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     const assetsDir = path.join(publicDir, 'assets');
     expect(fs.existsSync(assetsDir)).toBe(true);
-    
+
     // Check subdirectories
     expect(fs.existsSync(path.join(assetsDir, 'css'))).toBe(true);
     expect(fs.existsSync(path.join(assetsDir, 'js'))).toBe(true);
@@ -1308,40 +1308,40 @@ describe('sync_to_public.sh - Integration Tests', () => {
   test('should create backup before sync', () => {
     // First sync
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     // Modify public file
     const indexHtml = path.join(publicDir, 'index.html');
     fs.appendFileSync(indexHtml, '<!-- Modified -->');
-    
+
     // Second sync should create backup
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     // Backup should exist
     const backups = fs.readdirSync(publicDir).filter(f => f.startsWith('backup_'));
     expect(backups.length).toBeGreaterThan(0);
   });
 
   test('should handle dry-run mode without modifying files', () => {
-    const beforeSync = fs.existsSync(publicDir) ? 
+    const beforeSync = fs.existsSync(publicDir) ?
       fs.readdirSync(publicDir).length : 0;
-    
+
     execSync(`bash ${syncScript} --step1 --dry-run`, { cwd: projectRoot });
-    
-    const afterSync = fs.existsSync(publicDir) ? 
+
+    const afterSync = fs.existsSync(publicDir) ?
       fs.readdirSync(publicDir).length : 0;
-    
+
     expect(afterSync).toBe(beforeSync);
   });
 
   test('should set correct file permissions (644 for files, 755 for dirs)', () => {
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     const indexHtml = path.join(publicDir, 'index.html');
     const stats = fs.statSync(indexHtml);
-    
+
     // File should be 644 (rw-r--r--)
     expect(stats.mode & 0o777).toBe(0o644);
-    
+
     // Directory should be 755 (rwxr-xr-x)
     const assetsStats = fs.statSync(path.join(publicDir, 'assets'));
     expect(assetsStats.mode & 0o777).toBe(0o755);
@@ -1352,7 +1352,7 @@ describe('sync_to_public.sh - Integration Tests', () => {
       cwd: projectRoot,
       encoding: 'utf8'
     });
-    
+
     expect(output).toContain('Step 1');
     expect(output).toContain('Step 2');
   });
@@ -1367,9 +1367,9 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   test('should handle Music in Numbers submodule sync', () => {
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     const musicSubmodule = path.join(publicDir, 'submodules', 'music_in_numbers');
-    
+
     if (fs.existsSync(path.join(projectRoot, 'src', 'submodules', 'music_in_numbers', 'src'))) {
       expect(fs.existsSync(musicSubmodule)).toBe(true);
       expect(fs.existsSync(path.join(musicSubmodule, 'index.html'))).toBe(true);
@@ -1378,9 +1378,9 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   test('should sync Busca Vagas full-stack app (client + server)', () => {
     execSync(`bash ${syncScript} --step1`, { cwd: projectRoot });
-    
+
     const buscaVagas = path.join(publicDir, 'submodules', 'busca_vagas');
-    
+
     if (fs.existsSync(path.join(projectRoot, 'src', 'submodules', 'busca_vagas'))) {
       expect(fs.existsSync(path.join(buscaVagas, 'client'))).toBe(true);
       expect(fs.existsSync(path.join(buscaVagas, 'src'))).toBe(true);
@@ -1392,7 +1392,7 @@ describe('sync_to_public.sh - Integration Tests', () => {
       cwd: projectRoot,
       encoding: 'utf8'
     });
-    
+
     expect(output).toMatch(/Synced \d+ files/);
     expect(output).toContain('HTML files');
     expect(output).toContain('CSS files');
@@ -1546,10 +1546,10 @@ describe('[Module Name] - [Feature Area]', () => {
       // Arrange
       const input = /* test data */;
       const expected = /* expected output */;
-      
+
       // Act
       const result = functionUnderTest(input);
-      
+
       // Assert
       expect(result).toBe(expected);
     });
@@ -1579,12 +1579,12 @@ describe('[Feature Area] - Integration Tests', () => {
 
   test('should complete [user workflow] successfully', () => {
     // Arrange: Set up user state
-    
+
     // Act: Simulate user actions
     // Step 1
     // Step 2
     // Step 3
-    
+
     // Assert: Verify final state
     expect(finalState).toMatchExpectedOutcome();
   });
@@ -1620,7 +1620,7 @@ describe('[Script Name] - End-to-End Tests', () => {
     const output = execSync(`bash ${scriptPath} --args`, {
       encoding: 'utf8'
     });
-    
+
     expect(output).toContain('Success');
   });
 });
@@ -1647,10 +1647,10 @@ describe('[Script Name] - End-to-End Tests', () => {
 
 ---
 
-**Report Generated**: 2025-11-25  
-**Total Recommendations**: 148-212 new tests | 2,750-4,000 lines  
-**Expected Coverage Improvement**: 60-70% → 88-92%  
-**Implementation Timeline**: 3-6 months  
+**Report Generated**: 2025-11-25
+**Total Recommendations**: 148-212 new tests | 2,750-4,000 lines
+**Expected Coverage Improvement**: 60-70% → 88-92%
+**Implementation Timeline**: 3-6 months
 **Priority**: HIGH - Critical for production deployment
 
 ---

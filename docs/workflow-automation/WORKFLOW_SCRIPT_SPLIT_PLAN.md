@@ -1,8 +1,8 @@
 # Execute Tests & Docs Workflow Script Split Plan
 
-**Date:** 2025-11-12  
-**Script:** `shell_scripts/workflow/execute_tests_docs_workflow.sh`  
-**Current Size:** 4,337 lines  
+**Date:** 2025-11-12
+**Script:** `shell_scripts/workflow/execute_tests_docs_workflow.sh`
+**Current Size:** 4,337 lines
 **Target:** Modular architecture with < 500 lines per file
 
 ---
@@ -75,7 +75,7 @@ shell_scripts/workflow/
 ### Module Breakdown
 
 #### 1. **lib/config.sh** (~80 lines)
-**Purpose:** Central configuration and constants  
+**Purpose:** Central configuration and constants
 **Content:**
 - Script version and metadata
 - Directory paths (PROJECT_ROOT, SRC_DIR, BACKLOG_DIR, etc.)
@@ -83,13 +83,13 @@ shell_scripts/workflow/
 - Temp file tracking array
 
 #### 2. **lib/colors.sh** (~30 lines)
-**Purpose:** Color code definitions  
+**Purpose:** Color code definitions
 **Content:**
 - ANSI color codes (RED, GREEN, YELLOW, BLUE, CYAN, MAGENTA, NC)
 - Consistent color palette for all modules
 
 #### 3. **lib/utils.sh** (~200 lines)
-**Purpose:** Common utility functions  
+**Purpose:** Common utility functions
 **Content:**
 - `print_*` functions (info, success, warning, error, header, section)
 - `confirm_step()` for user interaction
@@ -98,7 +98,7 @@ shell_scripts/workflow/
 - Step status tracking helpers
 
 #### 4. **lib/git_cache.sh** (~150 lines)
-**Purpose:** Git state caching system (v1.5.0)  
+**Purpose:** Git state caching system (v1.5.0)
 **Content:**
 - `init_git_cache()` - Initialize cache once
 - `get_git_status()` - Cached status output
@@ -108,7 +108,7 @@ shell_scripts/workflow/
 - Cache invalidation helpers
 
 #### 5. **lib/validation.sh** (~150 lines)
-**Purpose:** Pre-flight checks and validation  
+**Purpose:** Pre-flight checks and validation
 **Content:**
 - `check_prerequisites()` - Git, npm, etc.
 - `validate_dependencies()` - Node modules
@@ -116,7 +116,7 @@ shell_scripts/workflow/
 - `validate_environment()` - Directory structure
 
 #### 6. **lib/backlog.sh** (~200 lines)
-**Purpose:** Backlog and issue tracking (v1.3.0)  
+**Purpose:** Backlog and issue tracking (v1.3.0)
 **Content:**
 - `create_step_backlog()` - Generate issue reports
 - `append_to_backlog()` - Add issues to step report
@@ -125,7 +125,7 @@ shell_scripts/workflow/
 - Markdown formatting helpers
 
 #### 7. **lib/summary.sh** (~150 lines)
-**Purpose:** Summary generation (v1.4.0)  
+**Purpose:** Summary generation (v1.4.0)
 **Content:**
 - `create_step_summary()` - Generate step conclusions
 - `determine_step_status()` - Status indicators (✅ ⚠️ ❌)
@@ -133,7 +133,7 @@ shell_scripts/workflow/
 - Quick-reference summary templates
 
 #### 8. **lib/ai_helpers.sh** (~100 lines)
-**Purpose:** AI prompt templates and helpers  
+**Purpose:** AI prompt templates and helpers
 **Content:**
 - Persona templates for each step
 - `build_ai_prompt()` - Construct prompts with context
@@ -141,7 +141,7 @@ shell_scripts/workflow/
 - AI mode handling (auto/interactive/optional)
 
 #### 9. **steps/step_01_documentation.sh** (~250 lines)
-**Purpose:** Documentation updates (Step 1)  
+**Purpose:** Documentation updates (Step 1)
 **Content:**
 - `execute_step_01()` - Main step function
 - Phase 1: Automated doc validation
@@ -163,7 +163,7 @@ Similar structure to step_01, each ~200-300 lines:
 - Summary output
 
 #### 21. **execute_tests_docs_workflow.sh** (Main Orchestrator, ~250 lines)
-**Purpose:** Workflow coordination  
+**Purpose:** Workflow coordination
 **Content:**
 ```bash
 #!/bin/bash
@@ -187,17 +187,17 @@ done
 # Main workflow execution
 main() {
     trap cleanup EXIT INT TERM
-    
+
     print_header "${SCRIPT_NAME} v${SCRIPT_VERSION}"
     parse_arguments "$@"
-    
+
     check_prerequisites
     validate_dependencies
     init_git_cache
-    
+
     # Create run directories
     mkdir -p "$BACKLOG_RUN_DIR" "$SUMMARIES_RUN_DIR" "$LOGS_RUN_DIR"
-    
+
     # Execute all steps
     execute_step_01  # Documentation
     execute_step_02  # Consistency
@@ -210,7 +210,7 @@ main() {
     execute_step_09  # Quality
     execute_step_10  # Context
     execute_step_11  # Git finalization
-    
+
     # Generate final summary
     create_workflow_summary_report
 }
@@ -223,7 +223,7 @@ main "$@"
 ## Implementation Strategy
 
 ### Phase 1: Extract Core Libraries (Priority: HIGH)
-**Estimated Time:** 2-3 hours  
+**Estimated Time:** 2-3 hours
 **Files to Create:** `lib/*.sh`
 
 1. Create `lib/` directory
@@ -239,7 +239,7 @@ main "$@"
 **Testing:** Verify each library sources correctly
 
 ### Phase 2: Extract Step Modules (Priority: MEDIUM)
-**Estimated Time:** 4-6 hours  
+**Estimated Time:** 4-6 hours
 **Files to Create:** `steps/*.sh`
 
 1. Create `steps/` directory
@@ -251,7 +251,7 @@ main "$@"
 **Testing:** Execute each step independently
 
 ### Phase 3: Refactor Main Script (Priority: HIGH)
-**Estimated Time:** 1-2 hours  
+**Estimated Time:** 1-2 hours
 **Files to Modify:** `execute_tests_docs_workflow.sh`
 
 1. Remove extracted code
@@ -263,7 +263,7 @@ main "$@"
 **Testing:** Full workflow execution
 
 ### Phase 4: Documentation & Testing (Priority: HIGH)
-**Estimated Time:** 2-3 hours  
+**Estimated Time:** 2-3 hours
 **Files to Create:** `shell_scripts/workflow/README.md`
 
 1. Document module structure
@@ -415,6 +415,6 @@ After split completion:
 
 ---
 
-**Generated:** 2025-11-12  
-**Plan Version:** 1.0.0  
+**Generated:** 2025-11-12
+**Plan Version:** 1.0.0
 **Status:** Ready for Execution

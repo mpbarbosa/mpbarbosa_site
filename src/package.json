@@ -34,7 +34,7 @@
     "glob": "^11.0.0"
   },
   "jest": {
-    "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.js",
+    "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.cjs",
     "testEnvironmentOptions": {
       "url": "http://localhost",
       "storageQuota": 10000000,

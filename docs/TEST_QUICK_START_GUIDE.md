@@ -1,6 +1,6 @@
 # Test Quick Start Guide - Developer Reference Card
 
-**Last Updated:** December 2, 2025  
+**Last Updated:** December 2, 2025
 **Project:** MP Barbosa Personal Website
 
 ---
@@ -55,10 +55,10 @@ describe('Feature Name', () => {
         test('should do something', () => {
             // Arrange
             const input = 'test';
-            
+
             // Act
             const result = myFunction(input);
-            
+
             // Assert
             expect(result).toBe('expected');
         });
@@ -75,9 +75,9 @@ describe('Feature Name', () => {
 test('should update DOM element', () => {
     document.body.innerHTML = '<div id="app"></div>';
     const element = document.getElementById('app');
-    
+
     element.textContent = 'Hello World';
-    
+
     expect(element.textContent).toBe('Hello World');
 });
 ```
@@ -88,9 +88,9 @@ test('should handle click event', () => {
     const button = document.createElement('button');
     const onClick = jest.fn();
     button.addEventListener('click', onClick);
-    
+
     button.click();
-    
+
     expect(onClick).toHaveBeenCalledTimes(1);
 });
 ```
@@ -99,9 +99,9 @@ test('should handle click event', () => {
 ```javascript
 test('should use mocked function', () => {
     const mockFn = jest.fn(() => 'mocked');
-    
+
     const result = mockFn('test');
-    
+
     expect(mockFn).toHaveBeenCalledWith('test');
     expect(result).toBe('mocked');
 });
@@ -111,9 +111,9 @@ test('should use mocked function', () => {
 ```javascript
 test('should spy on window.alert', () => {
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
-    
+
     window.alert('test');
-    
+
     expect(alertSpy).toHaveBeenCalledWith('test');
     alertSpy.mockRestore(); // Important!
 });
@@ -123,9 +123,9 @@ test('should spy on window.alert', () => {
 ```javascript
 test('should handle async operation', async () => {
     const promise = Promise.resolve('success');
-    
+
     const result = await promise;
-    
+
     expect(result).toBe('success');
 });
 
@@ -139,7 +139,7 @@ test('should resolve promise', async () => {
 ```javascript
 test('should throw error', () => {
     const fn = () => { throw new Error('Failed'); };
-    
+
     expect(fn).toThrow('Failed');
     expect(fn).toThrow(Error);
 });

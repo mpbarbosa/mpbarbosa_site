@@ -1,9 +1,9 @@
 # Test Failure Comprehensive Analysis Report
 
-**Generated**: 2025-11-25T19:23:18.998Z  
-**Project**: MP Barbosa Personal Website  
-**Test Framework**: Jest v30.2.0 with ES Modules (experimental-vm-modules)  
-**Total Test Files**: 136  
+**Generated**: 2025-11-25T19:23:18.998Z
+**Project**: MP Barbosa Personal Website
+**Test Framework**: Jest v30.2.0 with ES Modules (experimental-vm-modules)
+**Total Test Files**: 136
 **Test Execution Status**: ❌ FAILED (Exit Code: 1)
 
 ---
@@ -471,11 +471,11 @@ test('should not have accuracy setter', () => {
     longitude: 20.0,
     accuracy: 100
   });
-  
+
   // BEFORE (incorrect expectation):
   // geoPosition.accuracy = 50;
   // expect(geoPosition.accuracy).toBe(100); // Expect unchanged
-  
+
   // AFTER (correct expectation - property is read-only):
   expect(() => {
     'use strict';  // Strict mode throws on read-only assignment
@@ -972,13 +972,13 @@ if (process.env.NODE_ENV === 'test') {
   ```javascript
   // Add retry logic
   jest.retryTimes(3);
-  
+
   // Increase timeouts
   jest.setTimeout(30000);
-  
+
   // Add explicit waits
   await driver.wait(until.elementLocated(By.id('app')), 10000);
-  
+
   // Mock external APIs
   jest.mock('../services/spotifyApi', () => ({
     authorize: jest.fn().mockResolvedValue({ token: 'mock' })
@@ -997,11 +997,11 @@ if (process.env.NODE_ENV === 'test') {
   ```javascript
   // Mock Date.now()
   jest.spyOn(Date, 'now').mockReturnValue(1234567890);
-  
+
   // Use fake timers
   jest.useFakeTimers();
   jest.setSystemTime(new Date('2025-01-01'));
-  
+
   // Explicit time control
   jest.advanceTimersByTime(5000);
   ```
@@ -1018,7 +1018,7 @@ if (process.env.NODE_ENV === 'test') {
   await waitFor(() => {
     expect(observer.update).toHaveBeenCalled();
   });
-  
+
   // Ensure synchronous notification
   // OR use Promise.all for parallel notifications
   await Promise.all(observers.map(o => o.update()));
@@ -1035,7 +1035,7 @@ if (process.env.NODE_ENV === 'test') {
   ```javascript
   // Always mock external APIs
   jest.mock('../services/nominatim');
-  
+
   // Use deterministic test data
   const testData = sortBy(mockData, 'id');  // Ensure order
   ```
@@ -1123,81 +1123,81 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
-    
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    
+
     - name: Install dependencies
       run: |
         cd src
         npm ci
-    
+
     - name: Run linter
       run: |
         cd src
         npm run lint || true  # Optional until linter configured
-    
+
     - name: Run unit tests
       run: |
         cd src
         npm test -- --testPathIgnorePatterns=e2e
-    
+
     - name: Run coverage
       run: |
         cd src
         npm run test:coverage
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         files: ./src/coverage/coverage-final.json
         flags: unittests
         fail_ci_if_error: false  # Start with false, change to true later
-    
+
     - name: Check coverage thresholds
       run: |
         cd src
         npx jest --coverage --coverageThreshold='{"global":{"statements":80,"branches":80,"functions":80,"lines":80}}'
-  
+
   e2e:
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
-    
+
     - name: Use Node.js 20.x
       uses: actions/setup-node@v3
       with:
         node-version: 20.x
         cache: 'npm'
-    
+
     - name: Install dependencies
       run: |
         cd src
         npm ci
-    
+
     - name: Start test server
       run: |
         cd src
         npm start &
         npx wait-on http://localhost:8080
-    
+
     - name: Run E2E tests
       run: |
         cd src
         npm test -- --testPathPattern=e2e
-    
+
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v3
@@ -1219,13 +1219,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: npm test -- --testPathIgnorePatterns="integration|e2e"
-  
+
   integration-tests:
     runs-on: ubuntu-latest
     needs: unit-tests
     steps:
       - run: npm test -- --testPathPattern="integration"
-  
+
   e2e-tests:
     runs-on: ubuntu-latest
     needs: [unit-tests, integration-tests]
@@ -1647,6 +1647,6 @@ The test suite is currently in a **critical state** with 0% pass rate and 0% cov
 
 ---
 
-**Report Generated**: 2025-11-25T19:23:18.998Z  
-**Analyst**: Senior CI/CD Engineer & Test Results Analyst  
+**Report Generated**: 2025-11-25T19:23:18.998Z
+**Analyst**: Senior CI/CD Engineer & Test Results Analyst
 **Next Review**: After Quick Wins completion

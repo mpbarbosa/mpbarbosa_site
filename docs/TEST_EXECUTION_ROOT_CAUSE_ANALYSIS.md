@@ -1,7 +1,7 @@
 # Test Execution Root Cause Analysis Report
-**CI/CD Engineer & Test Results Analysis**  
-**Generated:** 2025-12-11T00:41:00Z  
-**Project:** MP Barbosa Personal Website  
+**CI/CD Engineer & Test Results Analysis**
+**Generated:** 2025-12-11T00:41:00Z
+**Project:** MP Barbosa Personal Website
 **Test Framework:** Jest 30.2.0 with ES Modules (experimental-vm-modules)
 
 ---
@@ -60,13 +60,13 @@ The user-provided test summary appears to be **fabricated, truncated, or from a 
 ### Category 1: Environment/Polyfill Issues (CRITICAL - 35% of failures)
 
 #### Issue 1.1: TextEncoder Not Defined
-**Severity:** 🔴 **CRITICAL**  
+**Severity:** 🔴 **CRITICAL**
 **Affected Files:**
 - `submodules/music_in_numbers/tests/index-functions.jest.test.js:56`
 - `submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js:130`
 - `submodules/guia_turistico/.../HtmlSpeechSynthesisDisplayer.integration.test.js`
 
-**Root Cause:**  
+**Root Cause:**
 TextEncoder is a Web API not available in Node.js jsdom environment. Tests using OAuth code challenge generation or WHATWG URL encoding fail.
 
 **Evidence:**
@@ -93,11 +93,11 @@ global.TextDecoder = TextDecoder;
 ---
 
 #### Issue 1.2: Response API Not Defined
-**Severity:** 🔴 **CRITICAL**  
+**Severity:** 🔴 **CRITICAL**
 **Affected Files:**
 - `submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:439`
 
-**Root Cause:**  
+**Root Cause:**
 Fetch API Response constructor not available in test environment.
 
 **Evidence:**
@@ -128,11 +128,11 @@ global.Headers = Headers;
 ---
 
 #### Issue 1.3: Selenium/Spawn ENOENT Errors
-**Severity:** 🟡 **HIGH**  
+**Severity:** 🟡 **HIGH**
 **Affected Files:**
 - `submodules/music_in_numbers/tests/selenium/e2e/*.test.js` (3 files)
 
-**Root Cause:**  
+**Root Cause:**
 Selenium WebDriver tests attempting to spawn shell processes (`/bin/sh`) not found in test environment.
 
 **Evidence:**
@@ -164,13 +164,13 @@ testPathIgnorePatterns: [
 ### Category 2: Module Resolution Errors (HIGH - 25% of failures)
 
 #### Issue 2.1: Incorrect Import Paths
-**Severity:** 🟡 **HIGH**  
+**Severity:** 🟡 **HIGH**
 **Affected Files:**
 - `guia_turistico/.../__tests__/unit/HtmlSpeechSynthesisDisplayer.test.js:124`
 - `guia_turistico/.../__tests__/unit/SpeechSynthesisManager.test.js:78`
 - `guia_turistico/.../__tests__/integration/core-modules.test.js:17`
 
-**Root Cause:**  
+**Root Cause:**
 Relative paths not resolving correctly from test files to source modules.
 
 **Evidence:**
@@ -202,13 +202,13 @@ Cannot find module '../src/core/GeoPosition.js'
 ---
 
 #### Issue 2.2: CommonJS require() in ES Module Context
-**Severity:** 🟡 **HIGH**  
+**Severity:** 🟡 **HIGH**
 **Affected Files:**
 - `guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.test.js:16`
 - `guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.integration.test.js:16`
 - `music_in_numbers/tests/selenium/e2e/spotify-session-detection.test.js:17`
 
-**Root Cause:**  
+**Root Cause:**
 Test files using `require()` syntax but package.json has `"type": "module"` forcing ES module mode.
 
 **Evidence:**
@@ -237,7 +237,7 @@ import { WebGeocodingManager } from '../src/coordination/WebGeocodingManager.js'
 ### Category 3: Empty Test Suites (MEDIUM - 20% of failures)
 
 #### Issue 3.1: Test Files with No Tests
-**Severity:** 🟢 **MEDIUM**  
+**Severity:** 🟢 **MEDIUM**
 **Affected Files (7 files):**
 - `music_in_numbers/tests/theme-manager.test.js`
 - `music_in_numbers/tests/data-export.test.js`
@@ -247,7 +247,7 @@ import { WebGeocodingManager } from '../src/coordination/WebGeocodingManager.js'
 - `music_in_numbers/tests/performance-benchmarking.test.js`
 - `music_in_numbers/tests/advanced-error-handling.test.js`
 
-**Root Cause:**  
+**Root Cause:**
 Skeleton test files created but no test cases implemented. Jest requires at least one test per suite.
 
 **Evidence:**
@@ -286,10 +286,10 @@ testPathIgnorePatterns: [
 ### Category 4: Assertion Failures (MEDIUM - 15% of failures)
 
 #### Issue 4.1: AddressDataExtractor Default Country
-**Severity:** 🟢 **MEDIUM**  
+**Severity:** 🟢 **MEDIUM**
 **File:** `guia_turistico/.../__tests__/unit/AddressDataExtractor.test.js:93`
 
-**Root Cause:**  
+**Root Cause:**
 Property `defaultCountry` returns `undefined` instead of expected `"Brasil"`.
 
 **Evidence:**
@@ -317,10 +317,10 @@ grep -n "defaultCountry" submodules/guia_turistico/src/libs/guia_js/src/**/*.js
 ---
 
 #### Issue 4.2: AnalyticsCore Error Handling Returns Undefined
-**Severity:** 🟢 **MEDIUM**  
+**Severity:** 🟢 **MEDIUM**
 **File:** `music_in_numbers/tests/analytics-core-patterns.jest.test.js:237,252`
 
-**Root Cause:**  
+**Root Cause:**
 Error handling functions not returning structured result objects.
 
 **Evidence:**
@@ -350,10 +350,10 @@ export async function loadMusicAnalyticsCore(deps, token) {
 ---
 
 #### Issue 4.3: Project Navigation .gitmodules Assertion
-**Severity:** 🟢 **MEDIUM**  
+**Severity:** 🟢 **MEDIUM**
 **File:** `__tests__/project_navigation.test.js`
 
-**Root Cause:**  
+**Root Cause:**
 Test expects "monitora_vagas" in `.gitmodules` but it's a sibling project, not a submodule.
 
 **Evidence:**
@@ -381,10 +381,10 @@ test('should have git submodules for music_in_numbers and guia_turistico', () =>
 ### Category 5: Type/Property Immutability Issues (LOW - 5% of failures)
 
 #### Issue 5.1: GeoPosition Immutability Tests
-**Severity:** 🟢 **LOW**  
+**Severity:** 🟢 **LOW**
 **File:** `guia_turistico/.../__tests__/unit/GeoPosition.immutability.test.js:287`
 
-**Root Cause:**  
+**Root Cause:**
 Test attempting to assign to read-only property to verify immutability - test is actually **PASSING CORRECTLY**.
 
 **Evidence:**
@@ -392,7 +392,7 @@ Test attempting to assign to read-only property to verify immutability - test is
 TypeError: Cannot assign to read only property 'accuracy' of object '[object Object]'
 ```
 
-**Analysis:**  
+**Analysis:**
 This is a **false failure** - the test expects a TypeError when trying to mutate immutable properties. The error IS the expected behavior.
 
 **Fix Priority:** 🟢 **P3 - Low**
@@ -498,10 +498,10 @@ test('should work with zero and negative expiration times', () => {
 // Ensure all async operations complete:
 test('should handle API errors', async () => {
   mockDependencies.getTopTracks.mockRejectedValue(new Error('API Failure'));
-  
+
   const result = await AnalyticsCore.loadMusicAnalyticsCore(mockDependencies, 'token');
   await Promise.resolve(); // Flush promises
-  
+
   expect(result.success).toBe(false);
 });
 ```
@@ -561,14 +561,14 @@ jobs:
       - uses: actions/checkout@v3
       - run: npm ci
       - run: npm test -- --selectProjects=unit --coverage
-      
+
   integration-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: npm ci
       - run: npm test -- --selectProjects=integration
-      
+
   e2e-tests:
     runs-on: ubuntu-latest
     services:
@@ -751,6 +751,6 @@ npm test
 
 ---
 
-**Report Generated:** 2025-12-11T00:41:00Z  
-**Analyst:** Senior CI/CD Engineer & Test Results Specialist  
+**Report Generated:** 2025-12-11T00:41:00Z
+**Analyst:** Senior CI/CD Engineer & Test Results Specialist
 **Next Review:** After Phase 1 fixes implemented

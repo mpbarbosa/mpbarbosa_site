@@ -1,7 +1,7 @@
 # Selenium E2E Test Setup Guide
 
-**Status:** Not Yet Configured  
-**Priority:** P1 - High Impact  
+**Status:** Not Yet Configured
+**Priority:** P1 - High Impact
 **Current Issue:** `spawn /bin/sh ENOENT` - Missing system shell configuration
 
 ## Problem Description
@@ -160,7 +160,7 @@ beforeAll(async () => {
         console.error('❌ System shell not available:', error.message);
         throw new Error('E2E tests require system shell (/bin/sh). Please configure environment.');
     }
-    
+
     // Check if ChromeDriver or GeckoDriver is available
     try {
         await execAsync('which chromedriver');

@@ -1,7 +1,7 @@
 # Test Failure Analysis Report
-**Generated**: 2025-11-16T02:16:00.831Z  
-**Project**: MP Barbosa Personal Website  
-**Test Framework**: Jest 30.2.0 with ES Modules (Node.js v22.15.0)  
+**Generated**: 2025-11-16T02:16:00.831Z
+**Project**: MP Barbosa Personal Website
+**Test Framework**: Jest 30.2.0 with ES Modules (Node.js v22.15.0)
 **Test Command**: `npm run test:coverage`
 
 ---
@@ -23,8 +23,8 @@
 
 ### Category 1: Jest Configuration Issues (CRITICAL - 12 Test Suites)
 
-**Priority**: 🔴 **CRITICAL** (Blocks CI/CD)  
-**Impact**: Prevents test execution entirely  
+**Priority**: 🔴 **CRITICAL** (Blocks CI/CD)
+**Impact**: Prevents test execution entirely
 **Estimated Fix Time**: 2-4 hours
 
 #### 1.1 TextEncoder Not Defined (5 test suites)
@@ -159,8 +159,8 @@ import SpeechQueue from '../src/SpeechQueue.js';
 
 ### Category 2: Selenium/E2E Test Infrastructure (MEDIUM - 2 Test Suites)
 
-**Priority**: 🟡 **MEDIUM** (E2E tests, not blocking core functionality)  
-**Impact**: E2E coverage unavailable  
+**Priority**: 🟡 **MEDIUM** (E2E tests, not blocking core functionality)
+**Impact**: E2E coverage unavailable
 **Estimated Fix Time**: 4-6 hours
 
 **Affected Files**:
@@ -199,8 +199,8 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
 
 ### Category 3: Test Implementation Bugs (HIGH - 23 Test Cases)
 
-**Priority**: 🟠 **HIGH** (Test quality issues)  
-**Impact**: False negatives, reduced confidence  
+**Priority**: 🟠 **HIGH** (Test quality issues)
+**Impact**: False negatives, reduced confidence
 **Estimated Fix Time**: 8-12 hours
 
 #### 3.1 Assertion Failures - Type Mismatches (8 tests)
@@ -214,7 +214,7 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
    // Expected: "boolean", Received: "undefined"
    const updated = instance.update ? instance.update(nearbyPosition) : false;
    expect(typeof updated).toBe('boolean');
-   
+
    // Fix: Ensure update() returns boolean
    const updated = instance.update?.(nearbyPosition) ?? false;
    expect(typeof updated).toBe('boolean');
@@ -224,7 +224,7 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
    ```javascript
    // Expected: "Brasil", Received: something else
    expect(extractor.country).toBe('Brasil');
-   
+
    // Fix: Check default initialization logic
    ```
 
@@ -232,7 +232,7 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
    ```javascript
    // Expected: "Restaurante", Received: different value
    expect(getAddressType(data)).toBe('Restaurante');
-   
+
    // Fix: Verify address type mapping logic
    ```
 
@@ -248,7 +248,7 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
    ```javascript
    // Factory class doesn't throw on instantiation
    expect(() => new DisplayerFactory()).toThrow('DisplayerFactory is a static factory class...');
-   
+
    // Fix: Add constructor guard
    class DisplayerFactory {
      constructor() {
@@ -261,7 +261,7 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
    ```javascript
    // Test expects warning but jest.fn() not configured
    expect(jest.fn()).toHaveBeenCalledWith(StringContaining "Attempted to subscribe a null observer");
-   
+
    // Fix: Mock console.warn properly
    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
    manager.subscribe(null);
@@ -272,7 +272,7 @@ describe.skipIf(!isE2EAvailable())('E2E Tests', () => {
    ```javascript
    // Cannot add property to frozen object
    TypeError: Cannot add property buildTextToSpeechMunicipio, object is not extensible
-   
+
    // Fix: Create extensible mock or use jest.mock()
    const mockObject = { ...originalObject };
    mockObject.buildTextToSpeechMunicipio = jest.fn();
@@ -310,7 +310,7 @@ expect(() => {
    ```javascript
    // Expected Date instance but got different type
    expect(item.timestamp).toBeInstanceOf(Date);
-   
+
    // Fix: Ensure SpeechItem creates Date objects correctly
    ```
 
@@ -318,7 +318,7 @@ expect(() => {
    ```javascript
    // callback is not a function
    TypeError: callback is not a function
-   
+
    // Fix: Verify callback registration
    const callback = jest.fn();
    extractor.registerCallback(callback);
@@ -328,7 +328,7 @@ expect(() => {
    ```javascript
    // Cannot read properties of undefined (reading 'success')
    TypeError: Cannot read properties of undefined (reading 'success')
-   
+
    // Fix: Mock API response properly
    const mockResponse = { success: true, data: [] };
    jest.spyOn(api, 'fetch').mockResolvedValue(mockResponse);
@@ -338,8 +338,8 @@ expect(() => {
 
 ### Category 4: Shell Script Test Failures (LOW - 1 Test)
 
-**Priority**: 🟢 **LOW** (Non-critical functionality)  
-**Impact**: Shell script testing gaps  
+**Priority**: 🟢 **LOW** (Non-critical functionality)
+**Impact**: Shell script testing gaps
 **Estimated Fix Time**: 1-2 hours
 
 **Affected File**: `__tests__/shell_scripts.test.js`
@@ -418,7 +418,7 @@ Based on **1,520 passing tests** and comprehensive test suites:
 1. **Selenium Tests** (5.3s each)
    - **Issue**: Heavy browser automation overhead
    - **Recommendation**: Run in separate CI job, skip locally
-   
+
 2. **Integration Tests** (Multiple console logs)
    - **Issue**: Excessive logging during tests
    - **Recommendation**: Mock console or use `--silent` flag
@@ -500,7 +500,7 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm run test:unit
-      
+
   integration-tests:
     runs-on: ubuntu-latest
     steps:
@@ -512,7 +512,7 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm run test:integration
-      
+
   e2e-tests:
     runs-on: ubuntu-latest
     steps:
@@ -526,7 +526,7 @@ jobs:
       - run: npm install -g chromedriver
       - run: npm run test:e2e
         continue-on-error: true  # Don't block on E2E failures
-      
+
   coverage:
     runs-on: ubuntu-latest
     needs: [unit-tests, integration-tests]
@@ -782,11 +782,11 @@ class DisplayerFactory {
   constructor() {
     throw new Error('DisplayerFactory is a static factory class and cannot be instantiated. Use static methods instead.');
   }
-  
+
   static createPositionDisplayer() {
     // ...
   }
-  
+
   static createAddressDisplayer() {
     // ...
   }
@@ -910,6 +910,6 @@ npm test -- --silent
 
 ---
 
-**Report Generated by**: Senior CI/CD Engineer & Test Results Analyst  
-**Methodology**: Systematic failure categorization, root cause analysis, evidence-based recommendations  
+**Report Generated by**: Senior CI/CD Engineer & Test Results Analyst
+**Methodology**: Systematic failure categorization, root cause analysis, evidence-based recommendations
 **Next Review**: After Phase 1 implementation (1 week)

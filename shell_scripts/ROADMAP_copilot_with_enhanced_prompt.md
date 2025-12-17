@@ -1,8 +1,8 @@
 # ROADMAP: copilot_with_enhanced_prompt.sh
 
-**Script Location:** `./shell_scripts/copilot_with_enhanced_prompt.sh`  
-**Purpose:** Two-stage prompt enhancement and execution pipeline for GitHub Copilot CLI  
-**Created:** November 3, 2025  
+**Script Location:** `./shell_scripts/copilot_with_enhanced_prompt.sh`
+**Purpose:** Two-stage prompt enhancement and execution pipeline for GitHub Copilot CLI
+**Created:** November 3, 2025
 **Current Version:** 2.0 (Simplified Architecture)
 
 ---
@@ -161,10 +161,10 @@ These features were implemented in v1.5 but removed in v2.0. They are candidates
 
 ### 1. Agent Mode Execution
 
-**Status:** ❌ Removed in v2.0  
+**Status:** ❌ Removed in v2.0
 **Original Implementation:** v1.5 (lines 167-260)
 
-**Description:**  
+**Description:**
 Direct invocation of `copilot --agent` command instead of delegating to `enhance_prompt.sh` script. Provided more control over the enhancement process but introduced parsing complexity.
 
 **Technical Details:**
@@ -172,22 +172,22 @@ Direct invocation of `copilot --agent` command instead of delegating to `enhance
 copilot --allow-all-tools --agent --model "$MODEL" --prompt "$AGENT_PROMPT"
 ```
 
-**Removal Reason:**  
+**Removal Reason:**
 - Output format variability made reliable parsing difficult
 - Added unnecessary complexity for marginal benefit
 - Duplicate logic with `enhance_prompt.sh`
 
-**Future Consideration:**  
+**Future Consideration:**
 Re-implement with structured JSON output parsing or streaming API
 
 ---
 
 ### 2. Configurable Timeout Control
 
-**Status:** ❌ Removed in v2.0  
+**Status:** ❌ Removed in v2.0
 **Original Implementation:** v1.5 (line 77, 112-114, 163, 183, 218-244)
 
-**Description:**  
+**Description:**
 `--timeout SECONDS` option allowing users to configure maximum wait time for enhancement stage. Default was 120 seconds with graceful termination handling.
 
 **Technical Details:**
@@ -201,22 +201,22 @@ ENHANCE_TIMEOUT=120  # Default: 2 minutes
 - Escalating termination: SIGTERM → wait 2s → SIGKILL
 - Standard exit code 124 for timeout conditions
 
-**Removal Reason:**  
+**Removal Reason:**
 - No longer needed with synchronous script execution
 - Enhancement script has built-in timeouts
 - Added complexity without clear user benefit
 
-**Future Consideration:**  
+**Future Consideration:**
 Could be re-added if async execution is reintroduced with proper timeout needs
 
 ---
 
 ### 3. Real-time Progress Spinner
 
-**Status:** ❌ Removed in v2.0  
+**Status:** ❌ Removed in v2.0
 **Original Implementation:** v1.5 (lines 213-233)
 
-**Description:**  
+**Description:**
 Animated Unicode Braille spinner with elapsed time counter showing enhancement progress in real-time.
 
 **Visual Example:**
@@ -230,12 +230,12 @@ Animated Unicode Braille spinner with elapsed time counter showing enhancement p
 - 1-second update interval with modulo frame rotation
 - ANSI escape codes for color and cursor control
 
-**Removal Reason:**  
+**Removal Reason:**
 - Enhancement now completes in <10s, spinner unnecessary
 - Simplified execution model doesn't need progress indication
 - Terminal output cleaner without animation
 
-**Future Consideration:**  
+**Future Consideration:**
 Valuable for long-running operations (>30s). Could return with:
 - Conditional display (only for operations >10s)
 - Progress percentage if available from underlying process
@@ -245,10 +245,10 @@ Valuable for long-running operations (>30s). Could return with:
 
 ### 4. Background Process Management
 
-**Status:** ❌ Removed in v2.0  
+**Status:** ❌ Removed in v2.0
 **Original Implementation:** v1.5 (lines 171-173, 194-210)
 
-**Description:**  
+**Description:**
 Sophisticated background process execution with PID file tracking, health monitoring, and controlled termination.
 
 **Technical Details:**
@@ -269,12 +269,12 @@ fi
 3. Continuous health checks with `kill -0` (non-destructive signal)
 4. Graceful termination on timeout/error
 
-**Removal Reason:**  
+**Removal Reason:**
 - Synchronous execution is simpler and sufficient
 - Eliminated race conditions in PID file creation
 - Reduced complexity of error handling
 
-**Future Consideration:**  
+**Future Consideration:**
 Essential for true async operations. Re-implement if adding:
 - Parallel enhancement of multiple prompts
 - Long-running enhancement operations
@@ -284,10 +284,10 @@ Essential for true async operations. Re-implement if adding:
 
 ### 5. Step-by-step Agent Feedback
 
-**Status:** ❌ Removed in v2.0  
+**Status:** ❌ Removed in v2.0
 **Original Implementation:** v1.5 (lines 192, 210, 246)
 
-**Description:**  
+**Description:**
 Multi-stage status updates showing granular progress through agent initialization, processing, and validation.
 
 **Example Output:**
@@ -306,12 +306,12 @@ Step 1.3: Validating agent output...
 - Arrow (→) for informational messages
 - Numbered sub-steps (1.1, 1.2, 1.3)
 
-**Removal Reason:**  
+**Removal Reason:**
 - Over-engineered for simple synchronous operations
 - Current "Step 1: Enhancing Prompt" is sufficient
 - Enhanced prompt display provides enough feedback
 
-**Future Consideration:**  
+**Future Consideration:**
 Valuable for complex multi-stage workflows:
 - Add progress steps for validation, sanitization, formatting
 - Show individual sub-tasks in parallel processing scenarios
@@ -321,10 +321,10 @@ Valuable for complex multi-stage workflows:
 
 ### 6. Separate Output and Log Streams
 
-**Status:** ❌ Removed in v2.0  
+**Status:** ❌ Removed in v2.0
 **Original Implementation:** v1.5 (lines 171-172)
 
-**Description:**  
+**Description:**
 Dedicated temporary files for standard output vs. error/log messages enabling granular analysis.
 
 **Technical Details:**
@@ -339,12 +339,12 @@ copilot ... > "$AGENT_OUTPUT" 2> "$AGENT_LOG"
 - Separate clean output from diagnostic messages
 - Preserve error messages for user feedback
 
-**Removal Reason:**  
+**Removal Reason:**
 - Single temp file sufficient for current implementation
 - `enhance_prompt.sh` already handles output/error separation
 - Reduced file I/O overhead
 
-**Future Consideration:**  
+**Future Consideration:**
 Re-add if implementing:
 - Detailed debugging mode with log preservation
 - Audit trail functionality
@@ -354,10 +354,10 @@ Re-add if implementing:
 
 ### 7. Conditional Enhanced Prompt Display
 
-**Status:** ❌ Removed in v2.0 (made always-on)  
+**Status:** ❌ Removed in v2.0 (made always-on)
 **Original Implementation:** v1.0-1.5 (conditional on `--show-enhanced` flag)
 
-**Description:**  
+**Description:**
 Optional display of enhanced prompt controlled by `--show-enhanced` flag. In v2.0, this became always-on for transparency.
 
 **Old Behavior:**
@@ -382,7 +382,7 @@ echo "$ENHANCED_PROMPT"
 - Trust: Builds confidence in AI-driven enhancement
 - UX: Eliminates need for an extra flag
 
-**Future Consideration:**  
+**Future Consideration:**
 Could add `--quiet` mode to suppress enhanced prompt display for scripting scenarios
 
 ---
@@ -391,7 +391,7 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
 
 ### Phase 1: Stability & Polish (Q4 2025)
 
-**Priority:** High  
+**Priority:** High
 **Focus:** Bug fixes, documentation, and user experience improvements
 
 #### Planned Features:
@@ -426,7 +426,7 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
 
 ### Phase 2: Advanced Features (Q1 2026)
 
-**Priority:** Medium  
+**Priority:** Medium
 **Focus:** Re-introduction of deleted features with improved architecture
 
 #### Planned Features:
@@ -476,7 +476,7 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
 
 ### Phase 3: Integration & Ecosystem (Q2 2026)
 
-**Priority:** Low  
+**Priority:** Low
 **Focus:** Integration with external tools and workflow automation
 
 #### Planned Features:
@@ -527,7 +527,7 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
 
 ### Phase 4: Advanced Agent Features (Q3 2026)
 
-**Priority:** Low  
+**Priority:** Low
 **Focus:** Advanced AI-driven enhancements and multi-model strategies
 
 #### Planned Features:
@@ -582,7 +582,7 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
 
 ### Phase 5: Enterprise Features (Q4 2026+)
 
-**Priority:** Very Low  
+**Priority:** Very Low
 **Focus:** Team collaboration, governance, and enterprise deployment
 
 #### Planned Features:
@@ -649,7 +649,7 @@ Could add `--quiet` mode to suppress enhanced prompt display for scripting scena
       ⏳ Step 1: Enhancing Prompt...
       ✓ Enhancement completed in 5.2s ⚡
       📊 Prompt improved by 45% (clarity metric)
-      
+
       2️⃣ Step 2: Executing with Copilot 🚀
       ✓ Execution successful 🎉
       💚 All validation checks passed
@@ -966,7 +966,7 @@ Detailed changelog maintained in: `./shell_scripts/CHANGELOG.md` (to be created)
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** November 3, 2025  
-**Maintained By:** mpbarbosa.com project team  
+**Document Version:** 1.0
+**Last Updated:** November 3, 2025
+**Maintained By:** mpbarbosa.com project team
 **Next Review:** December 1, 2025

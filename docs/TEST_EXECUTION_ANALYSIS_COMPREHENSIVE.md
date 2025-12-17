@@ -1,10 +1,10 @@
 # Test Execution Analysis - Comprehensive Diagnostic Report
 
-**Analysis Date**: 2025-12-02  
-**Analyzer Role**: Senior CI/CD Engineer & Test Results Analyst  
-**Project**: MP Barbosa Personal Website  
-**Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)  
-**Total Test Files**: 132  
+**Analysis Date**: 2025-12-02
+**Analyzer Role**: Senior CI/CD Engineer & Test Results Analyst
+**Project**: MP Barbosa Personal Website
+**Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)
+**Total Test Files**: 132
 **Exit Code**: 1 (FAILURE)
 
 ---
@@ -71,19 +71,19 @@ global.Response = class Response {
     this.ok = this.status >= 200 && this.status < 300;
     this.statusText = init.statusText || '';
   }
-  
+
   async json() {
     return JSON.parse(this.body);
   }
-  
+
   async text() {
     return this.body;
   }
 };
 ```
 
-**Priority**: CRITICAL  
-**Estimated Effort**: 2 hours  
+**Priority**: CRITICAL
+**Estimated Effort**: 2 hours
 **Impact**: Fixes 8+ test files
 
 ---
@@ -111,8 +111,8 @@ const MyModule = require('./MyModule.js');
 import MyModule from './MyModule.js';
 ```
 
-**Priority**: CRITICAL  
-**Estimated Effort**: 1 hour  
+**Priority**: CRITICAL
+**Estimated Effort**: 1 hour
 **Impact**: Fixes 3 test files
 
 ---
@@ -147,8 +147,8 @@ Cannot find module '../src/core/GeoPosition.js'
 import GeoPosition from '../../src/core/GeoPosition.js';
 ```
 
-**Priority**: CRITICAL  
-**Estimated Effort**: 3 hours  
+**Priority**: CRITICAL
+**Estimated Effort**: 3 hours
 **Impact**: Fixes 6+ test files
 
 ---
@@ -186,8 +186,8 @@ rm submodules/music_in_numbers/tests/advanced-error-handling.test.js
 rm submodules/music_in_numbers/tests/artist-functions.test.js
 ```
 
-**Priority**: HIGH  
-**Estimated Effort**: 15 minutes  
+**Priority**: HIGH
+**Estimated Effort**: 15 minutes
 **Impact**: Fixes 7 test files immediately
 
 ---
@@ -233,8 +233,8 @@ export function displayAdvancedMusicAnalyticsCore(dependencies, data) {
 }
 ```
 
-**Priority**: HIGH  
-**Estimated Effort**: 30 minutes  
+**Priority**: HIGH
+**Estimated Effort**: 30 minutes
 **Impact**: Fixes 2 test failures in analytics-core-patterns
 
 ---
@@ -259,13 +259,13 @@ Received number of calls: 0
 // Ensure functions call injected dependencies
 export async function loadMusicAnalyticsCore(dependencies, token) {
   dependencies.logInfo('Loading analytics data...'); // ✅ Call injected logger
-  
+
   try {
     const recentlyPlayed = await dependencies.getRecentlyPlayed(token);
     const audioFeatures = await dependencies.getAudioFeatures(token);
     const topTracks = await dependencies.getTopTracks(token);
     const topArtists = await dependencies.getTopArtists(token);
-    
+
     // ✅ Call injected processor
     const patterns = global.AnalyticsProcessors.analyzeListeningPatterns(
       recentlyPlayed,
@@ -273,7 +273,7 @@ export async function loadMusicAnalyticsCore(dependencies, token) {
       topTracks,
       topArtists
     );
-    
+
     dependencies.showResult(patterns); // ✅ Call injected display
     return { success: true, data: patterns };
   } catch (error) {
@@ -283,8 +283,8 @@ export async function loadMusicAnalyticsCore(dependencies, token) {
 }
 ```
 
-**Priority**: HIGH  
-**Estimated Effort**: 1 hour  
+**Priority**: HIGH
+**Estimated Effort**: 1 hour
 **Impact**: Fixes 2 test failures, improves architecture
 
 ---
@@ -312,19 +312,19 @@ export class DisplayerFactory {
   constructor() {
     throw new Error('DisplayerFactory is a static factory class and cannot be instantiated. Use static methods instead.');
   }
-  
+
   static createAddressDisplayer(options) {
     // Factory method
   }
-  
+
   static createPositionDisplayer(options) {
     // Factory method
   }
 }
 ```
 
-**Priority**: MEDIUM  
-**Estimated Effort**: 15 minutes  
+**Priority**: MEDIUM
+**Estimated Effort**: 15 minutes
 **Impact**: Enforces proper design pattern usage
 
 ---
@@ -367,8 +367,8 @@ const mockWebGeocodingManager = {
 };
 ```
 
-**Priority**: MEDIUM  
-**Estimated Effort**: 1 hour  
+**Priority**: MEDIUM
+**Estimated Effort**: 1 hour
 **Impact**: Validates immutability design works correctly
 
 ---
@@ -399,8 +399,8 @@ testPathIgnorePatterns: [
 ]
 ```
 
-**Priority**: MEDIUM  
-**Estimated Effort**: 2 hours (if enabling) or 5 minutes (if skipping)  
+**Priority**: MEDIUM
+**Estimated Effort**: 2 hours (if enabling) or 5 minutes (if skipping)
 **Impact**: E2E tests optional for unit test suite
 
 ---
@@ -427,18 +427,18 @@ Expected substring: "monitora_vagas"
 test('should have .gitmodules configuration for submodule projects', () => {
   const gitmodulesPath = path.join(projectRoot, '.gitmodules');
   const gitmodules = fs.readFileSync(gitmodulesPath, 'utf8');
-  
+
   // Only check actual submodules (not sibling projects)
   expect(gitmodules).toContain('music_in_numbers');
   expect(gitmodules).toContain('guia_turistico');
-  
+
   // monitora_vagas is a sibling project, not a submodule
   // expect(gitmodules).toContain('monitora_vagas'); // REMOVE
 });
 ```
 
-**Priority**: LOW  
-**Estimated Effort**: 10 minutes  
+**Priority**: LOW
+**Estimated Effort**: 10 minutes
 **Impact**: Aligns test with documented architecture
 
 ---
@@ -461,8 +461,8 @@ Received: "restaurante" (or similar)
 
 **Fix**: Update test expectations to match actual implementation
 
-**Priority**: LOW  
-**Estimated Effort**: 30 minutes  
+**Priority**: LOW
+**Estimated Effort**: 30 minutes
 **Impact**: Minor correctness improvements
 
 ---
@@ -594,9 +594,9 @@ jest.useFakeTimers();
 
 test('should expire after timeout', () => {
   const item = new SpeechItem('text', 1000);
-  
+
   jest.advanceTimersByTime(1001);
-  
+
   expect(item.isExpired()).toBe(true);
 });
 
@@ -625,13 +625,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: npm run test:unit
-      
+
   integration-tests:
     runs-on: ubuntu-latest
     needs: unit-tests
     steps:
       - run: npm run test:integration
-      
+
   e2e-tests:
     runs-on: ubuntu-latest
     needs: integration-tests
@@ -700,7 +700,7 @@ npm run lint:md
 | 4 | Add return statements to error handlers | 30m | Fixes 2 files | Dev |
 | 5 | Fix module import paths | 3h | Fixes 6+ files | Dev |
 
-**Total Week 1 Effort**: ~7 hours  
+**Total Week 1 Effort**: ~7 hours
 **Expected Impact**: 26+ test files fixed (40% reduction in failures)
 
 ### Short-term Actions (Week 2-3)
@@ -713,7 +713,7 @@ npm run lint:md
 | 9 | Configure Selenium or skip E2E in unit runs | 2h or 5m | 2 tests (or reduce noise) |
 | 10 | Update project navigation test | 10m | 1 test + accurate docs |
 
-**Total Week 2-3 Effort**: ~5 hours  
+**Total Week 2-3 Effort**: ~5 hours
 **Expected Impact**: 8+ test files fixed, improved architecture
 
 ### Medium-term Actions (Month 1)
@@ -726,7 +726,7 @@ npm run lint:md
 | 14 | Add coverage thresholds | 1h | Quality gates |
 | 15 | Set up test caching | 2h | Faster CI |
 
-**Total Month 1 Effort**: ~6.5 hours  
+**Total Month 1 Effort**: ~6.5 hours
 **Expected Impact**: Professional test infrastructure
 
 ### Long-term Actions (Quarter 1)
@@ -863,6 +863,6 @@ node --inspect-brk --experimental-vm-modules node_modules/jest/bin/jest.js --run
 
 ---
 
-**Report Generated**: 2025-12-02T05:48:07Z  
-**Next Review**: After Week 1 actions completed  
+**Report Generated**: 2025-12-02T05:48:07Z
+**Next Review**: After Week 1 actions completed
 **Contact**: CI/CD Team

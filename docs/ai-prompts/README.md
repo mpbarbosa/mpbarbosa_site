@@ -1,7 +1,7 @@
 # AI Integration & Prompt Engineering
 
-**Directory**: `docs/ai-prompts/`  
-**Purpose**: Documentation for AI-assisted development practices, prompt engineering standards, and GitHub Copilot integration patterns  
+**Directory**: `docs/ai-prompts/`
+**Purpose**: Documentation for AI-assisted development practices, prompt engineering standards, and GitHub Copilot integration patterns
 **Last Updated**: December 15, 2025
 
 ## Overview
@@ -12,8 +12,8 @@ This directory contains documentation for integrating AI tools, particularly Git
 
 ### [AI Prompt Extraction Standard](AI_PROMPT_EXTRACTION_STANDARD.md)
 
-**Version**: 1.0.0  
-**Status**: Active Project Standard  
+**Version**: 1.0.0
+**Status**: Active Project Standard
 **Lines**: 227
 
 Establishes the project standard for extracting AI prompts from workflow step modules into the centralized AI helpers library.
@@ -200,13 +200,13 @@ When adding new AI integration documentation:
 
 ### Common Issues
 
-**Q: Prompts producing inconsistent results?**  
+**Q: Prompts producing inconsistent results?**
 A: Review [Copilot Prompt Scoping Guide](COPILOT_PROMPT_SCOPING_GUIDE.md) for context management strategies.
 
-**Q: How to migrate existing inline prompts?**  
+**Q: How to migrate existing inline prompts?**
 A: Follow [Prompt Extraction Refactoring](PROMPT_EXTRACTION_REFACTORING.md) migration patterns.
 
-**Q: Need to create new AI integration?**  
+**Q: Need to create new AI integration?**
 A: Use [AI Prompt Extraction Standard](AI_PROMPT_EXTRACTION_STANDARD.md) as template.
 
 ## 📅 Version History

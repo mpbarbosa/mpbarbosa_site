@@ -1,8 +1,8 @@
 # Test Strategy - Executive Summary
 
-**Project:** MP Barbosa Personal Website  
-**Date:** 2025-11-25  
-**Report Type:** QA Assessment & Test Strategy  
+**Project:** MP Barbosa Personal Website
+**Date:** 2025-11-25
+**Report Type:** QA Assessment & Test Strategy
 **Status:** ⚠️ **CRITICAL GAPS IDENTIFIED**
 
 ---
@@ -272,6 +272,6 @@ The project has **excellent test quality** for the 50% that is tested, but **cri
 
 ---
 
-**Prepared by:** Senior QA Engineer & Test Automation Specialist  
-**Contact:** GitHub Copilot CLI Analysis Team  
+**Prepared by:** Senior QA Engineer & Test Automation Specialist
+**Contact:** GitHub Copilot CLI Analysis Team
 **Version:** 1.0.0

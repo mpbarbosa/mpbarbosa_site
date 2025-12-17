@@ -1,6 +1,6 @@
 # Test Strategy Quick Reference Card
 
-**Last Updated:** 2025-11-25  
+**Last Updated:** 2025-11-25
 **Project:** MP Barbosa Personal Website
 
 ---
@@ -124,10 +124,10 @@ describe('Feature Name', () => {
         test('should achieve expected outcome', () => {
             // ARRANGE - Set up test data
             const element = document.querySelector('...');
-            
+
             // ACT - Execute the code under test
             element.click();
-            
+
             // ASSERT - Verify the outcome
             expect(element.classList.contains('active')).toBe(true);
         });

@@ -70,7 +70,7 @@ class UserController {
         this.validator = new Validator();
         this.logger = new Logger();
     }
-    
+
     createUser(userData) {
         // Validation, database ops, email, logging all mixed
     }
@@ -82,7 +82,7 @@ class UserController {
         this.userService = userService; // Handles business logic
         this.logger = logger; // Handles logging
     }
-    
+
     async createUser(userData) {
         try {
             const user = await this.userService.create(userData);
@@ -106,7 +106,7 @@ class SpotifyApiService {
         this.tokenManager = tokenManager;
         this.rateLimiter = rateLimiter;
     }
-    
+
     async getArtist(artistId) {
         await this.rateLimiter.checkLimit();
         const token = await this.tokenManager.getValidToken();
@@ -123,7 +123,7 @@ class ServiceFactory {
     constructor(dependencies) {
         this.dependencies = dependencies;
     }
-    
+
     createSpotifyService() {
         return new SpotifyApiService(
             this.dependencies.httpClient,
@@ -131,7 +131,7 @@ class ServiceFactory {
             this.dependencies.rateLimiter
         );
     }
-    
+
     createAnalyticsService() {
         return new AnalyticsService(
             this.dependencies.dataProcessor,
@@ -148,30 +148,30 @@ class DIContainer {
         this.services = new Map();
         this.factories = new Map();
     }
-    
+
     register(name, factory, singleton = true) {
         this.factories.set(name, { factory, singleton });
         if (!singleton) {
             this.services.delete(name);
         }
     }
-    
+
     resolve(name) {
         if (this.services.has(name)) {
             return this.services.get(name);
         }
-        
+
         const serviceConfig = this.factories.get(name);
         if (!serviceConfig) {
             throw new Error(`Service ${name} not registered`);
         }
-        
+
         const service = serviceConfig.factory(this);
-        
+
         if (serviceConfig.singleton) {
             this.services.set(name, service);
         }
-        
+
         return service;
     }
 }
@@ -195,7 +195,7 @@ export const createDependencies = () => {
     const httpClient = new HttpClient();
     const logger = new Logger();
     const tokenManager = new TokenManager(httpClient, logger);
-    
+
     return {
         httpClient,
         logger,
@@ -237,7 +237,7 @@ export const useDependencies = () => {
 // Component usage
 const MusicAnalytics = () => {
     const { spotifyService, analyticsService } = useDependencies();
-    
+
     useEffect(() => {
         const loadData = async () => {
             const data = await spotifyService.getUserTopTracks();
@@ -255,11 +255,11 @@ class ExpressContainer {
     constructor() {
         this.services = new Map();
     }
-    
+
     register(name, factory) {
         this.services.set(name, factory);
     }
-    
+
     resolve(name) {
         const factory = this.services.get(name);
         if (!factory) {
@@ -302,30 +302,30 @@ describe('UserService', () => {
     let mockDatabase;
     let mockLogger;
     let userService;
-    
+
     beforeEach(() => {
         mockDatabase = {
             create: jest.fn(),
             findById: jest.fn(),
             update: jest.fn()
         };
-        
+
         mockLogger = {
             info: jest.fn(),
             error: jest.fn()
         };
-        
+
         userService = new UserService(mockDatabase, mockLogger);
     });
-    
+
     test('should create user successfully', async () => {
         const userData = { name: 'John Doe', email: 'john@example.com' };
         const expectedUser = { id: 1, ...userData };
-        
+
         mockDatabase.create.mockResolvedValue(expectedUser);
-        
+
         const result = await userService.createUser(userData);
-        
+
         expect(mockDatabase.create).toHaveBeenCalledWith(userData);
         expect(mockLogger.info).toHaveBeenCalledWith(
             'User created successfully',
@@ -346,13 +346,13 @@ export const createTestDoubles = () => ({
         put: jest.fn(),
         delete: jest.fn()
     },
-    
+
     tokenManager: {
         getValidToken: jest.fn().mockResolvedValue('mock-token'),
         refreshToken: jest.fn(),
         isExpired: jest.fn().mockReturnValue(false)
     },
-    
+
     rateLimiter: {
         checkLimit: jest.fn().mockResolvedValue(true),
         getRemainingCalls: jest.fn().mockReturnValue(100)
@@ -371,12 +371,12 @@ describe('SpotifyApiService', () => {
             mocks.tokenManager,
             mocks.rateLimiter
         );
-        
+
         const mockArtist = { id: '123', name: 'Test Artist' };
         mocks.httpClient.get.mockResolvedValue({ data: mockArtist });
-        
+
         const result = await service.getArtist('123');
-        
+
         expect(mocks.rateLimiter.checkLimit).toHaveBeenCalled();
         expect(mocks.tokenManager.getValidToken).toHaveBeenCalled();
         expect(mocks.httpClient.get).toHaveBeenCalledWith('/artists/123', {
@@ -396,7 +396,7 @@ class UserController {
     constructor() {
         // Hidden dependencies
     }
-    
+
     createUser(userData) {
         const userService = ServiceLocator.get('userService'); // Hidden dependency
         const logger = ServiceLocator.get('logger'); // Not obvious what this class needs
@@ -410,7 +410,7 @@ class UserController {
         this.userService = userService;
         this.logger = logger;
     }
-    
+
     createUser(userData) {
         return this.userService.create(userData);
     }
@@ -456,7 +456,7 @@ class SpotifyService {
         this.tokenManager = new TokenManager();
         this.init(); // Must be called after construction
     }
-    
+
     init() {
         this.tokenManager.setHttpClient(this.httpClient); // Order matters
     }
@@ -482,7 +482,7 @@ export class SpotifyDIContainer {
         this.config = config;
         this.services = new Map();
     }
-    
+
     createHttpClient() {
         return new HttpClient({
             baseURL: 'https://api.spotify.com/v1',
@@ -490,7 +490,7 @@ export class SpotifyDIContainer {
             retries: this.config.maxRetries || 3
         });
     }
-    
+
     createTokenManager() {
         return new TokenManager({
             clientId: this.config.spotify.clientId,
@@ -499,7 +499,7 @@ export class SpotifyDIContainer {
             httpClient: this.resolve('httpClient')
         });
     }
-    
+
     createRateLimiter() {
         return new RateLimiter({
             maxRequests: 100,
@@ -507,7 +507,7 @@ export class SpotifyDIContainer {
             storage: this.resolve('cache')
         });
     }
-    
+
     createSpotifyApiService() {
         return new SpotifyApiService(
             this.resolve('httpClient'),
@@ -516,7 +516,7 @@ export class SpotifyDIContainer {
             this.resolve('logger')
         );
     }
-    
+
     createAnalyticsService() {
         return new AnalyticsService(
             this.resolve('spotifyApiService'),
@@ -524,19 +524,19 @@ export class SpotifyDIContainer {
             this.resolve('chartRenderer')
         );
     }
-    
+
     resolve(serviceName) {
         if (this.services.has(serviceName)) {
             return this.services.get(serviceName);
         }
-        
+
         const methodName = `create${serviceName.charAt(0).toUpperCase()}${serviceName.slice(1)}`;
         if (typeof this[methodName] === 'function') {
             const service = this[methodName]();
             this.services.set(serviceName, service);
             return service;
         }
-        
+
         throw new Error(`Service ${serviceName} not found`);
     }
 }
@@ -552,18 +552,18 @@ export class ThemeManager {
         this.eventEmitter = eventEmitter;
         this.currentTheme = null;
     }
-    
+
     async initializeTheme() {
         const savedTheme = await this.storage.get('selectedTheme');
         const theme = savedTheme || 'light';
         await this.setTheme(theme);
     }
-    
+
     async setTheme(themeName) {
         const themeData = await this.loadTheme(themeName);
         this.cssInjector.injectCSS(themeData.css);
         await this.storage.set('selectedTheme', themeName);
-        
+
         this.currentTheme = themeName;
         this.eventEmitter.emit('themeChanged', { theme: themeName, data: themeData });
     }
@@ -574,7 +574,7 @@ class LocalStorageWrapper {
     async get(key) {
         return localStorage.getItem(key);
     }
-    
+
     async set(key, value) {
         localStorage.setItem(key, value);
     }
@@ -605,7 +605,7 @@ class LazyServiceContainer {
         this.factories = new Map();
         this.instances = new Map();
     }
-    
+
     register(name, factory, options = {}) {
         this.factories.set(name, {
             factory,
@@ -613,23 +613,23 @@ class LazyServiceContainer {
             lazy: options.lazy !== false
         });
     }
-    
+
     resolve(name) {
         const config = this.factories.get(name);
         if (!config) {
             throw new Error(`Service ${name} not found`);
         }
-        
+
         if (config.singleton && this.instances.has(name)) {
             return this.instances.get(name);
         }
-        
+
         const instance = config.factory(this);
-        
+
         if (config.singleton) {
             this.instances.set(name, instance);
         }
-        
+
         return instance;
     }
 }
@@ -643,24 +643,24 @@ class SafeDIContainer {
         this.factories = new Map();
         this.resolving = new Set();
     }
-    
+
     resolve(name) {
         if (this.resolving.has(name)) {
             throw new Error(`Circular dependency detected: ${name}`);
         }
-        
+
         if (this.services.has(name)) {
             return this.services.get(name);
         }
-        
+
         this.resolving.add(name);
-        
+
         try {
             const factory = this.factories.get(name);
             if (!factory) {
                 throw new Error(`Service ${name} not registered`);
             }
-            
+
             const service = factory(this);
             this.services.set(name, service);
             return service;
@@ -678,22 +678,22 @@ class ManagedDIContainer {
         this.services = new Map();
         this.disposables = new Set();
     }
-    
+
     register(name, factory, options = {}) {
         this.factories.set(name, { factory, ...options });
     }
-    
+
     resolve(name) {
         const service = this.createService(name);
-        
+
         // Track disposable services
         if (service && typeof service.dispose === 'function') {
             this.disposables.add(service);
         }
-        
+
         return service;
     }
-    
+
     dispose() {
         // Clean up all disposable services
         for (const service of this.disposables) {
@@ -703,7 +703,7 @@ class ManagedDIContainer {
                 console.error('Error disposing service:', error);
             }
         }
-        
+
         this.services.clear();
         this.disposables.clear();
     }

@@ -7,7 +7,7 @@ This directory contains configuration files for the workflow automation system.
 ### paths.yaml
 Centralized path configuration for improved portability and maintainability.
 
-**Purpose**: 
+**Purpose**:
 - Eliminates hardcoded absolute paths in scripts and documentation
 - Enables easy deployment to different environments
 - Provides single source of truth for all project paths

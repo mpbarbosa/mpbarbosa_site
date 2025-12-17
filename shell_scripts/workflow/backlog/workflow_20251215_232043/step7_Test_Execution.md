@@ -47,7 +47,7 @@ FAIL __tests__/documentation.test.js
       33 |         const docPath = path.join(docsDir, doc);
     > 34 |         expect(fs.existsSync(docPath)).toBe(true);
          |                                        ^
-      35 |         
+      35 |
       36 |         // Should be substantial documentation (not empty)
       37 |         const content = fs.readFileSync(docPath, 'utf8');
 
@@ -90,12 +90,12 @@ PASS submodules/music_in_numbers/src/scripts/spotify-api/__tests__/SpotifyApiCor
           at runTest (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/jest-runner/build/testWorker.js:343:7)
           at Object.worker (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/jest-runner/build/testWorker.js:497:12)
 
-       96 |             
+       96 |
        97 |         } catch (error) {
     >  98 |             console.error('Auth initiation error:', error);
           |                     ^
        99 |             showResult('Failed to initiate authentication. Please try again.', 'error');
-      100 |             
+      100 |
       101 |             connectBtn.disabled = false;
 
       at SpotifyApiCore.initiateAuthCore (submodules/music_in_numbers/src/scripts/spotify-api/__tests__/SpotifyApiCore.test.js:98:21)
@@ -146,11 +146,11 @@ FAIL submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js
     Expected: 100
     Received: 0
 
-      319 |             
+      319 |
       320 |             expect(analysis.averageDuration).toBeLessThan(PERFORMANCE_CONFIG.thresholds.pkceGeneration);
     > 321 |             expect(analysis.successRate).toBe(100);
           |                                          ^
-      322 |             
+      322 |
       323 |             performanceMetrics.pkce = results;
       324 |         });
 
@@ -707,9 +707,9 @@ PASS __tests__/InitializationUtilities.test.js
       122 |             delete global.window.location;
     > 123 |             global.window.location = { hostname: '127.0.0.1', search: '' };
           |                                    ^
-      124 |             
+      124 |
       125 |             const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
-      126 |             
+      126 |
 
       at VirtualConsole.<anonymous> (node_modules/@jest/environment-jsdom-abstract/build/index.js:87:23)
       at module.exports (node_modules/jsdom/lib/jsdom/browser/not-implemented.js:12:26)
@@ -809,9 +809,9 @@ PASS __tests__/InitializationUtilities.test.js
       133 |             delete global.window.location;
     > 134 |             global.window.location = { hostname: '192.168.1.100', search: '' };
           |                                    ^
-      135 |             
+      135 |
       136 |             const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
-      137 |             
+      137 |
 
       at VirtualConsole.<anonymous> (node_modules/@jest/environment-jsdom-abstract/build/index.js:87:23)
       at module.exports (node_modules/jsdom/lib/jsdom/browser/not-implemented.js:12:26)
@@ -4891,11 +4891,11 @@ FAIL __tests__/project_navigation.test.js
     Expected: true
     Received: false
 
-      241 |         
+      241 |
       242 |         // Directory should exist (may be empty if not initialized)
     > 243 |         expect(fs.existsSync(submodulePath)).toBe(true);
           |                                              ^
-      244 |         
+      244 |
       245 |         if (fs.existsSync(submodulePath) && fs.statSync(submodulePath).isDirectory()) {
       246 |           // If submodule is initialized, should have src directory
 
@@ -4932,7 +4932,7 @@ FAIL __tests__/shell_scripts.test.js
       384 |           const firstCopyPos = mainContent.indexOf('copy_index_html');
     > 385 |           expect(validatePos).toBeLessThan(firstCopyPos);
           |                               ^
-      386 |           
+      386 |
       387 |           // Check that summary comes last
       388 |           const summaryPos = mainContent.indexOf('show_summary');
 
@@ -4946,13 +4946,13 @@ FAIL submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js
 
     Received: null
 
-      645 |                 
+      645 |
       646 |                 const challenge = await generateCodeChallengeSafe(verifier);
     > 647 |                 expect(challenge).toBeTruthy();
           |                                   ^
       648 |                 challenges.push(challenge);
       649 |             }
-      650 |             
+      650 |
 
       at Object.<anonymous> (submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:647:35)
 
@@ -4964,12 +4964,12 @@ FAIL submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js
     Received: false
 
       665 |             const hasSubtle = !!(window.crypto && window.crypto.subtle && window.crypto.subtle.digest);
-      666 |             
+      666 |
     > 667 |             expect(hasCrypto).toBe(true); // Should be available in Jest jsdom
           |                               ^
       668 |             expect(hasSubtle).toBe(true); // Should be available in Jest jsdom
       669 |         });
-      670 |         
+      670 |
 
       at Object.<anonymous> (submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:667:31)
 
@@ -6015,9 +6015,9 @@ STACK: TypeError [ERR_INVALID_ARG_TYPE]: The "original" argument must be of type
     at Module.require (node:internal/modules/cjs/loader:1503:12)
     at require (node:internal/modules/helpers:152:16)
 ----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |                   
+All files |       0 |        0 |       0 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 11 failed, 7 passed, 18 total
 Tests:       16 failed, 415 passed, 431 total

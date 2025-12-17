@@ -1,9 +1,9 @@
 # Test Execution Comprehensive Diagnostic Report
 ## MP Barbosa Personal Website - Test Suite Analysis
 
-**Date**: December 15, 2025  
-**Analysis Type**: Root Cause Analysis & CI/CD Optimization  
-**Analyst Role**: Senior CI/CD Engineer & Test Results Analyst  
+**Date**: December 15, 2025
+**Analysis Type**: Root Cause Analysis & CI/CD Optimization
+**Analyst Role**: Senior CI/CD Engineer & Test Results Analyst
 **Project**: MP Barbosa Personal Website (HTML5 + ES Modules + Jest)
 
 ---
@@ -45,9 +45,9 @@
 #### 🔴 CRITICAL (P0) - Immediate Action Required
 
 ##### C1. Coverage Collection Failure (0% across all metrics)
-**Impact**: Cannot measure code quality or enforce coverage gates  
-**Root Cause**: Jest configuration issue preventing coverage instrumentation  
-**File**: `package.json` jest configuration  
+**Impact**: Cannot measure code quality or enforce coverage gates
+**Root Cause**: Jest configuration issue preventing coverage instrumentation
+**File**: `package.json` jest configuration
 **Evidence**:
 ```
 Coverage Metrics:
@@ -85,14 +85,14 @@ Coverage Metrics:
 }
 ```
 
-**Effort**: 30 minutes  
+**Effort**: 30 minutes
 **Verification**: Run `npm run test:coverage` and verify non-zero percentages
 
 ---
 
 ##### C2. TextEncoder Polyfill Missing (8 test files affected)
-**Impact**: Prevents testing of OAuth flows, performance benchmarks, and WHATWG URL handling  
-**Root Cause**: jsdom environment lacks TextEncoder/TextDecoder APIs  
+**Impact**: Prevents testing of OAuth flows, performance benchmarks, and WHATWG URL handling
+**Root Cause**: jsdom environment lacks TextEncoder/TextDecoder APIs
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/HtmlSpeechSynthesisDisplayer.integration.test.js`
 - `submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js`
@@ -119,8 +119,8 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 ```
 
-**Effort**: 15 minutes  
-**Impact**: Fixes 8+ failing test suites immediately  
+**Effort**: 15 minutes
+**Impact**: Fixes 8+ failing test suites immediately
 **Verification**: Run failing tests and confirm TextEncoder errors resolved
 
 ---
@@ -128,8 +128,8 @@ global.TextDecoder = TextDecoder;
 #### 🟠 HIGH PRIORITY (P1) - Address Within Sprint
 
 ##### H1. Empty Test Files (12 files, immediate failures)
-**Impact**: Test suite failures block CI/CD pipeline  
-**Root Cause**: Skeleton test files created without test implementations  
+**Impact**: Test suite failures block CI/CD pipeline
+**Root Cause**: Skeleton test files created without test implementations
 **Affected Files**:
 - `submodules/music_in_numbers/tests/security-testing.test.js`
 - `submodules/music_in_numbers/tests/performance-benchmarking.test.js`
@@ -162,15 +162,15 @@ test.skip('Placeholder - Implementation pending', () => {
 });
 ```
 
-**Effort**: 20 minutes (Option A), 45 minutes (Option B)  
-**Recommendation**: Use Option A for immediate fix, implement Option B during test development  
+**Effort**: 20 minutes (Option A), 45 minutes (Option B)
+**Recommendation**: Use Option A for immediate fix, implement Option B during test development
 **Impact**: Immediately fixes 12 failing test suites (41% of failures)
 
 ---
 
 ##### H2. Module Resolution Failures (7 files affected)
-**Impact**: Integration tests cannot load required modules  
-**Root Cause**: Incorrect relative paths in ES module imports  
+**Impact**: Integration tests cannot load required modules
+**Root Cause**: Incorrect relative paths in ES module imports
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechSynthesisManager.integration.test.js`
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechSynthesisManager.test.js`
@@ -198,22 +198,22 @@ jest.unstable_mockModule('../../speech/SpeechQueue.js', () => ({
 }));
 ```
 
-**Effort**: 2 hours (requires investigation of actual module locations)  
-**Impact**: Fixes 7 failing test suites (24% of failures)  
+**Effort**: 2 hours (requires investigation of actual module locations)
+**Impact**: Fixes 7 failing test suites (24% of failures)
 **Verification**: Run specific test files and confirm module resolution
 
 ---
 
 ##### H3. Git Submodule Configuration Test Failure
-**Impact**: Project navigation tests fail, blocking CI/CD validation  
-**Root Cause**: Test expects `monitora_vagas` as git submodule, but it's now a sibling project  
+**Impact**: Project navigation tests fail, blocking CI/CD validation
+**Root Cause**: Test expects `monitora_vagas` as git submodule, but it's now a sibling project
 **Affected Files**:
 - `__tests__/project_navigation.test.js`
 
 **Evidence**:
 ```
 FAIL __tests__/project_navigation.test.js
-  ● Project Navigation Integration Tests › Project Integration with Submodules › 
+  ● Project Navigation Integration Tests › Project Integration with Submodules ›
     should have .gitmodules configuration for all projects
 
     expect(received).toContain(expected) // indexOf
@@ -227,14 +227,14 @@ FAIL __tests__/project_navigation.test.js
 // __tests__/project_navigation.test.js
 test('should have .gitmodules configuration for git submodules', () => {
   const gitmodulesPath = path.join(projectRoot, '.gitmodules');
-  
+
   if (fs.existsSync(gitmodulesPath)) {
     const gitmodulesContent = fs.readFileSync(gitmodulesPath, 'utf8');
-    
+
     // Only check for actual git submodules (not sibling projects)
     expect(gitmodulesContent).toContain('music_in_numbers');
     expect(gitmodulesContent).toContain('guia_turistico');
-    
+
     // Monitora Vagas and Busca Vagas are sibling projects - should NOT be in .gitmodules
     expect(gitmodulesContent).not.toContain('monitora_vagas');
     expect(gitmodulesContent).not.toContain('busca_vagas');
@@ -242,8 +242,8 @@ test('should have .gitmodules configuration for git submodules', () => {
 });
 ```
 
-**Effort**: 30 minutes  
-**Impact**: Fixes project structure validation test  
+**Effort**: 30 minutes
+**Impact**: Fixes project structure validation test
 **Verification**: Run `npm test -- __tests__/project_navigation.test.js`
 
 ---
@@ -251,8 +251,8 @@ test('should have .gitmodules configuration for git submodules', () => {
 #### 🟡 MEDIUM PRIORITY (P2) - Address This Quarter
 
 ##### M1. Jest Mock API Undefined in ES Modules (3 files)
-**Impact**: Integration tests cannot use Jest mocking APIs  
-**Root Cause**: ES module scope doesn't have `jest` global in certain contexts  
+**Impact**: Integration tests cannot use Jest mocking APIs
+**Root Cause**: ES module scope doesn't have `jest` global in certain contexts
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem.integration.test.js`
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js`
@@ -274,15 +274,15 @@ import { jest } from '@jest/globals';
 import { describe, test, expect, jest } from '@jest/globals';
 ```
 
-**Effort**: 30 minutes  
-**Impact**: Enables proper mocking in 3+ test files  
+**Effort**: 30 minutes
+**Impact**: Enables proper mocking in 3+ test files
 **Verification**: Run affected tests and confirm `jest` is defined
 
 ---
 
 ##### M2. Web Speech API Mock Configuration (2 files)
-**Impact**: Speech synthesis tests fail in jsdom environment  
-**Root Cause**: jsdom doesn't provide Web Speech API  
+**Impact**: Speech synthesis tests fail in jsdom environment
+**Root Cause**: jsdom doesn't provide Web Speech API
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem.integration.test.js`
 
@@ -325,15 +325,15 @@ if (typeof window !== 'undefined' && !window.speechSynthesis) {
 }
 ```
 
-**Effort**: 45 minutes  
-**Impact**: Enables speech synthesis testing in jsdom  
+**Effort**: 45 minutes
+**Impact**: Enables speech synthesis testing in jsdom
 **Verification**: Run speech-related tests
 
 ---
 
 ##### M3. CommonJS Require in ES Module Project (1 file)
-**Impact**: Test file cannot execute due to module system mismatch  
-**Root Cause**: Legacy `require()` call in ES module context  
+**Impact**: Test file cannot execute due to module system mismatch
+**Root Cause**: Legacy `require()` call in ES module context
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.test.js`
 
@@ -354,22 +354,22 @@ const module = require('./path/to/module');
 import module from './path/to/module.js';
 ```
 
-**Effort**: 20 minutes  
-**Impact**: Modernizes test to ES module standards  
+**Effort**: 20 minutes
+**Impact**: Modernizes test to ES module standards
 **Verification**: Run specific test file
 
 ---
 
 ##### M4. Documentation File Validation Failures (1 file)
-**Impact**: CI/CD validation blocks on missing documentation  
-**Root Cause**: Test expects specific documentation files that don't exist or moved  
+**Impact**: CI/CD validation blocks on missing documentation
+**Root Cause**: Test expects specific documentation files that don't exist or moved
 **Affected Files**:
 - `__tests__/documentation.test.js`
 
 **Evidence**:
 ```
 FAIL __tests__/documentation.test.js
-  ● Documentation Files Validation › Required Documentation Files › 
+  ● Documentation Files Validation › Required Documentation Files ›
     should contain sync documentation files
 
     expect(received).toBe(expected) // Object.is equality
@@ -381,8 +381,8 @@ FAIL __tests__/documentation.test.js
 2. **Create**: Generate missing documentation files
 3. **Update Test**: Adjust expectations to match actual documentation structure
 
-**Effort**: 1 hour (requires investigation)  
-**Impact**: Ensures documentation completeness  
+**Effort**: 1 hour (requires investigation)
+**Impact**: Ensures documentation completeness
 **Verification**: Run `npm test -- __tests__/documentation.test.js`
 
 ---
@@ -390,8 +390,8 @@ FAIL __tests__/documentation.test.js
 #### 🟢 LOW PRIORITY (P3) - Backlog
 
 ##### L1. Test Assertion Precision Issues (15+ tests)
-**Impact**: Minor test failures due to incorrect expected values  
-**Root Cause**: Tests have hard-coded expectations that don't match actual implementation  
+**Impact**: Minor test failures due to incorrect expected values
+**Root Cause**: Tests have hard-coded expectations that don't match actual implementation
 **Examples**:
 - Brazilian locale tests expecting "Brasil" receiving different format
 - DisplayerFactory instantiation error message mismatch
@@ -414,15 +414,15 @@ Received: (different error message)
 2. **Update Assertions**: Match expected values to correct behavior
 3. **Add Comments**: Document why specific values are expected
 
-**Effort**: 3-4 hours (15+ test files)  
-**Impact**: Improves test accuracy and prevents false negatives  
+**Effort**: 3-4 hours (15+ test files)
+**Impact**: Improves test accuracy and prevents false negatives
 **Verification**: Run individual test suites after fixes
 
 ---
 
 ##### L2. Object Immutability Test Issues (2 files)
-**Impact**: Tests fail when attempting to verify immutability  
-**Root Cause**: Objects already frozen/sealed, tests expect to set properties  
+**Impact**: Tests fail when attempting to verify immutability
+**Root Cause**: Objects already frozen/sealed, tests expect to set properties
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/GeoPosition.immutability.test.js`
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/features/MunicipioChangeText.test.js`
@@ -440,26 +440,26 @@ TypeError: Cannot add property buildTextToSpeechMunicipio, object is not extensi
 // Test immutability correctly
 test('should not have accuracy setter', () => {
   const position = new GeoPosition(data);
-  
+
   // Should throw when attempting to modify frozen object
   expect(() => {
     position.accuracy = 999;
   }).toThrow(TypeError);
-  
+
   // Original value should remain unchanged
   expect(position.accuracy).not.toBe(999);
 });
 ```
 
-**Effort**: 1 hour  
-**Impact**: Properly validates immutability contracts  
+**Effort**: 1 hour
+**Impact**: Properly validates immutability contracts
 **Verification**: Run immutability test files
 
 ---
 
 ##### L3. Shell Script Test Execution Issues (1 file)
-**Impact**: Shell script functionality tests fail  
-**Root Cause**: Test expectations don't match actual script execution results  
+**Impact**: Shell script functionality tests fail
+**Root Cause**: Test expectations don't match actual script execution results
 **Affected Files**:
 - `__tests__/shell_scripts.test.js`
 
@@ -471,14 +471,14 @@ Expected: < -1
 
 **Diagnosis**: Comparison operator or expected value logic error in test.
 
-**Effort**: 30 minutes  
-**Impact**: Validates deployment script functionality  
+**Effort**: 30 minutes
+**Impact**: Validates deployment script functionality
 **Verification**: Run `npm test -- __tests__/shell_scripts.test.js`
 
 ---
 
 ##### L4. Timing-Dependent Test Failures (1 file)
-**Impact**: Flaky test due to timing assumptions  
+**Impact**: Flaky test due to timing assumptions
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem.integration.test.js`
 
@@ -495,8 +495,8 @@ Received: 6
 2. **Adjust Thresholds**: Make expectations more flexible
 3. **Add Delays**: Use `await new Promise(resolve => setTimeout(resolve, ms))`
 
-**Effort**: 45 minutes  
-**Impact**: Eliminates flaky behavior  
+**Effort**: 45 minutes
+**Impact**: Eliminates flaky behavior
 **Verification**: Run test 10+ times to confirm stability
 
 ---
@@ -643,19 +643,19 @@ Test utilities | 90-95% | High
 ### Optimization Opportunities (Low Priority)
 
 #### O1. Test Parallelization Strategy
-**Current State**: Jest runs tests in parallel by default  
+**Current State**: Jest runs tests in parallel by default
 **Potential Improvement**: Minimal (already optimized)
 
 **Recommendation**: No action needed unless test count exceeds 5,000
 
 #### O2. Mock Optimization
-**Current State**: Extensive use of jsdom mocks  
+**Current State**: Extensive use of jsdom mocks
 **Observation**: Mock setup is efficient
 
 **Recommendation**: Continue current approach
 
 #### O3. Setup File Optimization
-**File**: `jest.setup.js` (129 lines)  
+**File**: `jest.setup.js` (129 lines)
 **Impact**: Loaded once per worker process (minimal)
 
 **Recommendation**: No optimization needed
@@ -696,9 +696,9 @@ Total:                                7.9s
 #### Confirmed Flaky Tests: 1
 
 **F1. SpeechItem Expiration Queue Management**
-**File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem.integration.test.js`  
-**Test**: `should integrate with automatic queue maintenance`  
-**Symptom**: Expects 5 items, receives 6  
+**File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem.integration.test.js`
+**Test**: `should integrate with automatic queue maintenance`
+**Symptom**: Expects 5 items, receives 6
 **Root Cause**: Timing-dependent expiration logic
 
 **Evidence**:
@@ -713,51 +713,51 @@ expect(cleanedQueue.length).toBe(5);  // ❌ Sometimes receives 6
 ```javascript
 test('should integrate with automatic queue maintenance', async () => {
   jest.useFakeTimers();  // ✅ Control time
-  
+
   const queue = [];
   const expirationMs = 25000;
-  
+
   // Create items with controlled timestamps
   for (let i = 0; i < 10; i++) {
     const item = new SpeechItem(`Item ${i}`, expirationMs);
     queue.push(item);
-    
+
     // Advance time by 5 seconds between items
     jest.advanceTimersByTime(5000);
   }
-  
+
   // Advance past expiration threshold
   jest.advanceTimersByTime(10000);
-  
+
   // Cleanup expired items
   const cleanedQueue = queue.filter(item => !item.isExpired());
-  
+
   // Exact expectation is now deterministic
   expect(cleanedQueue.length).toBe(5);
-  
+
   jest.useRealTimers();  // Restore
 });
 ```
 
-**Effort**: 30 minutes  
-**Impact**: Eliminates flaky behavior  
+**Effort**: 30 minutes
+**Impact**: Eliminates flaky behavior
 **Verification**: Run test 100+ times: `npm test -- --testNamePattern="automatic queue maintenance" --repeat=100`
 
 ### Potential Flaky Tests: 3
 
 **P1. Async Operation Tests Without Proper Awaits**
-**Affected Files**: Various integration tests  
-**Risk Level**: Low  
+**Affected Files**: Various integration tests
+**Risk Level**: Low
 **Recommendation**: Audit for missing `await` keywords on promises
 
 **P2. DOM Event Listener Tests**
-**Affected Files**: Multiple UI component tests  
-**Risk Level**: Very Low  
+**Affected Files**: Multiple UI component tests
+**Risk Level**: Very Low
 **Recommendation**: Ensure `fireEvent` calls are synchronous or properly awaited
 
 **P3. Mock Function Call Timing**
-**Affected Files**: Observer pattern tests  
-**Risk Level**: Low  
+**Affected Files**: Observer pattern tests
+**Risk Level**: Low
 **Recommendation**: Add `await waitFor()` for async mock call verification
 
 ### Test Isolation Assessment: ✅ GOOD
@@ -805,44 +805,44 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive  # ✅ Initialize git submodules
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: 'src/package-lock.json'
-      
+
       - name: Install Dependencies
         working-directory: ./src
         run: npm ci
-      
+
       - name: Run Linters
         working-directory: ./src
         run: |
           npm run lint:md || true  # ✅ Non-blocking initially
-      
+
       - name: Run Tests
         working-directory: ./src
         run: npm test
         env:
           CI: true
-      
+
       - name: Run Tests with Coverage
         working-directory: ./src
         run: npm run test:coverage
         env:
           CI: true
-      
+
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -850,7 +850,7 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false  # ✅ Non-blocking initially
-      
+
       - name: Archive Test Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -863,21 +863,21 @@ jobs:
     name: Coverage Gate
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           cache: 'npm'
           cache-dependency-path: 'src/package-lock.json'
-      
+
       - name: Install Dependencies
         working-directory: ./src
         run: npm ci
-      
+
       - name: Check Coverage Thresholds
         working-directory: ./src
         run: |
@@ -888,21 +888,21 @@ jobs:
   lint:
     name: Code Quality
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - name: Setup Ruby (for markdownlint)
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
-      
+
       - name: Install mdl
         run: gem install mdl
-      
+
       - name: Lint Markdown Files
         run: |
           cd src
@@ -911,7 +911,7 @@ jobs:
 
 ### Test Splitting Strategy for CI
 
-**Current Setup**: Single test run (7.9s) - No splitting needed  
+**Current Setup**: Single test run (7.9s) - No splitting needed
 **Threshold for Splitting**: > 15 minutes execution time
 
 **Recommendation**: No test splitting required. Current execution time is excellent for CI/CD.
@@ -1038,7 +1038,7 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
 
 ### Sprint 1 (Week 1) - Critical Fixes 🔴
 
-**Estimated Effort**: 4-6 hours  
+**Estimated Effort**: 4-6 hours
 **Impact**: Restores CI/CD capability, fixes 50% of failures
 
 | Priority | Item | File(s) | Effort | Impact |
@@ -1053,7 +1053,7 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
 
 ### Sprint 2 (Week 2) - High Priority Fixes 🟠
 
-**Estimated Effort**: 3-4 hours  
+**Estimated Effort**: 3-4 hours
 **Impact**: Enables advanced testing, improves test quality
 
 | Priority | Item | File(s) | Effort | Impact |
@@ -1067,7 +1067,7 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
 
 ### Sprint 3 (Weeks 3-4) - Test Quality Improvements 🟡
 
-**Estimated Effort**: 6-8 hours  
+**Estimated Effort**: 6-8 hours
 **Impact**: Improves test accuracy and stability
 
 | Priority | Item | Effort | Impact |
@@ -1081,7 +1081,7 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
 
 ### Sprint 4 (Weeks 5-6) - CI/CD Implementation 🚀
 
-**Estimated Effort**: 8-10 hours  
+**Estimated Effort**: 8-10 hours
 **Impact**: Full CI/CD automation
 
 | Priority | Item | Effort | Impact |
@@ -1096,7 +1096,7 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
 
 ### Sprint 5 (Weeks 7-8) - Coverage Expansion 📊
 
-**Estimated Effort**: 16-20 hours  
+**Estimated Effort**: 16-20 hours
 **Impact**: Achieve 80% coverage target
 
 | Priority | Item | Effort | Impact |
@@ -1153,8 +1153,8 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
 **Example Quality Standard:**
 ```
 ❌ Bad: "Fix the tests"
-✅ Good: "Add TextEncoder polyfill to jest.setup.js (line 49), 
-         import from 'util' module, effort: 15 minutes, 
+✅ Good: "Add TextEncoder polyfill to jest.setup.js (line 49),
+         import from 'util' module, effort: 15 minutes,
          fixes 8+ test suites immediately"
 ```
 
@@ -1245,7 +1245,7 @@ npx husky add .husky/pre-commit "cd src && npm test -- --bail --findRelatedTests
    - Change: Remove monitora_vagas from .gitmodules expectation
    - Impact: Fix 1 test suite
 
-**Total Immediate Actions**: ~2 hours  
+**Total Immediate Actions**: ~2 hours
 **Expected Result**: ✅ Fixes 21+ failing test suites, restores coverage collection
 
 ### Week 1 Goals
@@ -1384,7 +1384,7 @@ npm run test:coverage -- --ci --coverage --coverageReporters=text-summary
 
 ---
 
-**Document Version**: 1.0.0  
-**Last Updated**: December 15, 2025  
-**Author**: Senior CI/CD Engineer & Test Results Analyst  
+**Document Version**: 1.0.0
+**Last Updated**: December 15, 2025
+**Author**: Senior CI/CD Engineer & Test Results Analyst
 **Status**: Ready for Implementation

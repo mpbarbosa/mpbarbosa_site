@@ -1,9 +1,9 @@
 # Comprehensive Test Strategy Report
 **MP Barbosa Personal Website - Test Quality & Coverage Analysis**
 
-**Generated**: 2025-11-14  
-**Project**: MP Barbosa Personal Portfolio  
-**Test Framework**: Jest 30.2.0 with ES Modules  
+**Generated**: 2025-11-14
+**Project**: MP Barbosa Personal Portfolio
+**Test Framework**: Jest 30.2.0 with ES Modules
 **Environment**: jsdom + Node.js
 
 ---
@@ -91,7 +91,7 @@ describe('Contact Form Handling', () => {
   test('should set up contact form submission handling', () => {
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation();
     const result = setupContactForm();
-    
+
     expect(result).toBe(true);
     // ... test form submission
     expect(alertSpy).toHaveBeenCalledWith('Form submitted! Thank you for reaching out.');
@@ -113,7 +113,7 @@ Example Excellence:
 describe('createProductionDIContainer()', () => {
   test('should configure production settings correctly', () => {
     const container = InitializationUtilities.createProductionDIContainer();
-    
+
     expect(container.config.environment).toBe('production');
     expect(container.config.enableLogging).toBe(false);
     expect(container.config.enableDebugMode).toBe(false);
@@ -224,7 +224,7 @@ describe('HTML5 UP Dimension Template Integration', () => {
   test('should handle article modal transitions', () => {
     const articleLink = document.querySelector('[href="#intro"]');
     articleLink.click();
-    
+
     const article = document.querySelector('#intro.active');
     expect(article).toBeTruthy();
     expect(article.style.display).toBe('flex');
@@ -233,7 +233,7 @@ describe('HTML5 UP Dimension Template Integration', () => {
   test('should handle ESC key to close articles', () => {
     const escEvent = new KeyboardEvent('keyup', { key: 'Escape' });
     document.dispatchEvent(escEvent);
-    
+
     const activeArticles = document.querySelectorAll('article.active');
     expect(activeArticles.length).toBe(0);
   });
@@ -250,10 +250,10 @@ describe('Contact Form Validation', () => {
     const form = document.getElementById('contact-form');
     const nameInput = form.querySelector('[name="name"]');
     const emailInput = form.querySelector('[name="email"]');
-    
+
     nameInput.value = '';
     emailInput.value = '';
-    
+
     expect(form.checkValidity()).toBe(false);
     expect(nameInput.validity.valid).toBe(false);
     expect(emailInput.validity.valid).toBe(false);
@@ -261,11 +261,11 @@ describe('Contact Form Validation', () => {
 
   test('should validate email format', () => {
     const emailInput = document.querySelector('[name="email"]');
-    
+
     emailInput.value = 'invalid-email';
     expect(emailInput.validity.valid).toBe(false);
     expect(emailInput.validity.typeMismatch).toBe(true);
-    
+
     emailInput.value = 'valid@email.com';
     expect(emailInput.validity.valid).toBe(true);
   });
@@ -282,11 +282,11 @@ describe('Project Redirect Pages', () => {
     // Load redirect page
     const redirectHTML = fs.readFileSync('pages/music-in-numbers.html', 'utf8');
     document.body.innerHTML = redirectHTML;
-    
+
     // Mock window.location
     delete window.location;
     window.location = { href: '' };
-    
+
     // Wait for redirect
     setTimeout(() => {
       expect(window.location.href).toContain('submodules/music_in_numbers/src');
@@ -339,7 +339,7 @@ describe('HTML5 UP Dimension Template Functionality', () => {
   beforeEach(() => {
     const indexHTML = fs.readFileSync('index.html', 'utf8');
     document.body.innerHTML = indexHTML;
-    
+
     // Mock Font Awesome loading
     const fontAwesome = document.createElement('link');
     fontAwesome.rel = 'stylesheet';
@@ -351,9 +351,9 @@ describe('HTML5 UP Dimension Template Functionality', () => {
     test('should open article on navigation link click', () => {
       const introLink = document.querySelector('a[href="#intro"]');
       const introArticle = document.querySelector('#intro');
-      
+
       introLink.click();
-      
+
       expect(introArticle.classList.contains('active')).toBe(true);
       expect(document.body.classList.contains('is-article-visible')).toBe(true);
     });
@@ -361,11 +361,11 @@ describe('HTML5 UP Dimension Template Functionality', () => {
     test('should close article on close button click', () => {
       // Open article first
       document.querySelector('a[href="#intro"]').click();
-      
+
       // Click close button
       const closeButton = document.querySelector('#intro .close');
       closeButton.click();
-      
+
       const introArticle = document.querySelector('#intro');
       expect(introArticle.classList.contains('active')).toBe(false);
       expect(document.body.classList.contains('is-article-visible')).toBe(false);
@@ -373,11 +373,11 @@ describe('HTML5 UP Dimension Template Functionality', () => {
 
     test('should handle multiple article transitions', () => {
       const sections = ['#intro', '#work', '#about', '#contact'];
-      
+
       sections.forEach(section => {
         document.querySelector(`a[href="${section}"]`).click();
         expect(document.querySelector(section).classList.contains('active')).toBe(true);
-        
+
         document.querySelector(`${section} .close`).click();
         expect(document.querySelector(section).classList.contains('active')).toBe(false);
       });
@@ -387,10 +387,10 @@ describe('HTML5 UP Dimension Template Functionality', () => {
   describe('Keyboard Navigation', () => {
     test('should close article on ESC key', () => {
       document.querySelector('a[href="#intro"]').click();
-      
+
       const escEvent = new KeyboardEvent('keyup', { key: 'Escape', keyCode: 27 });
       window.dispatchEvent(escEvent);
-      
+
       const introArticle = document.querySelector('#intro');
       expect(introArticle.classList.contains('active')).toBe(false);
     });
@@ -399,10 +399,10 @@ describe('HTML5 UP Dimension Template Functionality', () => {
       // Simulate arrow key navigation
       const rightArrow = new KeyboardEvent('keydown', { key: 'ArrowRight', keyCode: 39 });
       const leftArrow = new KeyboardEvent('keydown', { key: 'ArrowLeft', keyCode: 37 });
-      
+
       window.dispatchEvent(rightArrow);
       // Verify next article opens
-      
+
       window.dispatchEvent(leftArrow);
       // Verify previous article opens
     });
@@ -422,11 +422,11 @@ describe('HTML5 UP Dimension Template Functionality', () => {
         // Mock window.innerWidth
         global.innerWidth = viewport.width;
         global.dispatchEvent(new Event('resize'));
-        
+
         // Verify layout adjustments
         const main = document.querySelector('#main');
         const computedStyle = window.getComputedStyle(main);
-        
+
         if (viewport.width <= 736) {
           // Small/XSmall should stack
           expect(computedStyle.flexDirection).toBe('column');
@@ -442,25 +442,25 @@ describe('HTML5 UP Dimension Template Functionality', () => {
     test('should load background image', () => {
       const bg = document.querySelector('#bg');
       const computedStyle = window.getComputedStyle(bg);
-      
+
       expect(computedStyle.backgroundImage).toContain('images/bg.jpg');
     });
 
     test('should apply overlay correctly', () => {
-      const overlay = document.querySelector('#bg::after') || 
+      const overlay = document.querySelector('#bg::after') ||
                       document.querySelector('#bg .overlay');
-      
+
       expect(overlay).toBeTruthy();
     });
 
     test('should handle preloader animation', () => {
       const body = document.body;
-      
+
       expect(body.classList.contains('is-preload')).toBe(true);
-      
+
       // Simulate page load
       window.dispatchEvent(new Event('load'));
-      
+
       setTimeout(() => {
         expect(body.classList.contains('is-preload')).toBe(false);
       }, 100);
@@ -494,7 +494,7 @@ describe('Contact Form Validation', () => {
     test('should reject empty name field', () => {
       const nameInput = document.querySelector('[name="name"]');
       nameInput.value = '';
-      
+
       expect(nameInput.checkValidity()).toBe(false);
       expect(nameInput.validity.valueMissing).toBe(true);
     });
@@ -502,7 +502,7 @@ describe('Contact Form Validation', () => {
     test('should reject name shorter than 2 characters', () => {
       const nameInput = document.querySelector('[name="name"]');
       nameInput.value = 'A';
-      
+
       expect(nameInput.checkValidity()).toBe(false);
       expect(nameInput.validity.tooShort).toBe(true);
     });
@@ -510,13 +510,13 @@ describe('Contact Form Validation', () => {
     test('should accept valid name', () => {
       const nameInput = document.querySelector('[name="name"]');
       nameInput.value = 'John Doe';
-      
+
       expect(nameInput.checkValidity()).toBe(true);
     });
 
     test('should reject invalid email format', () => {
       const emailInput = document.querySelector('[name="email"]');
-      
+
       const invalidEmails = [
         'notanemail',
         '@example.com',
@@ -533,7 +533,7 @@ describe('Contact Form Validation', () => {
 
     test('should accept valid email formats', () => {
       const emailInput = document.querySelector('[name="email"]');
-      
+
       const validEmails = [
         'user@example.com',
         'user.name@example.com',
@@ -550,7 +550,7 @@ describe('Contact Form Validation', () => {
     test('should reject message shorter than 10 characters', () => {
       const messageInput = document.querySelector('[name="message"]');
       messageInput.value = 'Too short';
-      
+
       expect(messageInput.checkValidity()).toBe(false);
       expect(messageInput.validity.tooShort).toBe(true);
     });
@@ -558,7 +558,7 @@ describe('Contact Form Validation', () => {
     test('should accept valid message', () => {
       const messageInput = document.querySelector('[name="message"]');
       messageInput.value = 'This is a valid message with sufficient length';
-      
+
       expect(messageInput.checkValidity()).toBe(true);
     });
   });
@@ -566,13 +566,13 @@ describe('Contact Form Validation', () => {
   describe('Form Submission Validation', () => {
     test('should prevent submission with invalid fields', () => {
       setupContactForm();
-      
+
       const form = document.getElementById('contact-form');
       const submitEvent = new Event('submit', { cancelable: true });
-      
+
       // Don't fill any fields
       const result = form.dispatchEvent(submitEvent);
-      
+
       expect(result).toBe(true); // Event not prevented by validation
       expect(form.checkValidity()).toBe(false);
     });
@@ -580,20 +580,20 @@ describe('Contact Form Validation', () => {
     test('should allow submission with all valid fields', () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation();
       setupContactForm();
-      
+
       const form = document.getElementById('contact-form');
       const nameInput = form.querySelector('[name="name"]');
       const emailInput = form.querySelector('[name="email"]');
       const messageInput = form.querySelector('[name="message"]');
-      
+
       nameInput.value = 'John Doe';
       emailInput.value = 'john@example.com';
       messageInput.value = 'This is a valid test message';
-      
+
       expect(form.checkValidity()).toBe(true);
-      
+
       form.dispatchEvent(new Event('submit'));
-      
+
       expect(alertSpy).toHaveBeenCalled();
       alertSpy.mockRestore();
     });
@@ -601,12 +601,12 @@ describe('Contact Form Validation', () => {
     test('should display validation messages', () => {
       const form = document.getElementById('contact-form');
       const nameInput = form.querySelector('[name="name"]');
-      
+
       nameInput.value = '';
-      
+
       // Trigger validation
       nameInput.reportValidity();
-      
+
       expect(nameInput.validationMessage).toBeTruthy();
       expect(nameInput.validationMessage.length).toBeGreaterThan(0);
     });
@@ -615,12 +615,12 @@ describe('Contact Form Validation', () => {
   describe('Real-time Validation Feedback', () => {
     test('should update validity state on input', () => {
       const emailInput = document.querySelector('[name="email"]');
-      
+
       // Start with invalid
       emailInput.value = 'invalid';
       let isValid = emailInput.checkValidity();
       expect(isValid).toBe(false);
-      
+
       // Type to make valid
       emailInput.value = 'valid@email.com';
       isValid = emailInput.checkValidity();
@@ -629,16 +629,16 @@ describe('Contact Form Validation', () => {
 
     test('should handle paste events', () => {
       const emailInput = document.querySelector('[name="email"]');
-      
+
       // Simulate paste
       const pasteEvent = new ClipboardEvent('paste', {
         clipboardData: new DataTransfer()
       });
       pasteEvent.clipboardData.setData('text/plain', 'pasted@email.com');
-      
+
       emailInput.dispatchEvent(pasteEvent);
       emailInput.value = 'pasted@email.com';
-      
+
       expect(emailInput.checkValidity()).toBe(true);
     });
   });
@@ -663,7 +663,7 @@ describe('Accessibility Compliance', () => {
   describe('ARIA Attributes', () => {
     test('should have proper ARIA labels on navigation links', () => {
       const navLinks = document.querySelectorAll('nav a');
-      
+
       navLinks.forEach(link => {
         const ariaLabel = link.getAttribute('aria-label') || link.textContent;
         expect(ariaLabel).toBeTruthy();
@@ -674,9 +674,9 @@ describe('Accessibility Compliance', () => {
     test('should have ARIA roles on main sections', () => {
       const main = document.querySelector('#main');
       const articles = document.querySelectorAll('article');
-      
+
       expect(main.getAttribute('role') || main.tagName.toLowerCase()).toBe('main');
-      
+
       articles.forEach(article => {
         expect(article.tagName.toLowerCase()).toBe('article');
       });
@@ -685,12 +685,12 @@ describe('Accessibility Compliance', () => {
     test('should have proper form labels', () => {
       const form = document.getElementById('contact-form');
       const inputs = form.querySelectorAll('input, textarea');
-      
+
       inputs.forEach(input => {
         const label = form.querySelector(`label[for="${input.id}"]`) ||
                      input.getAttribute('aria-label') ||
                      input.getAttribute('placeholder');
-        
+
         expect(label).toBeTruthy();
       });
     });
@@ -701,9 +701,9 @@ describe('Accessibility Compliance', () => {
       const focusableElements = document.querySelectorAll(
         'a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
       );
-      
+
       expect(focusableElements.length).toBeGreaterThan(0);
-      
+
       // Verify tab order makes sense
       let previousTabIndex = -1;
       focusableElements.forEach(element => {
@@ -717,16 +717,16 @@ describe('Accessibility Compliance', () => {
 
     test('should show focus indicators', () => {
       const links = document.querySelectorAll('a');
-      
+
       links.forEach(link => {
         link.focus();
         const computedStyle = window.getComputedStyle(link, ':focus');
-        
+
         // Should have some visual focus indicator
         const hasOutline = computedStyle.outline !== 'none';
         const hasBorder = computedStyle.borderWidth !== '0px';
         const hasBackground = computedStyle.backgroundColor !== 'transparent';
-        
+
         expect(hasOutline || hasBorder || hasBackground).toBe(true);
       });
     });
@@ -734,23 +734,23 @@ describe('Accessibility Compliance', () => {
     test('should trap focus in modal articles', () => {
       // Open article
       document.querySelector('a[href="#intro"]').click();
-      
+
       const article = document.querySelector('#intro');
       const focusableInModal = article.querySelectorAll(
         'a, button, input, textarea, [tabindex]:not([tabindex="-1"])'
       );
-      
+
       // Focus first element
       focusableInModal[0].focus();
       expect(document.activeElement).toBe(focusableInModal[0]);
-      
+
       // Tab through all elements
       focusableInModal.forEach((element, index) => {
         // Simulate tab
         const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
         document.activeElement.dispatchEvent(tabEvent);
       });
-      
+
       // Should cycle back to first element
       expect(document.activeElement).toBe(focusableInModal[0]);
     });
@@ -759,32 +759,32 @@ describe('Accessibility Compliance', () => {
   describe('Screen Reader Support', () => {
     test('should have alt text on all images', () => {
       const images = document.querySelectorAll('img');
-      
+
       images.forEach(img => {
         const hasAlt = img.getAttribute('alt') !== null;
         const isDecorative = img.getAttribute('role') === 'presentation';
-        
+
         expect(hasAlt || isDecorative).toBe(true);
       });
     });
 
     test('should have live region announcements', () => {
       const liveRegions = document.querySelectorAll('[aria-live]');
-      
+
       // Should have at least one for form submission feedback
       expect(liveRegions.length).toBeGreaterThan(0);
     });
 
     test('should announce dynamic content changes', () => {
       const article = document.querySelector('#intro');
-      
+
       // Open article
       document.querySelector('a[href="#intro"]').click();
-      
+
       // Should have aria-live or role="status"
       const hasLiveRegion = article.querySelector('[aria-live]') ||
                            article.querySelector('[role="status"]');
-      
+
       expect(hasLiveRegion).toBeTruthy();
     });
   });
@@ -792,16 +792,16 @@ describe('Accessibility Compliance', () => {
   describe('Color Contrast', () => {
     test('should have sufficient contrast ratios', () => {
       const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, a, button');
-      
+
       textElements.forEach(element => {
         const style = window.getComputedStyle(element);
         const color = style.color;
         const backgroundColor = style.backgroundColor;
-        
+
         // Basic check that colors are defined
         expect(color).toBeTruthy();
         expect(backgroundColor).toBeTruthy();
-        
+
         // In a real test, you'd calculate contrast ratio here
         // and verify it meets WCAG AA (4.5:1) or AAA (7:1) standards
       });
@@ -838,7 +838,7 @@ describe('Performance Benchmarks', () => {
     const startTime = performance.now();
     // Load page
     const endTime = performance.now();
-    
+
     expect(endTime - startTime).toBeLessThan(2000);
   });
 
@@ -1138,7 +1138,7 @@ touch __tests__/e2e/homepage.spec.js
 - **Test Files**: 15+ (add 9 new files)
 - **Test Suites**: 100% passing (0 failures)
 - **Tests**: 2,000+ passing tests
-- **Code Coverage**: 
+- **Code Coverage**:
   - Main scripts: 95%+
   - Overall: 80%+
 - **Average Test Runtime**: < 20 seconds
@@ -1241,7 +1241,7 @@ touch __tests__/accessibility.test.js
 
 ---
 
-**Report Generated**: 2025-11-14  
-**Author**: Senior QA Engineer & Test Automation Specialist  
-**Review Status**: Ready for Implementation  
+**Report Generated**: 2025-11-14
+**Author**: Senior QA Engineer & Test Automation Specialist
+**Review Status**: Ready for Implementation
 **Next Review**: 2025-12-14 (30 days)

@@ -1,9 +1,9 @@
 # Comprehensive Test Strategy & Quality Assurance Analysis Report
 
-**Project:** MP Barbosa Personal Website  
-**Analysis Date:** December 2, 2025  
-**Analysis Type:** Senior QA Engineer Review - Test Coverage & Quality Assessment  
-**Test Framework:** Jest with ES Modules (experimental-vm-modules)  
+**Project:** MP Barbosa Personal Website
+**Analysis Date:** December 2, 2025
+**Analysis Type:** Senior QA Engineer Review - Test Coverage & Quality Assessment
+**Test Framework:** Jest with ES Modules (experimental-vm-modules)
 **Test Environment:** jsdom
 
 ---
@@ -138,7 +138,7 @@ alertSpy.mockRestore();  // ✅ Proper cleanup
 test('should have all required Core methods', async () => {
     const CoreClass = InitializationUtilities.getInitializationCore();
     const instance = new CoreClass();
-    
+
     expect(instance.initializeApplicationCore).toBeDefined();
     // ... async assertions
 });
@@ -153,7 +153,7 @@ test('should have all required Core methods', async () => {
 #### Covered Files ✅
 ```
 ✅ scripts/main.mjs              - Full coverage (496 test lines)
-✅ scripts/main.js               - Full coverage  
+✅ scripts/main.js               - Full coverage
 ✅ scripts/initialization/InitializationUtilities.js - Comprehensive (870 test lines)
 ```
 
@@ -185,14 +185,14 @@ describe('HTML5 UP Dimension Template Assets', () => {
             // Test browser detection logic
         });
     });
-    
+
     describe('Breakpoints (breakpoints.min.js)', () => {
         test('should define responsive breakpoints', () => {
             expect(window.breakpoints).toBeDefined();
             expect(window.breakpoints.xlarge).toBeDefined();
         });
     });
-    
+
     describe('Utility Functions (util.js)', () => {
         test('should provide DOM manipulation utilities', () => {
             // Test utility functions
@@ -237,7 +237,7 @@ test('should handle malformed href attributes', () => {
     const malformedLink = document.createElement('a');
     malformedLink.href = '#valid-id';
     document.body.appendChild(malformedLink);
-    
+
     const linkCount = setupSmoothScrolling();
     const clickEvent = new Event('click');
     expect(() => malformedLink.dispatchEvent(clickEvent)).not.toThrow();
@@ -314,7 +314,7 @@ describe('HTML5 UP Dimension Template Integration', () => {
         test('should have navigation with all sections', () => {
             const navLinks = document.querySelectorAll('nav ul li a');
             expect(navLinks.length).toBeGreaterThan(0);
-            
+
             const expectedSections = ['#intro', '#work', '#about', '#contact'];
             expectedSections.forEach(section => {
                 const link = document.querySelector(`a[href="${section}"]`);
@@ -337,11 +337,11 @@ describe('HTML5 UP Dimension Template Integration', () => {
         test('should handle article visibility toggling', () => {
             const article = document.getElementById('intro');
             expect(article).toBeTruthy();
-            
+
             // Simulate article activation
             article.classList.add('active');
             expect(article.classList.contains('active')).toBe(true);
-            
+
             // Simulate article close
             article.classList.remove('active');
             expect(article.classList.contains('active')).toBe(false);
@@ -371,7 +371,7 @@ describe('HTML5 UP Dimension Template Integration', () => {
         test('should have proper heading hierarchy', () => {
             const h1 = document.querySelector('h1');
             const h2 = document.querySelector('h2');
-            
+
             expect(h1).toBeTruthy();
             expect(h2).toBeTruthy();
         });
@@ -406,7 +406,7 @@ describe('Project Navigation End-to-End', () => {
             if (fs.existsSync(indexPath)) {
                 const indexHTML = fs.readFileSync(indexPath, 'utf8');
                 document.body.innerHTML = indexHTML;
-                
+
                 // Find Music in Numbers link
                 const musicLink = document.querySelector('a[href*="music_in_numbers"]');
                 expect(musicLink).toBeTruthy();
@@ -431,7 +431,7 @@ describe('Project Navigation End-to-End', () => {
             if (fs.existsSync(indexPath)) {
                 const indexHTML = fs.readFileSync(indexPath, 'utf8');
                 document.body.innerHTML = indexHTML;
-                
+
                 const guiaLink = document.querySelector('a[href*="guia_turistico"]');
                 expect(guiaLink).toBeTruthy();
             }
@@ -444,7 +444,7 @@ describe('Project Navigation End-to-End', () => {
             if (fs.existsSync(indexPath)) {
                 const indexHTML = fs.readFileSync(indexPath, 'utf8');
                 document.body.innerHTML = indexHTML;
-                
+
                 const monitoraLink = document.querySelector('a[href*="monitora_vagas"]');
                 expect(monitoraLink).toBeTruthy();
             }
@@ -470,23 +470,23 @@ describe('Performance and Optimization Tests', () => {
             const startTime = performance.now();
             initializeSite();
             const endTime = performance.now();
-            
+
             const duration = endTime - startTime;
             expect(duration).toBeLessThan(100); // Should initialize in < 100ms
         });
 
         test('should handle large number of links efficiently', () => {
             // Create 1000 navigation links
-            const navHtml = Array.from({ length: 1000 }, (_, i) => 
+            const navHtml = Array.from({ length: 1000 }, (_, i) =>
                 `<a href="#section${i}">Section ${i}</a>`
             ).join('');
-            
+
             document.body.innerHTML = navHtml;
-            
+
             const startTime = performance.now();
             const linkCount = setupSmoothScrolling();
             const endTime = performance.now();
-            
+
             expect(linkCount).toBe(1000);
             expect(endTime - startTime).toBeLessThan(500); // < 500ms for 1000 links
         });
@@ -495,7 +495,7 @@ describe('Performance and Optimization Tests', () => {
     describe('Memory Management', () => {
         test('should not create memory leaks with repeated initialization', () => {
             const iterations = 100;
-            
+
             for (let i = 0; i < iterations; i++) {
                 document.body.innerHTML = `
                     <form id="contact-form">
@@ -504,7 +504,7 @@ describe('Performance and Optimization Tests', () => {
                 `;
                 setupContactForm();
             }
-            
+
             // If we get here without running out of memory, test passes
             expect(true).toBe(true);
         });
@@ -512,22 +512,22 @@ describe('Performance and Optimization Tests', () => {
         test('should cleanup event listeners properly', () => {
             const originalAddEventListener = Element.prototype.addEventListener;
             let listenerCount = 0;
-            
+
             Element.prototype.addEventListener = function(...args) {
                 listenerCount++;
                 return originalAddEventListener.apply(this, args);
             };
-            
+
             document.body.innerHTML = '<a href="#test">Test</a>';
             setupSmoothScrolling();
             const firstCount = listenerCount;
-            
+
             document.body.innerHTML = '<a href="#test">Test</a>';
             setupSmoothScrolling();
             const secondCount = listenerCount;
-            
+
             expect(secondCount - firstCount).toBe(1); // Only 1 new listener
-            
+
             Element.prototype.addEventListener = originalAddEventListener;
         });
     });
@@ -544,19 +544,19 @@ describe('Performance and Optimization Tests', () => {
                 <div id="section2">Content 2</div>
                 <div id="section3">Content 3</div>
             `;
-            
+
             const originalQuerySelectorAll = document.querySelectorAll;
             let queryCount = 0;
-            
+
             document.querySelectorAll = function(...args) {
                 queryCount++;
                 return originalQuerySelectorAll.apply(this, args);
             };
-            
+
             setupSmoothScrolling();
-            
+
             expect(queryCount).toBeLessThanOrEqual(2); // Should query once or twice max
-            
+
             document.querySelectorAll = originalQuerySelectorAll;
         });
     });
@@ -887,7 +887,7 @@ class DisplayerFactory {
     constructor() {
         throw new Error('DisplayerFactory is a static factory class and cannot be instantiated. Use static methods instead.');
     }
-    
+
     static create() { ... }
 }
 ```
@@ -941,32 +941,32 @@ describe('Complete User Journey Tests', () => {
         const indexPath = path.join(__dirname, '../index.html');
         const indexHTML = fs.readFileSync(indexPath, 'utf8');
         document.body.innerHTML = indexHTML;
-        
+
         // 2. Click Projects navigation
         const projectsLink = document.querySelector('a[href="#projects"]');
         projectsLink.click();
-        
+
         // 3. Verify projects section visible
         const projectsSection = document.getElementById('projects');
         expect(projectsSection.classList.contains('active')).toBe(true);
-        
+
         // 4. Click Music in Numbers project
         const musicLink = document.querySelector('a[href*="music_in_numbers"]');
         expect(musicLink).toBeTruthy();
-        
+
         // 5. Navigate to contact
         const contactLink = document.querySelector('a[href="#contact"]');
         contactLink.click();
-        
+
         // 6. Fill and submit form
         const form = document.getElementById('contact-form');
         form.querySelector('input[name="name"]').value = 'Test User';
         form.querySelector('input[name="email"]').value = 'test@example.com';
         form.querySelector('textarea[name="message"]').value = 'Test message';
-        
+
         // 7. Submit
         form.dispatchEvent(new Event('submit'));
-        
+
         // 8. Verify success
         expect(form.querySelector('input[name="name"]').value).toBe('');
     });
@@ -983,40 +983,40 @@ describe('Browser Compatibility Tests', () => {
         test('should detect ES module support', () => {
             expect(typeof import).not.toBe('undefined');
         });
-        
+
         test('should use nomodule fallback for legacy browsers', () => {
             // Check that script tags have type="module" with nomodule fallback
             const indexPath = path.join(__dirname, '../index.html');
             const indexHTML = fs.readFileSync(indexPath, 'utf8');
-            
+
             if (indexHTML.includes('type="module"')) {
                 expect(indexHTML).toMatch(/nomodule/i);
             }
         });
     });
-    
+
     describe('CSS Feature Detection', () => {
         test('should support CSS Grid', () => {
             const div = document.createElement('div');
             expect('grid' in div.style || 'msGrid' in div.style).toBe(true);
         });
-        
+
         test('should support Flexbox', () => {
             const div = document.createElement('div');
             expect('flex' in div.style || 'msFlex' in div.style).toBe(true);
         });
     });
-    
+
     describe('JavaScript Feature Detection', () => {
         test('should support Promise', () => {
             expect(typeof Promise).toBe('function');
         });
-        
+
         test('should support async/await', () => {
             const asyncFn = async () => {};
             expect(asyncFn.constructor.name).toBe('AsyncFunction');
         });
-        
+
         test('should support arrow functions', () => {
             const arrowFn = () => {};
             expect(typeof arrowFn).toBe('function');
@@ -1040,24 +1040,24 @@ describe('Accessibility Tests', () => {
         const indexPath = path.join(__dirname, '../index.html');
         const indexHTML = fs.readFileSync(indexPath, 'utf8');
         document.body.innerHTML = indexHTML;
-        
+
         const results = await axe(document.body);
         expect(results).toHaveNoViolations();
     });
-    
+
     test('should have proper ARIA labels', () => {
         const indexPath = path.join(__dirname, '../index.html');
         const indexHTML = fs.readFileSync(indexPath, 'utf8');
         document.body.innerHTML = indexHTML;
-        
+
         // Check navigation has aria-label
         const nav = document.querySelector('nav');
         expect(
-            nav.hasAttribute('aria-label') || 
+            nav.hasAttribute('aria-label') ||
             nav.hasAttribute('aria-labelledby')
         ).toBe(true);
     });
-    
+
     test('should have sufficient color contrast', () => {
         // Use jest-axe or manual contrast calculations
         // This is a placeholder for actual implementation
@@ -1080,46 +1080,46 @@ describe('Security Tests', () => {
                     <button type="submit">Submit</button>
                 </form>
             `;
-            
+
             const nameInput = document.getElementById('name-input');
             const maliciousInput = '<script>alert("XSS")</script>';
-            
+
             nameInput.value = maliciousInput;
-            
+
             // Verify input is NOT executed as script
             expect(nameInput.value).toBe(maliciousInput); // Stored as text
             expect(document.scripts.length).toBe(0); // No scripts added
         });
-        
+
         test('should not allow inline script injection', () => {
             const dangerousHTML = '<img src=x onerror="alert(1)">';
-            
+
             // This should NOT execute the onerror
             const div = document.createElement('div');
             div.innerHTML = dangerousHTML;
             document.body.appendChild(div);
-            
+
             // In a real browser, this would need CSP headers
             // In jsdom, we verify the HTML is escaped
             expect(div.innerHTML).toContain('onerror');
         });
     });
-    
+
     describe('CSP Headers', () => {
         test('should recommend Content Security Policy', () => {
             // This is a documentation test
             const indexPath = path.join(__dirname, '../index.html');
             const indexHTML = fs.readFileSync(indexPath, 'utf8');
-            
+
             // Check if CSP meta tag is present
             const hasCSP = indexHTML.includes('Content-Security-Policy');
-            
+
             // Log recommendation if not present
             if (!hasCSP) {
                 console.warn('Recommendation: Add CSP meta tag for security');
                 console.warn('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">');
             }
-            
+
             expect(true).toBe(true);
         });
     });
@@ -1304,46 +1304,46 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive  # Important for git submodules
-    
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: src/package-lock.json
-    
+
     - name: Install dependencies
       working-directory: ./src
       run: npm ci
-    
+
     - name: Run main project tests
       working-directory: ./src
       run: npm run test:main -- --ci --coverage
-    
+
     - name: Run unit tests (skip E2E)
       working-directory: ./src
       run: npm run test:unit -- --ci
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         directory: ./src/coverage
         flags: unittests
         name: codecov-umbrella
-    
+
     - name: Check coverage thresholds
       working-directory: ./src
       run: npm run test:coverage -- --ci --coverageThreshold='{"global":{"branches":70,"functions":70,"lines":70,"statements":70}}'
-    
+
     - name: Archive test results
       if: always()
       uses: actions/upload-artifact@v3
@@ -1355,10 +1355,10 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Lint markdown files
       working-directory: ./src
       run: npm run lint:md || true  # Don't fail build on markdown lint errors
@@ -1625,8 +1625,8 @@ With the recommended improvements implemented, the project will achieve:
 
 ---
 
-**Report Generated:** December 2, 2025  
-**Reviewed By:** Senior QA Engineer (AI-Powered Analysis)  
-**Framework:** Jest 30.2.0 with ES Modules  
-**Test Environment:** jsdom 30.2.0  
+**Report Generated:** December 2, 2025
+**Reviewed By:** Senior QA Engineer (AI-Powered Analysis)
+**Framework:** Jest 30.2.0 with ES Modules
+**Test Environment:** jsdom 30.2.0
 **Total Tests Analyzed:** 1,617 tests across 89 suites

@@ -1,8 +1,8 @@
 # Python Migration Plan: enhance_prompt.sh → enhance_prompt.py
 
-**Document Version:** 1.0  
-**Date:** November 3, 2025  
-**Author:** Migration Planning Team  
+**Document Version:** 1.0
+**Date:** November 3, 2025
+**Author:** Migration Planning Team
 **Target Script:** `shell_scripts/enhance_prompt.sh` (177 lines)
 
 ---
@@ -97,17 +97,17 @@ class Color(Enum):
 
 class TerminalOutput:
     """Handle colored terminal output with fallback."""
-    
+
     def __init__(self, use_color: bool = None):
         # Auto-detect color support if not specified
         if use_color is None:
             use_color = sys.stderr.isatty()
         self.use_color = use_color
-    
+
     def print_status(self, color: Color, message: str) -> None:
         """Print colored status message to stderr (Bash parity)."""
         if self.use_color:
-            print(f"{color.value}{message}{Color.RESET.value}", 
+            print(f"{color.value}{message}{Color.RESET.value}",
                   file=sys.stderr)
         else:
             print(message, file=sys.stderr)
@@ -129,35 +129,35 @@ class CopilotConfig:
 
 class CopilotExecutor:
     """Execute GitHub Copilot CLI with subprocess management."""
-    
+
     def __init__(self, config: CopilotConfig, verbose: bool = False):
         self.config = config
         self.verbose = verbose
         self.terminal = TerminalOutput()
-    
+
     def check_availability(self) -> bool:
         """Verify Copilot CLI is installed (exit 1 parity)."""
         try:
-            subprocess.run(['copilot', '--version'], 
+            subprocess.run(['copilot', '--version'],
                          capture_output=True, check=True, timeout=5)
             return True
-        except (subprocess.CalledProcessError, FileNotFoundError, 
+        except (subprocess.CalledProcessError, FileNotFoundError,
                 subprocess.TimeoutExpired):
             return False
-    
+
     def execute(self, meta_prompt: str) -> subprocess.CompletedProcess:
         """Execute copilot CLI with exact argument parity."""
         cmd = ['copilot', '--allow-all-tools', '--no-color', '--prompt']
-        
+
         if self.config.model:
             cmd.extend(['--model', self.config.model])
-        
+
         cmd.append(meta_prompt)
-        
+
         if self.verbose:
-            self.terminal.print_status(Color.BLUE, 
+            self.terminal.print_status(Color.BLUE,
                 f"Executing: {' '.join(cmd)}")
-        
+
         return subprocess.run(cmd, capture_output=True, text=True)
 ```
 
@@ -168,7 +168,7 @@ from typing import List
 
 class OutputParser:
     """Parse and clean Copilot CLI output with sed-equivalent logic."""
-    
+
     # Sed transformations mapped to Python regex patterns
     REMOVAL_PATTERNS = [
         r'^Total usage.*$',           # /^Total usage/,$d
@@ -177,37 +177,37 @@ class OutputParser:
         r'^\s*claude-sonnet.*$',       # /^[[:space:]]*claude-sonnet/d
         r'^\s*gpt-.*$',                # /^[[:space:]]*gpt-/d
     ]
-    
+
     SUBSTITUTION_PATTERNS = [
         (r'^\*\*Enhanced Prompt:\*\*', ''),  # s/^\*\*Enhanced Prompt:\*\*//
         (r'^Enhanced Prompt:', ''),          # s/^Enhanced Prompt://
     ]
-    
+
     @staticmethod
     def clean_output(raw_output: str) -> str:
         """Apply sed-equivalent transformations to extract enhanced prompt."""
         lines = raw_output.splitlines()
         cleaned_lines = []
-        
+
         # Process each line through removal patterns
         for line in lines:
             # Stop at "Total usage" (sed: /^Total usage/,$d)
             if re.match(r'^Total usage', line):
                 break
-            
+
             # Skip lines matching removal patterns
-            if any(re.match(pattern, line) 
+            if any(re.match(pattern, line)
                    for pattern in OutputParser.REMOVAL_PATTERNS):
                 continue
-            
+
             # Apply substitutions
             for pattern, replacement in OutputParser.SUBSTITUTION_PATTERNS:
                 line = re.sub(pattern, replacement, line)
-            
+
             # Skip empty lines (sed: /^[[:space:]]*$/d)
             if line.strip():
                 cleaned_lines.append(line)
-        
+
         # Remove leading/trailing empty lines (sed: -e :a -e '/^\n*$/{$d;N;ba' -e '}')
         result = '\n'.join(cleaned_lines).strip()
         return result
@@ -222,7 +222,7 @@ from typing import NoReturn
 
 class PromptEnhancer:
     """Main orchestrator for prompt enhancement workflow."""
-    
+
     def __init__(self, args: argparse.Namespace):
         self.args = args
         self.terminal = TerminalOutput()
@@ -231,7 +231,7 @@ class PromptEnhancer:
             verbose=args.verbose
         )
         self.parser = OutputParser()
-    
+
     def build_meta_prompt(self) -> str:
         """Construct enhancement meta-prompt (exact Bash parity)."""
         return f"""You are a prompt enhancement expert. Enhance the following prompt by:
@@ -244,27 +244,27 @@ Original Prompt:
 "{self.args.prompt}"
 
 Enhanced Prompt (provide ONLY the enhanced version without explanations):"""
-    
+
     def run(self) -> int:
         """Execute enhancement workflow with comprehensive error handling."""
         try:
             # Check Copilot CLI availability
             if not self.executor.check_availability():
-                self.terminal.print_status(Color.RED, 
+                self.terminal.print_status(Color.RED,
                     "Error: GitHub Copilot CLI not found")
                 self.terminal.print_status(Color.YELLOW,
                     "Install it with: npm install -g @githubnext/github-copilot-cli")
                 return 1
-            
+
             # Display verbose configuration
             if self.args.verbose:
                 self._show_configuration()
-            
+
             # Execute enhancement
             self.terminal.print_status(Color.YELLOW, "Enhancing prompt...")
             meta_prompt = self.build_meta_prompt()
             result = self.executor.execute(meta_prompt)
-            
+
             # Handle execution errors (preserve exit code)
             if result.returncode != 0:
                 self.terminal.print_status(Color.RED,
@@ -272,26 +272,26 @@ Enhanced Prompt (provide ONLY the enhanced version without explanations):"""
                 sys.stderr.write(result.stdout)
                 sys.stderr.write(result.stderr)
                 return result.returncode
-            
+
             # Parse and validate output
             enhanced = self.parser.clean_output(result.stdout)
-            
+
             if not enhanced:
                 self.terminal.print_status(Color.RED,
                     "Error: No enhanced prompt generated")
                 self.terminal.print_status(Color.YELLOW, "Full output:")
                 sys.stderr.write(result.stdout)
                 return 1
-            
+
             # Display results
             self._display_result(enhanced)
-            
+
             # Save to file if requested
             if self.args.output:
                 self._save_output(enhanced, self.args.output)
-            
+
             return 0
-            
+
         except KeyboardInterrupt:
             self.terminal.print_status(Color.YELLOW, "\nInterrupted by user")
             return 130  # POSIX SIGINT exit code
@@ -301,29 +301,29 @@ Enhanced Prompt (provide ONLY the enhanced version without explanations):"""
                 import traceback
                 traceback.print_exc()
             return 1
-    
+
     def _show_configuration(self) -> None:
         """Display verbose configuration information."""
-        self.terminal.print_status(Color.BLUE, 
+        self.terminal.print_status(Color.BLUE,
             "=== Prompt Enhancement Configuration ===")
-        self.terminal.print_status(Color.BLUE, 
+        self.terminal.print_status(Color.BLUE,
             f"Original Prompt: {self.args.prompt}")
         if self.args.model:
-            self.terminal.print_status(Color.BLUE, 
+            self.terminal.print_status(Color.BLUE,
                 f"Model: {self.args.model}")
         if self.args.output:
-            self.terminal.print_status(Color.BLUE, 
+            self.terminal.print_status(Color.BLUE,
                 f"Output File: {self.args.output}")
-        self.terminal.print_status(Color.BLUE, 
+        self.terminal.print_status(Color.BLUE,
             "========================================")
         print()  # Empty line after config
-    
+
     def _display_result(self, enhanced: str) -> None:
         """Display enhanced prompt with formatting."""
         self.terminal.print_status(Color.GREEN, "=== Enhanced Prompt ===")
         print(enhanced)  # To stdout (Bash parity)
         self.terminal.print_status(Color.GREEN, "=======================")
-    
+
     def _save_output(self, content: str, filepath: str) -> None:
         """Save enhanced prompt to file."""
         try:
@@ -339,7 +339,7 @@ def main() -> int:
     """Entry point with argument parsing."""
     parser = create_parser()
     args = parser.parse_args()
-    
+
     enhancer = PromptEnhancer(args)
     return enhancer.run()
 
@@ -443,13 +443,13 @@ from enhance_prompt import OutputParser
 @pytest.mark.parametrize("input,expected", [
     # Test sed transformation: /^Total usage/,$d
     ("Line 1\nTotal usage: 123\nLine 2", "Line 1"),
-    
+
     # Test sed transformation: s/^Enhanced Prompt://
     ("Enhanced Prompt: This is enhanced", "This is enhanced"),
-    
+
     # Test empty line removal: /^[[:space:]]*$/d
     ("Line 1\n\n\nLine 2", "Line 1\nLine 2"),
-    
+
     # Test model name removal
     ("claude-sonnet-4.5: output", ""),
     ("  gpt-5: output", ""),
@@ -470,14 +470,14 @@ def test_copilot_execution_success():
     """Verify subprocess call matches Bash command."""
     config = CopilotConfig(model="gpt-5", prompt="test")
     executor = CopilotExecutor(config)
-    
+
     with patch('subprocess.run') as mock_run:
         mock_run.return_value = Mock(returncode=0, stdout="Enhanced")
         result = executor.execute("meta prompt")
-        
+
         # Verify exact command structure
         expected_cmd = [
-            'copilot', '--allow-all-tools', '--no-color', 
+            'copilot', '--allow-all-tools', '--no-color',
             '--prompt', '--model', 'gpt-5', 'meta prompt'
         ]
         mock_run.assert_called_once()
@@ -499,10 +499,10 @@ test_cases=(
 for prompt in "${test_cases[@]}"; do
     # Run Bash version
     bash_output=$(./enhance_prompt.sh "$prompt" 2>/dev/null)
-    
+
     # Run Python version
     python_output=$(python enhance_prompt.py "$prompt" 2>/dev/null)
-    
+
     # Compare outputs
     if [[ "$bash_output" != "$python_output" ]]; then
         echo "FAIL: Output mismatch for prompt: $prompt"
@@ -608,13 +608,13 @@ python shell_scripts/enhance_prompt.py -v "Debug authentication"
 ```python
 def build_meta_prompt(self) -> str:
     """Construct enhancement meta-prompt with exact Bash parity.
-    
+
     This method replicates the META_PROMPT heredoc from enhance_prompt.sh
     lines 95-104, preserving exact formatting and instruction structure.
-    
+
     Returns:
         str: Formatted meta-prompt for Copilot CLI consumption
-        
+
     Example:
         >>> enhancer = PromptEnhancer(args)
         >>> prompt = enhancer.build_meta_prompt()

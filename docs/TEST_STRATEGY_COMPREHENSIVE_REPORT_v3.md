@@ -1,9 +1,9 @@
 # Comprehensive Test Strategy Report v3.0
 ## MP Barbosa Personal Website - Test Coverage Analysis & Recommendations
 
-**Generated:** 2025-12-15  
-**Analyst:** Senior QA Engineer & Test Automation Specialist  
-**Framework:** Jest with ES Modules (experimental-vm-modules)  
+**Generated:** 2025-12-15
+**Analyst:** Senior QA Engineer & Test Automation Specialist
+**Framework:** Jest with ES Modules (experimental-vm-modules)
 **Environment:** jsdom for DOM testing
 
 ---
@@ -91,10 +91,10 @@ test('should set up smooth scrolling for navigation links', () => {
     // ARRANGE: Mock scrollIntoView
     const mockScrollIntoView = jest.fn();
     Element.prototype.scrollIntoView = mockScrollIntoView;
-    
+
     // ACT: Call the actual function
     const linkCount = setupSmoothScrolling();
-    
+
     // ASSERT: Verify behavior
     expect(linkCount).toBe(3);
     expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
@@ -102,11 +102,11 @@ test('should set up smooth scrolling for navigation links', () => {
 
 // ✅ Comprehensive edge case testing
 test('should handle large number of navigation links', () => {
-    const navHtml = Array.from({ length: 100 }, (_, i) => 
+    const navHtml = Array.from({ length: 100 }, (_, i) =>
         `<a href="#section${i}">Section ${i}</a>`
     ).join('');
     document.body.innerHTML = navHtml;
-    
+
     const linkCount = setupSmoothScrolling();
     expect(linkCount).toBe(100);
 });
@@ -115,20 +115,20 @@ test('should handle large number of navigation links', () => {
 test('should attach event listeners only once per call', () => {
     const originalAddEventListener = Element.prototype.addEventListener;
     let listenerCount = 0;
-    
+
     Element.prototype.addEventListener = function() {
         listenerCount++;
         return originalAddEventListener.apply(this, arguments);
     };
-    
+
     setupSmoothScrolling();
     const firstCount = listenerCount;
-    
+
     setupSmoothScrolling();
     const secondCount = listenerCount;
-    
+
     expect(secondCount).toBe(firstCount * 2);
-    
+
     Element.prototype.addEventListener = originalAddEventListener;
 });
 ```
@@ -157,21 +157,21 @@ beforeEach(() => {
     delete global.InitializationUtilities;
     global.window = global.window || {};
     global.window.location = { hostname: 'localhost', search: '' };
-    
+
     const modulePath = join(__dirname, '../scripts/initialization/InitializationUtilities.js');
     const moduleCode = readFileSync(modulePath, 'utf-8');
-    
+
     const moduleFunction = new Function('global', 'window', 'module', 'exports', 'define', moduleCode);
     const mockModule = { exports: {} };
     moduleFunction(global, global.window, mockModule, mockModule.exports, undefined);
-    
+
     InitializationUtilities = mockModule.exports;
 });
 
 // ✅ DI container validation
 test('should create production DI container with all components', () => {
     const container = InitializationUtilities.createProductionDIContainer();
-    
+
     expect(container).toHaveProperty('validators');
     expect(container).toHaveProperty('processors');
     expect(container).toHaveProperty('uiBuilders');
@@ -315,11 +315,11 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
     beforeEach(() => {
         // Load jQuery and template main.js
         const jquery = fs.readFileSync(
-            path.join(__dirname, '../assets/js/jquery.min.js'), 
+            path.join(__dirname, '../assets/js/jquery.min.js'),
             'utf8'
         );
         const mainJs = fs.readFileSync(
-            path.join(__dirname, '../assets/js/main.js'), 
+            path.join(__dirname, '../assets/js/main.js'),
             'utf8'
         );
 
@@ -349,7 +349,7 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
                 </div>
             </body>
             </html>
-        `, { 
+        `, {
             url: 'http://localhost',
             runScripts: 'dangerously',
             resources: 'usable'
@@ -357,7 +357,7 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
 
         window = dom.window;
         document = window.document;
-        
+
         // Execute jQuery and main.js
         window.eval(jquery);
         $ = window.$;
@@ -368,10 +368,10 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should show article when navigation link clicked', (done) => {
             const $main = $('#main');
             const introLink = $('a[href="#intro"]');
-            
+
             // Trigger click
             introLink.trigger('click');
-            
+
             setTimeout(() => {
                 expect($main.is(':visible')).toBe(true);
                 expect($('#intro').hasClass('active')).toBe(true);
@@ -382,9 +382,9 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should hide header when article is shown', (done) => {
             const $header = $('#header');
             const introLink = $('a[href="#intro"]');
-            
+
             introLink.trigger('click');
-            
+
             setTimeout(() => {
                 expect($header.is(':visible')).toBe(false);
                 done();
@@ -393,9 +393,9 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
 
         test('should add is-article-visible class to body', (done) => {
             const introLink = $('a[href="#intro"]');
-            
+
             introLink.trigger('click');
-            
+
             setTimeout(() => {
                 expect($('body').hasClass('is-article-visible')).toBe(true);
                 done();
@@ -405,14 +405,14 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should handle multiple article switches', (done) => {
             const introLink = $('a[href="#intro"]');
             const workLink = $('a[href="#work"]');
-            
+
             // Show intro
             introLink.trigger('click');
-            
+
             setTimeout(() => {
                 // Switch to work
                 workLink.trigger('click');
-                
+
                 setTimeout(() => {
                     expect($('#intro').hasClass('active')).toBe(false);
                     expect($('#work').hasClass('active')).toBe(true);
@@ -424,7 +424,7 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should handle non-existent article gracefully', () => {
             const $main = $('#main');
             const originalShow = $main._show;
-            
+
             // Attempt to show non-existent article
             expect(() => {
                 $main._show('nonexistent-article');
@@ -436,10 +436,10 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should remove is-preload class after page load', (done) => {
             const $body = $('body');
             expect($body.hasClass('is-preload')).toBe(true);
-            
+
             // Trigger window load event
             $(window).trigger('load');
-            
+
             setTimeout(() => {
                 expect($body.hasClass('is-preload')).toBe(false);
                 done();
@@ -451,7 +451,7 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should add middle class for even number of nav items', () => {
             const $nav = $('header nav');
             const $navLi = $nav.find('li');
-            
+
             if ($navLi.length % 2 === 0) {
                 expect($nav.hasClass('use-middle')).toBe(true);
                 expect($navLi.eq($navLi.length / 2).hasClass('is-middle')).toBe(true);
@@ -461,10 +461,10 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should not add middle class for odd number of nav items', () => {
             // Remove one nav item to make it odd
             $('header nav li:last').remove();
-            
+
             const $nav = $('header nav');
             const $navLi = $nav.find('li');
-            
+
             if ($navLi.length % 2 !== 0) {
                 expect($nav.hasClass('use-middle')).toBe(false);
             }
@@ -475,9 +475,9 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
         test('should handle window resize events', () => {
             const resizeSpy = jest.fn();
             $(window).on('resize', resizeSpy);
-            
+
             $(window).trigger('resize');
-            
+
             expect(resizeSpy).toHaveBeenCalled();
         });
 
@@ -486,7 +486,7 @@ describe('HTML5 UP Dimension Template - Main Navigation', () => {
             // Simulate breakpoint change
             $(window).width(500); // Small breakpoint
             $(window).trigger('resize');
-            
+
             // Verify responsive behavior
             expect(window.innerWidth).toBeLessThan(600);
         });
@@ -499,18 +499,18 @@ describe('HTML5 UP Dimension Template - Utility Functions', () => {
     beforeEach(() => {
         // Load jQuery and util.js
         const jquery = fs.readFileSync(
-            path.join(__dirname, '../assets/js/jquery.min.js'), 
+            path.join(__dirname, '../assets/js/jquery.min.js'),
             'utf8'
         );
         const utilJs = fs.readFileSync(
-            path.join(__dirname, '../assets/js/util.js'), 
+            path.join(__dirname, '../assets/js/util.js'),
             'utf8'
         );
 
         const { window } = new JSDOM(`<!DOCTYPE html><html><body></body></html>`);
         global.window = window;
         global.document = window.document;
-        
+
         window.eval(jquery);
         $ = window.$;
         window.eval(utilJs);
@@ -532,7 +532,7 @@ describe('HTML5 UP Dimension Template - Utility Functions', () => {
             `);
 
             const navList = $('nav').navList();
-            
+
             expect(navList).toContain('depth-0');
             expect(navList).toContain('depth-1');
             expect(navList).toContain('Test 1');
@@ -549,7 +549,7 @@ describe('HTML5 UP Dimension Template - Utility Functions', () => {
             `);
 
             const navList = $('nav').navList();
-            
+
             expect(navList).toContain('href="#intro"');
         });
 
@@ -563,7 +563,7 @@ describe('HTML5 UP Dimension Template - Utility Functions', () => {
             `);
 
             const navList = $('nav').navList();
-            
+
             expect(navList).toContain('target="_blank"');
         });
     });
@@ -572,7 +572,7 @@ describe('HTML5 UP Dimension Template - Utility Functions', () => {
         test('should not process empty elements', () => {
             const $empty = $('<div></div>');
             const result = $empty.panel({});
-            
+
             expect(result.length).toBe(0);
         });
 
@@ -585,7 +585,7 @@ describe('HTML5 UP Dimension Template - Utility Functions', () => {
             `);
 
             const $panels = $('.panel-container > div');
-            
+
             expect(() => {
                 $panels.panel({ side: 'right' });
             }).not.toThrow();
@@ -660,7 +660,7 @@ describe('Template Integration - Full Page Load', () => {
         navLinks.forEach(link => {
             const targetId = link.getAttribute('href').substring(1);
             const article = document.getElementById(targetId);
-            
+
             expect(article).toBeTruthy();
             expect(article.tagName.toLowerCase()).toBe('article');
         });
@@ -707,7 +707,7 @@ describe('Deployment Scripts - sync_to_public.sh', () => {
 
     test('should validate required directories exist', () => {
         const scriptContent = fs.readFileSync(scriptPath, 'utf8');
-        
+
         expect(scriptContent).toContain('validate_directories');
         expect(scriptContent).toContain('SOURCE_DIR');
         expect(scriptContent).toContain('PUBLIC_DIR');
@@ -715,7 +715,7 @@ describe('Deployment Scripts - sync_to_public.sh', () => {
 
     test('should have backup creation logic', () => {
         const scriptContent = fs.readFileSync(scriptPath, 'utf8');
-        
+
         expect(scriptContent).toContain('create_backup');
         expect(scriptContent).toContain('BACKUP_DIR');
     });
@@ -731,14 +731,14 @@ describe('Deployment Scripts - sync_to_public.sh', () => {
 
     test('should handle --step2 parameter', () => {
         const scriptContent = fs.readFileSync(scriptPath, 'utf8');
-        
+
         expect(scriptContent).toContain('--step2');
         expect(scriptContent).toContain('PRODUCTION_DIR');
     });
 
     test('should validate web server permissions', () => {
         const scriptContent = fs.readFileSync(scriptPath, 'utf8');
-        
+
         expect(scriptContent).toContain('755'); // Directory permissions
         expect(scriptContent).toContain('644'); // File permissions
     });
@@ -797,10 +797,10 @@ describe('Submodule Navigation and Redirect Pages', () => {
         redirectPages.forEach(page => {
             test(`${page} should exist and be valid HTML`, () => {
                 const pagePath = path.join(pagesDir, page);
-                
+
                 if (fs.existsSync(pagePath)) {
                     const content = fs.readFileSync(pagePath, 'utf8');
-                    
+
                     expect(content).toContain('<!DOCTYPE html>');
                     expect(content).toContain('<html');
                     expect(content).toContain('</html>');
@@ -820,9 +820,9 @@ describe('Submodule Navigation and Redirect Pages', () => {
             );
 
             // Check if link exists in main page
-            const hasLink = indexHtml.includes('music_in_numbers') || 
+            const hasLink = indexHtml.includes('music_in_numbers') ||
                            indexHtml.includes('Music in Numbers');
-            
+
             expect(hasLink).toBe(true);
         });
 
@@ -833,9 +833,9 @@ describe('Submodule Navigation and Redirect Pages', () => {
                 'utf8'
             );
 
-            const hasLink = indexHtml.includes('guia_turistico') || 
+            const hasLink = indexHtml.includes('guia_turistico') ||
                            indexHtml.includes('Guia Turístico');
-            
+
             expect(hasLink).toBe(true);
         });
     });
@@ -843,7 +843,7 @@ describe('Submodule Navigation and Redirect Pages', () => {
     describe('404 Handling for Uninitialized Submodules', () => {
         test('should gracefully handle missing submodule content', () => {
             const submodulePath = path.join(__dirname, '../submodules/music_in_numbers');
-            
+
             if (!fs.existsSync(submodulePath)) {
                 // Submodule not initialized - expected in some environments
                 console.warn('Submodules not initialized - normal for environments without auth');
@@ -857,7 +857,7 @@ describe('Submodule Navigation and Redirect Pages', () => {
 describe('Cross-Project Navigation', () => {
     test('Monitora Vagas should be accessible as sibling project', () => {
         const siblingPath = path.join(__dirname, '../../../monitora_vagas');
-        
+
         // Check if sibling project exists
         if (fs.existsSync(siblingPath)) {
             expect(fs.statSync(siblingPath).isDirectory()).toBe(true);
@@ -868,7 +868,7 @@ describe('Cross-Project Navigation', () => {
 
     test('Busca Vagas backend should be accessible', () => {
         const backendPath = path.join(__dirname, '../../../busca_vagas');
-        
+
         if (fs.existsSync(backendPath)) {
             expect(fs.statSync(backendPath).isDirectory()).toBe(true);
         } else {
@@ -1017,44 +1017,44 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [25.2.1]  # Project uses v25.2.1
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive  # Initialize git submodules
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: src/package-lock.json
-      
+
       - name: Install dependencies
         run: |
           cd src
           npm ci
-      
+
       - name: Run linter
         run: |
           cd src
           npm run lint:md || true  # Don't fail on linting yet
-      
+
       - name: Run tests
         run: |
           cd src
           npm test -- --ci --coverage --maxWorkers=2
-      
+
       - name: Generate coverage report
         run: |
           cd src
           npm run test:coverage
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -1062,12 +1062,12 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
-      
+
       - name: Coverage threshold check
         run: |
           cd src
           npm test -- --coverage --coverageThreshold='{"global":{"branches":70,"functions":70,"lines":70,"statements":70}}'
-      
+
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -1169,7 +1169,7 @@ cd ..
 - [ ] Create `__tests__/template-integration.test.js` (100 lines, 10 tests)
 - [ ] Target: 60% coverage of template code
 
-**Estimated Effort:** 16 hours  
+**Estimated Effort:** 16 hours
 **Priority:** **CRITICAL** - Template is foundation of entire site
 
 #### **1.2 Shell Script Validation**
@@ -1178,7 +1178,7 @@ cd ..
 - [ ] Add error scenario testing
 - [ ] Test dry-run modes thoroughly
 
-**Estimated Effort:** 8 hours  
+**Estimated Effort:** 8 hours
 **Priority:** **HIGH** - Deployment reliability critical
 
 ### Phase 2: Integration Coverage (Week 3-4) 🟡
@@ -1189,7 +1189,7 @@ cd ..
 - [ ] Add 404 handling tests
 - [ ] Test redirect pages
 
-**Estimated Effort:** 12 hours  
+**Estimated Effort:** 12 hours
 **Priority:** **MEDIUM** - User navigation experience
 
 #### **2.2 Submodule Integration**
@@ -1198,7 +1198,7 @@ cd ..
 - [ ] Add integration tests for modular architecture
 - [ ] Target: 50% integration test coverage
 
-**Estimated Effort:** 16 hours  
+**Estimated Effort:** 16 hours
 **Priority:** **MEDIUM** - Submodule functionality
 
 ### Phase 3: CI/CD Integration (Week 5) 🟢
@@ -1209,7 +1209,7 @@ cd ..
 - [ ] Set up test result artifacts
 - [ ] Configure branch protection rules
 
-**Estimated Effort:** 8 hours  
+**Estimated Effort:** 8 hours
 **Priority:** **MEDIUM** - Automation foundation
 
 #### **3.2 Pre-commit Hooks**
@@ -1218,7 +1218,7 @@ cd ..
 - [ ] Add coverage threshold checks
 - [ ] Add markdown linting
 
-**Estimated Effort:** 4 hours  
+**Estimated Effort:** 4 hours
 **Priority:** **LOW** - Developer experience
 
 ### Phase 4: E2E Testing (Week 6+) 🟢
@@ -1229,7 +1229,7 @@ cd ..
 - [ ] Test responsive behavior
 - [ ] Add visual regression testing
 
-**Estimated Effort:** 20 hours  
+**Estimated Effort:** 20 hours
 **Priority:** **LOW** - Nice to have
 
 ---
@@ -1285,6 +1285,6 @@ The investment in test coverage will pay dividends in:
 
 ---
 
-**Report Prepared By:** Senior QA Engineer  
-**Date:** December 15, 2025  
+**Report Prepared By:** Senior QA Engineer
+**Date:** December 15, 2025
 **Next Review:** March 15, 2026

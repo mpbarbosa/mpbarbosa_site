@@ -1,7 +1,7 @@
 # AI Prompt Extraction Standard
 
-**Version**: 1.0.0  
-**Date**: 2025-01-13  
+**Version**: 1.0.0
+**Date**: 2025-01-13
 **Status**: Active Project Standard
 
 ## Overview

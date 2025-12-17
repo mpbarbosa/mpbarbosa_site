@@ -41,7 +41,7 @@ What do you need to do?
 │  └─ Run: ./shell_scripts/workflow/execute_tests_docs_workflow.sh
 │     Purpose: 13-step AI-powered test & documentation workflow
 │     When: After significant changes, before commits
-│     Modes: --interactive (default), --auto (CI/CD), --dry-run (preview)
+│     Modes: --interactive (default), --auto (CI/CD with auto-extraction), --dry-run (preview)
 │
 ├─ 🔗 VALIDATE SECURITY?
 │  └─ Run: ./shell_scripts/validate_external_links.sh
@@ -83,54 +83,54 @@ graph TD
         A[👨‍💻 Start Work Session] --> B[pull_all_submodules.sh]
         B --> C[Make Code Changes]
         C --> D{What Changed?}
-        
+
         D -->|External Links| E[validate_external_links.sh --fix]
         D -->|Code/Tests| F[execute_tests_docs_workflow.sh]
         D -->|Submodule Content| G[push_all_submodules.sh]
-        
+
         E --> H[Git Commit]
         F --> H
         G --> H
     end
-    
+
     subgraph "Deployment Workflow"
         H --> I{Deploy Where?}
-        
+
         I -->|Test First| J[sync_to_public.sh --step1 --dry-run]
         J --> K[Review Changes]
         K --> L{Approve?}
-        
+
         L -->|Yes| M[sync_to_public.sh --both-steps]
         L -->|No| C
-        
+
         I -->|Quick Production| N[sync_to_public.sh --both-steps]
         I -->|Already Staged| O[deploy_to_webserver.sh]
-        
+
         M --> P[✅ Live on Production]
         N --> P
         O --> P
     end
-    
+
     subgraph "AI-Assisted Development"
         Q[Need AI Help?] --> R{Just Enhance or Execute?}
-        
+
         R -->|Just Enhance| S[enhance_prompt.sh]
         R -->|Enhance & Execute| T[copilot_with_enhanced_prompt.sh]
-        
+
         S --> U[Copy Enhanced Prompt]
         T --> V[Auto-Execute with Copilot]
-        
+
         U --> C
         V --> C
     end
-    
+
     subgraph "Script Dependencies"
         T2[copilot_with_enhanced_prompt.sh] -.depends on.-> S2[enhance_prompt.sh]
         D2[deploy_to_webserver.sh] -.uses.-> SY[sync_to_public.sh step1]
         E2[execute_tests_docs_workflow.sh] -.can call.-> S2
         E2 -.can call.-> T2
     end
-    
+
     style B fill:#90EE90
     style E fill:#FFD700
     style F fill:#87CEEB
@@ -548,7 +548,7 @@ The following are library modules (not meant to be executed directly):
 - Error recovery mechanisms
 - File existence validation
 
-**Executable**: ✅ Yes (now executable)  
+**Executable**: ✅ Yes (now executable)
 **Sourced by**: All workflow step modules
 
 ---
@@ -562,7 +562,7 @@ The following are library modules (not meant to be executed directly):
 - Performance measurement utilities
 - Resource usage tracking
 
-**Executable**: ✅ Yes (now executable)  
+**Executable**: ✅ Yes (now executable)
 **Sourced by**: Workflow steps requiring optimization
 
 ---
@@ -576,7 +576,7 @@ The following are library modules (not meant to be executed directly):
 - Cleanup trap handlers
 - Session state tracking
 
-**Executable**: ✅ Yes (now executable)  
+**Executable**: ✅ Yes (now executable)
 **Sourced by**: Workflow steps executing bash commands
 
 #### `workflow/lib/metrics_validation.sh`
@@ -604,7 +604,7 @@ The following are library modules (not meant to be executed directly):
 **Global Variables**:
 Sets the following variables after calling `calculate_workflow_metrics()`:
 - `ACTUAL_LIB_LINES` - Total lines in library modules
-- `ACTUAL_LIB_COUNT` - Number of library modules  
+- `ACTUAL_LIB_COUNT` - Number of library modules
 - `ACTUAL_STEP_LINES` - Total lines in step modules
 - `ACTUAL_STEP_COUNT` - Number of step modules
 - `ACTUAL_TOTAL_LINES` - Total modular code lines
@@ -627,7 +627,7 @@ validate_all_documentation_metrics
 
 **Integration**: Used by Step 3 (Script References) in the workflow automation to detect documentation drift and ensure metric accuracy.
 
-**Executable**: ✅ Yes  
+**Executable**: ✅ Yes
 **Sourced by**: Step 3 (script reference validation), standalone validation scripts
 
 ---
@@ -640,7 +640,7 @@ validate_all_documentation_metrics
 **Features**:
 - ✅ Dynamic branch detection (works with any branch, not just main)
 - ✅ Pulls main repository on current branch first
-- ✅ Recursively fetches and updates all submodules  
+- ✅ Recursively fetches and updates all submodules
 - ✅ Enhanced recursive submodule discovery using `git submodule foreach`
 - ✅ Handles nested submodules with absolute path resolution
 - ✅ Safe stash management for local changes
@@ -679,7 +679,7 @@ validate_all_documentation_metrics
 **Usage**:
 ```bash
 ./shell_scripts/push_all_submodules.sh                  # Push all changes interactively
-./shell_scripts/push_all_submodules.sh --handle-stash  # Include stashed modifications  
+./shell_scripts/push_all_submodules.sh --handle-stash  # Include stashed modifications
 ./shell_scripts/push_all_submodules.sh --dry-run       # Preview operations
 ./shell_scripts/push_all_submodules.sh --help          # Show help
 ```
@@ -719,7 +719,7 @@ validate_all_documentation_metrics
 ```bash
 # Step Options (at least one required)
 ./shell_scripts/sync_to_public.sh --step1                              # Copy source to public only
-./shell_scripts/sync_to_public.sh --step2                              # Copy public to production only  
+./shell_scripts/sync_to_public.sh --step2                              # Copy public to production only
 ./shell_scripts/sync_to_public.sh --both-steps                         # Execute both steps
 ./shell_scripts/sync_to_public.sh --step1 --dry-run --verbose          # Preview step 1 with details
 ./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
@@ -731,7 +731,7 @@ validate_all_documentation_metrics
 **Step 1 (Source → Public)**:
 1. Environment validation and backup creation
 2. Main HTML files (index.html, robots.txt, humans.txt)
-3. Asset directories (CSS, JS, SASS, webfonts, images)  
+3. Asset directories (CSS, JS, SASS, webfonts, images)
 4. Music in Numbers git submodule (3 HTML files, 15+ JS modules, 4 CSS files)
 5. Guia Turístico git submodule
 6. Monitora Vagas sibling project from ../monitora_vagas:
@@ -751,7 +751,7 @@ validate_all_documentation_metrics
 
 **Step 2 (Public → Production)**:
 1. Production environment validation and permission checks
-2. Production backup creation with 7-day retention  
+2. Production backup creation with 7-day retention
 3. Efficient file synchronization using rsync/cp
 4. Production deployment validation
 5. Web server ready file structure (755/644 permissions)
@@ -1021,10 +1021,10 @@ The workflow automation script generates three types of outputs in dedicated dir
 
 #### Quick Reference: Which Directory to Use?
 
-**For Quick Status**: → `/shell_scripts/workflow/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)  
-**For Debugging**: → `/shell_scripts/workflow/logs/` (raw execution traces, AI session logs)  
-**For Fixing Issues**: → `/shell_scripts/workflow/backlog/` (detailed findings, file references, raw tool output)  
-**For Team Updates**: → `/shell_scripts/workflow/summaries/` (lightweight, easy to share)  
+**For Quick Status**: → `/shell_scripts/workflow/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)
+**For Debugging**: → `/shell_scripts/workflow/logs/` (raw execution traces, AI session logs)
+**For Fixing Issues**: → `/shell_scripts/workflow/backlog/` (detailed findings, file references, raw tool output)
+**For Team Updates**: → `/shell_scripts/workflow/summaries/` (lightweight, easy to share)
 **For Trend Analysis**: → `/shell_scripts/workflow/summaries/` (kept indefinitely, compare across runs)
 
 ---
@@ -1147,7 +1147,7 @@ git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: 
 - **External Links Policy**: `/docs/EXTERNAL_LINKS_POLICY.md` - Complete security and UX standards
 - **Comprehensive UX Guide**: `/docs/COMPREHENSIVE_UX_DOCUMENTATION.md` - Accessibility and interaction patterns
 
-**Script Version**: 1.0.0  
+**Script Version**: 1.0.0
 **Last Updated**: November 9, 2025
 
 ---
@@ -1155,7 +1155,7 @@ git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: 
 ### 🤖 `enhance_prompt.sh`
 **Purpose**: Enhances user prompts using GitHub Copilot CLI for improved clarity and technical language
 
-**Script Version**: 1.0.0  
+**Script Version**: 1.0.0
 **Last Updated**: November 9, 2025
 
 **Features**:
@@ -1183,7 +1183,7 @@ git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: 
 ### 🚀 `copilot_with_enhanced_prompt.sh`
 **Purpose**: Executes GitHub Copilot CLI with automatically enhanced prompts for better results
 
-**Script Version**: 1.0.0  
+**Script Version**: 1.0.0
 **Last Updated**: November 9, 2025
 
 **Features**:
@@ -1273,7 +1273,7 @@ mpbarbosa_site/ (main repository)
 │   ├── guia_turistico/        # Travel guide project (git submodule)
 │   │   └── src/libs/
 │   │       ├── guia_js/       # JavaScript library (nested)
-│   │       └── sidra/         # IBGE data library (nested) 
+│   │       └── sidra/         # IBGE data library (nested)
 │   └── music_in_numbers/      # Spotify analytics project (git submodule)
 ├── docs/                      # Documentation including git best practices
 └── ../                        # Sibling projects (not git submodules)
@@ -1334,7 +1334,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh                # Deploy to productio
 ./shell_scripts/sync_to_public.sh --step2 --dry-run        # Preview step 2 (public to production)
 ./shell_scripts/sync_to_public.sh --both-steps --dry-run   # Preview entire workflow
 
-# Preview what would be pushed  
+# Preview what would be pushed
 ./shell_scripts/push_all_submodules.sh --dry-run
 ```
 
@@ -1381,7 +1381,7 @@ Add to `.vscode/tasks.json`:
 ```json
 {
     "label": "Pull All Submodules",
-    "type": "shell", 
+    "type": "shell",
     "command": "./shell_scripts/pull_all_submodules.sh",
     "group": "build"
 }
@@ -1402,17 +1402,17 @@ alias deploypreview='cd /path/to/mpbarbosa_site && ./shell_scripts/deploy_to_web
 
 To reduce repository clutter, historical validation reports have been consolidated into three comprehensive files in the `/docs` directory:
 
-1. **`DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md`**  
+1. **`DIRECTORY_STRUCTURE_VALIDATION_HISTORY_CONSOLIDATED.md`**
    - Consolidates 9 directory structure validation reports (Nov 13-25, 2025)
    - Tracks architectural consistency over 12-day period
    - All reports show ✅ EXCELLENT status
 
-2. **`DOCUMENTATION_CONSISTENCY_HISTORY_CONSOLIDATED.md`**  
+2. **`DOCUMENTATION_CONSISTENCY_HISTORY_CONSOLIDATED.md`**
    - Consolidates documentation consistency analysis reports
    - Historical tracking of cross-reference accuracy and terminology consistency
    - Preserves lessons learned and best practices evolution
 
-3. **`SHELL_SCRIPT_VALIDATION_HISTORY_CONSOLIDATED.md`**  
+3. **`SHELL_SCRIPT_VALIDATION_HISTORY_CONSOLIDATED.md`**
    - Consolidates shell script validation reports
    - Documents shell script quality and best practices compliance
    - Historical record of script improvements and refactoring
@@ -1471,6 +1471,6 @@ When contributing to these scripts:
 
 ---
 
-**Author**: MP Barbosa  
-**Last Updated**: December 11, 2025  
+**Author**: MP Barbosa
+**Last Updated**: December 11, 2025
 **License**: Private project scripts

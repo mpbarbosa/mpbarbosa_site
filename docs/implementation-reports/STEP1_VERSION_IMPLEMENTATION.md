@@ -1,7 +1,7 @@
 # Step 1 Documentation Module - Semantic Versioning Implementation
 
-**Date**: November 13, 2025  
-**Module**: `shell_scripts/workflow/steps/step_01_documentation.sh`  
+**Date**: November 13, 2025
+**Module**: `shell_scripts/workflow/steps/step_01_documentation.sh`
 **Implementation Status**: ✅ Complete
 
 ## Summary
@@ -171,6 +171,6 @@ The module version (v1.5.0) is aligned with the main workflow version:
 
 ---
 
-**Implementation By**: MP Barbosa  
-**Date**: November 13, 2025  
+**Implementation By**: MP Barbosa
+**Date**: November 13, 2025
 **Status**: ✅ Production Ready

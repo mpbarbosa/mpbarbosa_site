@@ -1,7 +1,7 @@
 # Markdown Best Practices Guide
 
-> **Reference**: Based on [Markdown Guide](https://www.markdownguide.org/) standards  
-> **Purpose**: Prevent common markdown errors in documentation and AI-generated content  
+> **Reference**: Based on [Markdown Guide](https://www.markdownguide.org/) standards
+> **Purpose**: Prevent common markdown errors in documentation and AI-generated content
 > **Last Updated**: November 2025
 
 ## Table of Contents
@@ -241,7 +241,7 @@ First paragraph.
 
 Second paragraph (separated by blank line).
 
-Line break example:  
+Line break example:
 Add two spaces at end of line for line break.
 This appears on next line without paragraph spacing.
 ```
@@ -355,10 +355,10 @@ Plain text code block
 >>> Third level
 
 > ## Blockquotes with other elements
-> 
+>
 > - Lists work
 > - Inside blockquotes
-> 
+>
 > **Bold** and *italic* also work
 ```
 
@@ -690,6 +690,6 @@ For consistency across documentation:
 
 ---
 
-**Last Updated**: November 2025  
-**Maintained By**: MP Barbosa  
+**Last Updated**: November 2025
+**Maintained By**: MP Barbosa
 **Version**: 1.0.0

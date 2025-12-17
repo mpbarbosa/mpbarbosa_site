@@ -1,7 +1,7 @@
 # Documentation Consolidation and Retention Policy
 
-**Version:** 1.0.0  
-**Effective Date:** 2025-11-13  
+**Version:** 1.0.0
+**Effective Date:** 2025-11-13
 **Last Updated:** 2025-11-13
 
 ## Overview
@@ -18,9 +18,9 @@ This policy establishes guidelines for managing consistency analysis reports, va
 ## Document Categories
 
 ### Category 1: Living Documents
-**Approach:** Single, continuously updated document  
-**Location:** Project root or `/docs` directory  
-**Retention:** Permanent (no archival)  
+**Approach:** Single, continuously updated document
+**Location:** Project root or `/docs` directory
+**Retention:** Permanent (no archival)
 **Version Control:** Git history provides version tracking
 
 **Examples:**
@@ -29,9 +29,9 @@ This policy establishes guidelines for managing consistency analysis reports, va
 - `/docs/*.md` (architectural documentation)
 
 ### Category 2: Timestamped Snapshots
-**Approach:** Timestamped files with automatic archival  
-**Location:** Project root → `/shell_scripts/workflow/logs/archived_reports` (after 30 days)  
-**Retention:** 30 days active, 60 days archived (90 days total)  
+**Approach:** Timestamped files with automatic archival
+**Location:** Project root → `/shell_scripts/workflow/logs/archived_reports` (after 30 days)
+**Retention:** 30 days active, 60 days archived (90 days total)
 **Latest Access:** Via `*_LATEST.md` symlinks
 
 **Examples:**
@@ -40,9 +40,9 @@ This policy establishes guidelines for managing consistency analysis reports, va
 - `TEST_FAILURE_ANALYSIS_YYYYMMDD_HHMMSS.md`
 
 ### Category 3: Workflow Outputs
-**Approach:** Organized by workflow run ID  
-**Location:** `/backlog/{workflow_run_id}/` and `/summaries/{workflow_run_id}/`  
-**Retention:** 90 days  
+**Approach:** Organized by workflow run ID
+**Location:** `/backlog/{workflow_run_id}/` and `/summaries/{workflow_run_id}/`
+**Retention:** 90 days
 **Cleanup:** Manual review before deletion
 
 **Examples:**
@@ -271,6 +271,6 @@ If reports are accidentally deleted:
 
 ---
 
-**Policy Owner:** Development Team  
-**Review Cycle:** Quarterly  
+**Policy Owner:** Development Team
+**Review Cycle:** Quarterly
 **Next Review:** 2026-02-13

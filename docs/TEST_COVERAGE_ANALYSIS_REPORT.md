@@ -1,9 +1,9 @@
 # Comprehensive Test Coverage Analysis & Improvement Strategy
 
-**Report Date:** 2025-11-18  
-**Project:** MP Barbosa Personal Website  
-**Test Framework:** Jest with ES Modules (experimental-vm-modules)  
-**Test Environment:** jsdom  
+**Report Date:** 2025-11-18
+**Project:** MP Barbosa Personal Website
+**Test Framework:** Jest with ES Modules (experimental-vm-modules)
+**Test Environment:** jsdom
 **Analyzed by:** Senior QA Engineer & Test Automation Specialist
 
 ---
@@ -63,13 +63,13 @@
 test('should set up smooth scrolling for navigation links', () => {
     const mockScrollIntoView = jest.fn();
     Element.prototype.scrollIntoView = mockScrollIntoView;
-    
+
     const linkCount = setupSmoothScrolling();
     expect(linkCount).toBe(3);
-    
+
     const aboutLink = document.querySelector('a[href="#about"]');
     aboutLink.dispatchEvent(new Event('click'));
-    
+
     expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
 });
 
@@ -78,7 +78,7 @@ test('should handle navigation links without hash', () => {
     const externalLink = document.createElement('a');
     externalLink.href = 'http://example.com';
     document.body.appendChild(externalLink);
-    
+
     const linkCount = setupSmoothScrolling();
     expect(linkCount).toBe(3); // Only hash links
 });
@@ -107,7 +107,7 @@ test('should handle navigation links without hash', () => {
 // ✅ Excellent: Environment detection testing
 test('should detect browser environment correctly', () => {
     const env = InitializationUtilities.detectEnvironment();
-    
+
     expect(env.isBrowser).toBe(true);
     expect(env.hasConsole).toBe(true);
 });
@@ -116,12 +116,12 @@ test('should detect browser environment correctly', () => {
 test('should handle environment detection errors gracefully', () => {
     const originalNavigator = global.navigator;
     delete global.navigator;
-    
+
     const env = InitializationUtilities.detectEnvironment();
-    
+
     expect(env).toHaveProperty('error');
     expect(env.isBrowser).toBe(false);
-    
+
     global.navigator = originalNavigator;
 });
 ```
@@ -281,7 +281,7 @@ jest.unstable_mockModule('../../src/speech/SpeechQueue.js', () => ({
 ### Main Project JavaScript Files (Untested)
 
 #### 🔴 **CRITICAL: `assets/js/main.js`** (400 lines)
-**Priority: CRITICAL**  
+**Priority: CRITICAL**
 **Coverage: 0%**
 
 **File Purpose:** HTML5 UP Dimension template - Core navigation, article display, animations
@@ -328,21 +328,21 @@ describe('HTML5 UP Dimension Template - Main JavaScript', () => {
                     </div>
                 </div>
             `;
-            
+
             // Simulate navigation click
             // Verify article visibility
             // Check body classes
         });
-        
+
         test('should close article when close button clicked', () => {
             // Test close functionality
         });
-        
+
         test('should handle rapid navigation clicks with lock mechanism', () => {
             // Test lock/unlock behavior
         });
     });
-    
+
     describe('Responsive Breakpoints', () => {
         test('should apply correct classes at xlarge breakpoint', () => {
             // Mock window.innerWidth = 1600
@@ -350,7 +350,7 @@ describe('HTML5 UP Dimension Template - Main JavaScript', () => {
             // Verify breakpoint classes
         });
     });
-    
+
     describe('Animations', () => {
         test('should remove preload class after 100ms', (done) => {
             // Verify timing
@@ -366,7 +366,7 @@ describe('HTML5 UP Dimension Template - Main JavaScript', () => {
 ---
 
 #### 🔴 **CRITICAL: `assets/js/util.js`** (586 lines)
-**Priority: CRITICAL**  
+**Priority: CRITICAL**
 **Coverage: 0%**
 
 **File Purpose:** Utility functions for HTML5 UP template
@@ -396,19 +396,19 @@ describe('HTML5 UP Utility Functions', () => {
 ---
 
 #### 🟡 **MEDIUM: `assets/js/breakpoints.min.js`**
-**Priority: MEDIUM**  
+**Priority: MEDIUM**
 **Note:** Minified file - Test behavior, not implementation
 
 ---
 
 #### 🟡 **MEDIUM: `assets/js/browser.min.js`**
-**Priority: MEDIUM**  
+**Priority: MEDIUM**
 **Note:** Minified file - Test browser detection functionality
 
 ---
 
 #### 🟡 **LOW: `assets/js/jquery.min.js`**
-**Priority: LOW**  
+**Priority: LOW**
 **Note:** Third-party library - No testing needed
 
 ---
@@ -440,7 +440,7 @@ describe('End-to-End Navigation Workflows', () => {
         // Click Music in Numbers link
         // Verify redirect to submodule
     });
-    
+
     test('contact form submission workflow', async () => {
         // Navigate to Contact
         // Fill all fields
@@ -486,7 +486,7 @@ describe('Visual Regression Tests', () => {
 ### Priority 1: Critical Path Tests
 
 #### 1. **HTML5 UP Template Core Functionality**
-**File:** `__tests__/template_core.test.js`  
+**File:** `__tests__/template_core.test.js`
 **Estimated Lines:** 400-500
 
 ```javascript
@@ -542,7 +542,7 @@ describe('HTML5 UP Dimension Template - Core', () => {
                 <div id="bg"></div>
             </body>
         `;
-        
+
         // Mock jQuery if needed
         global.$ = jest.fn((selector) => {
             const elements = document.querySelectorAll(selector);
@@ -559,57 +559,57 @@ describe('HTML5 UP Dimension Template - Core', () => {
             };
         });
     });
-    
+
     describe('Article Navigation', () => {
         test('should show article when hash navigation link clicked', () => {
             const introLink = document.querySelector('a[href="#intro"]');
             const mainArticle = document.querySelector('#main article#intro');
-            
+
             expect(introLink).toBeTruthy();
-            
+
             // Simulate click
             const clickEvent = new Event('click');
             introLink.dispatchEvent(clickEvent);
-            
+
             // Verify article becomes active
             // Note: Actual implementation requires loading assets/js/main.js
             expect(mainArticle).toBeTruthy();
         });
-        
+
         test('should close article when close button clicked', () => {
             const closeButton = document.querySelector('article#intro .close');
             const body = document.body;
-            
+
             // Simulate article open state
             body.classList.add('is-article-visible');
-            
+
             // Click close
             closeButton.dispatchEvent(new Event('click'));
-            
+
             // Verify article closes
             // Note: Requires actual template JS
         });
-        
+
         test('should handle rapid navigation clicks with lock mechanism', () => {
             const introLink = document.querySelector('a[href="#intro"]');
             const projectsLink = document.querySelector('a[href="#projects"]');
-            
+
             // Rapid clicks
             introLink.dispatchEvent(new Event('click'));
             projectsLink.dispatchEvent(new Event('click'));
             introLink.dispatchEvent(new Event('click'));
-            
+
             // Should handle gracefully without errors
         });
     });
-    
+
     describe('Preload Animation', () => {
         test('should remove is-preload class after window load', (done) => {
             expect(document.body.classList.contains('is-preload')).toBe(true);
-            
+
             // Simulate window load
             window.dispatchEvent(new Event('load'));
-            
+
             // Check after delay
             setTimeout(() => {
                 expect(document.body.classList.contains('is-preload')).toBe(false);
@@ -617,73 +617,73 @@ describe('HTML5 UP Dimension Template - Core', () => {
             }, 150);
         });
     });
-    
+
     describe('Responsive Behavior', () => {
         test('should respond to viewport changes', () => {
             // Mock window resize
             global.innerWidth = 1600; // xlarge
             window.dispatchEvent(new Event('resize'));
-            
+
             // Verify breakpoint behavior
         });
-        
+
         test('should apply mobile styles at small viewport', () => {
             global.innerWidth = 600; // small
             window.dispatchEvent(new Event('resize'));
-            
+
             // Verify mobile-specific behavior
         });
     });
-    
+
     describe('Accessibility', () => {
         test('should have proper ARIA labels on navigation', () => {
             const nav = document.querySelector('nav');
             const links = nav.querySelectorAll('a');
-            
+
             links.forEach(link => {
                 expect(link.textContent.trim()).toBeTruthy();
                 expect(link.href).toBeTruthy();
             });
         });
-        
+
         test('should support keyboard navigation', () => {
             const firstLink = document.querySelector('nav a');
             firstLink.focus();
-            
+
             expect(document.activeElement).toBe(firstLink);
-            
+
             // Test Tab navigation
             const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
             firstLink.dispatchEvent(tabEvent);
         });
-        
+
         test('should support Escape key to close articles', () => {
             document.body.classList.add('is-article-visible');
-            
+
             const escEvent = new KeyboardEvent('keydown', { key: 'Escape' });
             document.dispatchEvent(escEvent);
-            
+
             // Should close article
         });
     });
-    
+
     describe('Error Handling', () => {
         test('should handle missing article gracefully', () => {
             const link = document.createElement('a');
             link.href = '#nonexistent';
             document.body.appendChild(link);
-            
+
             expect(() => {
                 link.dispatchEvent(new Event('click'));
             }).not.toThrow();
         });
-        
+
         test('should handle missing images gracefully', () => {
             const img = document.querySelector('.image.main img');
-            
+
             const errorEvent = new Event('error');
             img.dispatchEvent(errorEvent);
-            
+
             // Should not break page
         });
     });
@@ -693,7 +693,7 @@ describe('HTML5 UP Dimension Template - Core', () => {
 ---
 
 #### 2. **Contact Form Validation & Submission**
-**File:** `__tests__/contact_form.test.js`  
+**File:** `__tests__/contact_form.test.js`
 **Estimated Lines:** 200-300
 
 ```javascript
@@ -732,146 +732,146 @@ describe('Contact Form Functionality', () => {
             </article>
         `;
     });
-    
+
     describe('Form Validation', () => {
         test('should validate required name field', () => {
             const form = document.getElementById('contact-form');
             const nameInput = document.getElementById('name');
-            
+
             // Empty name
             nameInput.value = '';
             expect(nameInput.validity.valid).toBe(false);
             expect(nameInput.validity.valueMissing).toBe(true);
-            
+
             // Valid name
             nameInput.value = 'John Doe';
             expect(nameInput.validity.valid).toBe(true);
         });
-        
+
         test('should validate email format', () => {
             const emailInput = document.getElementById('email');
-            
+
             // Invalid email
             emailInput.value = 'invalid-email';
             expect(emailInput.validity.valid).toBe(false);
             expect(emailInput.validity.typeMismatch).toBe(true);
-            
+
             // Valid email
             emailInput.value = 'test@example.com';
             expect(emailInput.validity.valid).toBe(true);
         });
-        
+
         test('should validate required message field', () => {
             const messageInput = document.getElementById('message');
-            
+
             messageInput.value = '';
             expect(messageInput.validity.valid).toBe(false);
-            
+
             messageInput.value = 'Test message';
             expect(messageInput.validity.valid).toBe(true);
         });
-        
+
         test('should prevent submission with invalid data', () => {
             const form = document.getElementById('contact-form');
             const submitSpy = jest.fn();
             form.addEventListener('submit', submitSpy);
-            
+
             // Leave fields empty
             const submitEvent = new Event('submit', { cancelable: true });
             form.dispatchEvent(submitEvent);
-            
+
             // HTML5 validation should prevent submission
         });
     });
-    
+
     describe('Form Submission', () => {
         test('should submit form with valid data', () => {
             const form = document.getElementById('contact-form');
             const submitHandler = jest.fn((e) => e.preventDefault());
             form.addEventListener('submit', submitHandler);
-            
+
             // Fill form
             document.getElementById('name').value = 'John Doe';
             document.getElementById('email').value = 'john@example.com';
             document.getElementById('message').value = 'Test message';
-            
+
             // Submit
             form.dispatchEvent(new Event('submit'));
-            
+
             expect(submitHandler).toHaveBeenCalled();
         });
-        
+
         test('should show success message after submission', () => {
             const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
-            
+
             const form = document.getElementById('contact-form');
-            
+
             // Fill and submit
             document.getElementById('name').value = 'Jane Smith';
             document.getElementById('email').value = 'jane@example.com';
             document.getElementById('message').value = 'Hello!';
-            
+
             // Trigger submit (assuming main.mjs handles it)
             form.dispatchEvent(new Event('submit'));
-            
+
             // Verify alert called
             expect(alertSpy).toHaveBeenCalledWith(
                 expect.stringContaining('submitted')
             );
-            
+
             alertSpy.mockRestore();
         });
-        
+
         test('should reset form after submission', () => {
             const form = document.getElementById('contact-form');
-            
+
             // Fill form
             const nameInput = document.getElementById('name');
             const emailInput = document.getElementById('email');
             const messageInput = document.getElementById('message');
-            
+
             nameInput.value = 'Test User';
             emailInput.value = 'test@test.com';
             messageInput.value = 'Test message';
-            
+
             // Submit and reset
             form.dispatchEvent(new Event('submit'));
             form.reset();
-            
+
             expect(nameInput.value).toBe('');
             expect(emailInput.value).toBe('');
             expect(messageInput.value).toBe('');
         });
     });
-    
+
     describe('User Experience', () => {
         test('should provide visual feedback on focus', () => {
             const nameInput = document.getElementById('name');
-            
+
             nameInput.dispatchEvent(new Event('focus'));
             expect(document.activeElement).toBe(nameInput);
         });
-        
+
         test('should handle reset button', () => {
             const form = document.getElementById('contact-form');
             const resetButton = form.querySelector('input[type="reset"]');
-            
+
             // Fill form
             document.getElementById('name').value = 'Test';
             document.getElementById('email').value = 'test@test.com';
-            
+
             // Click reset
             resetButton.click();
-            
+
             expect(document.getElementById('name').value).toBe('');
             expect(document.getElementById('email').value).toBe('');
         });
     });
-    
+
     describe('Accessibility', () => {
         test('should have proper labels for all inputs', () => {
             const inputs = document.querySelectorAll('input, textarea');
-            
+
             inputs.forEach(input => {
                 if (input.type !== 'submit' && input.type !== 'reset') {
                     const label = document.querySelector(`label[for="${input.id}"]`);
@@ -880,26 +880,26 @@ describe('Contact Form Functionality', () => {
                 }
             });
         });
-        
+
         test('should support keyboard navigation', () => {
             const nameInput = document.getElementById('name');
             const emailInput = document.getElementById('email');
-            
+
             nameInput.focus();
             expect(document.activeElement).toBe(nameInput);
-            
+
             // Tab to next field
             const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
             nameInput.dispatchEvent(tabEvent);
-            
+
             // Focus should move (browser behavior)
         });
-        
+
         test('should have required attributes for screen readers', () => {
             const requiredInputs = document.querySelectorAll('[required]');
-            
+
             expect(requiredInputs.length).toBeGreaterThan(0);
-            
+
             requiredInputs.forEach(input => {
                 expect(input.hasAttribute('required')).toBe(true);
             });
@@ -911,7 +911,7 @@ describe('Contact Form Functionality', () => {
 ---
 
 #### 3. **Project Navigation & Redirect Tests**
-**File:** `__tests__/project_redirects.test.js`  
+**File:** `__tests__/project_redirects.test.js`
 **Estimated Lines:** 150-200
 
 ```javascript
@@ -935,41 +935,41 @@ describe('Project Redirect Pages', () => {
         { file: 'guia_turistico.html', target: 'guia_turistico', name: 'Guia Turístico' },
         { file: 'monitora_vagas.html', target: 'monitora_vagas', name: 'Monitora Vagas' }
     ];
-    
+
     redirectPages.forEach(({ file, target, name }) => {
         describe(`${name} redirect page`, () => {
             let pageContent;
-            
+
             beforeEach(() => {
                 const filePath = path.join(pagesDir, file);
                 if (fs.existsSync(filePath)) {
                     pageContent = fs.readFileSync(filePath, 'utf-8');
                 }
             });
-            
+
             test('should exist', () => {
                 expect(pageContent).toBeTruthy();
             });
-            
+
             test('should have meta refresh tag', () => {
                 expect(pageContent).toMatch(/<meta[^>]*http-equiv="refresh"/i);
             });
-            
+
             test('should redirect to correct submodule', () => {
                 expect(pageContent).toContain(`../submodules/${target}/src`);
             });
-            
+
             test('should have immediate redirect (0 seconds)', () => {
                 expect(pageContent).toMatch(/content="0;/);
             });
-            
+
             test('should have valid HTML structure', () => {
                 expect(pageContent).toMatch(/<!DOCTYPE html>/i);
                 expect(pageContent).toContain('<html');
                 expect(pageContent).toContain('<head>');
                 expect(pageContent).toContain('</html>');
             });
-            
+
             test('should have descriptive title', () => {
                 expect(pageContent).toMatch(/<title>.*<\/title>/i);
                 const titleMatch = pageContent.match(/<title>(.*?)<\/title>/i);
@@ -979,19 +979,19 @@ describe('Project Redirect Pages', () => {
                     );
                 }
             });
-            
+
             test('should have fallback link for manual redirect', () => {
                 // Best practice: provide clickable link in case meta refresh fails
-                const hasLink = pageContent.includes('<a ') && 
+                const hasLink = pageContent.includes('<a ') &&
                                pageContent.includes('href=');
-                
+
                 if (!hasLink) {
                     console.warn(`${file} should have fallback link`);
                 }
             });
         });
     });
-    
+
     describe('Redirect Performance', () => {
         test('all redirect pages should be minimal size', () => {
             redirectPages.forEach(({ file }) => {
@@ -1012,7 +1012,7 @@ describe('Project Redirect Pages', () => {
 ### Priority 2: Integration Tests
 
 #### 4. **End-to-End User Journeys**
-**File:** `__tests__/e2e_user_journeys.test.js`  
+**File:** `__tests__/e2e_user_journeys.test.js`
 **Estimated Lines:** 300-400
 
 ```javascript
@@ -1029,7 +1029,7 @@ describe('End-to-End User Journeys', () => {
         // Mock fetch for potential API calls
         global.fetch = jest.fn();
     });
-    
+
     describe('Landing to Contact Journey', () => {
         test('user navigates from landing to contact and submits form', async () => {
             // 1. Load landing page
@@ -1040,7 +1040,7 @@ describe('End-to-End User Journeys', () => {
             // 6. Verify success
         });
     });
-    
+
     describe('Project Navigation Journey', () => {
         test('user browses projects and opens Music in Numbers', async () => {
             // 1. Click Projects navigation
@@ -1049,7 +1049,7 @@ describe('End-to-End User Journeys', () => {
             // 4. Verify redirect
         });
     });
-    
+
     describe('Complete Site Tour', () => {
         test('user visits all main sections', async () => {
             // Visit Intro → Projects → About → Contact
@@ -1065,7 +1065,7 @@ describe('End-to-End User Journeys', () => {
 ### Priority 3: Performance & Load Tests
 
 #### 5. **Performance Benchmarks**
-**File:** `__tests__/performance.test.js`  
+**File:** `__tests__/performance.test.js`
 **Estimated Lines:** 200-300
 
 ```javascript
@@ -1081,13 +1081,13 @@ describe('Performance Benchmarks', () => {
         test('initial page load should complete within 2 seconds', () => {
             // Measure load time
         });
-        
+
         test('article transitions should complete within 325ms', (done) => {
             // Measure transition timing
             const startTime = performance.now();
-            
+
             // Trigger article open
-            
+
             setTimeout(() => {
                 const duration = performance.now() - startTime;
                 expect(duration).toBeLessThan(350); // 325ms + buffer
@@ -1095,13 +1095,13 @@ describe('Performance Benchmarks', () => {
             }, 400);
         });
     });
-    
+
     describe('Animation Performance', () => {
         test('preload animation should not cause layout shift', () => {
             // Measure Cumulative Layout Shift (CLS)
         });
     });
-    
+
     describe('Memory Usage', () => {
         test('should not leak memory on repeated navigation', () => {
             // Navigate multiple times
@@ -1116,7 +1116,7 @@ describe('Performance Benchmarks', () => {
 ### Priority 4: Accessibility Tests
 
 #### 6. **WCAG 2.1 Compliance Tests**
-**File:** `__tests__/accessibility.test.js`  
+**File:** `__tests__/accessibility.test.js`
 **Estimated Lines:** 250-350
 
 ```javascript
@@ -1132,35 +1132,35 @@ describe('WCAG 2.1 Accessibility Compliance', () => {
         test('all interactive elements should be keyboard accessible', () => {
             // Test Tab navigation through all focusable elements
         });
-        
+
         test('should support Escape key to close modals', () => {
             // Test Escape key functionality
         });
     });
-    
+
     describe('Screen Reader Support', () => {
         test('should have proper ARIA labels', () => {
             // Check ARIA attributes
         });
-        
+
         test('should have semantic HTML structure', () => {
             // Verify proper heading hierarchy
             // Check landmark regions
         });
     });
-    
+
     describe('Color Contrast', () => {
         test('text should have sufficient contrast ratio', () => {
             // Calculate contrast ratios
             // Verify meets WCAG AA standards (4.5:1 for normal text)
         });
     });
-    
+
     describe('Focus Management', () => {
         test('focus should be visible on all interactive elements', () => {
             // Verify focus indicators
         });
-        
+
         test('focus should move appropriately in article overlays', () => {
             // Test focus trap in modal articles
         });
@@ -1235,12 +1235,12 @@ describe('Test Suite', () => {
         document.body.innerHTML = '';
         jest.clearAllMocks();
     });
-    
+
     afterEach(() => {
         // Clean up
         jest.restoreAllMocks();
     });
-    
+
     test('should ...', () => {
         // Test code
     });
@@ -1326,37 +1326,37 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
-    
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    
+
     - name: Install dependencies
       run: |
         cd src
         npm ci
-    
+
     - name: Run tests
       run: |
         cd src
         npm test -- --ci --coverage --maxWorkers=2
-    
+
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
       with:
         file: ./src/coverage/clover.xml
         fail_ci_if_error: true
-    
+
     - name: Check coverage thresholds
       run: |
         cd src
@@ -1590,5 +1590,5 @@ By following this action plan, the project will achieve **professional-grade tes
 
 ---
 
-**Report Prepared By:** QA Engineering & Test Automation Specialist  
+**Report Prepared By:** QA Engineering & Test Automation Specialist
 **Next Review:** After Phase 1 completion (1 week)

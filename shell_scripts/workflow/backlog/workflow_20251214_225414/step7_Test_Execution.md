@@ -71,12 +71,12 @@ PASS submodules/music_in_numbers/src/scripts/spotify-api/__tests__/SpotifyApiCor
           at runTest (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/jest-runner/build/testWorker.js:343:7)
           at Object.worker (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/jest-runner/build/testWorker.js:497:12)
 
-       96 |             
+       96 |
        97 |         } catch (error) {
     >  98 |             console.error('Auth initiation error:', error);
           |                     ^
        99 |             showResult('Failed to initiate authentication. Please try again.', 'error');
-      100 |             
+      100 |
       101 |             connectBtn.disabled = false;
 
       at SpotifyApiCore.initiateAuthCore (submodules/music_in_numbers/src/scripts/spotify-api/__tests__/SpotifyApiCore.test.js:98:21)
@@ -147,7 +147,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/AddressDataExtrac
     Received: undefined
 
       91 |             const extractor = new AddressDataExtractor();
-      92 |             
+      92 |
     > 93 |             expect(extractor.defaultCountry).toBe('Brasil');
          |                                              ^
       94 |             expect(extractor.timeout).toBe(3000);
@@ -1627,9 +1627,9 @@ PASS __tests__/InitializationUtilities.test.js
       122 |             delete global.window.location;
     > 123 |             global.window.location = { hostname: '127.0.0.1', search: '' };
           |                                    ^
-      124 |             
+      124 |
       125 |             const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
-      126 |             
+      126 |
 
       at VirtualConsole.<anonymous> (node_modules/@jest/environment-jsdom-abstract/build/index.js:87:23)
       at module.exports (node_modules/jsdom/lib/jsdom/browser/not-implemented.js:12:26)
@@ -1729,9 +1729,9 @@ PASS __tests__/InitializationUtilities.test.js
       133 |             delete global.window.location;
     > 134 |             global.window.location = { hostname: '192.168.1.100', search: '' };
           |                                    ^
-      135 |             
+      135 |
       136 |             const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
-      137 |             
+      137 |
 
       at VirtualConsole.<anonymous> (node_modules/@jest/environment-jsdom-abstract/build/index.js:87:23)
       at module.exports (node_modules/jsdom/lib/jsdom/browser/not-implemented.js:12:26)
@@ -7640,12 +7640,12 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingM
     Number of calls: 1
 
       109 |             manager.subscribe(null);
-      110 |             
+      110 |
     > 111 |             expect(consoleSpy).toHaveBeenCalledWith(
           |                                ^
       112 |                 expect.stringContaining('Attempted to subscribe a null observer')
       113 |             );
-      114 |             
+      114 |
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingManager.test.js:111:32)
 
@@ -7662,12 +7662,12 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingM
     Number of calls: 17
 
       150 |             manager.subscribeFunction(null);
-      151 |             
+      151 |
     > 152 |             expect(consoleSpy).toHaveBeenCalledWith(
           |                                ^
       153 |                 expect.stringContaining('Attempted to subscribe a null observer function')
       154 |             );
-      155 |             
+      155 |
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingManager.test.js:152:32)
 
@@ -7683,7 +7683,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingM
         > 455 |                 manager.elementIds.chronometer = 'modified';
               |                                                ^
           456 |             }).not.toThrow();
-          457 |             
+          457 |
           458 |             // Value should remain unchanged due to freeze
 
       at submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingManager.test.js:455:48
@@ -7706,7 +7706,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/PositionManager.t
     Expected: "boolean"
     Received: "undefined"
 
-      250 |             
+      250 |
       251 |             // The implementation should consider both time and distance thresholds
     > 252 |             expect(typeof updated).toBe('boolean');
           |                                    ^
@@ -8087,11 +8087,11 @@ FAIL submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js
     Expected: 100
     Received: 0
 
-      319 |             
+      319 |
       320 |             expect(analysis.averageDuration).toBeLessThan(PERFORMANCE_CONFIG.thresholds.pkceGeneration);
     > 321 |             expect(analysis.successRate).toBe(100);
           |                                          ^
-      322 |             
+      322 |
       323 |             performanceMetrics.pkce = results;
       324 |         });
 
@@ -8120,7 +8120,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSON
     Expected: true
     Received: false
 
-      124 |                 
+      124 |
       125 |                 portuguesePlaces.forEach(place => {
     > 126 |                     expect(/[ãáçéíóú]/i.test(place)).toBe(true);
           |                                                      ^
@@ -8161,7 +8161,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSON
     > 207 |             expect(refPlace.typeName).toBe('car_repair');
           |                                       ^
       208 |             expect(refPlace.name).toBeDefined();
-      209 |             
+      209 |
       210 |             // Should handle empty name gracefully
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSONFormat.test.js:207:39)
@@ -8177,7 +8177,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSON
       247 |             expect(brazilianCarShop.name).toContain('Brasil');
     > 248 |             expect(brazilianCarShop.typeName).toBe('car_repair');
           |                                               ^
-      249 |             
+      249 |
       250 |             if (brazilianCarShop.tags) {
       251 |                 expect(brazilianCarShop.tags['addr:country']).toBe('BR');
 
@@ -8206,12 +8206,12 @@ PASS submodules/music_in_numbers/tests/spotify-auth-di.test.js
           at runTest (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/jest-runner/build/testWorker.js:343:7)
           at Object.worker (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/jest-runner/build/testWorker.js:497:12)
 
-      116 |         
+      116 |
       117 |     } catch (error) {
     > 118 |         console.error('Auth initiation error:', error);
           |                 ^
       119 |         showResult('Failed to initiate authentication. Please try again.', 'error');
-      120 |         
+      120 |
       121 |         connectBtn.disabled = false;
 
       at initiateAuthCore (submodules/music_in_numbers/tests/spotify-auth-di.test.js:118:17)
@@ -8229,7 +8229,7 @@ FAIL __tests__/shell_scripts.test.js
       384 |           const firstCopyPos = mainContent.indexOf('copy_index_html');
     > 385 |           expect(validatePos).toBeLessThan(firstCopyPos);
           |                               ^
-      386 |           
+      386 |
       387 |           // Check that summary comes last
       388 |           const summaryPos = mainContent.indexOf('show_summary');
 
@@ -8577,7 +8577,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/DisplayerF
     > 267 |             mockReferencePlace.name = 'Shopping Center';
           |                                     ^
       268 |             mockReferencePlace.description = 'Shopping';
-      269 |             
+      269 |
       270 |             expect(() => {
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/integration/DisplayerFactory.integration.test.js:267:37)
@@ -8590,11 +8590,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/DisplayerF
 
     Received function did not throw
 
-      340 |             
+      340 |
       341 |             // Should not be constructable
     > 342 |             expect(() => new ImportedDisplayerFactory()).toThrow('DisplayerFactory is a static factory class and cannot be instantiated. Use static methods instead.');
           |                                                          ^
-      343 |             
+      343 |
       344 |             // Should have static methods
       345 |             expect(typeof ImportedDisplayerFactory.createPositionDisplayer).toBe('function');
 
@@ -8669,7 +8669,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem
     > 170 |             throw new Error('Web Speech API not available in this environment');
           |                   ^
       171 |         }
-      172 |         
+      172 |
       173 |         // Initialize Web Speech API interface
 
       at new SpeechSynthesisManager (submodules/guia_turistico/src/libs/guia_js/src/speech/SpeechSynthesisManager.js:170:19)
@@ -8682,7 +8682,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem
     Expected: 5
     Received: 6
 
-      416 |             
+      416 |
       417 |             // Should keep only the first 5 items (0-24 seconds old)
     > 418 |             expect(cleanedQueue.length).toBe(5);
           |                                         ^
@@ -9272,7 +9272,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       103 | 			return;
       104 | 		}
-      105 | 		
+      105 |
 
       at ChangeDetectionCoordinator.warn [as setupLogradouroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:102:12)
       at ChangeDetectionCoordinator.setupLogradouroChangeDetection [as setupChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:72:8)
@@ -9287,7 +9287,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       135 | 			return;
       136 | 		}
-      137 | 		
+      137 |
 
       at ChangeDetectionCoordinator.warn [as setupBairroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:134:12)
       at ChangeDetectionCoordinator.setupBairroChangeDetection [as setupChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:73:8)
@@ -9302,7 +9302,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       164 | 			return;
       165 | 		}
-      166 | 		
+      166 |
 
       at ChangeDetectionCoordinator.warn [as setupMunicipioChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:163:12)
       at ChangeDetectionCoordinator.setupMunicipioChangeDetection [as setupChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:74:8)
@@ -9317,7 +9317,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       103 | 			return;
       104 | 		}
-      105 | 		
+      105 |
 
       at ChangeDetectionCoordinator.warn [as setupLogradouroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:102:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:107:25)
@@ -9331,7 +9331,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       135 | 			return;
       136 | 		}
-      137 | 		
+      137 |
 
       at ChangeDetectionCoordinator.warn [as setupBairroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:134:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:112:25)
@@ -9345,7 +9345,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       164 | 			return;
       165 | 		}
-      166 | 		
+      166 |
 
       at ChangeDetectionCoordinator.warn [as setupMunicipioChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:163:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:117:25)
@@ -9359,7 +9359,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       103 | 			return;
       104 | 		}
-      105 | 		
+      105 |
 
       at ChangeDetectionCoordinator.warn [as setupLogradouroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:102:12)
       at ChangeDetectionCoordinator.setupLogradouroChangeDetection [as setupChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:72:8)
@@ -9374,7 +9374,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       135 | 			return;
       136 | 		}
-      137 | 		
+      137 |
 
       at ChangeDetectionCoordinator.warn [as setupBairroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:134:12)
       at ChangeDetectionCoordinator.setupBairroChangeDetection [as setupChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:73:8)
@@ -9389,7 +9389,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       164 | 			return;
       165 | 		}
-      166 | 		
+      166 |
 
       at ChangeDetectionCoordinator.warn [as setupMunicipioChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:163:12)
       at ChangeDetectionCoordinator.setupMunicipioChangeDetection [as setupChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:74:8)
@@ -9404,7 +9404,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       103 | 			return;
       104 | 		}
-      105 | 		
+      105 |
 
       at ChangeDetectionCoordinator.warn [as setupLogradouroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:102:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:133:25)
@@ -9418,7 +9418,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       135 | 			return;
       136 | 		}
-      137 | 		
+      137 |
 
       at ChangeDetectionCoordinator.warn [as setupBairroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:134:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:139:25)
@@ -9432,7 +9432,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       164 | 			return;
       165 | 		}
-      166 | 		
+      166 |
 
       at ChangeDetectionCoordinator.warn [as setupMunicipioChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:163:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:145:25)
@@ -9466,7 +9466,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       103 | 			return;
       104 | 		}
-      105 | 		
+      105 |
 
       at ChangeDetectionCoordinator.warn [as setupLogradouroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:102:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:365:25)
@@ -9480,7 +9480,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetecti
           | 			        ^
       103 | 			return;
       104 | 		}
-      105 | 		
+      105 |
 
       at ChangeDetectionCoordinator.warn [as setupLogradouroChangeDetection] (submodules/guia_turistico/src/libs/guia_js/src/services/ChangeDetectionCoordinator.js:102:12)
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/features/ChangeDetectionCoordinator.test.js:383:25)
@@ -9662,13 +9662,13 @@ PASS submodules/guia_turistico/src/libs/guia_js/__tests__/unit/HTMLAddressDispla
     console.warn
       (HTMLAddressDisplayer) No element provided, skipping update
 
-      185 | 		
+      185 |
       186 | 		if (!this.element) {
     > 187 | 			console.warn('(HTMLAddressDisplayer) No element provided, skipping update');
           | 			        ^
       188 | 			return;
       189 | 		}
-      190 | 		
+      190 |
 
       at HTMLAddressDisplayer.warn [as update] (submodules/guia_turistico/src/libs/guia_js/src/html/HTMLAddressDisplayer.js:187:12)
       at submodules/guia_turistico/src/libs/guia_js/__tests__/unit/HTMLAddressDisplayer.test.js:305:35
@@ -34398,7 +34398,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechItem.test.j
     Received: false
 
       202 |             const item = new SpeechItem('Teste de expiração');
-      203 |             
+      203 |
     > 204 |             expect(item.isExpired(0)).toBe(true);  // Always expired with 0ms expiration
           |                                       ^
       205 |             expect(item.isExpired(-1000)).toBe(true); // Always expired with negative expiration
@@ -34418,7 +34418,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechItem.test.j
       229 |             const exactText = 'Este texto tem exatamente cinquenta caracteres!!';
     > 230 |             expect(exactText.length).toBe(50);
           |                                      ^
-      231 |             
+      231 |
       232 |             const item = new SpeechItem(exactText, 0);
       233 |             const result = item.toString();
 
@@ -34435,7 +34435,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechItem.test.j
       240 |             const longText = 'Este texto tem exatamente cinquenta e um caracter!';
     > 241 |             expect(longText.length).toBe(51);
           |                                     ^
-      242 |             
+      242 |
       243 |             const item = new SpeechItem(longText, 3);
       244 |             const result = item.toString();
 
@@ -35783,11 +35783,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35797,11 +35797,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35811,11 +35811,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35825,11 +35825,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35839,11 +35839,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35853,11 +35853,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35867,11 +35867,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35881,11 +35881,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35895,11 +35895,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35909,11 +35909,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -35923,11 +35923,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -69061,11 +69061,11 @@ FAIL __tests__/project_navigation.test.js
     Expected: true
     Received: false
 
-      241 |         
+      241 |
       242 |         // Directory should exist (may be empty if not initialized)
     > 243 |         expect(fs.existsSync(submodulePath)).toBe(true);
           |                                              ^
-      244 |         
+      244 |
       245 |         if (fs.existsSync(submodulePath) && fs.statSync(submodulePath).isDirectory()) {
       246 |           // If submodule is initialized, should have src directory
 
@@ -69082,13 +69082,13 @@ FAIL submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js
 
     Received: null
 
-      645 |                 
+      645 |
       646 |                 const challenge = await generateCodeChallengeSafe(verifier);
     > 647 |                 expect(challenge).toBeTruthy();
           |                                   ^
       648 |                 challenges.push(challenge);
       649 |             }
-      650 |             
+      650 |
 
       at Object.<anonymous> (submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:647:35)
 
@@ -69100,12 +69100,12 @@ FAIL submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js
     Received: false
 
       665 |             const hasSubtle = !!(window.crypto && window.crypto.subtle && window.crypto.subtle.digest);
-      666 |             
+      666 |
     > 667 |             expect(hasCrypto).toBe(true); // Should be available in Jest jsdom
           |                               ^
       668 |             expect(hasSubtle).toBe(true); // Should be available in Jest jsdom
       669 |         });
-      670 |         
+      670 |
 
       at Object.<anonymous> (submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:667:31)
 
@@ -69275,12 +69275,12 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/utils/utils.test.js
     Error name:    "TypeError"
     Error message: "Cannot assign to read only property 'property' of object '#<Object>'"
 
-          233 |             
+          233 |
           234 |             expect(() => {
         > 235 |                 testObject.property = 'new value';
               |                                     ^
           236 |             }).not.toThrow(); // In non-strict mode, this fails silently
-          237 |             
+          237 |
           238 |             expect(Object.isFrozen(testObject)).toBe(true);
 
       at submodules/guia_turistico/src/libs/guia_js/__tests__/utils/utils.test.js:235:37
@@ -70954,7 +70954,7 @@ FAIL __tests__/documentation.test.js
       33 |         const docPath = path.join(docsDir, doc);
     > 34 |         expect(fs.existsSync(docPath)).toBe(true);
          |                                        ^
-      35 |         
+      35 |
       36 |         // Should be substantial documentation (not empty)
       37 |         const content = fs.readFileSync(docPath, 'utf8');
 
@@ -71017,7 +71017,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       36 |     test('should create immutable GeoPosition', async () => {
     > 37 |         const { default: GeoPosition } = await import('../src/core/GeoPosition.js');
          |                                          ^
-      38 |         
+      38 |
       39 |         const mockPosition = {
       40 |             coords: {
 
@@ -71032,7 +71032,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       63 |     test('should create and use ObserverSubject', async () => {
     > 64 |         const { default: ObserverSubject } = await import('../src/core/ObserverSubject.js');
          |                                              ^
-      65 |         
+      65 |
       66 |         const subject = new ObserverSubject();
       67 |         let notified = false;
 
@@ -71047,7 +71047,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       83 |     test('should create PositionManager singleton', async () => {
     > 84 |         const { default: PositionManager } = await import('../src/core/PositionManager.js');
          |                                              ^
-      85 |         
+      85 |
       86 |         const manager1 = PositionManager.getInstance();
       87 |         const manager2 = PositionManager.getInstance();
 
@@ -71062,7 +71062,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       94 |     test('should export classes from guia.js', async () => {
     > 95 |         const guia = await import('../src/guia.js');
          |                      ^
-      96 |         
+      96 |
       97 |         expect(guia.GeoPosition).toBeDefined();
       98 |         expect(guia.ObserverSubject).toBeDefined();
 
@@ -71078,7 +71078,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
     > 103 |         const { default: GeoPosition } = await import('../src/core/GeoPosition.js');
           |                                          ^
       104 |         const { default: ObserverSubject } = await import('../src/core/ObserverSubject.js');
-      105 |         
+      105 |
       106 |         const subject = new ObserverSubject();
 
       at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
@@ -156400,143 +156400,143 @@ STACK: SyntaxError: /home/mpb/Documents/GitHub/mpbarbosa_site/src/submodules/mus
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     at async generateEmptyCoverage (/home/mpb/Documents/GitHub/mpbarbosa_site/src/node_modules/@jest/reporters/build/CoverageWorker.js:92:9)
 -------------------------------------------------------------|---------|----------|---------|---------|---------------------------------------------------------------------------------------------
-File                                                         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                                           
+File                                                         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------------------------------------------------|---------|----------|---------|---------|---------------------------------------------------------------------------------------------
-All files                                                    |    9.04 |     7.12 |     8.8 |     9.1 |                                                                                             
- scripts                                                     |   56.75 |    58.33 |      60 |   56.75 |                                                                                             
-  main.js                                                    |       0 |        0 |       0 |       0 | 4-23                                                                                        
-  main.mjs                                                   |    91.3 |       70 |     100 |    91.3 | 49-50                                                                                       
- scripts/initialization                                      |       0 |        0 |       0 |       0 |                                                                                             
-  InitializationUtilities.js                                 |       0 |        0 |       0 |       0 | 33-761                                                                                      
- submodules/guia_turistico/src/libs/guia_js/src              |   80.76 |     65.9 |   53.33 |   81.37 |                                                                                             
-  guia.js                                                    |   80.58 |     65.9 |      50 |   81.18 | 63,74,94-99,110,139,272-293,326,345-360                                                     
-  guia_ibge.js                                               |     100 |      100 |     100 |     100 |                                                                                             
- submodules/guia_turistico/src/libs/guia_js/src/config       |     100 |      100 |     100 |     100 |                                                                                             
-  defaults.js                                                |     100 |      100 |     100 |     100 |                                                                                             
- submodules/guia_turistico/src/libs/guia_js/src/coordination |   52.48 |     50.7 |    43.9 |   52.48 |                                                                                             
-  WebGeocodingManager.js                                     |   52.48 |     50.7 |    43.9 |   52.48 | 204-210,275,278,349-353,457,469-481,493,505-517,543-544,618,683-909                         
- submodules/guia_turistico/src/libs/guia_js/src/core         |   84.21 |    85.07 |   77.77 |   84.07 |                                                                                             
-  GeoPosition.js                                             |   96.29 |    94.44 |      80 |   96.29 | 98                                                                                          
-  ObserverSubject.js                                         |     100 |     87.5 |     100 |     100 | 190                                                                                         
-  PositionManager.js                                         |   73.84 |    80.48 |   58.82 |   73.84 | 71,80,270-290,351-352,363-365,402-408                                                       
- submodules/guia_turistico/src/libs/guia_js/src/data         |   75.23 |     89.1 |   48.55 |   75.78 |                                                                                             
-  AddressCache.js                                            |   75.23 |    86.08 |   46.51 |   75.35 | 131,173,178,393,407,518,569,652,694,709,724,751-790,803,816-842,855,873-1107,1115           
-  AddressDataExtractor.js                                    |   47.72 |      100 |   41.02 |   47.72 | 65,129,153,188,197-213,217,221-226,230-238                                                  
-  AddressExtractor.js                                        |   95.65 |      100 |      75 |   95.65 | 136                                                                                         
-  BrazilianStandardAddress.js                                |   86.36 |    58.33 |   83.33 |      95 | 101                                                                                         
-  ReferencePlace.js                                          |     100 |    96.29 |     100 |     100 | 102                                                                                         
- submodules/guia_turistico/src/libs/guia_js/src/html         |   66.06 |    68.48 |    62.5 |   65.94 |                                                                                             
-  DisplayerFactory.js                                        |   91.66 |      100 |      80 |   91.66 | 166                                                                                         
-  HTMLAddressDisplayer.js                                    |     100 |    96.66 |     100 |     100 | 119                                                                                         
-  HTMLPositionDisplayer.js                                   |     100 |      100 |     100 |     100 |                                                                                             
-  HTMLReferencePlaceDisplayer.js                             |     100 |    91.89 |     100 |     100 | 113,123-126                                                                                 
-  HtmlSpeechSynthesisDisplayer.js                            |      29 |    27.55 |   26.31 |   28.46 | 158,162,166,331-357,386-389,395-398,405-406,411-412,417-418,424-427,433-436,443-516,620-786 
-  HtmlText.js                                                |     100 |      100 |     100 |     100 |                                                                                             
- submodules/guia_turistico/src/libs/guia_js/src/services     |   44.55 |    33.33 |   48.38 |   44.16 |                                                                                             
-  ChangeDetectionCoordinator.js                              |   79.31 |    56.25 |   81.81 |   78.18 | 49,106-107,121,138-139,150,167-168,179,222,245                                              
-  GeolocationService.js                                      |      25 |     23.4 |   22.72 |   25.55 | 52-68,82-89,112-119,140-143,173,310-548,568                                                 
-  ReverseGeocoder.js                                         |   40.38 |    36.66 |   38.88 |   40.38 | 100-102,129-139,156,216-384                                                                 
- submodules/guia_turistico/src/libs/guia_js/src/speech       |   48.52 |    47.02 |   45.31 |   48.68 |                                                                                             
-  SpeechItem.js                                              |     100 |      100 |     100 |     100 |                                                                                             
-  SpeechQueue.js                                             |   92.59 |    97.72 |    82.6 |    92.4 | 80,155-191                                                                                  
-  SpeechSynthesisManager.js                                  |   23.86 |    20.72 |   18.42 |   24.27 | 162,213-252,264-265,278,326,332,341-346,354-355,358-359,398-778,816,835-1038                
- submodules/guia_turistico/src/libs/guia_js/src/status       |     100 |      100 |     100 |     100 |                                                                                             
-  SingletonStatusManager.js                                  |     100 |      100 |     100 |     100 |                                                                                             
- submodules/guia_turistico/src/libs/guia_js/src/timing       |     100 |    97.43 |     100 |     100 |                                                                                             
-  Chronometer.js                                             |     100 |    97.43 |     100 |     100 | 125                                                                                         
- submodules/guia_turistico/src/libs/guia_js/src/utils        |   91.17 |    95.65 |    62.5 |   96.77 |                                                                                             
-  device.js                                                  |     100 |    95.65 |     100 |     100 | 88                                                                                          
-  distance.js                                                |   84.61 |      100 |   33.33 |     100 |                                                                                             
-  logger.js                                                  |    87.5 |      100 |      75 |   85.71 | 70                                                                                          
- submodules/music_in_numbers/src                             |       0 |        0 |       0 |       0 |                                                                                             
-  sw.js                                                      |       0 |        0 |       0 |       0 | 4-349                                                                                       
- submodules/music_in_numbers/src/scripts                     |       0 |        0 |       0 |       0 |                                                                                             
-  analytics.js                                               |       0 |        0 |       0 |       0 | 15-280                                                                                      
-  artist-api.js                                              |       0 |        0 |       0 |       0 | 41-250                                                                                      
-  artist-page.js                                             |       0 |        0 |       0 |       0 | 48-291                                                                                      
-  artist-ui.js                                               |       0 |        0 |       0 |       0 | 44-453                                                                                      
-  data-export.js                                             |       0 |        0 |       0 |       0 | 14-961                                                                                      
-  initialization.js                                          |       0 |        0 |       0 |       0 | 32-404                                                                                      
-  performance.js                                             |       0 |        0 |       0 |       0 | 17-794                                                                                      
-  real-time.js                                               |       0 |        0 |       0 |       0 | 19-274                                                                                      
-  spotify-api.js                                             |       0 |        0 |       0 |       0 | 5-1855                                                                                      
-  theme-manager.js                                           |       0 |        0 |       0 |       0 | 6-380                                                                                       
-  utils.js                                                   |       0 |        0 |       0 |       0 | 14-368                                                                                      
- submodules/music_in_numbers/src/scripts/analytics           |       0 |        0 |       0 |       0 |                                                                                             
-  AnalyticsCore.js                                           |       0 |        0 |       0 |       0 | 32-523                                                                                      
-  AnalyticsProcessors.js                                     |       0 |        0 |       0 |       0 | 26-482                                                                                      
-  AnalyticsUIBuilders.js                                     |       0 |        0 |       0 |       0 | 26-526                                                                                      
-  AnalyticsUtilities.js                                      |       0 |        0 |       0 |       0 | 29-425                                                                                      
-  AnalyticsValidators.js                                     |       0 |        0 |       0 |       0 | 26-470                                                                                      
- submodules/music_in_numbers/src/scripts/artist-api          |       0 |        0 |       0 |       0 |                                                                                             
-  ArtistApiCore.js                                           |       0 |        0 |       0 |       0 | 40-431                                                                                      
-  ArtistApiProcessors.js                                     |       0 |        0 |       0 |       0 | 37-386                                                                                      
-  ArtistApiUIBuilders.js                                     |       0 |        0 |       0 |       0 | 38-475                                                                                      
-  ArtistApiUtilities.js                                      |       0 |        0 |       0 |       0 | 38-641                                                                                      
-  ArtistApiValidators.js                                     |       0 |        0 |       0 |       0 | 37-289                                                                                      
- submodules/music_in_numbers/src/scripts/artist-page         |       0 |        0 |       0 |       0 |                                                                                             
-  ArtistPageCore.js                                          |       0 |        0 |       0 |       0 | 53-588                                                                                      
-  ArtistPageProcessors.js                                    |       0 |        0 |       0 |       0 | 39-475                                                                                      
-  ArtistPageUIBuilders.js                                    |       0 |        0 |       0 |       0 | 44-536                                                                                      
-  ArtistPageUtilities.js                                     |       0 |        0 |       0 |       0 | 43-659                                                                                      
-  ArtistPageValidators.js                                    |       0 |        0 |       0 |       0 | 39-391                                                                                      
- submodules/music_in_numbers/src/scripts/artist-ui           |       0 |        0 |       0 |       0 |                                                                                             
-  ArtistUIBuilders.js                                        |       0 |        0 |       0 |       0 | 46-603                                                                                      
-  ArtistUICore.js                                            |       0 |        0 |       0 |       0 | 39-731                                                                                      
-  ArtistUIProcessors.js                                      |       0 |        0 |       0 |       0 | 39-581                                                                                      
-  ArtistUIUtilities.js                                       |       0 |        0 |       0 |       0 | 42-1187                                                                                     
-  ArtistUIValidators.js                                      |       0 |        0 |       0 |       0 | 40-569                                                                                      
- submodules/music_in_numbers/src/scripts/data-export         |       0 |        0 |       0 |       0 |                                                                                             
-  DataExportCore.js                                          |       0 |        0 |       0 |       0 | 24-961                                                                                      
-  DataExportProcessors.js                                    |       0 |        0 |       0 |       0 | 24-450                                                                                      
-  DataExportUIBuilders.js                                    |       0 |        0 |       0 |       0 | 23-489                                                                                      
-  DataExportUtilities.js                                     |       0 |        0 |       0 |       0 | 22-691                                                                                      
-  DataExportValidators.js                                    |       0 |        0 |       0 |       0 | 23-381                                                                                      
-  VALIDATION_TEST.js                                         |       0 |        0 |       0 |       0 | 16-371                                                                                      
- submodules/music_in_numbers/src/scripts/initialization      |       0 |        0 |       0 |       0 |                                                                                             
-  InitializationCore.js                                      |       0 |        0 |       0 |       0 | 22-597                                                                                      
-  InitializationProcessors.js                                |       0 |        0 |       0 |       0 | 19-390                                                                                      
-  InitializationUIBuilders.js                                |       0 |        0 |       0 |       0 | 19-523                                                                                      
-  InitializationUtilities.js                                 |       0 |        0 |       0 |       0 | 33-761                                                                                      
-  InitializationValidators.js                                |       0 |        0 |       0 |       0 | 19-298                                                                                      
- submodules/music_in_numbers/src/scripts/performance         |       0 |        0 |       0 |       0 |                                                                                             
-  PerformanceCore.js                                         |       0 |        0 |       0 |       0 | 32-765                                                                                      
-  PerformanceProcessors.js                                   |       0 |        0 |       0 |       0 | 32-584                                                                                      
-  PerformanceUIBuilders.js                                   |       0 |        0 |       0 |       0 | 32-734                                                                                      
-  PerformanceUtilities.js                                    |       0 |        0 |       0 |       0 | 32-622                                                                                      
-  PerformanceValidators.js                                   |       0 |        0 |       0 |       0 | 32-546                                                                                      
- submodules/music_in_numbers/src/scripts/real-time           |       0 |        0 |       0 |       0 |                                                                                             
-  RealTimeCore.js                                            |       0 |        0 |       0 |       0 | 31-342                                                                                      
-  RealTimeProcessors.js                                      |       0 |        0 |       0 |       0 | 25-294                                                                                      
-  RealTimeUIBuilders.js                                      |       0 |        0 |       0 |       0 | 24-244                                                                                      
-  RealTimeUtilities.js                                       |       0 |        0 |       0 |       0 | 31-374                                                                                      
-  RealTimeValidators.js                                      |       0 |        0 |       0 |       0 | 25-273                                                                                      
- submodules/music_in_numbers/src/scripts/spotify-api         |       0 |        0 |       0 |       0 |                                                                                             
-  SpotifyApiRequestBuilders.js                               |       0 |        0 |       0 |       0 | 9-235                                                                                       
-  SpotifyApiResponseProcessors.js                            |       0 |        0 |       0 |       0 | 17-173                                                                                      
-  SpotifyApiUtilities.js                                     |       0 |        0 |       0 |       0 | 31-334                                                                                      
-  SpotifyApiValidators.js                                    |       0 |        0 |       0 |       0 | 16-415                                                                                      
-  SpotifySessionDetector.js                                  |       0 |        0 |       0 |       0 | 28-481                                                                                      
-  enhanced-session-feedback.js                               |       0 |        0 |       0 |       0 | 13-217                                                                                      
-  test-validators.js                                         |       0 |        0 |     100 |       0 | 9-62                                                                                        
- submodules/music_in_numbers/src/scripts/theme-manager       |       0 |        0 |       0 |       0 |                                                                                             
-  ThemeManagerCore.js                                        |       0 |        0 |       0 |       0 | 26-555                                                                                      
-  ThemeManagerProcessors.js                                  |       0 |        0 |       0 |       0 | 20-306                                                                                      
-  ThemeManagerUIBuilders.js                                  |       0 |        0 |       0 |       0 | 22-419                                                                                      
-  ThemeManagerUtilities.js                                   |       0 |        0 |       0 |       0 | 20-507                                                                                      
-  ThemeManagerValidators.js                                  |       0 |        0 |       0 |       0 | 20-251                                                                                      
- submodules/music_in_numbers/src/scripts/ui-components       |       0 |        0 |       0 |       0 |                                                                                             
-  UIComponentsBuilders.js                                    |       0 |        0 |       0 |       0 | 22-608                                                                                      
-  UIComponentsCore.js                                        |       0 |        0 |       0 |       0 | 32-590                                                                                      
-  UIComponentsProcessors.js                                  |       0 |        0 |       0 |       0 | 23-386                                                                                      
-  UIComponentsUtilities.js                                   |       0 |        0 |       0 |       0 | 21-628                                                                                      
-  UIComponentsValidators.js                                  |       0 |        0 |       0 |       0 | 21-367                                                                                      
- submodules/music_in_numbers/src/scripts/utils               |       0 |        0 |       0 |       0 |                                                                                             
-  UtilsBuilders.js                                           |       0 |        0 |       0 |       0 | 19-305                                                                                      
-  UtilsCore.js                                               |       0 |        0 |       0 |       0 | 23-395                                                                                      
-  UtilsProcessors.js                                         |       0 |        0 |       0 |       0 | 18-305                                                                                      
-  UtilsUtilities.js                                          |       0 |        0 |       0 |       0 | 18-398                                                                                      
-  UtilsValidators.js                                         |       0 |        0 |       0 |       0 | 17-247                                                                                      
+All files                                                    |    9.04 |     7.12 |     8.8 |     9.1 |
+ scripts                                                     |   56.75 |    58.33 |      60 |   56.75 |
+  main.js                                                    |       0 |        0 |       0 |       0 | 4-23
+  main.mjs                                                   |    91.3 |       70 |     100 |    91.3 | 49-50
+ scripts/initialization                                      |       0 |        0 |       0 |       0 |
+  InitializationUtilities.js                                 |       0 |        0 |       0 |       0 | 33-761
+ submodules/guia_turistico/src/libs/guia_js/src              |   80.76 |     65.9 |   53.33 |   81.37 |
+  guia.js                                                    |   80.58 |     65.9 |      50 |   81.18 | 63,74,94-99,110,139,272-293,326,345-360
+  guia_ibge.js                                               |     100 |      100 |     100 |     100 |
+ submodules/guia_turistico/src/libs/guia_js/src/config       |     100 |      100 |     100 |     100 |
+  defaults.js                                                |     100 |      100 |     100 |     100 |
+ submodules/guia_turistico/src/libs/guia_js/src/coordination |   52.48 |     50.7 |    43.9 |   52.48 |
+  WebGeocodingManager.js                                     |   52.48 |     50.7 |    43.9 |   52.48 | 204-210,275,278,349-353,457,469-481,493,505-517,543-544,618,683-909
+ submodules/guia_turistico/src/libs/guia_js/src/core         |   84.21 |    85.07 |   77.77 |   84.07 |
+  GeoPosition.js                                             |   96.29 |    94.44 |      80 |   96.29 | 98
+  ObserverSubject.js                                         |     100 |     87.5 |     100 |     100 | 190
+  PositionManager.js                                         |   73.84 |    80.48 |   58.82 |   73.84 | 71,80,270-290,351-352,363-365,402-408
+ submodules/guia_turistico/src/libs/guia_js/src/data         |   75.23 |     89.1 |   48.55 |   75.78 |
+  AddressCache.js                                            |   75.23 |    86.08 |   46.51 |   75.35 | 131,173,178,393,407,518,569,652,694,709,724,751-790,803,816-842,855,873-1107,1115
+  AddressDataExtractor.js                                    |   47.72 |      100 |   41.02 |   47.72 | 65,129,153,188,197-213,217,221-226,230-238
+  AddressExtractor.js                                        |   95.65 |      100 |      75 |   95.65 | 136
+  BrazilianStandardAddress.js                                |   86.36 |    58.33 |   83.33 |      95 | 101
+  ReferencePlace.js                                          |     100 |    96.29 |     100 |     100 | 102
+ submodules/guia_turistico/src/libs/guia_js/src/html         |   66.06 |    68.48 |    62.5 |   65.94 |
+  DisplayerFactory.js                                        |   91.66 |      100 |      80 |   91.66 | 166
+  HTMLAddressDisplayer.js                                    |     100 |    96.66 |     100 |     100 | 119
+  HTMLPositionDisplayer.js                                   |     100 |      100 |     100 |     100 |
+  HTMLReferencePlaceDisplayer.js                             |     100 |    91.89 |     100 |     100 | 113,123-126
+  HtmlSpeechSynthesisDisplayer.js                            |      29 |    27.55 |   26.31 |   28.46 | 158,162,166,331-357,386-389,395-398,405-406,411-412,417-418,424-427,433-436,443-516,620-786
+  HtmlText.js                                                |     100 |      100 |     100 |     100 |
+ submodules/guia_turistico/src/libs/guia_js/src/services     |   44.55 |    33.33 |   48.38 |   44.16 |
+  ChangeDetectionCoordinator.js                              |   79.31 |    56.25 |   81.81 |   78.18 | 49,106-107,121,138-139,150,167-168,179,222,245
+  GeolocationService.js                                      |      25 |     23.4 |   22.72 |   25.55 | 52-68,82-89,112-119,140-143,173,310-548,568
+  ReverseGeocoder.js                                         |   40.38 |    36.66 |   38.88 |   40.38 | 100-102,129-139,156,216-384
+ submodules/guia_turistico/src/libs/guia_js/src/speech       |   48.52 |    47.02 |   45.31 |   48.68 |
+  SpeechItem.js                                              |     100 |      100 |     100 |     100 |
+  SpeechQueue.js                                             |   92.59 |    97.72 |    82.6 |    92.4 | 80,155-191
+  SpeechSynthesisManager.js                                  |   23.86 |    20.72 |   18.42 |   24.27 | 162,213-252,264-265,278,326,332,341-346,354-355,358-359,398-778,816,835-1038
+ submodules/guia_turistico/src/libs/guia_js/src/status       |     100 |      100 |     100 |     100 |
+  SingletonStatusManager.js                                  |     100 |      100 |     100 |     100 |
+ submodules/guia_turistico/src/libs/guia_js/src/timing       |     100 |    97.43 |     100 |     100 |
+  Chronometer.js                                             |     100 |    97.43 |     100 |     100 | 125
+ submodules/guia_turistico/src/libs/guia_js/src/utils        |   91.17 |    95.65 |    62.5 |   96.77 |
+  device.js                                                  |     100 |    95.65 |     100 |     100 | 88
+  distance.js                                                |   84.61 |      100 |   33.33 |     100 |
+  logger.js                                                  |    87.5 |      100 |      75 |   85.71 | 70
+ submodules/music_in_numbers/src                             |       0 |        0 |       0 |       0 |
+  sw.js                                                      |       0 |        0 |       0 |       0 | 4-349
+ submodules/music_in_numbers/src/scripts                     |       0 |        0 |       0 |       0 |
+  analytics.js                                               |       0 |        0 |       0 |       0 | 15-280
+  artist-api.js                                              |       0 |        0 |       0 |       0 | 41-250
+  artist-page.js                                             |       0 |        0 |       0 |       0 | 48-291
+  artist-ui.js                                               |       0 |        0 |       0 |       0 | 44-453
+  data-export.js                                             |       0 |        0 |       0 |       0 | 14-961
+  initialization.js                                          |       0 |        0 |       0 |       0 | 32-404
+  performance.js                                             |       0 |        0 |       0 |       0 | 17-794
+  real-time.js                                               |       0 |        0 |       0 |       0 | 19-274
+  spotify-api.js                                             |       0 |        0 |       0 |       0 | 5-1855
+  theme-manager.js                                           |       0 |        0 |       0 |       0 | 6-380
+  utils.js                                                   |       0 |        0 |       0 |       0 | 14-368
+ submodules/music_in_numbers/src/scripts/analytics           |       0 |        0 |       0 |       0 |
+  AnalyticsCore.js                                           |       0 |        0 |       0 |       0 | 32-523
+  AnalyticsProcessors.js                                     |       0 |        0 |       0 |       0 | 26-482
+  AnalyticsUIBuilders.js                                     |       0 |        0 |       0 |       0 | 26-526
+  AnalyticsUtilities.js                                      |       0 |        0 |       0 |       0 | 29-425
+  AnalyticsValidators.js                                     |       0 |        0 |       0 |       0 | 26-470
+ submodules/music_in_numbers/src/scripts/artist-api          |       0 |        0 |       0 |       0 |
+  ArtistApiCore.js                                           |       0 |        0 |       0 |       0 | 40-431
+  ArtistApiProcessors.js                                     |       0 |        0 |       0 |       0 | 37-386
+  ArtistApiUIBuilders.js                                     |       0 |        0 |       0 |       0 | 38-475
+  ArtistApiUtilities.js                                      |       0 |        0 |       0 |       0 | 38-641
+  ArtistApiValidators.js                                     |       0 |        0 |       0 |       0 | 37-289
+ submodules/music_in_numbers/src/scripts/artist-page         |       0 |        0 |       0 |       0 |
+  ArtistPageCore.js                                          |       0 |        0 |       0 |       0 | 53-588
+  ArtistPageProcessors.js                                    |       0 |        0 |       0 |       0 | 39-475
+  ArtistPageUIBuilders.js                                    |       0 |        0 |       0 |       0 | 44-536
+  ArtistPageUtilities.js                                     |       0 |        0 |       0 |       0 | 43-659
+  ArtistPageValidators.js                                    |       0 |        0 |       0 |       0 | 39-391
+ submodules/music_in_numbers/src/scripts/artist-ui           |       0 |        0 |       0 |       0 |
+  ArtistUIBuilders.js                                        |       0 |        0 |       0 |       0 | 46-603
+  ArtistUICore.js                                            |       0 |        0 |       0 |       0 | 39-731
+  ArtistUIProcessors.js                                      |       0 |        0 |       0 |       0 | 39-581
+  ArtistUIUtilities.js                                       |       0 |        0 |       0 |       0 | 42-1187
+  ArtistUIValidators.js                                      |       0 |        0 |       0 |       0 | 40-569
+ submodules/music_in_numbers/src/scripts/data-export         |       0 |        0 |       0 |       0 |
+  DataExportCore.js                                          |       0 |        0 |       0 |       0 | 24-961
+  DataExportProcessors.js                                    |       0 |        0 |       0 |       0 | 24-450
+  DataExportUIBuilders.js                                    |       0 |        0 |       0 |       0 | 23-489
+  DataExportUtilities.js                                     |       0 |        0 |       0 |       0 | 22-691
+  DataExportValidators.js                                    |       0 |        0 |       0 |       0 | 23-381
+  VALIDATION_TEST.js                                         |       0 |        0 |       0 |       0 | 16-371
+ submodules/music_in_numbers/src/scripts/initialization      |       0 |        0 |       0 |       0 |
+  InitializationCore.js                                      |       0 |        0 |       0 |       0 | 22-597
+  InitializationProcessors.js                                |       0 |        0 |       0 |       0 | 19-390
+  InitializationUIBuilders.js                                |       0 |        0 |       0 |       0 | 19-523
+  InitializationUtilities.js                                 |       0 |        0 |       0 |       0 | 33-761
+  InitializationValidators.js                                |       0 |        0 |       0 |       0 | 19-298
+ submodules/music_in_numbers/src/scripts/performance         |       0 |        0 |       0 |       0 |
+  PerformanceCore.js                                         |       0 |        0 |       0 |       0 | 32-765
+  PerformanceProcessors.js                                   |       0 |        0 |       0 |       0 | 32-584
+  PerformanceUIBuilders.js                                   |       0 |        0 |       0 |       0 | 32-734
+  PerformanceUtilities.js                                    |       0 |        0 |       0 |       0 | 32-622
+  PerformanceValidators.js                                   |       0 |        0 |       0 |       0 | 32-546
+ submodules/music_in_numbers/src/scripts/real-time           |       0 |        0 |       0 |       0 |
+  RealTimeCore.js                                            |       0 |        0 |       0 |       0 | 31-342
+  RealTimeProcessors.js                                      |       0 |        0 |       0 |       0 | 25-294
+  RealTimeUIBuilders.js                                      |       0 |        0 |       0 |       0 | 24-244
+  RealTimeUtilities.js                                       |       0 |        0 |       0 |       0 | 31-374
+  RealTimeValidators.js                                      |       0 |        0 |       0 |       0 | 25-273
+ submodules/music_in_numbers/src/scripts/spotify-api         |       0 |        0 |       0 |       0 |
+  SpotifyApiRequestBuilders.js                               |       0 |        0 |       0 |       0 | 9-235
+  SpotifyApiResponseProcessors.js                            |       0 |        0 |       0 |       0 | 17-173
+  SpotifyApiUtilities.js                                     |       0 |        0 |       0 |       0 | 31-334
+  SpotifyApiValidators.js                                    |       0 |        0 |       0 |       0 | 16-415
+  SpotifySessionDetector.js                                  |       0 |        0 |       0 |       0 | 28-481
+  enhanced-session-feedback.js                               |       0 |        0 |       0 |       0 | 13-217
+  test-validators.js                                         |       0 |        0 |     100 |       0 | 9-62
+ submodules/music_in_numbers/src/scripts/theme-manager       |       0 |        0 |       0 |       0 |
+  ThemeManagerCore.js                                        |       0 |        0 |       0 |       0 | 26-555
+  ThemeManagerProcessors.js                                  |       0 |        0 |       0 |       0 | 20-306
+  ThemeManagerUIBuilders.js                                  |       0 |        0 |       0 |       0 | 22-419
+  ThemeManagerUtilities.js                                   |       0 |        0 |       0 |       0 | 20-507
+  ThemeManagerValidators.js                                  |       0 |        0 |       0 |       0 | 20-251
+ submodules/music_in_numbers/src/scripts/ui-components       |       0 |        0 |       0 |       0 |
+  UIComponentsBuilders.js                                    |       0 |        0 |       0 |       0 | 22-608
+  UIComponentsCore.js                                        |       0 |        0 |       0 |       0 | 32-590
+  UIComponentsProcessors.js                                  |       0 |        0 |       0 |       0 | 23-386
+  UIComponentsUtilities.js                                   |       0 |        0 |       0 |       0 | 21-628
+  UIComponentsValidators.js                                  |       0 |        0 |       0 |       0 | 21-367
+ submodules/music_in_numbers/src/scripts/utils               |       0 |        0 |       0 |       0 |
+  UtilsBuilders.js                                           |       0 |        0 |       0 |       0 | 19-305
+  UtilsCore.js                                               |       0 |        0 |       0 |       0 | 23-395
+  UtilsProcessors.js                                         |       0 |        0 |       0 |       0 | 18-305
+  UtilsUtilities.js                                          |       0 |        0 |       0 |       0 | 18-398
+  UtilsValidators.js                                         |       0 |        0 |       0 |       0 | 17-247
 -------------------------------------------------------------|---------|----------|---------|---------|---------------------------------------------------------------------------------------------
 
 Summary of all failing tests
@@ -156589,7 +156589,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/AddressDataExtrac
     Received: undefined
 
       91 |             const extractor = new AddressDataExtractor();
-      92 |             
+      92 |
     > 93 |             expect(extractor.defaultCountry).toBe('Brasil');
          |                                              ^
       94 |             expect(extractor.timeout).toBe(3000);
@@ -156750,12 +156750,12 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingM
     Number of calls: 1
 
       109 |             manager.subscribe(null);
-      110 |             
+      110 |
     > 111 |             expect(consoleSpy).toHaveBeenCalledWith(
           |                                ^
       112 |                 expect.stringContaining('Attempted to subscribe a null observer')
       113 |             );
-      114 |             
+      114 |
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingManager.test.js:111:32)
 
@@ -156772,12 +156772,12 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingM
     Number of calls: 17
 
       150 |             manager.subscribeFunction(null);
-      151 |             
+      151 |
     > 152 |             expect(consoleSpy).toHaveBeenCalledWith(
           |                                ^
       153 |                 expect.stringContaining('Attempted to subscribe a null observer function')
       154 |             );
-      155 |             
+      155 |
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingManager.test.js:152:32)
 
@@ -156793,7 +156793,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingM
         > 455 |                 manager.elementIds.chronometer = 'modified';
               |                                                ^
           456 |             }).not.toThrow();
-          457 |             
+          457 |
           458 |             // Value should remain unchanged due to freeze
 
       at submodules/guia_turistico/src/libs/guia_js/__tests__/managers/WebGeocodingManager.test.js:455:48
@@ -156810,7 +156810,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/PositionManager.t
     Expected: "boolean"
     Received: "undefined"
 
-      250 |             
+      250 |
       251 |             // The implementation should consider both time and distance thresholds
     > 252 |             expect(typeof updated).toBe('boolean');
           |                                    ^
@@ -156877,11 +156877,11 @@ FAIL submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js
     Expected: 100
     Received: 0
 
-      319 |             
+      319 |
       320 |             expect(analysis.averageDuration).toBeLessThan(PERFORMANCE_CONFIG.thresholds.pkceGeneration);
     > 321 |             expect(analysis.successRate).toBe(100);
           |                                          ^
-      322 |             
+      322 |
       323 |             performanceMetrics.pkce = results;
       324 |         });
 
@@ -156910,7 +156910,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSON
     Expected: true
     Received: false
 
-      124 |                 
+      124 |
       125 |                 portuguesePlaces.forEach(place => {
     > 126 |                     expect(/[ãáçéíóú]/i.test(place)).toBe(true);
           |                                                      ^
@@ -156951,7 +156951,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSON
     > 207 |             expect(refPlace.typeName).toBe('car_repair');
           |                                       ^
       208 |             expect(refPlace.name).toBeDefined();
-      209 |             
+      209 |
       210 |             // Should handle empty name gracefully
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSONFormat.test.js:207:39)
@@ -156967,7 +156967,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/external/NominatimJSON
       247 |             expect(brazilianCarShop.name).toContain('Brasil');
     > 248 |             expect(brazilianCarShop.typeName).toBe('car_repair');
           |                                               ^
-      249 |             
+      249 |
       250 |             if (brazilianCarShop.tags) {
       251 |                 expect(brazilianCarShop.tags['addr:country']).toBe('BR');
 
@@ -156985,7 +156985,7 @@ FAIL __tests__/shell_scripts.test.js
       384 |           const firstCopyPos = mainContent.indexOf('copy_index_html');
     > 385 |           expect(validatePos).toBeLessThan(firstCopyPos);
           |                               ^
-      386 |           
+      386 |
       387 |           // Check that summary comes last
       388 |           const summaryPos = mainContent.indexOf('show_summary');
 
@@ -157001,7 +157001,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/DisplayerF
     > 267 |             mockReferencePlace.name = 'Shopping Center';
           |                                     ^
       268 |             mockReferencePlace.description = 'Shopping';
-      269 |             
+      269 |
       270 |             expect(() => {
 
       at Object.<anonymous> (submodules/guia_turistico/src/libs/guia_js/__tests__/integration/DisplayerFactory.integration.test.js:267:37)
@@ -157014,11 +157014,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/DisplayerF
 
     Received function did not throw
 
-      340 |             
+      340 |
       341 |             // Should not be constructable
     > 342 |             expect(() => new ImportedDisplayerFactory()).toThrow('DisplayerFactory is a static factory class and cannot be instantiated. Use static methods instead.');
           |                                                          ^
-      343 |             
+      343 |
       344 |             // Should have static methods
       345 |             expect(typeof ImportedDisplayerFactory.createPositionDisplayer).toBe('function');
 
@@ -157048,7 +157048,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem
     > 170 |             throw new Error('Web Speech API not available in this environment');
           |                   ^
       171 |         }
-      172 |         
+      172 |
       173 |         // Initialize Web Speech API interface
 
       at new SpeechSynthesisManager (submodules/guia_turistico/src/libs/guia_js/src/speech/SpeechSynthesisManager.js:170:19)
@@ -157061,7 +157061,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechItem
     Expected: 5
     Received: 6
 
-      416 |             
+      416 |
       417 |             // Should keep only the first 5 items (0-24 seconds old)
     > 418 |             expect(cleanedQueue.length).toBe(5);
           |                                         ^
@@ -157110,7 +157110,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechItem.test.j
     Received: false
 
       202 |             const item = new SpeechItem('Teste de expiração');
-      203 |             
+      203 |
     > 204 |             expect(item.isExpired(0)).toBe(true);  // Always expired with 0ms expiration
           |                                       ^
       205 |             expect(item.isExpired(-1000)).toBe(true); // Always expired with negative expiration
@@ -157130,7 +157130,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechItem.test.j
       229 |             const exactText = 'Este texto tem exatamente cinquenta caracteres!!';
     > 230 |             expect(exactText.length).toBe(50);
           |                                      ^
-      231 |             
+      231 |
       232 |             const item = new SpeechItem(exactText, 0);
       233 |             const result = item.toString();
 
@@ -157147,7 +157147,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechItem.test.j
       240 |             const longText = 'Este texto tem exatamente cinquenta e um caracter!';
     > 241 |             expect(longText.length).toBe(51);
           |                                     ^
-      242 |             
+      242 |
       243 |             const item = new SpeechItem(longText, 3);
       244 |             const result = item.toString();
 
@@ -157189,11 +157189,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157203,11 +157203,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157217,11 +157217,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157231,11 +157231,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157245,11 +157245,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157259,11 +157259,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157273,11 +157273,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157287,11 +157287,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157301,11 +157301,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157315,11 +157315,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157329,11 +157329,11 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDat
 
     ReferenceError: jest is not defined
 
-      13 |     
+      13 |
       14 |     beforeEach(async () => {
     > 15 |         jest.clearAllMocks();
          |         ^
-      16 |         
+      16 |
       17 |         // Clear the AddressCache singleton instance before each test
       18 |         const { default: AddressCache } = await import('../../src/data/AddressCache.js');
 
@@ -157370,11 +157370,11 @@ FAIL __tests__/project_navigation.test.js
     Expected: true
     Received: false
 
-      241 |         
+      241 |
       242 |         // Directory should exist (may be empty if not initialized)
     > 243 |         expect(fs.existsSync(submodulePath)).toBe(true);
           |                                              ^
-      244 |         
+      244 |
       245 |         if (fs.existsSync(submodulePath) && fs.statSync(submodulePath).isDirectory()) {
       246 |           // If submodule is initialized, should have src directory
 
@@ -157389,13 +157389,13 @@ FAIL submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js
 
     Received: null
 
-      645 |                 
+      645 |
       646 |                 const challenge = await generateCodeChallengeSafe(verifier);
     > 647 |                 expect(challenge).toBeTruthy();
           |                                   ^
       648 |                 challenges.push(challenge);
       649 |             }
-      650 |             
+      650 |
 
       at Object.<anonymous> (submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:647:35)
 
@@ -157407,12 +157407,12 @@ FAIL submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js
     Received: false
 
       665 |             const hasSubtle = !!(window.crypto && window.crypto.subtle && window.crypto.subtle.digest);
-      666 |             
+      666 |
     > 667 |             expect(hasCrypto).toBe(true); // Should be available in Jest jsdom
           |                               ^
       668 |             expect(hasSubtle).toBe(true); // Should be available in Jest jsdom
       669 |         });
-      670 |         
+      670 |
 
       at Object.<anonymous> (submodules/music_in_numbers/tests/advanced-error-handling.jest.test.js:667:31)
 
@@ -157521,12 +157521,12 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/utils/utils.test.js
     Error name:    "TypeError"
     Error message: "Cannot assign to read only property 'property' of object '#<Object>'"
 
-          233 |             
+          233 |
           234 |             expect(() => {
         > 235 |                 testObject.property = 'new value';
               |                                     ^
           236 |             }).not.toThrow(); // In non-strict mode, this fails silently
-          237 |             
+          237 |
           238 |             expect(Object.isFrozen(testObject)).toBe(true);
 
       at submodules/guia_turistico/src/libs/guia_js/__tests__/utils/utils.test.js:235:37
@@ -157575,7 +157575,7 @@ FAIL __tests__/documentation.test.js
       33 |         const docPath = path.join(docsDir, doc);
     > 34 |         expect(fs.existsSync(docPath)).toBe(true);
          |                                        ^
-      35 |         
+      35 |
       36 |         // Should be substantial documentation (not empty)
       37 |         const content = fs.readFileSync(docPath, 'utf8');
 
@@ -157637,7 +157637,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       36 |     test('should create immutable GeoPosition', async () => {
     > 37 |         const { default: GeoPosition } = await import('../src/core/GeoPosition.js');
          |                                          ^
-      38 |         
+      38 |
       39 |         const mockPosition = {
       40 |             coords: {
 
@@ -157652,7 +157652,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       63 |     test('should create and use ObserverSubject', async () => {
     > 64 |         const { default: ObserverSubject } = await import('../src/core/ObserverSubject.js');
          |                                              ^
-      65 |         
+      65 |
       66 |         const subject = new ObserverSubject();
       67 |         let notified = false;
 
@@ -157667,7 +157667,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       83 |     test('should create PositionManager singleton', async () => {
     > 84 |         const { default: PositionManager } = await import('../src/core/PositionManager.js');
          |                                              ^
-      85 |         
+      85 |
       86 |         const manager1 = PositionManager.getInstance();
       87 |         const manager2 = PositionManager.getInstance();
 
@@ -157682,7 +157682,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
       94 |     test('should export classes from guia.js', async () => {
     > 95 |         const guia = await import('../src/guia.js');
          |                      ^
-      96 |         
+      96 |
       97 |         expect(guia.GeoPosition).toBeDefined();
       98 |         expect(guia.ObserverSubject).toBeDefined();
 
@@ -157698,7 +157698,7 @@ FAIL submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modul
     > 103 |         const { default: GeoPosition } = await import('../src/core/GeoPosition.js');
           |                                          ^
       104 |         const { default: ObserverSubject } = await import('../src/core/ObserverSubject.js');
-      105 |         
+      105 |
       106 |         const subject = new ObserverSubject();
 
       at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)

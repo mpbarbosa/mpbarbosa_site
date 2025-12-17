@@ -26,7 +26,7 @@ mpbarbosa_site/src/
     ├── music_in_numbers/  # 🎵 Advanced Spotify analytics platform
     │   ├── src/
     │   │   ├── index.html        # (246 lines) - 84.5% reduction
-    │   │   ├── artist.html       # (60 lines) - 89.7% reduction  
+    │   │   ├── artist.html       # (60 lines) - 89.7% reduction
     │   │   ├── styles/           # Modular CSS architecture
     │   │   └── scripts/          # 12+ JavaScript modules
     │   └── docs/                 # Comprehensive documentation
@@ -70,7 +70,7 @@ To set up the project locally, follow these steps:
 - **Complete Modular Architecture**: 85.8% code reduction across major pages
 - **Professional Features**: Genre analysis, mood detection, personalized insights
 - **Technical Excellence**: OAuth 2.0 PKCE, Chart.js visualizations, export capabilities
-- **Architecture Achievement**: 
+- **Architecture Achievement**:
   - index.html: 84.5% reduction (1,581→246 lines) with 9 JavaScript modules
   - artist.html: 89.7% reduction (580→60 lines) with 3 specialized modules
 - **Status**: Production-ready with enterprise-grade architecture

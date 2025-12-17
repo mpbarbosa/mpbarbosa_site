@@ -2,8 +2,8 @@
 
 ## Quick Reference Guide for Test Coverage Improvements
 
-**Project:** MP Barbosa Personal Website  
-**Current Test Quality:** ⭐⭐⭐⭐☆ (4/5 - Good)  
+**Project:** MP Barbosa Personal Website
+**Current Test Quality:** ⭐⭐⭐⭐☆ (4/5 - Good)
 **Coverage Status:** ~40% overall, critical gaps identified
 
 ---
@@ -15,9 +15,9 @@
 - `assets/js/main.js` (~400 lines) - Navigation backbone
 - `assets/js/util.js` (~200 lines) - jQuery utilities
 
-**Impact:** Breaking changes in template would go undetected  
-**Action:** Create `__tests__/template-main.test.js` (25 tests)  
-**Timeline:** Week 1-2  
+**Impact:** Breaking changes in template would go undetected
+**Action:** Create `__tests__/template-main.test.js` (25 tests)
+**Timeline:** Week 1-2
 **Effort:** 16 hours
 
 ### 2. Shell Scripts - **Partial Coverage** 🟡
@@ -26,9 +26,9 @@
 - `sync_to_public.sh`
 - Submodule management scripts
 
-**Impact:** Deployment failures, production incidents  
-**Action:** Expand shell script tests (20 new tests)  
-**Timeline:** Week 1-2  
+**Impact:** Deployment failures, production incidents
+**Action:** Expand shell script tests (20 new tests)
+**Timeline:** Week 1-2
 **Effort:** 8 hours
 
 ### 3. Submodule Navigation - **Tests Failing** 🟡
@@ -37,9 +37,9 @@
 - Music in Numbers integration tests
 - Guia Turístico path resolution
 
-**Impact:** User navigation broken, poor UX  
-**Action:** Fix failing tests + add 20 new tests  
-**Timeline:** Week 3-4  
+**Impact:** User navigation broken, poor UX
+**Action:** Fix failing tests + add 20 new tests
+**Timeline:** Week 3-4
 **Effort:** 12 hours
 
 ---
@@ -58,18 +58,18 @@
 // ✅ Clear test structure
 describe('Feature', () => {
     beforeEach(() => { /* Setup */ });
-    
+
     test('should do expected behavior', () => {
         // Arrange
         const input = setupTestData();
-        
+
         // Act
         const result = functionUnderTest(input);
-        
+
         // Assert
         expect(result).toBe(expected);
     });
-    
+
     afterEach(() => { /* Cleanup */ });
 });
 ```
@@ -225,10 +225,10 @@ npm run lint:md
 test('should calculate total correctly', () => {
     // Arrange
     const items = [10, 20, 30];
-    
+
     // Act
     const total = calculateTotal(items);
-    
+
     // Assert
     expect(total).toBe(60);
 });
@@ -350,12 +350,12 @@ test('updates user', () => {
 
 ## 📞 Contact & Support
 
-**Questions?** Open an issue with the `testing` label  
-**Suggestions?** Submit a PR to improve this document  
+**Questions?** Open an issue with the `testing` label
+**Suggestions?** Submit a PR to improve this document
 **Need help?** Review the comprehensive report for detailed examples
 
 ---
 
-**Last Updated:** December 15, 2025  
-**Next Review:** March 15, 2026  
+**Last Updated:** December 15, 2025
+**Next Review:** March 15, 2026
 **Version:** 2.0

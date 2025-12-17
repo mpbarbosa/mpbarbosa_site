@@ -1,9 +1,9 @@
 # Comprehensive Test Failure Analysis Report
 
-**Generated**: 2025-11-16T02:28:09.832Z  
-**Project**: MP Barbosa Personal Website  
-**Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)  
-**Test Command**: `npm run test:coverage`  
+**Generated**: 2025-11-16T02:28:09.832Z
+**Project**: MP Barbosa Personal Website
+**Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)
+**Test Command**: `npm run test:coverage`
 **Exit Code**: 1 (FAILURE)
 
 ---
@@ -31,8 +31,8 @@
 ### Category 1: Environment Configuration Issues (CRITICAL - 45% of failures)
 
 #### Issue 1.1: TextEncoder/TextDecoder Missing in jsdom
-**Severity**: 🔴 CRITICAL  
-**Priority**: P0 - Blocks 5 test suites  
+**Severity**: 🔴 CRITICAL
+**Priority**: P0 - Blocks 5 test suites
 **Affected Files**:
 - `submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js`
 - `submodules/music_in_numbers/tests/index-functions.jest.test.js`
@@ -74,14 +74,14 @@ global.fetch = fetch;
 npm install --save-dev undici
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Fixes 5+ test suites (15-20 tests)
 
 ---
 
 #### Issue 1.2: CommonJS require() in ES Module Context
-**Severity**: 🔴 CRITICAL  
-**Priority**: P0 - Blocks 4 test suites  
+**Severity**: 🔴 CRITICAL
+**Priority**: P0 - Blocks 4 test suites
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.test.js`
 - `submodules/guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.integration.test.js`
@@ -103,7 +103,7 @@ const WebGeocodingManager = require('../src/WebGeocodingManager.js');
 import WebGeocodingManager from '../src/WebGeocodingManager.js';
 ```
 
-**Estimated Effort**: 15 minutes per file (1 hour total)  
+**Estimated Effort**: 15 minutes per file (1 hour total)
 **Impact**: Fixes 4 test suites
 
 ---
@@ -111,8 +111,8 @@ import WebGeocodingManager from '../src/WebGeocodingManager.js';
 ### Category 2: Empty Test Implementation (HIGH - 30% of failures)
 
 #### Issue 2.1: Test Files Without Jest Test Definitions
-**Severity**: 🟡 HIGH  
-**Priority**: P1 - 7 test files fail to execute  
+**Severity**: 🟡 HIGH
+**Priority**: P1 - 7 test files fail to execute
 **Affected Files**:
 - `submodules/music_in_numbers/tests/theme-manager.test.js` (298 lines)
 - `submodules/music_in_numbers/tests/security-testing.test.js` (1,111 lines)
@@ -146,7 +146,7 @@ import { ThemeManager } from '../src/scripts/theme-manager.js';
 
 describe('Theme Manager Module', () => {
   let mockLocalStorage;
-  
+
   beforeEach(() => {
     mockLocalStorage = {
       storage: {},
@@ -156,7 +156,7 @@ describe('Theme Manager Module', () => {
     };
     global.localStorage = mockLocalStorage;
   });
-  
+
   test('should switch theme correctly', () => {
     const manager = new ThemeManager();
     expect(manager.currentTheme).toBe('light');
@@ -181,7 +181,7 @@ describe('Theme Manager Module', () => {
 }
 ```
 
-**Estimated Effort**: 
+**Estimated Effort**:
 - Option A: 2-4 hours per file (14-28 hours total)
 - Option B: 5 minutes (immediate)
 
@@ -194,8 +194,8 @@ describe('Theme Manager Module', () => {
 ### Category 3: Module Path Resolution Issues (MEDIUM - 15% of failures)
 
 #### Issue 3.1: Incorrect Relative Import Paths
-**Severity**: 🟠 MEDIUM  
-**Priority**: P2  
+**Severity**: 🟠 MEDIUM
+**Priority**: P2
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/HtmlSpeechSynthesisDisplayer.test.js`
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechSynthesisManager.test.js`
@@ -223,14 +223,14 @@ find submodules/guia_turistico/src/libs/guia_js -name "guia.js" -o -name "Speech
 # Correct path: ../../src/guia.js (not ../guia.js)
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Fixes 4 test suites
 
 ---
 
 #### Issue 3.2: Missing Module Exports
-**Severity**: 🟠 MEDIUM  
-**Priority**: P2  
+**Severity**: 🟠 MEDIUM
+**Priority**: P2
 **Affected Files**:
 - `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js`
 
@@ -249,7 +249,7 @@ import { jest } from '@jest/globals';
 // Or ensure testEnvironment is properly configured
 ```
 
-**Estimated Effort**: 10 minutes  
+**Estimated Effort**: 10 minutes
 **Impact**: Fixes 1 test suite
 
 ---
@@ -257,8 +257,8 @@ import { jest } from '@jest/globals';
 ### Category 4: Implementation Mismatches (MEDIUM - 10% of failures)
 
 #### Issue 4.1: Static Factory Class Constructor Validation
-**Severity**: 🟠 MEDIUM  
-**Priority**: P2  
+**Severity**: 🟠 MEDIUM
+**Priority**: P2
 **File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/DisplayerFactory.test.js`
 
 **Test Expectation**:
@@ -281,7 +281,7 @@ class DisplayerFactory {
   constructor() {
     throw new Error('DisplayerFactory is a static factory class and cannot be instantiated. Use static methods instead.');
   }
-  
+
   static createPositionDisplayer() { /* ... */ }
   static createAddressDisplayer() { /* ... */ }
 }
@@ -296,14 +296,14 @@ test('should be a static factory class', () => {
 });
 ```
 
-**Estimated Effort**: 5 minutes  
+**Estimated Effort**: 5 minutes
 **Impact**: Fixes 1 test
 
 ---
 
 #### Issue 4.2: PositionManager Update Method Returns Undefined
-**Severity**: 🟠 MEDIUM  
-**Priority**: P2  
+**Severity**: 🟠 MEDIUM
+**Priority**: P2
 **File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/PositionManager.test.js:252`
 
 **Test Code**:
@@ -319,7 +319,7 @@ expect(typeof updated).toBe('boolean');
 // In PositionManager.js update() method
 update(position) {
   // ... validation logic ...
-  
+
   if (shouldUpdate) {
     this.currentPosition = position;
     this.notify();
@@ -329,14 +329,14 @@ update(position) {
 }
 ```
 
-**Estimated Effort**: 10 minutes  
+**Estimated Effort**: 10 minutes
 **Impact**: Fixes 1 test
 
 ---
 
 #### Issue 4.3: Observer Subscription Validation Missing
-**Severity**: 🟠 MEDIUM  
-**Priority**: P2  
+**Severity**: 🟠 MEDIUM
+**Priority**: P2
 **File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/PositionManager.test.js:312`
 
 **Test Code**:
@@ -361,7 +361,7 @@ subscribe(observer) {
 }
 ```
 
-**Estimated Effort**: 10 minutes  
+**Estimated Effort**: 10 minutes
 **Impact**: Fixes 1 test
 
 ---
@@ -371,7 +371,7 @@ subscribe(observer) {
 #### Issue 5.1: AddressDataExtractor Default Country
 **File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/AddressDataExtractor.test.js`
 
-**Expected**: "Brasil"  
+**Expected**: "Brasil"
 **Received**: Different value (not shown in output)
 
 **Fix**: Verify default country initialization in AddressDataExtractor constructor.
@@ -381,7 +381,7 @@ subscribe(observer) {
 #### Issue 5.2: Utility Function Address Type Formatting
 **File**: `submodules/guia_turistico/src/libs/guia_js/__tests__/utils/utils.test.js`
 
-**Expected**: "Restaurante"  
+**Expected**: "Restaurante"
 **Received**: Different value
 
 **Fix**: Check address type mapping/formatting logic in utils.js.
@@ -441,7 +441,7 @@ npx chromedriver --version
 }
 ```
 
-**Estimated Effort**: 1 hour  
+**Estimated Effort**: 1 hour
 **Impact**: Isolates E2E tests from unit test suite
 
 ---
@@ -529,7 +529,7 @@ __tests__/
 }
 ```
 
-**Impact**: 
+**Impact**:
 - Unit tests: < 10 seconds
 - Integration tests: < 30 seconds
 - E2E tests: Separate CI job
@@ -653,18 +653,18 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      
+
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run test:unit
       - uses: codecov/codecov-action@v3
         with:
           files: ./coverage/lcov.info
-  
+
   integration-tests:
     runs-on: ubuntu-latest
     needs: unit-tests
@@ -673,7 +673,7 @@ jobs:
       - uses: actions/setup-node@v3
       - run: npm ci
       - run: npm run test:integration
-  
+
   e2e-tests:
     runs-on: ubuntu-latest
     needs: integration-tests
@@ -740,7 +740,7 @@ jobs:
 | P1 | Update DisplayerFactory constructor | 5 min | +1 suite | Backend |
 | P1 | Add return values to PositionManager | 20 min | +2 tests | Backend |
 
-**Total Effort**: 3 hours  
+**Total Effort**: 3 hours
 **Expected Result**: 20-25 test suites passing (~60-70% pass rate)
 
 ---
@@ -757,7 +757,7 @@ jobs:
 | P2 | Implement test parallelization | 1 hour | Speed |
 | P2 | Add path aliases to Jest config | 30 min | DX improvement |
 
-**Total Effort**: 9.5 hours  
+**Total Effort**: 9.5 hours
 **Expected Result**: 80%+ pass rate, 40-50% coverage
 
 ---
@@ -774,7 +774,7 @@ jobs:
 | P3 | Create test documentation | 4 hours | Onboarding |
 | P3 | Performance optimization | 3 hours | Speed |
 
-**Total Effort**: 25 hours  
+**Total Effort**: 25 hours
 **Expected Result**: 95%+ pass rate, 60%+ coverage, < 5min CI
 
 ---
@@ -882,8 +882,8 @@ The test suite is **architecturally sound but environmentally misconfigured**. T
 3. **Progressive conversion** (custom runners → Jest) → Long-term maintainability
 4. **CI/CD integration** → Prevent regressions
 
-**Estimated Total Effort**: 60-80 hours over 8 weeks  
-**Expected ROI**: 
+**Estimated Total Effort**: 60-80 hours over 8 weeks
+**Expected ROI**:
 - 95%+ test reliability
 - 70%+ code coverage
 - < 5 minute CI feedback loop
@@ -914,6 +914,6 @@ The test suite is **architecturally sound but environmentally misconfigured**. T
 
 ---
 
-**Report Generated By**: Senior CI/CD Engineer & Test Results Analyst  
-**Next Review**: After Phase 1 completion (Week 1)  
+**Report Generated By**: Senior CI/CD Engineer & Test Results Analyst
+**Next Review**: After Phase 1 completion (Week 1)
 **Contact**: Include in PR review for test suite improvements

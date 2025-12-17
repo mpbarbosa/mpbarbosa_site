@@ -1,9 +1,9 @@
 # Test Failure Root Cause Analysis & CI/CD Optimization Report
 
-**Project**: MP Barbosa Personal Website  
-**Analysis Date**: 2025-11-18T20:51:17.513Z  
-**Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)  
-**Total Test Files**: 123  
+**Project**: MP Barbosa Personal Website
+**Analysis Date**: 2025-11-18T20:51:17.513Z
+**Test Framework**: Jest 30.2.0 with ES Modules (experimental-vm-modules)
+**Total Test Files**: 123
 **Test Execution Status**: ❌ FAILED (Exit Code 1)
 
 ---
@@ -34,14 +34,14 @@
 ### Category A: Environment & Polyfill Issues (CRITICAL - 5 failures)
 
 #### A.1 TextEncoder Missing in Node.js Environment
-**Priority**: 🔴 **CRITICAL**  
+**Priority**: 🔴 **CRITICAL**
 **Affected Tests**: 3 test files
 
 **Failures**:
 1. `submodules/music_in_numbers/tests/index-functions.jest.test.js:56`
    - Error: `ReferenceError: TextEncoder is not defined`
    - Context: OAuth code challenge generation
-   
+
 2. `submodules/music_in_numbers/tests/performance-benchmarking.jest.test.js:130`
    - Error: `ReferenceError: TextEncoder is not defined`
    - Context: Performance benchmarking OAuth flow
@@ -80,13 +80,13 @@ beforeAll(() => {
 }
 ```
 
-**Estimated Effort**: 2 hours  
+**Estimated Effort**: 2 hours
 **Impact**: Fixes 3 test suites immediately
 
 ---
 
 #### A.2 Response Constructor Missing
-**Priority**: 🔴 **CRITICAL**  
+**Priority**: 🔴 **CRITICAL**
 **Affected Tests**: 1 test file
 
 **Failure**:
@@ -115,13 +115,13 @@ global.Response = class Response {
     this.statusText = init.statusText || 'OK';
     this.headers = init.headers || {};
   }
-  
+
   async json() { return JSON.parse(this.body); }
   async text() { return this.body; }
 };
 ```
 
-**Estimated Effort**: 1 hour  
+**Estimated Effort**: 1 hour
 **Impact**: Fixes API error handling test suite
 
 ---
@@ -129,19 +129,19 @@ global.Response = class Response {
 ### Category B: Module Resolution Failures (HIGH - 6 failures)
 
 #### B.1 Missing Module Imports
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 4 test files
 
 **Failures**:
 1. `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechSynthesisManager.test.js:78`
    - Error: `Cannot find module './SpeechQueue.js'`
-   
+
 2. `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechSynthesisManager.integration.test.js:213`
    - Error: `Cannot find module './SpeechQueue.js'`
-   
+
 3. `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/HtmlSpeechSynthesisDisplayer.test.js:124`
    - Error: `Cannot find module '../guia.js'`
-   
+
 4. `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/core-modules.test.js:17`
    - Error: `Cannot find module '../src/core/GeoPosition.js'`
 
@@ -170,13 +170,13 @@ import { SpeechQueue } from '../../src/SpeechQueue.js'; // Adjust based on actua
 }
 ```
 
-**Estimated Effort**: 3 hours (audit + fix all paths)  
+**Estimated Effort**: 3 hours (audit + fix all paths)
 **Impact**: Fixes 4 test suites
 
 ---
 
 #### B.2 CommonJS require() in ES Module Context
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 2 test files
 
 **Failures**:
@@ -203,7 +203,7 @@ import { WebGeocodingManager } from '../src/WebGeocodingManager.js';
 const module = await import('../src/WebGeocodingManager.js');
 ```
 
-**Estimated Effort**: 2 hours  
+**Estimated Effort**: 2 hours
 **Impact**: Fixes 3 test files
 
 ---
@@ -211,7 +211,7 @@ const module = await import('../src/WebGeocodingManager.js');
 ### Category C: Missing Dependencies (MEDIUM - 2 failures)
 
 #### C.1 Selenium WebDriver Not Installed
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test file
 
 **Failure**:
@@ -241,13 +241,13 @@ npm install --save-dev selenium-webdriver
 }
 ```
 
-**Estimated Effort**: 1 hour + Selenium setup time  
+**Estimated Effort**: 1 hour + Selenium setup time
 **Impact**: Enables E2E testing capability
 
 ---
 
 #### C.2 Supertest Not Installed
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test file
 
 **Failure**:
@@ -263,7 +263,7 @@ npm install --save-dev selenium-webdriver
 npm install --save-dev supertest
 ```
 
-**Estimated Effort**: 15 minutes  
+**Estimated Effort**: 15 minutes
 **Impact**: Enables API integration tests
 
 ---
@@ -271,7 +271,7 @@ npm install --save-dev supertest
 ### Category D: Empty Test Suites (MEDIUM - 8 failures)
 
 #### D.1 Test Files Without Test Cases
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 8 test files
 
 **Failures**:
@@ -314,7 +314,7 @@ describe('Performance Benchmarking', () => {
 // Option 3: Delete placeholder files or move to /drafts folder
 ```
 
-**Estimated Effort**: 1 hour (decide strategy + cleanup)  
+**Estimated Effort**: 1 hour (decide strategy + cleanup)
 **Impact**: Reduces noise in test output
 
 ---
@@ -322,7 +322,7 @@ describe('Performance Benchmarking', () => {
 ### Category E: Implementation vs Test Mismatch (HIGH - 14 failures)
 
 #### E.1 PositionManager - Missing update() Method Return
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -344,7 +344,7 @@ const updated = instance.update ? instance.update(nearbyPosition) : false;
 // In PositionManager source code:
 update(newPosition) {
   // Existing logic...
-  
+
   // Add explicit return
   if (shouldUpdate) {
     this.currentPosition = newPosition;
@@ -354,13 +354,13 @@ update(newPosition) {
 }
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Fixes position threshold logic
 
 ---
 
 #### E.2 AddressDataExtractor - Missing Default Properties
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -382,13 +382,13 @@ constructor(options = {}) {
 }
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Enables Brazilian localization tests
 
 ---
 
 #### E.3 DisplayerFactory - Missing Constructor Guard
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -410,20 +410,20 @@ class DisplayerFactory {
       'Use static methods instead.'
     );
   }
-  
+
   static createDisplayer(type, options) {
     // Factory logic...
   }
 }
 ```
 
-**Estimated Effort**: 15 minutes  
+**Estimated Effort**: 15 minutes
 **Impact**: Enforces proper factory pattern usage
 
 ---
 
 #### E.4 Observer Validation Not Working
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -443,19 +443,19 @@ subscribe(observer) {
     console.warn('Attempted to subscribe invalid observer:', observer);
     return false; // Don't add invalid observers
   }
-  
+
   this.observers.push(observer);
   return true;
 }
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Improves observer pattern robustness
 
 ---
 
 #### E.5 SpeechItem Expiration Logic
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -478,13 +478,13 @@ isExpired() {
 }
 ```
 
-**Estimated Effort**: 20 minutes  
+**Estimated Effort**: 20 minutes
 **Impact**: Handles edge cases properly
 
 ---
 
 #### E.6 Shell Scripts Test - Exit Code Check
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -510,13 +510,13 @@ expect(exitCode).toBe(0);
 expect(exitCode).toBeGreaterThan(0);
 ```
 
-**Estimated Effort**: 15 minutes  
+**Estimated Effort**: 15 minutes
 **Impact**: Fixes shell script validation logic
 
 ---
 
 #### E.7 Utility Function Type Mismatch
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -539,13 +539,13 @@ console.log('Actual:', result, 'Expected:', 'Restaurante');
 // Option 2: Update test to match actual output
 ```
 
-**Estimated Effort**: 30 minutes (investigation + fix)  
+**Estimated Effort**: 30 minutes (investigation + fix)
 **Impact**: Ensures proper address type formatting
 
 ---
 
 #### E.8 GeoPosition Immutability Tests
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -570,13 +570,13 @@ expect(() => {
 }).toThrow('Cannot assign to read only property');
 ```
 
-**Estimated Effort**: 15 minutes  
+**Estimated Effort**: 15 minutes
 **Impact**: Properly validates immutability
 
 ---
 
 #### E.9 Object Extension Prevention
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -605,13 +605,13 @@ const wrapper = { instance: frozenObject };
 wrapper.buildTextToSpeechMunicipio = jest.fn();
 ```
 
-**Estimated Effort**: 45 minutes  
+**Estimated Effort**: 45 minutes
 **Impact**: Enables proper mocking of frozen objects
 
 ---
 
 #### E.10 AnalyticsCore Error Handling
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -631,8 +631,8 @@ async function loadMusicAnalyticsCore(params) {
     return { success: true, data: result };
   } catch (error) {
     // Add explicit error return
-    return { 
-      success: false, 
+    return {
+      success: false,
       error: error.message,
       statusCode: error.statusCode || 500
     };
@@ -640,13 +640,13 @@ async function loadMusicAnalyticsCore(params) {
 }
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Improves error handling consistency
 
 ---
 
 #### E.11 Callback Function Validation
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -672,13 +672,13 @@ const mockCallback = jest.fn();
 coordinator.registerCallback(mockCallback);
 ```
 
-**Estimated Effort**: 20 minutes  
+**Estimated Effort**: 20 minutes
 **Impact**: Adds defensive programming
 
 ---
 
 #### E.12 Jest Global Not Available
-**Priority**: 🟠 **HIGH**  
+**Priority**: 🟠 **HIGH**
 **Affected Tests**: 2 test files
 
 **Failures**:
@@ -707,13 +707,13 @@ import { vi } from 'vitest';
 }
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Fixes Jest global availability
 
 ---
 
 #### E.13 SpeechQueue Constructor Validation
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -733,13 +733,13 @@ constructor(maxSize = 100) {
 }
 ```
 
-**Estimated Effort**: 15 minutes  
+**Estimated Effort**: 15 minutes
 **Impact**: Adds input validation
 
 ---
 
 #### E.14 Date Instance Type Checking
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -765,13 +765,13 @@ constructor(text, priority = 0) {
 }
 ```
 
-**Estimated Effort**: 15 minutes  
+**Estimated Effort**: 15 minutes
 **Impact**: Aligns implementation with test expectations
 
 ---
 
 #### E.15 Object Property Read-Only Enforcement
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -793,13 +793,13 @@ const testObject = { name: 'original' };
 Object.freeze(testObject); // Freeze after tests
 ```
 
-**Estimated Effort**: 30 minutes  
+**Estimated Effort**: 30 minutes
 **Impact**: Enables testing of immutable objects
 
 ---
 
 #### E.16 Nominatim JSON Format Validation
-**Priority**: 🟡 **MEDIUM**  
+**Priority**: 🟡 **MEDIUM**
 **Affected Tests**: 1 test case
 
 **Failure**:
@@ -825,7 +825,7 @@ console.log('Expected:', 'São Paulo');
 console.log('Match:', actualName === 'São Paulo');
 ```
 
-**Estimated Effort**: 45 minutes  
+**Estimated Effort**: 45 minutes
 **Impact**: Ensures proper internationalization
 
 ---
@@ -833,7 +833,7 @@ console.log('Match:', actualName === 'São Paulo');
 ### Category F: Selenium/E2E Environment Issues (LOW - 3 failures)
 
 #### F.1 Selenium Process Spawn Failures
-**Priority**: 🟢 **LOW** (Development/CI specific)  
+**Priority**: 🟢 **LOW** (Development/CI specific)
 **Affected Tests**: 2 test files
 
 **Failures**:
@@ -867,7 +867,7 @@ describeIfE2E('Selenium Tests', () => {
 });
 ```
 
-**Estimated Effort**: 1 hour  
+**Estimated Effort**: 1 hour
 **Impact**: Allows test suite to run in non-E2E environments
 
 ---
@@ -876,7 +876,7 @@ describeIfE2E('Selenium Tests', () => {
 
 ### Critical Coverage Issue: 0% Across All Metrics
 
-**Root Cause**: 
+**Root Cause**:
 The `collectCoverageFrom` configuration in package.json specifies:
 ```json
 "collectCoverageFrom": [
@@ -940,7 +940,7 @@ npm test -- __tests__/main.test.js --coverage --verbose
 }
 ```
 
-**Estimated Effort**: 8 hours (fix tests first, then measure coverage)  
+**Estimated Effort**: 8 hours (fix tests first, then measure coverage)
 **Impact**: Enables meaningful coverage metrics
 
 ---
@@ -989,7 +989,7 @@ npm test -- __tests__/main.test.js --coverage --verbose
 }
 ```
 
-**Impact**: 2-4x faster test suite execution  
+**Impact**: 2-4x faster test suite execution
 **Estimated Effort**: 15 minutes
 
 ---
@@ -1006,7 +1006,7 @@ npm test -- __tests__/main.test.js --coverage --verbose
 }
 ```
 
-**Impact**: Allows running fast unit tests separately  
+**Impact**: Allows running fast unit tests separately
 **Estimated Effort**: 30 minutes
 
 ---
@@ -1028,7 +1028,7 @@ global.fetch = jest.fn(() =>
 );
 ```
 
-**Impact**: 10-100x faster unit tests  
+**Impact**: 10-100x faster unit tests
 **Estimated Effort**: 2 hours
 
 ---
@@ -1052,7 +1052,7 @@ describe('Component', () => {
 });
 ```
 
-**Impact**: 30-50% faster test suite  
+**Impact**: 30-50% faster test suite
 **Estimated Effort**: 3 hours
 
 ---
@@ -1067,7 +1067,7 @@ steps:
   - run: npm test -- --shard=${{ matrix.shard }}/4
 ```
 
-**Impact**: 4x faster CI pipeline  
+**Impact**: 4x faster CI pipeline
 **Estimated Effort**: 1 hour (CI configuration)
 
 ---
@@ -1162,7 +1162,7 @@ await driver.executeScript('return document.readyState') === 'complete';
 }
 ```
 
-**Impact**: Catch issues before commit  
+**Impact**: Catch issues before commit
 **Effort**: 2 hours setup
 
 ---
@@ -1183,23 +1183,23 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      
+
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run test:unit
       - run: npm run test:integration
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage/coverage-final.json
 ```
 
-**Impact**: Automated testing on every push  
+**Impact**: Automated testing on every push
 **Effort**: 3 hours setup
 
 ---
@@ -1238,7 +1238,7 @@ jobs:
     key: ${{ runner.os }}-jest-${{ hashFiles('**/*.test.js') }}
 ```
 
-**Impact**: 50% faster CI runs  
+**Impact**: 50% faster CI runs
 **Effort**: 1 hour
 
 ---
@@ -1255,7 +1255,7 @@ jobs:
     fi
 ```
 
-**Impact**: Maintain quality standards  
+**Impact**: Maintain quality standards
 **Effort**: 30 minutes
 
 ---
@@ -1279,7 +1279,7 @@ jobs:
 | 9. Handle empty test suites | 🟡 Medium | 1h | +8 test files |
 | 10. Add Jest globals import | 🟠 High | 0.5h | +2 test suites |
 
-**Expected Outcome**: 
+**Expected Outcome**:
 - Test pass rate: ~60%
 - Coverage: ~20-30%
 - Foundation for further improvements
@@ -1407,7 +1407,7 @@ export const createMockObserver = () => ({
   update: jest.fn()
 });
 
-export const waitForAsync = (ms = 100) => 
+export const waitForAsync = (ms = 100) =>
   new Promise(resolve => setTimeout(resolve, ms));
 ```
 
@@ -1454,7 +1454,7 @@ Consider migrating from Jest to **Vitest**:
 - Built-in coverage
 - Compatible API
 
-**Estimated Effort**: 8-16 hours  
+**Estimated Effort**: 8-16 hours
 **Benefit**: 2-5x faster tests, better DX
 
 ---
@@ -1517,8 +1517,8 @@ For questions about this analysis:
 - Follow priority action plan in section 6
 - Start with quick wins in section 7
 
-**Estimated Total Effort**: 48 hours across 3 weeks  
-**Expected ROI**: 
+**Estimated Total Effort**: 48 hours across 3 weeks
+**Expected ROI**:
 - 95% test reliability
 - 70% code coverage
 - 5-minute CI pipeline
@@ -1527,5 +1527,5 @@ For questions about this analysis:
 
 ---
 
-*Analysis completed: 2025-11-18T20:51:17.513Z*  
+*Analysis completed: 2025-11-18T20:51:17.513Z*
 *Analyzer: Senior CI/CD Engineer & Test Results Analyst*

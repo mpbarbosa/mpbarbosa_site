@@ -1,10 +1,10 @@
 # Comprehensive Test Strategy & Quality Assurance Report
 
-**Date:** 2025-11-25  
-**Project:** MP Barbosa Personal Website  
-**Test Framework:** Jest 30.2.0 with ES Modules  
-**Test Environment:** jsdom  
-**Analysis Scope:** Main site + 4 submodules  
+**Date:** 2025-11-25
+**Project:** MP Barbosa Personal Website
+**Test Framework:** Jest 30.2.0 with ES Modules
+**Test Environment:** jsdom
+**Analysis Scope:** Main site + 4 submodules
 
 ---
 
@@ -81,7 +81,7 @@ describe('Smooth Scrolling Navigation', () => {
 
         // ACT
         const linkCount = setupSmoothScrolling();
-        
+
         // ASSERT
         expect(linkCount).toBe(3);
         expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
@@ -124,9 +124,9 @@ beforeEach(() => {
 #### **Critical Paths Requiring Tests**
 
 ##### **🔴 PRIORITY 1: HTML5 UP Dimension Template Integration**
-**File:** `assets/js/main.js` (401 lines)  
-**Functionality:** Core site navigation, article display, modal interactions  
-**Current Coverage:** 0%  
+**File:** `assets/js/main.js` (401 lines)
+**Functionality:** Core site navigation, article display, modal interactions
+**Current Coverage:** 0%
 **Impact:** High - This is the main UI logic
 
 **Missing Test Scenarios:**
@@ -154,9 +154,9 @@ beforeEach(() => {
    - Hash change handling
 
 ##### **🔴 PRIORITY 2: InitializationUtilities.js**
-**File:** `scripts/initialization/InitializationUtilities.js` (762 lines)  
-**Functionality:** Environment detection, DI container management  
-**Current Coverage:** 0%  
+**File:** `scripts/initialization/InitializationUtilities.js` (762 lines)
+**Functionality:** Environment detection, DI container management
+**Current Coverage:** 0%
 **Impact:** High - Critical for submodules integration
 
 **Missing Test Scenarios:**
@@ -169,7 +169,7 @@ beforeEach(() => {
 7. Logger creation with console fallbacks
 
 ##### **⚠️ PRIORITY 3: Contact Form Integration**
-**Current Status:** Basic submit handler tested  
+**Current Status:** Basic submit handler tested
 **Missing Tests:**
 1. Form validation (required fields, email format)
 2. Submit button state management
@@ -180,7 +180,7 @@ beforeEach(() => {
 7. Multiple submission prevention
 
 ##### **⚠️ PRIORITY 4: Project Navigation Links**
-**Current Status:** Partial coverage in `project_navigation.test.js`  
+**Current Status:** Partial coverage in `project_navigation.test.js`
 **Missing Tests:**
 1. Submodule redirect page functionality
 2. 404 handling for uninitialized submodules
@@ -269,7 +269,7 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
                 </footer>
             </div>
         `;
-        
+
         // Mock jQuery if needed
         global.$ = global.jQuery = jest.fn();
     });
@@ -284,15 +284,15 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
         test('should open article on hash navigation', () => {
             // Navigate to #intro
             window.location.hash = '#intro';
-            
+
             // Trigger hashchange event
             const hashChangeEvent = new Event('hashchange');
             window.dispatchEvent(hashChangeEvent);
-            
+
             // Verify article is shown
             const body = document.body;
             expect(body.classList.contains('is-article-visible')).toBe(true);
-            
+
             const introArticle = document.getElementById('intro');
             expect(introArticle.classList.contains('active')).toBe(true);
         });
@@ -301,11 +301,11 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
             // Open an article first
             document.body.classList.add('is-article-visible');
             document.getElementById('intro').classList.add('active');
-            
+
             // Press ESC key (keyCode 27)
             const escEvent = new KeyboardEvent('keyup', { keyCode: 27 });
             window.dispatchEvent(escEvent);
-            
+
             // Verify article is closed
             expect(document.body.classList.contains('is-article-visible')).toBe(false);
         });
@@ -314,11 +314,11 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
             // Open an article first
             document.body.classList.add('is-article-visible');
             document.getElementById('intro').classList.add('active');
-            
+
             // Click on body (background)
             const clickEvent = new MouseEvent('click');
             document.body.dispatchEvent(clickEvent);
-            
+
             // Verify article is closed
             expect(document.body.classList.contains('is-article-visible')).toBe(false);
         });
@@ -327,18 +327,18 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
             // Open intro article
             window.location.hash = '#intro';
             window.dispatchEvent(new Event('hashchange'));
-            
+
             // Wait for transition delay (325ms in template)
             await new Promise(resolve => setTimeout(resolve, 350));
-            
+
             // Switch to work article
             window.location.hash = '#work';
             window.dispatchEvent(new Event('hashchange'));
-            
+
             // Verify transition
             const introArticle = document.getElementById('intro');
             const workArticle = document.getElementById('work');
-            
+
             expect(introArticle.classList.contains('active')).toBe(false);
             expect(workArticle.classList.contains('active')).toBe(true);
         });
@@ -346,13 +346,13 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
         test('should prevent article click bubbling', () => {
             const article = document.getElementById('intro');
             article.classList.add('active');
-            
+
             // Create spy for event propagation
             const clickEvent = new MouseEvent('click', { bubbles: true });
             const stopPropagationSpy = jest.spyOn(clickEvent, 'stopPropagation');
-            
+
             article.dispatchEvent(clickEvent);
-            
+
             // Verify stopPropagation was called
             expect(stopPropagationSpy).toHaveBeenCalled();
         });
@@ -366,10 +366,10 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
                 configurable: true,
                 value: 1400
             });
-            
+
             // Trigger resize event
             window.dispatchEvent(new Event('resize'));
-            
+
             // Verify breakpoint detection logic
             // (Implementation depends on template's breakpoints function)
             expect(window.innerWidth).toBe(1400);
@@ -378,13 +378,13 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
         test('should adjust navigation for even number of items', () => {
             const nav = document.querySelector('header nav');
             const navItems = nav.querySelectorAll('li');
-            
+
             // Template logic: if even items, add 'use-middle' class
             if (navItems.length % 2 === 0) {
                 nav.classList.add('use-middle');
                 const middleIndex = Math.floor(navItems.length / 2);
                 navItems[middleIndex].classList.add('is-middle');
-                
+
                 expect(nav.classList.contains('use-middle')).toBe(true);
                 expect(navItems[middleIndex].classList.contains('is-middle')).toBe(true);
             }
@@ -394,11 +394,11 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
     describe('Animation & Loading States', () => {
         test('should remove preload class on window load', () => {
             document.body.classList.add('is-preload');
-            
+
             // Trigger window load event
             const loadEvent = new Event('load');
             window.dispatchEvent(loadEvent);
-            
+
             // Wait for 100ms timeout (template default)
             setTimeout(() => {
                 expect(document.body.classList.contains('is-preload')).toBe(false);
@@ -409,11 +409,11 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
             // Open article
             window.location.hash = '#intro';
             window.dispatchEvent(new Event('hashchange'));
-            
+
             // Immediately try to switch (should be locked)
             window.location.hash = '#work';
             window.dispatchEvent(new Event('hashchange'));
-            
+
             // Verify lock mechanism prevents immediate switch
             // (Implementation depends on template's lock variable)
         });
@@ -424,11 +424,11 @@ describe('HTML5 UP Dimension Template - Core Functionality', () => {
             // Set initial scroll position
             window.scrollTo(0, 500);
             const initialScroll = window.scrollY;
-            
+
             // Navigate to article
             window.location.hash = '#intro';
             window.dispatchEvent(new Event('hashchange'));
-            
+
             // Verify scroll restoration
             expect(window.scrollY).toBe(0); // Template scrolls to top
         });
@@ -463,11 +463,11 @@ describe('Contact Form - Advanced Validation & UX', () => {
     describe('Field Validation', () => {
         test('should validate email format', () => {
             const emailInput = document.querySelector('input[name="email"]');
-            
+
             // Invalid email
             emailInput.value = 'invalid-email';
             expect(emailInput.checkValidity()).toBe(false);
-            
+
             // Valid email
             emailInput.value = 'user@example.com';
             expect(emailInput.checkValidity()).toBe(true);
@@ -477,17 +477,17 @@ describe('Contact Form - Advanced Validation & UX', () => {
             const nameInput = document.querySelector('input[name="name"]');
             const emailInput = document.querySelector('input[name="email"]');
             const messageInput = document.querySelector('textarea[name="message"]');
-            
+
             // Empty fields
             expect(nameInput.checkValidity()).toBe(false);
             expect(emailInput.checkValidity()).toBe(false);
             expect(messageInput.checkValidity()).toBe(false);
-            
+
             // Filled fields
             nameInput.value = 'John Doe';
             emailInput.value = 'john@example.com';
             messageInput.value = 'Test message';
-            
+
             expect(nameInput.checkValidity()).toBe(true);
             expect(emailInput.checkValidity()).toBe(true);
             expect(messageInput.checkValidity()).toBe(true);
@@ -496,11 +496,11 @@ describe('Contact Form - Advanced Validation & UX', () => {
         test('should show validation errors on submit', () => {
             const form = document.getElementById('contact-form');
             const submitButton = form.querySelector('button[type="submit"]');
-            
+
             // Submit empty form
             const submitEvent = new Event('submit', { cancelable: true });
             const prevented = !form.dispatchEvent(submitEvent);
-            
+
             // Browser should prevent default submit
             expect(prevented).toBe(true);
         });
@@ -510,12 +510,12 @@ describe('Contact Form - Advanced Validation & UX', () => {
         test('should disable submit button during submission', async () => {
             const form = document.getElementById('contact-form');
             const submitButton = form.querySelector('button[type="submit"]');
-            
+
             // Fill valid data
             form.querySelector('input[name="name"]').value = 'John';
             form.querySelector('input[name="email"]').value = 'john@example.com';
             form.querySelector('textarea[name="message"]').value = 'Test';
-            
+
             // Mock async submission
             let submitting = true;
             form.addEventListener('submit', (e) => {
@@ -526,11 +526,11 @@ describe('Contact Form - Advanced Validation & UX', () => {
                     submitButton.disabled = false;
                 }, 1000);
             });
-            
+
             form.dispatchEvent(new Event('submit'));
-            
+
             expect(submitButton.disabled).toBe(true);
-            
+
             await new Promise(resolve => setTimeout(resolve, 1100));
             expect(submitButton.disabled).toBe(false);
         });
@@ -538,7 +538,7 @@ describe('Contact Form - Advanced Validation & UX', () => {
         test('should show success message after submission', async () => {
             const form = document.getElementById('contact-form');
             const statusDiv = document.getElementById('form-status');
-            
+
             // Mock successful submission
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -546,9 +546,9 @@ describe('Contact Form - Advanced Validation & UX', () => {
                 statusDiv.classList.remove('hidden');
                 statusDiv.classList.add('success');
             });
-            
+
             form.dispatchEvent(new Event('submit'));
-            
+
             expect(statusDiv.textContent).toContain('success');
             expect(statusDiv.classList.contains('hidden')).toBe(false);
         });
@@ -556,7 +556,7 @@ describe('Contact Form - Advanced Validation & UX', () => {
         test('should show error message on network failure', async () => {
             const form = document.getElementById('contact-form');
             const statusDiv = document.getElementById('form-status');
-            
+
             // Mock network error
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -568,9 +568,9 @@ describe('Contact Form - Advanced Validation & UX', () => {
                     statusDiv.classList.add('error');
                 }
             });
-            
+
             form.dispatchEvent(new Event('submit'));
-            
+
             expect(statusDiv.textContent).toContain('Failed');
             expect(statusDiv.classList.contains('error')).toBe(true);
         });
@@ -580,15 +580,15 @@ describe('Contact Form - Advanced Validation & UX', () => {
         test('should preserve form data on validation error', () => {
             const nameInput = document.querySelector('input[name="name"]');
             const emailInput = document.querySelector('input[name="email"]');
-            
+
             // Fill partial data
             nameInput.value = 'John Doe';
             emailInput.value = 'invalid'; // Invalid email
-            
+
             // Submit form (will fail validation)
             const form = document.getElementById('contact-form');
             form.dispatchEvent(new Event('submit'));
-            
+
             // Data should be preserved
             expect(nameInput.value).toBe('John Doe');
             expect(emailInput.value).toBe('invalid');
@@ -602,16 +602,16 @@ describe('Contact Form - Advanced Validation & UX', () => {
         test('should prevent double submission', async () => {
             const form = document.getElementById('contact-form');
             let submitCount = 0;
-            
+
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 submitCount++;
             });
-            
+
             // Rapid double click
             form.dispatchEvent(new Event('submit'));
             form.dispatchEvent(new Event('submit'));
-            
+
             // Should handle both events (implementation should debounce)
             expect(submitCount).toBeGreaterThanOrEqual(1);
         });
@@ -631,9 +631,9 @@ describe('InitializationUtilities - Production Integration', () => {
                 hostname: 'mpbarbosa.com',
                 search: ''
             };
-            
+
             const env = InitializationUtilities.detectDevelopmentEnvironment();
-            
+
             expect(env.isDevelopment).toBe(false);
             expect(env.isLocalhost).toBe(false);
             expect(env.indicators.length).toBe(0);
@@ -641,7 +641,7 @@ describe('InitializationUtilities - Production Integration', () => {
 
         test('should detect all browser capabilities', () => {
             const capabilities = InitializationUtilities.getBrowserCapabilities();
-            
+
             expect(capabilities).toHaveProperty('serviceWorkers');
             expect(capabilities).toHaveProperty('localStorage');
             expect(capabilities).toHaveProperty('fetch');
@@ -652,7 +652,7 @@ describe('InitializationUtilities - Production Integration', () => {
     describe('Dependency Injection Container Selection', () => {
         test('should use production container in production', () => {
             const container = InitializationUtilities.createProductionDIContainer();
-            
+
             expect(container.containerType).toBe('production');
             expect(container.config.enableLogging).toBe(false);
             expect(container.config.enableDebugMode).toBe(false);
@@ -660,7 +660,7 @@ describe('InitializationUtilities - Production Integration', () => {
 
         test('should use development container on localhost', () => {
             const container = InitializationUtilities.createDevelopmentDIContainer();
-            
+
             expect(container.containerType).toBe('development');
             expect(container.config.enableLogging).toBe(true);
             expect(container.config.enableDebugMode).toBe(true);
@@ -673,12 +673,12 @@ describe('InitializationUtilities - Production Integration', () => {
             InitializationUtilities.getInitializationCore = () => {
                 throw new Error('Test error');
             };
-            
+
             const container = InitializationUtilities.createProductionDIContainer();
-            
+
             expect(container.containerType).toBe('fallback');
             expect(container.fallback).toBe(true);
-            
+
             // Restore
             InitializationUtilities.getInitializationCore = originalGetCore;
         });
@@ -687,25 +687,25 @@ describe('InitializationUtilities - Production Integration', () => {
     describe('Performance Tracking', () => {
         test('should track performance marks', () => {
             const tracker = InitializationUtilities.createPerformanceTracker();
-            
+
             tracker.mark('init-start');
             tracker.mark('init-end');
-            
+
             expect(tracker.marks.has('init-start')).toBe(true);
             expect(tracker.marks.has('init-end')).toBe(true);
         });
 
         test('should measure performance duration', () => {
             const tracker = InitializationUtilities.createPerformanceTracker();
-            
+
             tracker.mark('start');
             // Simulate work
             const iterations = 1000000;
             for (let i = 0; i < iterations; i++) {}
             tracker.mark('end');
-            
+
             tracker.measure('work-duration', 'start', 'end');
-            
+
             const duration = tracker.measures.get('work-duration');
             expect(duration).toBeGreaterThanOrEqual(0);
         });
@@ -722,30 +722,30 @@ describe('Accessibility - WCAG 2.1 AA Compliance', () => {
             const navLinks = document.querySelectorAll('nav a');
             const firstLink = navLinks[0];
             const lastLink = navLinks[navLinks.length - 1];
-            
+
             // Tab to first link
             firstLink.focus();
             expect(document.activeElement).toBe(firstLink);
-            
+
             // Tab through links
             const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
             document.dispatchEvent(tabEvent);
-            
+
             // Should move to next focusable element
         });
 
         test('should support Enter key to activate links', () => {
             const link = document.querySelector('a[href="#intro"]');
             link.focus();
-            
+
             // Press Enter
-            const enterEvent = new KeyboardEvent('keypress', { 
+            const enterEvent = new KeyboardEvent('keypress', {
                 key: 'Enter',
                 keyCode: 13
             });
-            
+
             link.dispatchEvent(enterEvent);
-            
+
             // Should navigate to article
             expect(window.location.hash).toBe('#intro');
         });
@@ -754,22 +754,22 @@ describe('Accessibility - WCAG 2.1 AA Compliance', () => {
             // Open article
             window.location.hash = '#contact';
             window.dispatchEvent(new Event('hashchange'));
-            
+
             const article = document.getElementById('contact');
             const focusableElements = article.querySelectorAll(
                 'a[href], button, input, textarea, select'
             );
-            
+
             const firstElement = focusableElements[0];
             const lastElement = focusableElements[focusableElements.length - 1];
-            
+
             // Tab from last element should loop to first
             lastElement.focus();
-            const tabEvent = new KeyboardEvent('keydown', { 
+            const tabEvent = new KeyboardEvent('keydown', {
                 key: 'Tab',
                 shiftKey: false
             });
-            
+
             // Implement focus trap logic
             // expect(document.activeElement).toBe(firstElement);
         });
@@ -778,17 +778,17 @@ describe('Accessibility - WCAG 2.1 AA Compliance', () => {
     describe('ARIA Attributes', () => {
         test('should have proper role attributes on navigation', () => {
             const nav = document.querySelector('nav');
-            
+
             // Should have navigation role
             expect(nav.getAttribute('role')).toBe('navigation');
         });
 
         test('should have aria-label on form fields', () => {
             const emailInput = document.querySelector('input[type="email"]');
-            
+
             expect(
                 emailInput.hasAttribute('aria-label') ||
-                emailInput.hasAttribute('id') && 
+                emailInput.hasAttribute('id') &&
                 document.querySelector(`label[for="${emailInput.id}"]`)
             ).toBe(true);
         });
@@ -799,10 +799,10 @@ describe('Accessibility - WCAG 2.1 AA Compliance', () => {
             liveRegion.setAttribute('aria-live', 'polite');
             liveRegion.setAttribute('aria-atomic', 'true');
             document.body.appendChild(liveRegion);
-            
+
             // Update content
             liveRegion.textContent = 'Form submitted successfully';
-            
+
             expect(liveRegion.getAttribute('aria-live')).toBe('polite');
         });
     });
@@ -810,7 +810,7 @@ describe('Accessibility - WCAG 2.1 AA Compliance', () => {
     describe('Screen Reader Support', () => {
         test('should have descriptive link text', () => {
             const links = document.querySelectorAll('a');
-            
+
             links.forEach(link => {
                 const text = link.textContent.trim();
                 expect(text.length).toBeGreaterThan(0);
@@ -821,7 +821,7 @@ describe('Accessibility - WCAG 2.1 AA Compliance', () => {
 
         test('should have alt text on images', () => {
             const images = document.querySelectorAll('img');
-            
+
             images.forEach(img => {
                 expect(img.hasAttribute('alt')).toBe(true);
             });
@@ -865,22 +865,22 @@ describe('Responsive Design - Multi-Device Support', () => {
     describe('Touch Events', () => {
         test('should support touch events for navigation', () => {
             const link = document.querySelector('a[href="#intro"]');
-            
+
             const touchEvent = new TouchEvent('touchstart', {
                 touches: [{ clientX: 100, clientY: 100 }]
             });
-            
+
             link.dispatchEvent(touchEvent);
-            
+
             // Should handle touch interaction
         });
 
         test('should prevent double-tap zoom on buttons', () => {
             const button = document.querySelector('button');
-            
+
             // Add touch-action: manipulation CSS
             button.style.touchAction = 'manipulation';
-            
+
             expect(button.style.touchAction).toBe('manipulation');
         });
     });
@@ -891,9 +891,9 @@ describe('Responsive Design - Multi-Device Support', () => {
             Object.defineProperty(window, 'innerWidth', {
                 value: 375
             });
-            
+
             window.dispatchEvent(new Event('resize'));
-            
+
             // Check for mobile-specific classes or layouts
             const nav = document.querySelector('nav');
             // Template might add mobile-specific classes
@@ -902,12 +902,12 @@ describe('Responsive Design - Multi-Device Support', () => {
         test('should optimize animations for reduced motion', () => {
             // Mock prefers-reduced-motion
             const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-            
+
             if (mediaQuery.matches) {
                 // Disable or reduce animations
                 document.body.classList.add('reduced-motion');
             }
-            
+
             // Verify animation adjustments
         });
     });
@@ -938,10 +938,10 @@ afterEach(() => {
     jest.clearAllMocks();
     jest.clearAllTimers();
     jest.restoreAllMocks();
-    
+
     // Clear DOM
     document.body.innerHTML = '';
-    
+
     // Reset window properties
     delete window.mockProperty;
 });
@@ -990,19 +990,19 @@ export const createInvalidEmailData = () => ({
 // __tests__/matchers/custom-matchers.js
 expect.extend({
     toBeVisible(element) {
-        const isVisible = element.offsetWidth > 0 && 
+        const isVisible = element.offsetWidth > 0 &&
                          element.offsetHeight > 0;
-        
+
         return {
-            message: () => 
+            message: () =>
                 `expected element to ${this.isNot ? 'not ' : ''}be visible`,
             pass: isVisible
         };
     },
-    
+
     toHaveClass(element, className) {
         const pass = element.classList.contains(className);
-        
+
         return {
             message: () =>
                 `expected element to ${this.isNot ? 'not ' : ''}have class "${className}"`,
@@ -1042,36 +1042,36 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
         working-directory: ./src
-      
+
       - name: Run tests
         run: npm test -- --ci --coverage --maxWorkers=2
         working-directory: ./src
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           files: ./src/coverage/lcov.info
           fail_ci_if_error: true
-      
+
       - name: Check coverage thresholds
         run: |
           npm test -- --coverage --coverageThreshold='{"global":{"statements":80,"branches":75,"functions":80,"lines":80}}'
@@ -1278,9 +1278,9 @@ describe('Feature Name - Integration', () => {
     describe('Scenario Name', () => {
         test('should achieve expected outcome', () => {
             // Arrange
-            
+
             // Act
-            
+
             // Assert
         });
     });
@@ -1302,6 +1302,6 @@ describe('Accessibility - WCAG 2.1 AA', () => {
 
 ---
 
-**Report Generated:** 2025-11-25  
-**Next Review:** 2025-12-02  
-**Version:** 1.0.0  
+**Report Generated:** 2025-11-25
+**Next Review:** 2025-12-02
+**Version:** 1.0.0

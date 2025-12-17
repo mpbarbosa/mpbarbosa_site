@@ -1,8 +1,8 @@
 # Comprehensive Test Strategy Report
 ## MP Barbosa Personal Website - Test Coverage Analysis & Recommendations
 
-**Generated:** 2025-11-16  
-**QA Engineer:** Senior Test Automation Specialist  
+**Generated:** 2025-11-16
+**QA Engineer:** Senior Test Automation Specialist
 **Project:** MP Barbosa Personal Website (Static HTML + ES Modules)
 
 ---
@@ -69,7 +69,7 @@ test('should set up smooth scrolling for navigation links', () => {
 
     // ACT
     const linkCount = setupSmoothScrolling();
-    
+
     // ASSERT
     expect(linkCount).toBe(3);
 });
@@ -144,22 +144,22 @@ expect(value).toBeDefined();                  // Existence check
    - `src/components/*.html` (4 component files)
 
    **Risk:** HTML structure changes could break navigation, accessibility, SEO
-   
+
    **Impact:** High - Main user interface
 
 2. **Legacy JavaScript - NO TESTS**
    - `src/scripts/main.js` (legacy file)
-   
+
    **Risk:** Unknown if still in use, no regression protection
-   
+
    **Impact:** Medium - May be deprecated
 
 3. **CSS/SASS Assets - NO TESTS**
    - `src/assets/css/main.css`
    - `src/assets/sass/**/*.scss`
-   
+
    **Risk:** Styling regressions, responsive design breaks
-   
+
    **Impact:** High - User experience
 
 #### **Priority: HIGH**
@@ -169,7 +169,7 @@ expect(value).toBeDefined();                  // Existence check
    - `shell_scripts/pull_all_submodules.sh` - No dedicated tests
    - `shell_scripts/push_all_submodules.sh` - No dedicated tests
    - 8 additional shell scripts - NO TESTS
-   
+
    **Tested:** sync_to_public.sh (comprehensive)
    **Untested:** 11 shell scripts
 
@@ -224,7 +224,7 @@ import path from 'path';
 describe('HTML Structure & Validation', () => {
   describe('Main Landing Page (index.html)', () => {
     let htmlContent;
-    
+
     beforeEach(() => {
       const indexPath = path.join(__dirname, '../index.html');
       htmlContent = fs.readFileSync(indexPath, 'utf8');
@@ -238,7 +238,7 @@ describe('HTML Structure & Validation', () => {
     test('should have required meta tags for SEO', () => {
       const metaTags = document.querySelectorAll('meta');
       const metaNames = Array.from(metaTags).map(m => m.getAttribute('name'));
-      
+
       expect(metaNames).toContain('description');
       expect(metaNames).toContain('viewport');
     });
@@ -284,7 +284,7 @@ describe('HTML Structure & Validation', () => {
   describe('Project Redirect Pages', () => {
     const pages = [
       'music_in_numbers.html',
-      'guia_turistico.html', 
+      'guia_turistico.html',
       'monitora_vagas.html'
     ];
 
@@ -292,7 +292,7 @@ describe('HTML Structure & Validation', () => {
       test(`${page} should have meta refresh redirect`, () => {
         const pagePath = path.join(__dirname, '../pages', page);
         if (!fs.existsSync(pagePath)) return;
-        
+
         const content = fs.readFileSync(pagePath, 'utf8');
         expect(content).toMatch(/<meta[^>]*http-equiv="refresh"/i);
       });
@@ -300,7 +300,7 @@ describe('HTML Structure & Validation', () => {
       test(`${page} should redirect to submodule path`, () => {
         const pagePath = path.join(__dirname, '../pages', page);
         if (!fs.existsSync(pagePath)) return;
-        
+
         const content = fs.readFileSync(pagePath, 'utf8');
         const projectName = page.replace('.html', '');
         expect(content).toContain(`../submodules/${projectName}/src`);
@@ -315,7 +315,7 @@ describe('HTML Structure & Validation', () => {
       test(`${component} should be valid HTML fragment`, () => {
         const componentPath = path.join(__dirname, '../components', component);
         if (!fs.existsSync(componentPath)) return;
-        
+
         const content = fs.readFileSync(componentPath, 'utf8');
         expect(content.trim().length).toBeGreaterThan(0);
       });
@@ -381,7 +381,7 @@ describe('Responsive Design & CSS', () => {
     test('should use responsive background images', () => {
       const cssPath = path.join(__dirname, '../assets/css/main.css');
       if (!fs.existsSync(cssPath)) return;
-      
+
       const cssContent = fs.readFileSync(cssPath, 'utf8');
       // HTML5 UP Dimension uses background images
       expect(cssContent).toContain('background');
@@ -426,7 +426,7 @@ describe('Accessibility (WCAG 2.1 Compliance)', () => {
   describe('Semantic HTML', () => {
     test('should use semantic elements for structure', () => {
       const semanticElements = ['nav', 'main', 'article', 'section', 'header', 'footer'];
-      const usedElements = semanticElements.filter(tag => 
+      const usedElements = semanticElements.filter(tag =>
         document.querySelector(tag)
       );
       expect(usedElements.length).toBeGreaterThan(0);
@@ -451,7 +451,7 @@ describe('Accessibility (WCAG 2.1 Compliance)', () => {
         const hasText = link.textContent.trim().length > 0;
         const hasAriaLabel = link.hasAttribute('aria-label');
         const hasTitle = link.hasAttribute('title');
-        
+
         expect(hasText || hasAriaLabel || hasTitle).toBe(true);
       });
     });
@@ -471,7 +471,7 @@ describe('Accessibility (WCAG 2.1 Compliance)', () => {
         const hasLabel = document.querySelector(`label[for="${input.id}"]`);
         const hasAriaLabel = input.hasAttribute('aria-label');
         const hasPlaceholder = input.hasAttribute('placeholder');
-        
+
         expect(hasLabel || hasAriaLabel || hasPlaceholder).toBe(true);
       });
     });
@@ -481,7 +481,7 @@ describe('Accessibility (WCAG 2.1 Compliance)', () => {
       requiredInputs.forEach(input => {
         const hasAriaRequired = input.hasAttribute('aria-required');
         const hasRequiredAttr = input.hasAttribute('required');
-        
+
         expect(hasAriaRequired || hasRequiredAttr).toBe(true);
       });
     });
@@ -495,7 +495,7 @@ describe('Accessibility (WCAG 2.1 Compliance)', () => {
         const parent = icon.parentElement;
         const hasText = parent.textContent.trim().length > icon.textContent.trim().length;
         const hasAriaLabel = icon.hasAttribute('aria-label') || parent.hasAttribute('aria-label');
-        
+
         // Either has accompanying text OR aria-label
         expect(hasText || hasAriaLabel).toBe(true);
       });
@@ -627,7 +627,7 @@ describe('Shell Scripts - Unit Tests', () => {
       test(`${scriptName} should have error handling (set -e)`, () => {
         const scriptPath = path.join(shellScriptsDir, scriptName);
         if (!fs.existsSync(scriptPath)) return;
-        
+
         const content = fs.readFileSync(scriptPath, 'utf8');
         expect(content).toContain('set -e');
       });
@@ -635,7 +635,7 @@ describe('Shell Scripts - Unit Tests', () => {
       test(`${scriptName} should have help/usage documentation`, () => {
         const scriptPath = path.join(shellScriptsDir, scriptName);
         if (!fs.existsSync(scriptPath)) return;
-        
+
         const content = fs.readFileSync(scriptPath, 'utf8');
         expect(content).toMatch(/--help|-h|show_help|usage/i);
       });
@@ -643,7 +643,7 @@ describe('Shell Scripts - Unit Tests', () => {
       test(`${scriptName} should support dry-run mode`, () => {
         const scriptPath = path.join(shellScriptsDir, scriptName);
         if (!fs.existsSync(scriptPath)) return;
-        
+
         const content = fs.readFileSync(scriptPath, 'utf8');
         expect(content).toMatch(/--dry-run|DRY_RUN/);
       });
@@ -669,7 +669,7 @@ describe('Performance & Load Time Optimization', () => {
     test('main CSS should be under 500KB', () => {
       const cssPath = path.join(__dirname, '../assets/css/main.css');
       if (!fs.existsSync(cssPath)) return;
-      
+
       const stats = fs.statSync(cssPath);
       const sizeKB = stats.size / 1024;
       expect(sizeKB).toBeLessThan(500);
@@ -678,7 +678,7 @@ describe('Performance & Load Time Optimization', () => {
     test('main JavaScript should be under 500KB', () => {
       const jsPath = path.join(__dirname, '../assets/js/main.js');
       if (!fs.existsSync(jsPath)) return;
-      
+
       const stats = fs.statSync(jsPath);
       const sizeKB = stats.size / 1024;
       expect(sizeKB).toBeLessThan(500);
@@ -687,7 +687,7 @@ describe('Performance & Load Time Optimization', () => {
     test('background image should be optimized (< 1MB)', () => {
       const bgPath = path.join(__dirname, '../images/bg.jpg');
       if (!fs.existsSync(bgPath)) return;
-      
+
       const stats = fs.statSync(bgPath);
       const sizeMB = stats.size / (1024 * 1024);
       expect(sizeMB).toBeLessThan(1);
@@ -698,12 +698,12 @@ describe('Performance & Load Time Optimization', () => {
     test('should use defer or async for non-critical scripts', () => {
       const indexPath = path.join(__dirname, '../index.html');
       const content = fs.readFileSync(indexPath, 'utf8');
-      
+
       const scriptTags = content.match(/<script[^>]*>/g) || [];
       const nonDeferredScripts = scriptTags.filter(
         tag => !tag.includes('defer') && !tag.includes('async')
       );
-      
+
       // Most scripts should use defer/async
       expect(nonDeferredScripts.length).toBeLessThan(scriptTags.length);
     });
@@ -711,10 +711,10 @@ describe('Performance & Load Time Optimization', () => {
     test('should load critical CSS inline or high priority', () => {
       const indexPath = path.join(__dirname, '../index.html');
       const content = fs.readFileSync(indexPath, 'utf8');
-      
+
       const hasInlineCSS = content.includes('<style>');
       const hasPreloadCSS = content.includes('rel="preload"');
-      
+
       // Either inline critical CSS or preload
       expect(hasInlineCSS || hasPreloadCSS).toBe(true);
     });
@@ -736,7 +736,7 @@ describe('Performance & Load Time Optimization', () => {
     test('should use local font files for Font Awesome', () => {
       const webfontsDir = path.join(__dirname, '../assets/webfonts');
       expect(fs.existsSync(webfontsDir)).toBe(true);
-      
+
       const fontFiles = fs.readdirSync(webfontsDir);
       expect(fontFiles.length).toBeGreaterThan(0);
     });
@@ -744,7 +744,7 @@ describe('Performance & Load Time Optimization', () => {
     test('should have WOFF2 fonts for modern browsers', () => {
       const webfontsDir = path.join(__dirname, '../assets/webfonts');
       if (!fs.existsSync(webfontsDir)) return;
-      
+
       const fontFiles = fs.readdirSync(webfontsDir);
       const hasWoff2 = fontFiles.some(file => file.endsWith('.woff2'));
       expect(hasWoff2).toBe(true);
@@ -777,11 +777,11 @@ describe('Integration Tests - Complete User Workflows', () => {
     test('complete user journey: land → navigate → view project', () => {
       // 1. User lands on homepage
       expect(document.body.innerHTML.length).toBeGreaterThan(0);
-      
+
       // 2. User sees navigation
       const nav = document.querySelector('nav, [role="navigation"]');
       expect(nav).toBeTruthy();
-      
+
       // 3. User clicks project link
       const projectLink = document.querySelector('a[href*="music_in_numbers"]');
       if (projectLink) {
@@ -792,16 +792,16 @@ describe('Integration Tests - Complete User Workflows', () => {
     test('smooth scroll navigation between sections', () => {
       const mockScrollIntoView = jest.fn();
       Element.prototype.scrollIntoView = mockScrollIntoView;
-      
+
       // Initialize site
       setupSmoothScrolling();
-      
+
       // Simulate user clicking multiple navigation links
       const links = document.querySelectorAll('a[href^="#"]');
       links.forEach(link => {
         link.dispatchEvent(new Event('click'));
       });
-      
+
       expect(mockScrollIntoView).toHaveBeenCalled();
     });
   });
@@ -809,32 +809,32 @@ describe('Integration Tests - Complete User Workflows', () => {
   describe('Contact Form Submission Flow', () => {
     test('complete form submission workflow', () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
-      
+
       setupContactForm();
-      
+
       const form = document.getElementById('contact-form');
       if (form) {
         // User fills form
         const nameInput = form.querySelector('input[name="name"]');
         const emailInput = form.querySelector('input[name="email"]');
         const messageInput = form.querySelector('textarea[name="message"]');
-        
+
         if (nameInput && emailInput && messageInput) {
           nameInput.value = 'Test User';
           emailInput.value = 'test@example.com';
           messageInput.value = 'Test message';
-          
+
           // User submits
           form.dispatchEvent(new Event('submit'));
-          
+
           // Verify success message
           expect(alertSpy).toHaveBeenCalled();
-          
+
           // Verify form reset
           expect(nameInput.value).toBe('');
         }
       }
-      
+
       alertSpy.mockRestore();
     });
   });
@@ -848,11 +848,11 @@ describe('Integration Tests - Complete User Workflows', () => {
         { width: 1024, name: 'desktop' },
         { width: 1920, name: 'large' }
       ];
-      
+
       viewportSizes.forEach(({ width, name }) => {
         global.innerWidth = width;
         global.dispatchEvent(new Event('resize'));
-        
+
         // Should not throw errors
         expect(() => initializeSite()).not.toThrow();
       });
@@ -862,7 +862,7 @@ describe('Integration Tests - Complete User Workflows', () => {
   describe('Error Recovery & Fallbacks', () => {
     test('should handle missing submodules gracefully', () => {
       const projectLinks = document.querySelectorAll('a[href*="submodules"]');
-      
+
       // Even if submodules are not initialized, links should exist
       expect(projectLinks.length).toBeGreaterThanOrEqual(0);
     });
@@ -979,42 +979,42 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: false  # Don't init submodules (require auth)
-    
+
     - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: src/package-lock.json
-    
+
     - name: Install dependencies
       working-directory: ./src
       run: npm ci
-    
+
     - name: Run tests
       working-directory: ./src
       run: npm test
-    
+
     - name: Generate coverage
       working-directory: ./src
       run: npm run test:coverage
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         files: ./src/coverage/lcov.info
         flags: unittests
         name: codecov-umbrella
-    
+
     - name: Check coverage thresholds
       working-directory: ./src
       run: npm run test:coverage -- --coverageThreshold='{"global":{"lines":80}}'
@@ -1084,9 +1084,9 @@ npm test -- --passWithNoTests
    - Function-level testing
    - **Impact:** Deployment reliability
 
-**Estimated Effort:** 40 hours  
-**New Test Files:** 3  
-**New Tests:** ~50-60 tests  
+**Estimated Effort:** 40 hours
+**New Test Files:** 3
+**New Tests:** ~50-60 tests
 **Coverage Gain:** +20-25%
 
 ### Phase 2: High Priority Coverage (Week 3-4) 🟡
@@ -1111,9 +1111,9 @@ npm test -- --passWithNoTests
    - Cross-component testing
    - **Impact:** Feature reliability
 
-**Estimated Effort:** 30 hours  
-**New Test Files:** 3  
-**New Tests:** ~40-50 tests  
+**Estimated Effort:** 30 hours
+**New Test Files:** 3
+**New Tests:** ~40-50 tests
 **Coverage Gain:** +15-20%
 
 ### Phase 3: Medium Priority Enhancements (Week 5-6) 🟢
@@ -1135,9 +1135,9 @@ npm test -- --passWithNoTests
    - Test architecture docs
    - Contributing guide
 
-**Estimated Effort:** 25 hours  
-**New Test Files:** 5-10 helpers  
-**Infrastructure:** Complete CI/CD  
+**Estimated Effort:** 25 hours
+**New Test Files:** 5-10 helpers
+**Infrastructure:** Complete CI/CD
 **Coverage Gain:** +10%
 
 ### Total Coverage Improvement Target
@@ -1149,8 +1149,8 @@ npm test -- --passWithNoTests
 | Phase 2 | 2 weeks | 30h | +15% | ~80% |
 | Phase 3 | 2 weeks | 25h | +5% | ~85% |
 
-**Total Timeline:** 6 weeks  
-**Total Effort:** 95 hours  
+**Total Timeline:** 6 weeks
+**Total Effort:** 95 hours
 **Final Coverage:** 85%+ ✅
 
 ---
@@ -1290,9 +1290,9 @@ export const customMatchers = {
         const hasHtmlTag = /<html[^>]*>/i.test(received);
         const hasHeadTag = /<head>/i.test(received);
         const hasBodyTag = /<body>/i.test(received);
-        
+
         const pass = hasDoctype && hasHtmlTag && hasHeadTag && hasBodyTag;
-        
+
         return {
             pass,
             message: () => pass
@@ -1300,14 +1300,14 @@ export const customMatchers = {
                 : `Expected HTML to have valid structure (DOCTYPE, html, head, body)`
         };
     },
-    
+
     toBeAccessible(received) {
         const hasLang = /<html[^>]*lang=/i.test(received);
         const imagesHaveAlt = !/<img(?![^>]*alt=)/i.test(received);
         const linksHaveText = true; // Would need DOM parsing
-        
+
         const pass = hasLang && imagesHaveAlt;
-        
+
         return {
             pass,
             message: () => pass
@@ -1315,19 +1315,19 @@ export const customMatchers = {
                 : `Expected HTML to be accessible (lang attr, img alt, link text)`
         };
     },
-    
+
     toHaveMetaTag(received, name, content = null) {
         const regex = new RegExp(`<meta[^>]*name=["']${name}["']`, 'i');
         const hasTag = regex.test(received);
-        
+
         let hasContent = true;
         if (content) {
             const contentRegex = new RegExp(`content=["']${content}["']`, 'i');
             hasContent = contentRegex.test(received);
         }
-        
+
         const pass = hasTag && hasContent;
-        
+
         return {
             pass,
             message: () => pass
@@ -1526,6 +1526,6 @@ export const customMatchers = {
 
 ---
 
-**Report Generated:** November 16, 2025  
-**Review Status:** ✅ Ready for Implementation  
+**Report Generated:** November 16, 2025
+**Review Status:** ✅ Ready for Implementation
 **Next Review:** After Phase 1 completion (2 weeks)

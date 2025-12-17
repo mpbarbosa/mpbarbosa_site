@@ -2,7 +2,7 @@
 
 **Document Purpose**: Complete version history and feature evolution timeline for `execute_tests_docs_workflow.sh`
 
-**Current Version**: v1.5.0 (November 9, 2025)  
+**Current Version**: v2.0.0 (December 15, 2025)
 **Initial Release**: v1.0.0 (November 6, 2025)
 
 ---
@@ -11,7 +11,8 @@
 
 | Version | Date | Key Feature | Status | Completion Report |
 |---------|------|-------------|--------|-------------------|
-| **v1.5.0** | Nov 9, 2025 | Performance Optimization + Logs Directory | ✅ Current | This document |
+| **v2.0.0** | Dec 15, 2025 | Output Limits Enhancement + Auto-Mode | ✅ Current | [Output Limits Enhancement](WORKFLOW_OUTPUT_LIMITS_ENHANCEMENT.md) |
+| **v1.5.0** | Nov 9, 2025 | Performance Optimization + Logs Directory | ✅ Stable | This document |
 | **v1.4.0** | Nov 6, 2025 | Summaries Directory | ✅ Stable | Not documented |
 | **v1.3.0** | Nov 5, 2025 | Backlog Directory | ✅ Stable | Not documented |
 | **v1.2.0** | Nov 4, 2025 | AI-Powered Workflow | ✅ Stable | Not documented |
@@ -22,7 +23,54 @@
 
 ## 🚀 Version Details
 
-### Version 1.5.0 (Current) - November 9, 2025
+### Version 2.0.0 (Current) - December 15, 2025
+
+**Theme**: Enhanced Debugging & CI/CD Automation
+
+**Major Features**:
+- ✅ **Increased Output Limits**
+  - Step 7: Test output 100 → 200 lines (+100%)
+  - Step 8: Production deps 20 → 50 lines (+150%), Outdated 10 → 20 lines (+100%)
+  - Step 9: File preview 30 → 50 lines (+67%)
+
+- ✅ **Auto-Mode Issue Extraction**
+  - Automatic parsing of structured issues from Copilot logs
+  - Extracts Critical/High/Medium/Low priority issues
+  - Fallback to summary extraction when structured output unavailable
+  - Eliminates manual copy-paste in CI/CD workflows
+
+- ✅ **Enhanced AI Context**
+  - More comprehensive data for Copilot analysis
+  - Better debugging visibility
+  - Improved pattern detection
+  - Richer recommendations
+
+**Performance Impact**:
+- Log file size increase: ~17KB per run (minimal)
+- Execution time increase: <1 second (negligible)
+- Storage for 100 runs: ~1.7MB additional (acceptable)
+
+**Benefits**:
+- 📈 Better debugging capabilities with full context
+- 🤖 Improved AI analysis quality with richer data
+- 🔄 Full CI/CD automation without manual intervention
+- 👨‍💻 Enhanced developer experience
+
+**Documentation**:
+- Created `WORKFLOW_OUTPUT_LIMITS_ENHANCEMENT.md`
+- Updated `.github/copilot-instructions.md`
+- Updated `shell_scripts/README.md`
+- Updated `shell_scripts/workflow/README.md`
+- Enhanced inline code comments with timestamps
+
+**Migration from v1.5.0**:
+- ✅ Fully backward compatible
+- ✅ No breaking changes
+- ✅ All existing automation scripts work unchanged
+
+---
+
+### Version 1.5.0 (Stable) - November 9, 2025
 
 **Theme**: Performance Optimization & Comprehensive Logging
 
@@ -31,13 +79,13 @@
   - Git state caching (40% reduction in git operations)
   - Reduced redundant command executions
   - Optimized step dependencies
-  
+
 - ✅ **Logs Directory** (`/shell_scripts/workflow/logs/`)
   - Raw execution traces
   - AI session logs (GitHub Copilot CLI interactions)
   - PID tracking for multi-instance support
   - 30-day retention policy
-  
+
 - ✅ **Enhanced AI Integration**
   - 11 AI-powered steps with specialized personas
   - Modern `copilot -p` integration patterns
@@ -78,7 +126,7 @@
   - 2-3 sentence summaries
   - Status indicators (✅/⚠️/❌)
   - Indefinite retention for trend analysis
-  
+
 - ✅ **Enhanced AI Personas**
   - 11 specialized AI personas for domain-specific tasks
   - Git Workflow Specialist
@@ -118,7 +166,7 @@
   - Comprehensive validation output
   - File/line references for all findings
   - 90-day retention policy
-  
+
 - ✅ **Graceful Copilot CLI Handling**
   - Automatic detection of GitHub Copilot CLI
   - Fallback to automated validation if unavailable
@@ -154,7 +202,7 @@
   - AI-powered analysis for 11 of 13 steps
   - Interactive `copilot -p` persona-based workflow
   - Comprehensive git context for AI
-  
+
 - ✅ **Conventional Commit Generation** (Step 11)
   - AI-assisted commit message creation
   - Professional conventional commit format
@@ -474,9 +522,9 @@ mpbarbosa_site/
 
 ---
 
-**Last Updated**: November 9, 2025  
-**Document Version**: 1.0.0  
-**Maintained By**: MP Barbosa  
+**Last Updated**: November 9, 2025
+**Document Version**: 1.0.0
+**Maintained By**: MP Barbosa
 **Status**: Current and actively maintained
 
 For the latest features and capabilities, always refer to the current script version (v1.5.0) and the documentation in `/shell_scripts/README.md`.

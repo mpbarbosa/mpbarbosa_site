@@ -127,7 +127,7 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 **Purpose**: Direct deployment to nginx production directory
 
-**Requirements**: 
+**Requirements**:
 - Must run `sync_to_public.sh --step1` first to prepare files
 - Requires sudo for web server directory access
 - Uses /public directory as source (changed in v2.0.0)

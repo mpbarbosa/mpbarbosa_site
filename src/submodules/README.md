@@ -15,7 +15,7 @@ src/submodules/
 ## 🎯 Submodules Overview
 
 ### 🎵 Music in Numbers
-**Repository**: [mpbarbosa/music_in_numbers](https://github.com/mpbarbosa/music_in_numbers)  
+**Repository**: [mpbarbosa/music_in_numbers](https://github.com/mpbarbosa/music_in_numbers)
 **Description**: Spotify analytics platform for music listening patterns and insights
 
 **Key Features**:
@@ -37,7 +37,7 @@ src/submodules/
 ---
 
 ### 🗺️ Guia Turístico
-**Repository**: [mpbarbosa/guia_turistico](https://github.com/mpbarbosa/guia_turistico)  
+**Repository**: [mpbarbosa/guia_turistico](https://github.com/mpbarbosa/guia_turistico)
 **Description**: Brazilian Portuguese travel guide application with geolocation features
 
 **Key Features**:
@@ -60,7 +60,7 @@ src/submodules/
 ---
 
 ### 💼 Monitora Vagas
-**Repository**: [mpbarbosa/monitora_vagas](https://github.com/mpbarbosa/monitora_vagas)  
+**Repository**: [mpbarbosa/monitora_vagas](https://github.com/mpbarbosa/monitora_vagas)
 **Description**: Job listing monitoring and notification system
 
 **Key Features**:
@@ -295,8 +295,8 @@ See [Modularization Achievements](/docs/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md) 
 
 ### Submodule initialization fails
 
-**Cause**: Authentication issues or network connectivity  
-**Solution**: 
+**Cause**: Authentication issues or network connectivity
+**Solution**:
 ```bash
 # Verify SSH access to GitHub
 ssh -T git@github.com
@@ -307,7 +307,7 @@ git submodule update --init --recursive
 
 ### Submodule shows uncommitted changes
 
-**Cause**: Working directory changes or detached HEAD state  
+**Cause**: Working directory changes or detached HEAD state
 **Solution**:
 ```bash
 # Navigate to submodule
@@ -325,7 +325,7 @@ git stash  # or git add && git commit
 
 ### Submodule not updating
 
-**Cause**: Main repository tracking old commit reference  
+**Cause**: Main repository tracking old commit reference
 **Solution**:
 ```bash
 # Update submodule to latest
@@ -340,7 +340,7 @@ git commit -m "chore: update project_name to latest"
 
 ### 404 errors on submodule pages
 
-**Cause**: Submodules not initialized or authentication failed  
+**Cause**: Submodules not initialized or authentication failed
 **Solution**:
 - This is expected behavior when submodules aren't initialized
 - Main site continues to function normally
@@ -386,8 +386,8 @@ When working with submodules:
 
 ---
 
-**Last Updated**: November 9, 2025  
-**Maintained By**: MP Barbosa  
+**Last Updated**: November 9, 2025
+**Maintained By**: MP Barbosa
 **Status**: Active development
 
 For questions or issues, refer to the main project documentation or individual submodule READMEs.

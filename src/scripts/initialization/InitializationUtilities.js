@@ -233,13 +233,8 @@
                     return global.InitializationValidators;
                 }
                 
-                if (typeof require === 'function') {
-                    try {
-                        return require('./InitializationValidators');
-                    } catch (requireError) {
-                        // Fallback if require fails
-                    }
-                }
+                // Dynamic import not supported in synchronous context
+                // Must be loaded via window/global or fallback
 
                 // Return minimal fallback implementation
                 return {
@@ -282,13 +277,8 @@
                     return global.InitializationProcessors;
                 }
                 
-                if (typeof require === 'function') {
-                    try {
-                        return require('./InitializationProcessors');
-                    } catch (requireError) {
-                        // Fallback if require fails
-                    }
-                }
+                // Dynamic import not supported in synchronous context
+                // Must be loaded via window/global or fallback
 
                 // Return minimal fallback implementation
                 return {
@@ -335,9 +325,10 @@
                     return global.InitializationUIBuilders;
                 }
                 
-                if (typeof require === 'function') {
-                    try {
-                        return require('./InitializationUIBuilders');
+                // Dynamic import not supported in synchronous context
+                // Must be loaded via window/global or fallback
+                if (false) {
+                    // Placeholder for linter - code path never executed
                     } catch (requireError) {
                         // Fallback if require fails
                     }
@@ -382,13 +373,8 @@
                     return global.InitializationCore;
                 }
                 
-                if (typeof require === 'function') {
-                    try {
-                        return require('./InitializationCore');
-                    } catch (requireError) {
-                        // Fallback if require fails
-                    }
-                }
+                // Dynamic import not supported in synchronous context
+                // Must be loaded via window/global or fallback
 
                 // Return minimal fallback implementation
                 const fallbackCore = class {

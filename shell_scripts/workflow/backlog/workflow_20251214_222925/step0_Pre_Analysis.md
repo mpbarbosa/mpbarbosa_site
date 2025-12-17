@@ -12,7 +12,7 @@
 
 **Commits Ahead:** 0
 **Modified Files:** 68
-**Change Scope:** 
+**Change Scope:**
 
 ### Modified Files List
 

@@ -63,25 +63,25 @@ Update Step 12 AI prompt in `shell_scripts/workflow/lib/ai_helpers.yaml`:
 ```yaml
 markdown_lint_prompt:
   role: "You are a Technical Documentation Specialist with expertise in markdown best practices and AI-generated content quality."
-  
+
   task_template: |
     Review markdown linting results and provide recommendations.
-    
+
     # Linting Results
     {lint_report}
-    
+
     # Focus Areas
     1. **Trailing Spaces (MD009)**: Identify files with trailing whitespace
     2. **List Indentation (MD007)**: Check nested list spacing (should be 4 spaces)
     3. **Header Punctuation (MD026)**: Find headers ending with punctuation
     4. **File Endings (MD047)**: Ensure files end with single newline
-    
+
     # Important Notes
     - MD001, MD002, MD012, MD013, MD022, MD029, MD031, MD032 are disabled via .mdlrc
     - Focus ONLY on enabled rules that indicate real quality issues
     - Provide specific file paths and line numbers
     - Suggest automated fixes (sed/awk commands) when possible
-  
+
   approach: |
     - Filter out disabled rules from analysis
     - Prioritize issues by impact on rendering and accessibility
@@ -115,14 +115,14 @@ STAGED_MD_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep "\.md$"
 
 if [[ -n "$STAGED_MD_FILES" ]]; then
     echo "Running markdown linter on staged files..."
-    
+
     mdl --git-recurse --ignore-front-matter $STAGED_MD_FILES
-    
+
     if [[ $? -ne 0 ]]; then
         echo "❌ Markdown linting failed. Fix errors or use 'git commit --no-verify' to skip."
         exit 1
     fi
-    
+
     echo "✅ Markdown linting passed"
 fi
 
@@ -143,7 +143,7 @@ When generating markdown documentation:
 
 ### For Manual Editing
 
-1. **Enable Editor Settings**: 
+1. **Enable Editor Settings**:
    - "Trim trailing whitespace on save"
    - "Insert final newline"
    - "Show whitespace characters"
@@ -152,7 +152,7 @@ When generating markdown documentation:
    ```bash
    # Remove trailing spaces from all markdown files
    find . -name "*.md" -type f -exec sed -i 's/[[:space:]]*$//' {} +
-   
+
    # Add newline at end of file if missing
    find . -name "*.md" -type f -exec sh -c 'tail -c1 {} | read -r _ || echo >> {}' \;
    ```
@@ -161,7 +161,7 @@ When generating markdown documentation:
    ```bash
    # Check markdown files before committing
    npm run lint:md
-   
+
    # Or run mdl directly
    mdl --git-recurse --ignore-front-matter .
    ```

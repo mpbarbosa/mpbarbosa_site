@@ -51,8 +51,8 @@ Opening links in new windows/tabs has accessibility considerations per [WCAG 2.1
 
 #### Enhanced Accessibility Pattern
 ```html
-<a href="https://example.com" 
-   target="_blank" 
+<a href="https://example.com"
+   target="_blank"
    rel="noopener noreferrer"
    aria-label="External site (opens in new tab)">
    External Site
@@ -66,7 +66,7 @@ The current implementation uses basic `target="_blank" rel="noopener noreferrer"
 
 ### Affected Files
 - **Main Site**: `src/index.html`
-- **Git Submodules**: 
+- **Git Submodules**:
   - `src/submodules/music_in_numbers/src/index.html`
   - `src/submodules/music_in_numbers/src/artist.html`
   - `src/submodules/guia_turistico/src/guia_turistico.html`

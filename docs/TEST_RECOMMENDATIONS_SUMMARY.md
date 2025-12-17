@@ -11,7 +11,7 @@
 # Remove empty test files causing failures
 cd submodules/music_in_numbers/tests/
 rm security-testing.test.js
-rm performance-benchmarking.test.js  
+rm performance-benchmarking.test.js
 rm advanced-error-handling.test.js
 
 # OR add placeholder tests:
@@ -241,11 +241,11 @@ test('should handle form submission', () => {
   // Arrange
   const alertSpy = jest.spyOn(window, 'alert').mockImplementation();
   setupContactForm();
-  
+
   // Act
   const form = document.getElementById('contact-form');
   form.dispatchEvent(new Event('submit'));
-  
+
   // Assert
   expect(alertSpy).toHaveBeenCalledWith('Form submitted! Thank you for reaching out.');
   alertSpy.mockRestore();
@@ -290,7 +290,7 @@ test('should load page within 2 seconds', () => {
   const start = performance.now();
   // Load page
   const end = performance.now();
-  
+
   expect(end - start).toBeLessThan(2000);
 });
 ```
@@ -299,11 +299,11 @@ test('should load page within 2 seconds', () => {
 ```javascript
 test('should handle 100 rapid clicks without lag', () => {
   const start = performance.now();
-  
+
   for (let i = 0; i < 100; i++) {
     document.querySelector('button').click();
   }
-  
+
   const end = performance.now();
   expect(end - start).toBeLessThan(100); // < 1ms per click
 });
@@ -411,22 +411,22 @@ npm install --save-dev @testing-library/dom @testing-library/user-event jest-axe
 
 ### Common Issues
 
-**Q: Tests failing with "TextEncoder is not defined"**  
+**Q: Tests failing with "TextEncoder is not defined"**
 A: Add polyfill in `__tests__/setup.js` (see Critical Actions #2)
 
-**Q: How do I run only failing tests?**  
+**Q: How do I run only failing tests?**
 A: `npm test -- --onlyFailures`
 
-**Q: How do I debug a specific test?**  
+**Q: How do I debug a specific test?**
 A: `npm test -- --testNamePattern="test name pattern"`
 
-**Q: Coverage not generated?**  
+**Q: Coverage not generated?**
 A: `npm run test:coverage` (already configured)
 
 ---
 
-**Last Updated**: 2025-11-14  
-**Next Review**: 2025-12-14  
+**Last Updated**: 2025-11-14
+**Next Review**: 2025-12-14
 **Maintainer**: QA Team
 
 For detailed implementation guides, see `TEST_STRATEGY_REPORT.md`

@@ -1,8 +1,8 @@
 # Git Best Practices Guide
 
-> **📋 Document Scope: MP Barbosa Projects - Canonical Reference**  
-> This is the **canonical version** of Git best practices for all MP Barbosa projects.  
-> **Submodule Versions**: Each submodule may have a project-specific customization in their repository.  
+> **📋 Document Scope: MP Barbosa Projects - Canonical Reference**
+> This is the **canonical version** of Git best practices for all MP Barbosa projects.
+> **Submodule Versions**: Each submodule may have a project-specific customization in their repository.
 > **See Also**: [src/submodules/README.md](/src/submodules/README.md) for submodule-specific guidance.
 
 ## Overview
@@ -131,7 +131,7 @@ git commit -m "rename: Move CONTRIBUTING.md to .github/ for better visibility"
 # Complex reorganization
 git commit -m "docs: Reorganize JavaScript best practices documentation
 
-- Move ES6 guides from docs/ to .github/ 
+- Move ES6 guides from docs/ to .github/
 - Consolidate all coding standards in contributor guidelines
 - Update INDEX.md with new file locations
 - Improve separation between project docs and dev guidelines
@@ -437,6 +437,6 @@ Always remember: **Use `git mv` for moves, `git rm` for deletions, and write cle
 
 ---
 
-**Last Updated**: October 20, 2025  
-**Author**: MP Barbosa  
+**Last Updated**: October 20, 2025
+**Author**: MP Barbosa
 **Version**: 1.0.0

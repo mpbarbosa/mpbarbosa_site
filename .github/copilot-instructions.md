@@ -473,7 +473,7 @@ The project uses npm overrides to resolve transitive dependency vulnerabilities:
   "glob": "^11.0.0"        // Fix: GHSA-5j98-mcp5-4vw2 (High - Command Injection)
 }
 ```
-**Status**: ✅ 0 vulnerabilities (verified December 15, 2025)  
+**Status**: ✅ 0 vulnerabilities (verified December 15, 2025)
 **See**: `docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md` for details
 
 ### External Resources Used
@@ -842,6 +842,10 @@ sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 #   - Step 8 (Dependencies): Production deps from 20 → 50, outdated from 10 → 20 lines
 #   - Step 9 (Code Quality): File preview from 30 → 50 lines
 # - Enhanced AI context with more comprehensive data for analysis
+# - Auto-mode improvements: Automatic issue extraction from Copilot logs in Step 1
+#   - Auto-parses structured issues (Critical/High/Medium/Low/Recommendations)
+#   - Fallback to summary extraction when structured output unavailable
+#   - Eliminates manual copy-paste in CI/CD workflows
 ```
 
 **Key Patterns**:
@@ -869,8 +873,9 @@ The `execute_tests_docs_workflow.sh` script demonstrates professional AI integra
 - **Multiple Auth Methods**: Supports COPILOT_GITHUB_TOKEN, GH_TOKEN, GITHUB_TOKEN, or gh CLI
 - **Graceful Error Handling**: Clear guidance when authentication fails
 - **Use `copilot -p` for interactive workflows**: Embrace the conversation UI rather than fighting it
-- **Copy-paste workflow**: Let AI generate in its UI, then user copies/pastes the result
-- **Smart triggering**: Auto mode skips interactive AI, Interactive mode prompts, Optional mode provides choice
+- **Copy-paste workflow**: Let AI generate in its UI, then user copies/pastes the result (interactive mode)
+- **Auto-extraction workflow**: Automatically parse structured issues from Copilot logs (auto mode)
+- **Smart triggering**: Auto mode with automatic parsing, Interactive mode with manual input, Optional mode provides choice
 - **Graceful degradation**: Always provide fallbacks when Copilot CLI unavailable
 
 #### Two-Phase Validation Architecture
@@ -901,7 +906,7 @@ Step 11 showcases AI-assisted git best practices with complete modular implement
 **AI Integration Features**:
 - Git Workflow Specialist + Technical Communication Expert persona
 - Interactive copy-paste workflow from Copilot UI
-- Auto-mode with intelligent default messages
+- Auto-mode with intelligent default messages and automatic issue extraction
 - Conventional commits standard compliance
 - Semantic versioning best practices integration
 
@@ -929,6 +934,10 @@ Step 1 now includes automatic documentation saving, version consistency manageme
 - Multiple authentication method support
 - Clear error messages with authentication instructions
 - Graceful fallback when CLI unavailable
+- **Auto-mode issue extraction**: Automatically parses structured issues from Copilot logs
+  - Extracts Critical/High/Medium/Low priority issues and recommendations
+  - Falls back to summary extraction when structured output unavailable
+  - Saves issues to backlog automatically in CI/CD workflows
 
 **Module**: `shell_scripts/workflow/steps/step_01_documentation.sh` (417 lines with auto-save and version management)
 
@@ -959,7 +968,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Dependency Injection Best Practices](../docs/development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 ### Workflow Automation
-- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v1.5.0 (current script: v2.0.0 with complete modularization)
+- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v2.0.0 (current with output limits enhancement and auto-mode)
 - **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
 - **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
 - **[Workflow Modularization Phase 1 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md)** - Library modules extraction completion
