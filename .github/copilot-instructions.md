@@ -10,7 +10,7 @@
 
 ## Project Overview
 
-This is a static HTML personal portfolio website for MP Barbosa built on the **HTML5 UP Dimension** responsive template. The site showcases personal projects, provides an about section, curriculum information, and includes interactive navigation with smooth transitions.
+This is a static HTML personal portfolio website for MP Barbosa built on the **HTML5 UP Dimension** responsive template. The site showcases personal projects, provides an about section, curriculum information, direct link to GitHub repositories, and includes interactive navigation with smooth transitions.
 
 **Architecture Highlights**:
 - **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
@@ -91,8 +91,9 @@ The project includes comprehensive development environment configuration:
    - Responsive preloader animation displays
 
 2. **Navigation Testing**:
-   - Click "Intro", "Projetos (IA)", "About", and "Contact" navigation links
-   - Verify smooth transitions and modal-style article displays
+   - Click "Intro", "Projetos (IA)", "About", "Contact", and "Repositórios no GitHub" navigation links
+   - Verify smooth transitions and modal-style article displays (internal links)
+   - Verify GitHub link opens in new tab with proper security attributes (external link)
    - Test close button (X) on each article overlay
    - Verify background blur effect when articles are open
 
@@ -972,7 +973,7 @@ For comprehensive development guidance, consult these detailed documentation res
 ### Workflow Automation
 - **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v2.0.0 (current with output limits enhancement and auto-mode)
 - **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
-- **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+- **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v2.0.0 (HISTORICAL)
 - **[Workflow Modularization Phase 1 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md)** - Library modules extraction completion
 - **[Workflow Modularization Phase 2 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE2_COMPLETION.md)** - Additional library modules completion
 - **[Workflow Modularization Phase 3 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All step modules extraction COMPLETE ✅

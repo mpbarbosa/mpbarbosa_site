@@ -63,6 +63,7 @@ git diff --cached --name-only | wc -l  # Should match 15 + moved docs
 ```
 
 ### **Commit Strategy**
+
 ```bash
 # Conventional commit for current staged changes
 git commit -m "chore(monitora_vagas): enhance hotel cache service with API client integration
@@ -86,6 +87,7 @@ Change Impact: Low (infrastructure improvements)"
 **Hypothesis**: Step 10 invoked manually or workflow crashed before completion
 
 **Recommended Investigation**:
+
 ```bash
 # Check workflow logs for errors
 cat shell_scripts/workflow/logs/workflow_20251210_210453/*.log | grep -i "error\|failed\|aborted"
@@ -95,16 +97,19 @@ ls -la shell_scripts/workflow/logs/workflow_20251210_*/session_*.json
 ```
 
 ### **Short-Term Fixes (Next 7 Days)**
+
 1. **Add workflow health check** - Verify all 13 steps complete or capture failure point
 2. **Implement documentation placement validation** - Enforce `/docs` directory for analysis reports
 3. **Enhance git state reporting** - Detect coverage report regeneration separately
 
 ### **Medium-Term Improvements (Next 30 Days)**
+
 1. **Conditional step execution** - Skip redundant steps when change impact = "Low"
 2. **Parallel step processing** - Steps 1-4 (validation checks) can run simultaneously
 3. **Workflow resume capability** - Checkpoint system to restart from last successful step
 
 ### **Long-Term Optimization (Next Quarter)**
+
 1. **Change-type-aware pipelines**:
    - Docs-only changes: Skip test execution (Steps 2-5)
    - Test-only changes: Skip linting (Step 12)

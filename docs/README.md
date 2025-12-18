@@ -62,6 +62,14 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Security Vulnerability Resolution](development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security audit resolution using package overrides (8 vulnerabilities fixed: 5 High, 3 Moderate) ⭐ **NEW**
 - **[Dependabot Configuration](../.github/dependabot.yml)** - Automated weekly dependency monitoring and security updates
 
+### Testing & Quality Assurance
+
+- **[Comprehensive Testing Guide](testing-qa/COMPREHENSIVE_TESTING_GUIDE.md)** - Complete test strategy consolidating TEST_COVERAGE_ANALYSIS_REPORT.md and TEST_STRATEGY_REPORT.md (84KB, 2,887 lines) ⭐ **NEW**
+- **[Test Failure Analysis Consolidated](testing-qa/TEST_FAILURE_ANALYSIS_CONSOLIDATED.md)** - Root cause analysis and actionable fixes for test failures
+- **[Test Quick Start Guide v2](testing-qa/TEST_QUICK_START_GUIDE_v2.md)** - Quick reference for running and debugging tests
+- **[Test Generation Recommendations](testing-qa/TEST_GENERATION_RECOMMENDATIONS.md)** - AI-powered test case generation guidelines
+- **[Test Execution Analysis](testing-qa/TEST_EXECUTION_ANALYSIS_COMPREHENSIVE.md)** - Comprehensive test execution diagnostics and analysis
+
 ### Advanced Architecture Patterns
 
 - **[Functional Core, Imperative Shell Guide](development-guides/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies

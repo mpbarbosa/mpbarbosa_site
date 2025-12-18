@@ -2,7 +2,7 @@
 
 ################################################################################
 # Tests & Documentation Workflow Automation Script
-# Version: 2.0.0
+# Version: 2.1.0
 # Purpose: Automate the complete tests and documentation update workflow
 # Related: /prompts/tests_documentation_update_enhanced.txt
 #
@@ -71,6 +71,14 @@
 #   ✓ Workflow summary with duration and step status
 #   ✓ Log file location info displayed at completion
 #
+# NEW IN v2.1.0 (2025-12-18):
+#   ✓ Workflow health check - verify all 13 steps complete or capture failure
+#   ✓ Documentation placement validation - enforce /docs directory structure
+#   ✓ Enhanced git state reporting - separate coverage regeneration detection
+#   ✓ Automatic health check execution on workflow completion
+#   ✓ New library module: lib/health_check.sh with 3 validation functions
+#   ✓ 4 comprehensive reports per workflow run (including 3 new health reports)
+#
 # PERFORMANCE OPTIMIZATIONS (2025-11-14):
 #   ✓ Optimized find operations - replaced with fast_find (performance.sh)
 #   ✓ Reduced redundant file searches - cache and reuse results
@@ -86,7 +94,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ==============================================================================
 
-SCRIPT_VERSION="2.0.0"
+SCRIPT_VERSION="2.1.0"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SRC_DIR="${PROJECT_ROOT}/src"
@@ -262,6 +270,11 @@ get_git_scripts_modified() { echo "${GIT_CACHE[scripts_modified]:-0}"; }
 get_git_code_modified() { echo "${GIT_CACHE[code_modified]:-0}"; }
 is_deps_modified() { [[ "${GIT_CACHE[deps_modified]:-false}" == "true" ]]; }
 is_git_repo() { [[ "${GIT_CACHE[is_git_repo]:-false}" == "true" ]]; }
+
+# Additional accessor functions for health check library
+get_cached_git_branch() { echo "${GIT_CACHE[current_branch]:-unknown}"; }
+get_cached_git_status() { echo "$GIT_STATUS_SHORT_OUTPUT"; }
+get_cached_git_diff() { echo "$GIT_DIFF_STAT_OUTPUT"; }
 
 # ==============================================================================
 # UTILITY FUNCTIONS
@@ -3052,6 +3065,8 @@ step9_code_quality_validation() {
     
     # Check 1: Enumerate code files
     print_info "Enumerating code files..."
+    # Improved find commands (Dec 2025): Exclude node_modules, .git, and coverage directories
+    # Using -prune for efficient directory exclusion instead of scanning and filtering
     local js_files=$(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o \( -name "*.js" -o -name "*.mjs" \) -print | wc -l)
     local html_files=$(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o -name "*.html" -print | wc -l)
     local css_files=$(find . -path "*/node_modules" -prune -o -path "*/.git" -prune -o -path "*/coverage" -prune -o -name "*.css" -print | wc -l)
@@ -4586,6 +4601,10 @@ execute_full_workflow() {
         print_error "Workflow failed at: $failed_step"
         log_to_workflow "ERROR" "Workflow FAILED at: $failed_step"
         show_progress
+        
+        # Run health check to document failure point
+        verify_workflow_health || true
+        
         exit 1
     else
         print_header "🎉 Workflow Completed Successfully!"
@@ -4595,6 +4614,12 @@ execute_full_workflow() {
         print_info "Backlog reports saved to: $BACKLOG_RUN_DIR"
         print_info "Summaries saved to: $SUMMARIES_RUN_DIR"
         print_info "Execution log saved to: $WORKFLOW_LOG_FILE"
+        
+        # Run post-completion health checks
+        echo ""
+        verify_workflow_health || true
+        validate_doc_placement || true
+        enhanced_git_state_report || true
         
         # Create workflow summary file
         create_workflow_summary
