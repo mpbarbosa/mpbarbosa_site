@@ -1,7 +1,12 @@
 /**
- * Modelo de exemplo para Vaga
- * Este arquivo serve como modelo para definir estruturas de dados
+ * Vaga Model
+ * Data model for job vacancy entities
+ * 
+ * @module models/Vaga
+ * @version 1.4.0
+ * @since 1.0.0
  */
+
 export default class Vaga {
   constructor(data) {
     this.id = data.id;

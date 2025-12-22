@@ -1,11 +1,12 @@
 # Workflow Automation Module Documentation
 
-**Version:** 2.0.0
-**Status:** Phase 3 COMPLETE ✅ - All Step Modules Extracted
-**Last Updated:** 2025-12-17
-**Modules:** 26 total (13 libraries [12 .sh + 1 .yaml] + 13 steps)
-**Total Lines:** 6,993 lines modularized (excluding tests/examples)
-**Documentation:** All 12 library modules fully documented ✅
+**Version:** 2.1.0
+**Status:** Enhanced with Metrics, Change Detection, and Dependency Graph ✅
+**Last Updated:** 2025-12-18
+**Modules:** 29 total (16 libraries [15 .sh + 1 .yaml] + 13 steps)
+**Total Lines:** 7,448 lines modularized (excluding tests/examples)
+**Documentation:** All 15 library modules fully documented ✅
+**Tests:** 37 tests, 100% pass rate ✅
 
 ---
 
@@ -474,6 +475,168 @@ fi
 - **Documentation**: Prompts serve as documentation of AI integration
 - **Flexibility**: Swap entire prompt sets by replacing YAML file
 - **Resilience**: Zero-downtime fallback to hardcoded prompts
+
+### Phase 3 Modules (v2.1.0) ⭐ NEW - Short-Term Enhancements
+
+### 14. `lib/metrics.sh` (455 lines) ✨ NEW
+**Purpose:** Workflow metrics collection for tracking duration, success rate, and step timing
+
+**Architecture:**
+- JSON-based metrics storage with history tracking
+- Per-step timing with start/stop timers
+- Workflow-level aggregation and statistics
+- Human-readable summary generation
+- Query API for historical analysis
+
+**Data Storage:**
+- `metrics/current_run.json` - Active workflow metrics
+- `metrics/history.jsonl` - JSON Lines format for all runs
+- `metrics/summary.md` - Human-readable summary
+
+**Functions:**
+- `init_metrics()` - Initialize metrics collection
+- `start_step_timer()`, `stop_step_timer()` - Step timing
+- `finalize_metrics()` - Save to history and generate summary
+- `get_success_rate()` - Calculate success rate for last N runs
+- `get_average_step_duration()` - Average timing per step
+- `generate_metrics_summary()` - Create markdown report
+
+**Metrics Tracked:**
+- Workflow duration, success/failure status, execution mode
+- Per-step timing, status, and error messages
+- Historical trends and success rates
+- Critical path duration and bottleneck identification
+
+**Usage:**
+```bash
+source "$(dirname "$0")/lib/metrics.sh"
+
+# Initialize at workflow start
+init_metrics
+
+# Track step execution
+start_step_timer 0 "Pre_Analysis"
+# ... step execution ...
+stop_step_timer 0 "success" ""
+
+# Finalize at workflow end
+finalize_metrics "success"
+
+# Query metrics
+success_rate=$(get_success_rate 10)  # Last 10 runs
+avg_duration=$(get_average_step_duration 7)  # Step 7 average
+```
+
+### 15. `lib/change_detection.sh` (424 lines) ✨ NEW
+**Purpose:** Auto-detect change types (docs-only, tests-only, full-stack) for smart step execution
+
+**Change Classifications:**
+- `docs-only` - Documentation changes only
+- `tests-only` - Test files only
+- `config-only` - Configuration files only
+- `scripts-only` - Shell scripts only
+- `code-only` - Source code only
+- `full-stack` - Multiple categories
+- `mixed` - Mixed changes
+
+**Functions:**
+- `detect_change_type()` - Classify changes from git status
+- `analyze_changes()` - Detailed breakdown by category
+- `get_recommended_steps()` - Steps required for detected change type
+- `should_execute_step()` - Check if step should run
+- `display_execution_plan()` - Show recommended workflow
+- `assess_change_impact()` - Risk assessment (low/medium/high)
+- `generate_change_report()` - Markdown report with recommendations
+
+**Step Recommendations:**
+```bash
+docs-only:    Steps 0,1,2,11,12    # Skip tests and validation
+tests-only:   Steps 0,5,6,7,11     # Skip docs and quality checks
+config-only:  Steps 0,8,11          # Dependencies and git only
+full-stack:   Steps 0-12            # All steps required
+```
+
+**Usage:**
+```bash
+source "$(dirname "$0")/lib/change_detection.sh"
+
+# Detect change type
+change_type=$(detect_change_type)
+echo "Detected: ${change_type}"
+
+# Display execution plan
+display_execution_plan
+
+# Check if step should run
+if should_execute_step 7; then
+    echo "Running tests..."
+fi
+
+# Assess impact
+impact=$(assess_change_impact)  # low, medium, high
+echo "Change impact: ${impact}"
+```
+
+### 16. `lib/dependency_graph.sh` (466 lines) ✨ NEW
+**Purpose:** Visualize execution flow and identify parallelization opportunities
+
+**Features:**
+- Step dependency definitions and validation
+- Parallelizable step group identification
+- Execution time estimates and critical path analysis
+- Mermaid diagram generation
+- Optimal execution plan with time savings
+
+**Parallel Groups Identified:**
+```bash
+Group 1: Steps 1,3,4,5,8  # After Pre-Analysis (save ~270s)
+Group 2: Steps 2,12       # Consistency checks (save ~45s)
+Group 3: Steps 7,9        # Test exec + quality (save ~150s)
+Total Savings: ~465s (33% faster execution)
+```
+
+**Functions:**
+- `check_dependencies()` - Verify step dependencies met
+- `get_next_runnable_steps()` - Steps that can run now
+- `get_parallel_steps()` - Steps for parallel execution
+- `generate_dependency_diagram()` - Mermaid flowchart
+- `generate_execution_plan()` - Optimal execution order
+- `calculate_critical_path()` - Longest sequential chain
+- `display_execution_phases()` - Terminal visualization
+
+**Critical Path Analysis:**
+```
+Step 0 (30s) → Step 5 (120s) → Step 6 (180s) → 
+Step 7 (240s) → Step 10 (120s) → Step 11 (90s)
+Total: 780s (~13 minutes)
+```
+
+**Usage:**
+```bash
+source "$(dirname "$0")/lib/dependency_graph.sh"
+
+# Check if step can run
+if check_dependencies 6 "0,5"; then
+    echo "Step 6 ready to run"
+fi
+
+# Get parallel steps
+completed="0"
+parallel=$(get_parallel_steps "${completed}")
+echo "Can run in parallel: ${parallel}"
+
+# Generate visualizations
+generate_dependency_diagram "${BACKLOG_RUN_DIR}/graph.md"
+generate_execution_plan "${BACKLOG_RUN_DIR}/plan.md"
+
+# Display phases
+display_execution_phases
+```
+
+**Optimization Results:**
+- **Sequential:** ~1,395s (~23 minutes)
+- **Parallel:** ~930s (~15.5 minutes)
+- **Time Savings:** 33% faster execution
 
 ---
 

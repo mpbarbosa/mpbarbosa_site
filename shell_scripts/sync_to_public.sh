@@ -368,8 +368,11 @@ FILES TO SYNC:
     - submodules/music_in_numbers/src/ (Music in Numbers HTML files)
     - submodules/music_in_numbers/src/scripts/ (Music in Numbers JavaScript modules)
     - submodules/music_in_numbers/src/styles/ (Music in Numbers CSS stylesheets)
-
-    - submodules/monitora_vagas/src/ (Monitora Vagas HTML, JS, and subdirectories)
+    - submodules/guia_turistico/ (Guia Turistico travel guide)
+    - submodules/monitora_vagas/src/ (Monitora Vagas legacy implementation)
+    - submodules/monitora_vagas/public/ (Monitora Vagas modern v2.0.0)
+    - submodules/busca_vagas/client/public/ (Busca Vagas frontend)
+    - submodules/busca_vagas/src/ (Busca Vagas API server)
     - Additional resources can be added by extending this script
 
 EOF
@@ -909,6 +912,161 @@ copy_guia_turistico_repository() {
     return 0
 }
 
+# Copy Monitora Vagas sibling project
+copy_monitora_vagas_project() {
+    print_step "Copying Monitora Vagas project content"
+    
+    # Monitora Vagas sibling project deployment
+    # Location: ../monitora_vagas
+    # Strategy: Copy both src/ and public/ folders with symlink resolution
+    
+    local source_project="$PROJECT_ROOT/../monitora_vagas"
+    local dest_dir="$PUBLIC_DIR/submodules/monitora_vagas"
+    
+    # Check if sibling project exists
+    if [[ ! -d "$source_project" ]]; then
+        print_warning "Monitora Vagas sibling project not found"
+        print_info "  Expected location: $source_project"
+        print_info "  Skipping Monitora Vagas deployment"
+        return 0
+    fi
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Create destination directory
+        mkdir -p "$dest_dir"
+        
+        # Copy src folder (legacy implementation)
+        if [[ -d "$source_project/src" ]]; then
+            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            local src_js=$(find "$source_project/src" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            
+            # Use cp -rL to resolve symlinks
+            cp -rL "$source_project/src" "$dest_dir/"
+            print_success "Copied: Monitora Vagas src/ folder ($src_html HTML, $src_js JS files, $src_dirs subdirectories)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $source_project/src"
+                print_info "  Destination: $dest_dir/src"
+                print_info "  HTML files: $src_html"
+                print_info "  JavaScript files: $src_js"
+                print_info "  Subdirectories: $src_dirs"
+            fi
+        else
+            print_warning "Monitora Vagas src/ folder not found"
+        fi
+        
+        # Copy public folder (modern v2.0.0 implementation)
+        if [[ -d "$source_project/public" ]]; then
+            local pub_html=$(find "$source_project/public" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            local pub_dirs=$(find "$source_project/public" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            
+            # Use cp -rL to resolve symlinks (public/ has symlinks to ../src/)
+            cp -rL "$source_project/public" "$dest_dir/"
+            print_success "Copied: Monitora Vagas public/ folder ($pub_html HTML files, $pub_dirs subdirectories)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $source_project/public"
+                print_info "  Destination: $dest_dir/public"
+                print_info "  HTML files: $pub_html"
+                print_info "  Subdirectories: $pub_dirs"
+            fi
+        else
+            print_warning "Monitora Vagas public/ folder not found"
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_project/src → $dest_dir/src"
+        print_info "[DRY RUN] Would copy: $source_project/public → $dest_dir/public"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source project: $source_project"
+            print_info "  Destination: $dest_dir"
+            print_info "  Method: cp -rL (with symlink resolution)"
+        fi
+    fi
+    
+    return 0
+}
+
+# Copy Busca Vagas sibling project
+copy_busca_vagas_project() {
+    print_step "Copying Busca Vagas project content"
+    
+    # Busca Vagas sibling project deployment
+    # Location: ../busca_vagas
+    # Strategy: Copy client/public/ folder and src/ API server code
+    
+    local source_project="$PROJECT_ROOT/../busca_vagas"
+    local dest_dir="$PUBLIC_DIR/submodules/busca_vagas"
+    
+    # Check if sibling project exists
+    if [[ ! -d "$source_project" ]]; then
+        print_warning "Busca Vagas sibling project not found"
+        print_info "  Expected location: $source_project"
+        print_info "  Skipping Busca Vagas deployment"
+        return 0
+    fi
+    
+    if [[ "$DRY_RUN" == "false" ]]; then
+        # Create destination directory
+        mkdir -p "$dest_dir"
+        
+        # Copy client/public folder (frontend HTML)
+        if [[ -d "$source_project/client/public" ]]; then
+            local html_count=$(find "$source_project/client/public" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            local js_count=$(find "$source_project/client/public" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            
+            mkdir -p "$dest_dir/client"
+            cp -r "$source_project/client/public" "$dest_dir/client/"
+            print_success "Copied: Busca Vagas client/public/ folder ($html_count HTML, $js_count JS files)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $source_project/client/public"
+                print_info "  Destination: $dest_dir/client/public"
+                print_info "  HTML files: $html_count"
+                print_info "  JavaScript files: $js_count"
+            fi
+        else
+            print_warning "Busca Vagas client/public/ folder not found"
+        fi
+        
+        # Copy src folder (API server code)
+        if [[ -d "$source_project/src" ]]; then
+            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            
+            cp -r "$source_project/src" "$dest_dir/"
+            print_success "Copied: Busca Vagas src/ folder ($src_js JS files, $src_dirs subdirectories)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $source_project/src"
+                print_info "  Destination: $dest_dir/src"
+                print_info "  JavaScript files: $src_js"
+                print_info "  Subdirectories: $src_dirs"
+            fi
+        else
+            print_warning "Busca Vagas src/ folder not found"
+        fi
+        
+        # Copy package.json if exists (for dependency information)
+        if [[ -f "$source_project/package.json" ]]; then
+            cp "$source_project/package.json" "$dest_dir/"
+            print_info "  Copied: package.json"
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_project/client/public → $dest_dir/client/public"
+        print_info "[DRY RUN] Would copy: $source_project/src → $dest_dir/src"
+        print_info "[DRY RUN] Would copy: $source_project/package.json → $dest_dir/package.json"
+        
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source project: $source_project"
+            print_info "  Destination: $dest_dir"
+        fi
+    fi
+    
+    return 0
+}
+
 # Copy additional resources (placeholder for future expansion)
 copy_additional_resources() {
     print_step "Checking for additional resources"
@@ -1421,6 +1579,8 @@ execute_step_1() {
     copy_music_in_numbers_scripts
     copy_music_in_numbers_styles
     copy_guia_turistico_repository
+    copy_monitora_vagas_project
+    copy_busca_vagas_project
     copy_additional_resources
     
     if [[ "$DRY_RUN" == "false" ]]; then

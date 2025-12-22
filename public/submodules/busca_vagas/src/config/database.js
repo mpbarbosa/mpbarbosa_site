@@ -1,7 +1,12 @@
 /**
- * Configuração do banco de dados
- * Descomente e configure conforme necessário
+ * Database Configuration
+ * Configure database connection settings via environment variables
+ * 
+ * @module config/database
+ * @version 1.4.0
+ * @since 1.0.0
  */
+
 export const host = process.env.DB_HOST || 'localhost';
 export const port = process.env.DB_PORT || 5432;
 export const database = process.env.DB_NAME || 'busca_vagas';

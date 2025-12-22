@@ -1,5 +1,10 @@
 /**
- * Utilitários gerais
+ * Helper Utilities
+ * General utility functions for the application
+ * 
+ * @module utils/helpers
+ * @version 1.4.0
+ * @since 1.0.0
  */
 
 /**
