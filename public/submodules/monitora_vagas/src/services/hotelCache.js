@@ -9,17 +9,29 @@
  * - Fallback to in-memory cache if LocalStorage unavailable
  */
 
+import { logger } from './logger.js';
+import { TIME, CACHE } from '../config/constants.js';
+
 export class HotelCache {
+    /**
+     * Creates a hotel cache instance with LocalStorage persistence
+     * @param {Object} options - Configuration options
+     * @param {string} [options.storageKey] - LocalStorage key (defaults to CACHE.KEYS.HOTEL_LIST)
+     * @param {number} [options.ttl] - Time to live in milliseconds (defaults to TIME.CACHE.HOTEL_LIST)
+     */
     constructor(options = {}) {
-        this.storageKey = options.storageKey || 'afpesp_hotels_cache';
-        this.ttl = options.ttl || 24 * 60 * 60 * 1000; // Default: 24 hours
+        this.storageKey = options.storageKey || CACHE.KEYS.HOTEL_LIST;
+        this.ttl = options.ttl || TIME.CACHE.HOTEL_LIST;
         this.useLocalStorage = this.isLocalStorageAvailable();
         
-        console.log(`🗄️ HotelCache initialized (TTL: ${this.ttl / 1000 / 60} minutes, Storage: ${this.useLocalStorage ? 'LocalStorage' : 'Memory'})`);
+        logger.debug(`🗄️ HotelCache initialized (TTL: ${this.ttl / 1000 / 60} minutes, Storage: ${this.useLocalStorage ? 'LocalStorage' : 'Memory'})`);
     }
 
     /**
-     * Check if LocalStorage is available
+     * Check if LocalStorage is available and functional
+     * Tests by writing and removing a test value
+     * @returns {boolean} True if LocalStorage is available, false otherwise
+     * @private
      */
     isLocalStorageAvailable() {
         try {
@@ -28,39 +40,48 @@ export class HotelCache {
             localStorage.removeItem(test);
             return true;
         } catch (e) {
-            console.warn('⚠️ LocalStorage not available, falling back to memory cache');
+            logger.warn('⚠️ LocalStorage not available, falling back to memory cache');
             return false;
         }
     }
 
     /**
-     * Get cached hotel list
+     * Get cached hotel list from LocalStorage
+     * Automatically validates cache expiration based on TTL
+     * @param {number} [currentTime=Date.now()] - Current timestamp for cache validation (injectable for testing)
      * @returns {Array|null} Cached hotels or null if expired/not found
+     * @example
+     * const hotels = hotelCache.get();
+     * if (hotels) {
+     *   console.log(`Found ${hotels.length} cached hotels`);
+     * } else {
+     *   console.log('Cache miss - need to fetch from API');
+     * }
      */
-    get() {
+    get(currentTime = Date.now()) {
         try {
             if (this.useLocalStorage) {
                 const cached = localStorage.getItem(this.storageKey);
                 if (!cached) {
-                    console.log('📭 No cached hotels found in LocalStorage');
+                    logger.debug('📭 No cached hotels found in LocalStorage');
                     return null;
                 }
 
                 const { data, timestamp } = JSON.parse(cached);
                 
                 // Check if expired
-                const age = Date.now() - timestamp;
+                const age = currentTime - timestamp;
                 if (age > this.ttl) {
-                    console.log(`⏰ Cache expired (age: ${Math.round(age / 1000 / 60)} minutes, TTL: ${this.ttl / 1000 / 60} minutes)`);
+                    logger.debug(`⏰ Cache expired (age: ${Math.round(age / 1000 / 60)} minutes, TTL: ${this.ttl / 1000 / 60} minutes)`);
                     this.clear();
                     return null;
                 }
 
-                console.log(`✅ Using cached hotels (${data.length} hotels, age: ${Math.round(age / 1000 / 60)} minutes)`);
+                logger.debug(`✅ Using cached hotels (${data.length} hotels, age: ${Math.round(age / 1000 / 60)} minutes)`);
                 return data;
             }
         } catch (error) {
-            console.error('❌ Error reading from cache:', error);
+            logger.error('❌ Error reading from cache:', error);
             return null;
         }
 
@@ -68,43 +89,52 @@ export class HotelCache {
     }
 
     /**
-     * Save hotel list to cache
-     * @param {Array} hotels - Hotel list to cache
+     * Save hotel list to LocalStorage cache with current timestamp
+     * Automatically handles QuotaExceededError by clearing and retrying
+     * @param {Array} hotels - Hotel list to cache (must be an array)
+     * @param {number} [currentTime=Date.now()] - Current timestamp for cache (injectable for testing)
+     * @returns {boolean} True if successfully cached, false otherwise
+     * @example
+     * const hotels = await apiClient.getHotels();
+     * const success = hotelCache.set(hotels);
+     * if (success) {
+     *   console.log('Hotels cached successfully');
+     * }
      */
-    set(hotels) {
+    set(hotels, currentTime = Date.now()) {
         try {
             if (!Array.isArray(hotels)) {
-                console.error('❌ Invalid data: hotels must be an array');
+                logger.error('❌ Invalid data: hotels must be an array');
                 return false;
             }
 
             if (this.useLocalStorage) {
                 const cacheData = {
                     data: hotels,
-                    timestamp: Date.now()
+                    timestamp: currentTime
                 };
 
                 localStorage.setItem(this.storageKey, JSON.stringify(cacheData));
-                console.log(`💾 Cached ${hotels.length} hotels (TTL: ${this.ttl / 1000 / 60} minutes)`);
+                logger.debug(`💾 Cached ${hotels.length} hotels (TTL: ${this.ttl / 1000 / 60} minutes)`);
                 return true;
             }
         } catch (error) {
             // LocalStorage quota exceeded or other error
-            console.error('❌ Error saving to cache:', error);
+            logger.error('❌ Error saving to cache:', error);
             
             // Try to clear old data and retry
             if (error.name === 'QuotaExceededError') {
-                console.log('🗑️ Quota exceeded, clearing cache and retrying...');
+                logger.debug('🗑️ Quota exceeded, clearing cache and retrying...');
                 this.clear();
                 try {
                     const cacheData = {
                         data: hotels,
-                        timestamp: Date.now()
+                        timestamp: currentTime
                     };
                     localStorage.setItem(this.storageKey, JSON.stringify(cacheData));
                     return true;
                 } catch (retryError) {
-                    console.error('❌ Retry failed:', retryError);
+                    logger.error('❌ Retry failed:', retryError);
                 }
             }
             return false;
@@ -114,23 +144,40 @@ export class HotelCache {
     }
 
     /**
-     * Clear cache
+     * Clear hotel cache from LocalStorage
+     * Removes all cached data and resets state
+     * @example
+     * hotelCache.clear();
+     * console.log('Cache cleared');
      */
     clear() {
         try {
             if (this.useLocalStorage) {
                 localStorage.removeItem(this.storageKey);
-                console.log('🗑️ Hotel cache cleared');
+                logger.debug('🗑️ Hotel cache cleared');
             }
         } catch (error) {
-            console.error('❌ Error clearing cache:', error);
+            logger.error('❌ Error clearing cache:', error);
         }
     }
 
     /**
-     * Get cache statistics
+     * Get cache statistics including age, size, and expiration status
+     * @param {number} [currentTime=Date.now()] - Current timestamp for calculations (injectable for testing)
+     * @returns {Object} Cache statistics object
+     * @returns {boolean} returns.exists - Whether cache exists
+     * @returns {number} [returns.count] - Number of cached hotels
+     * @returns {number} [returns.age] - Cache age in minutes
+     * @returns {number} [returns.remaining] - Time remaining before expiration in minutes
+     * @returns {boolean} [returns.expired] - Whether cache is expired
+     * @returns {number} [returns.size] - Cache size in bytes
+     * @example
+     * const stats = hotelCache.getStats();
+     * if (stats.exists) {
+     *   console.log(`Cache: ${stats.count} hotels, ${stats.age}min old, ${stats.remaining}min remaining`);
+     * }
      */
-    getStats() {
+    getStats(currentTime = Date.now()) {
         try {
             if (this.useLocalStorage) {
                 const cached = localStorage.getItem(this.storageKey);
@@ -139,7 +186,7 @@ export class HotelCache {
                 }
 
                 const { data, timestamp } = JSON.parse(cached);
-                const age = Date.now() - timestamp;
+                const age = currentTime - timestamp;
                 const remaining = this.ttl - age;
 
                 return {
@@ -152,25 +199,50 @@ export class HotelCache {
                 };
             }
         } catch (error) {
-            console.error('❌ Error getting cache stats:', error);
+            logger.error('❌ Error getting cache stats:', error);
         }
 
         return { exists: false };
     }
 
     /**
-     * Force refresh - clear cache and fetch new data
+     * Force refresh by clearing cache
+     * Next get() call will require fetching from API
+     * @example
+     * hotelCache.forceRefresh();
+     * const freshHotels = await apiClient.getHotels();
      */
     forceRefresh() {
-        console.log('🔄 Force refresh requested - clearing cache');
+        logger.debug('🔄 Force refresh requested - clearing cache');
         this.clear();
     }
 }
 
-// Create singleton instance with default 24-hour cache
+/**
+ * Singleton instance of HotelCache with default configuration
+ * - Storage key: CACHE.KEYS.HOTEL_LIST
+ * - TTL: TIME.CACHE.HOTEL_LIST (24 hours)
+ * - Automatically uses LocalStorage if available, falls back to memory
+ * 
+ * @type {HotelCache}
+ * @example
+ * import { hotelCache } from './services/hotelCache.js';
+ * 
+ * // Get cached hotels
+ * const hotels = hotelCache.get();
+ * 
+ * // Save to cache
+ * hotelCache.set(hotelsArray);
+ * 
+ * // Clear cache
+ * hotelCache.clear();
+ * 
+ * // Get statistics
+ * const stats = hotelCache.getStats();
+ */
 export const hotelCache = new HotelCache({
-    storageKey: 'afpesp_hotels_cache',
-    ttl: 24 * 60 * 60 * 1000 // 24 hours
+    storageKey: CACHE.KEYS.HOTEL_LIST,
+    ttl: TIME.CACHE.HOTEL_LIST
 });
 
 export default hotelCache;

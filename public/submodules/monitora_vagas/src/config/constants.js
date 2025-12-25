@@ -1,289 +1,234 @@
-// Constants used throughout the Trade Union Hotel Search Platform
-// Centralized location for all application constants
-
 /**
- * Trade Union configuration constants
+ * Application Constants
+ * Central location for all magic numbers and configuration values
+ * @version 1.0.0
  */
-export const UNIONS = {
-    AFPESP: {
-        id: 'afpesp',
-        name: 'AFPESP',
-        fullName: 'Associação dos Funcionários Públicos do Estado de São Paulo',
-        description: 'Associação dos servidores públicos estaduais de São Paulo',
-        website: 'https://www.afpesp.org.br',
-        searchEndpoint: '/turismo/disponibilidade',
-        icon: '🏛️',
-        active: true
+
+// ============================================================================
+// TIME CONSTANTS (in milliseconds)
+// ============================================================================
+
+export const TIME = {
+    // Base units
+    SECOND: 1000,
+    MINUTE: 60 * 1000,
+    HOUR: 60 * 60 * 1000,
+    DAY: 24 * 60 * 60 * 1000,
+
+    // API Timeouts
+    TIMEOUT: {
+        DEFAULT: 30 * 1000,           // 30 seconds
+        SEARCH: 60 * 1000,            // 1 minute for vacancy search
+        WEEKEND_SEARCH: 10 * 60 * 1000, // 10 minutes for weekend search
+    },
+
+    // Cache TTLs
+    CACHE: {
+        API_RESPONSE: 5 * 60 * 1000,  // 5 minutes for API responses
+        HOTEL_LIST: 24 * 60 * 60 * 1000, // 24 hours for hotel list
+    },
+
+    // Retry delays
+    RETRY: {
+        BASE_DELAY: 1000,             // 1 second base retry delay
+        MULTIPLIER: 2,                // Exponential backoff multiplier
+    },
+
+    // UI delays
+    UI: {
+        NOTIFICATION_DURATION: 2000,  // 2 seconds for notifications
+        DEBOUNCE: 300,                // 300ms debounce delay
+        THROTTLE: 1000,               // 1 second throttle delay
     }
 };
 
-/**
- * Hotel configuration constants
- */
-export const HOTELS = {
-    GUARUJA: {
-        id: 'guaruja',
-        name: 'Guarujá',
-        fullName: 'Hotel AFPESP Guarujá',
-        location: 'Praia do Guarujá, SP',
-        description: 'Hotel com vista para o mar na bela Praia do Guarujá',
-        type: 'beach',
-        amenities: ['Piscina', 'Praia', 'Restaurante', 'Wi-Fi'],
-        maxOccupancy: 4,
-        roomTypes: ['BLUES Luxo', 'Apartamento', 'Apartamento PcD']
+// ============================================================================
+// API CONSTANTS
+// ============================================================================
+
+export const API = {
+    // Base URLs (environment-specific, see environment.js)
+    MAX_RETRIES: 3,
+    MAX_CACHE_SIZE: 100,
+
+    // HTTP Status codes we handle
+    STATUS: {
+        OK: 200,
+        BAD_REQUEST: 400,
+        UNAUTHORIZED: 401,
+        FORBIDDEN: 403,
+        NOT_FOUND: 404,
+        TIMEOUT: 408,
+        RATE_LIMIT: 429,
+        SERVER_ERROR: 500,
     },
-    CAMPOS_JORDAO: {
-        id: 'campos-jordao',
-        name: 'Campos do Jordão',
-        fullName: 'Hotel AFPESP Campos do Jordão',
-        location: 'Campos do Jordão, SP',
-        description: 'Ambiente de montanha na Serra da Mantiqueira',
-        type: 'mountain',
-        amenities: ['Lareira', 'Trilhas', 'Restaurante', 'Wi-Fi'],
-        maxOccupancy: 3,
-        roomTypes: ['Triplo', 'Duplo', 'Chalé', 'Homem de Melo', 'Perdizes', 'Sumaré']
+
+    // Content types
+    CONTENT_TYPE: {
+        JSON: 'application/json',
+        FORM: 'application/x-www-form-urlencoded',
     }
 };
 
-/**
- * Search type constants
- */
-export const SEARCH_TYPES = {
-    WEEKEND: {
-        id: 'weekend',
-        name: 'Finais de Semana',
-        description: 'Busca automática por finais de semana consecutivos',
-        icon: '📅'
+// ============================================================================
+// CACHE CONSTANTS
+// ============================================================================
+
+export const CACHE = {
+    // Storage keys
+    KEYS: {
+        HOTEL_LIST: 'afpesp_hotels_cache',
+        USER_PREFERENCES: 'afpesp_user_prefs',
+        LOG_LEVEL: 'logLevel',
     },
-    SPECIFIC_DATES: {
-        id: 'specific-dates',
-        name: 'Datas Específicas',
-        description: 'Busca por datas específicas escolhidas pelo usuário',
-        icon: '🗓️'
+
+    // Storage limits
+    LIMITS: {
+        MAX_ENTRIES: 100,
+        MAX_SIZE_MB: 5,
     }
 };
 
-/**
- * Room type constants with capacity information
- */
-export const ROOM_TYPES = {
-    BLUES_LUXO: {
-        id: 'blues-luxo',
-        name: 'BLUES Luxo',
-        capacity: 3,
-        description: 'Quarto luxo com vista privilegiada'
-    },
-    TRIPLO: {
-        id: 'triplo',
-        name: 'Triplo',
-        capacity: 3,
-        description: 'Quarto para até 3 pessoas'
-    },
-    TRIPLO_LUXO: {
-        id: 'triplo-luxo',
-        name: 'Triplo Luxo',
-        capacity: 3,
-        description: 'Quarto triplo categoria luxo'
-    },
-    DUPLO: {
-        id: 'duplo',
-        name: 'Duplo',
-        capacity: 2,
-        description: 'Quarto para casal'
-    },
-    APARTAMENTO: {
-        id: 'apartamento',
-        name: 'Apartamento',
-        capacity: 4,
-        description: 'Apartamento completo'
-    },
-    APARTAMENTO_PCD: {
-        id: 'apartamento-pcd',
-        name: 'Apartamento PcD',
-        capacity: 4,
-        description: 'Apartamento adaptado para pessoa com deficiência'
-    },
-    CHALE: {
-        id: 'chale',
-        name: 'Chalé',
-        capacity: 4,
-        description: 'Chalé independente'
-    },
-    HOMEM_DE_MELO: {
-        id: 'homem-de-melo',
-        name: 'Homem de Melo',
-        capacity: 4,
-        description: 'Acomodação Homem de Melo'
-    },
-    PERDIZES: {
-        id: 'perdizes',
-        name: 'Perdizes',
-        capacity: 4,
-        description: 'Acomodação Perdizes'
-    },
-    SUMARE: {
-        id: 'sumare',
-        name: 'Sumaré',
-        capacity: 4,
-        description: 'Acomodação Sumaré'
-    }
-};
+// ============================================================================
+// UI CONSTANTS
+// ============================================================================
 
-/**
- * Search status constants
- */
-export const SEARCH_STATUS = {
-    IDLE: {
-        id: 'idle',
-        name: 'Aguardando',
-        description: 'Pronto para iniciar busca',
-        color: '#6c757d'
+export const UI = {
+    // Animation durations
+    ANIMATION: {
+        FAST: 150,
+        NORMAL: 300,
+        SLOW: 600,
     },
-    RUNNING: {
-        id: 'running',
-        name: 'Buscando',
-        description: 'Busca em andamento',
-        color: '#007bff'
-    },
-    SUCCESS: {
-        id: 'success',
-        name: 'Concluído',
-        description: 'Busca concluída com sucesso',
-        color: '#28a745'
-    },
-    ERROR: {
-        id: 'error',
-        name: 'Erro',
-        description: 'Erro durante a busca',
-        color: '#dc3545'
-    },
-    CANCELLED: {
-        id: 'cancelled',
-        name: 'Cancelado',
-        description: 'Busca cancelada pelo usuário',
-        color: '#ffc107'
-    }
-};
 
-/**
- * Date and time constants
- */
-export const DATE_CONSTANTS = {
-    // Weekend configuration
-    WEEKEND_START_DAY: 5, // Friday (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-    WEEKEND_END_DAY: 0,   // Sunday
-    WEEKEND_DURATION_DAYS: 3, // Friday to Sunday
-    
-    // Date formats
-    DISPLAY_DATE_FORMAT: 'DD/MM/YYYY',
-    API_DATE_FORMAT: 'YYYY-MM-DD',
-    SHORT_DATE_FORMAT: 'DD/MM',
-    
-    // Search limits
-    MIN_WEEKENDS: 1,
-    MAX_WEEKENDS: 12,
-    DEFAULT_WEEKENDS: 8,
-    
-    // Days of the week in Portuguese
-    DAYS_OF_WEEK: [
-        'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',
-        'Quinta-feira', 'Sexta-feira', 'Sábado'
-    ],
-    
-    // Months in Portuguese
-    MONTHS: [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-    ]
-};
-
-/**
- * API endpoints and URLs
- */
-export const API_ENDPOINTS = {
-    // Search endpoints
-    SEARCH_AVAILABILITY: '/search/availability',
-    SEARCH_WEEKEND: '/search/weekend',
-    SEARCH_SPECIFIC_DATES: '/search/specific-dates',
-    
-    // History endpoints
-    SEARCH_HISTORY: '/history',
-    SAVE_SEARCH: '/history/save',
-    DELETE_SEARCH: '/history/delete',
-    
-    // Configuration endpoints
-    CONFIG: '/config',
-    HOTELS: '/config/hotels',
-    ROOM_TYPES: '/config/room-types'
-};
-
-/**
- * HTTP status codes
- */
-export const HTTP_STATUS = {
-    OK: 200,
-    CREATED: 201,
-    BAD_REQUEST: 400,
-    UNAUTHORIZED: 401,
-    FORBIDDEN: 403,
-    NOT_FOUND: 404,
-    INTERNAL_SERVER_ERROR: 500,
-    SERVICE_UNAVAILABLE: 503
-};
-
-/**
- * Error messages
- */
-export const ERROR_MESSAGES = {
-    NETWORK_ERROR: 'Erro de conexão. Verifique sua internet e tente novamente.',
-    SERVER_ERROR: 'Erro interno do servidor. Tente novamente mais tarde.',
-    INVALID_DATES: 'Datas inválidas. Verifique os valores inseridos.',
-    NO_RESULTS: 'Nenhum resultado encontrado para os critérios especificados.',
-    SEARCH_TIMEOUT: 'A busca demorou mais que o esperado. Tente novamente.',
-    INVALID_HOTEL: 'Hotel selecionado inválido.',
-    EXCEEDED_LIMIT: 'Limite de buscas excedido. Tente novamente mais tarde.'
-};
-
-/**
- * Success messages
- */
-export const SUCCESS_MESSAGES = {
-    SEARCH_COMPLETED: 'Busca concluída com sucesso!',
-    SEARCH_SAVED: 'Busca salva no histórico.',
-    SEARCH_DELETED: 'Busca removida do histórico.',
-    DATA_EXPORTED: 'Dados exportados com sucesso.'
-};
-
-/**
- * UI constants
- */
-export const UI_CONSTANTS = {
-    // Animation durations (milliseconds)
-    ANIMATION_DURATION_FAST: 150,
-    ANIMATION_DURATION_NORMAL: 300,
-    ANIMATION_DURATION_SLOW: 500,
-    
     // Breakpoints (pixels)
-    BREAKPOINT_MOBILE: 768,
-    BREAKPOINT_TABLET: 1024,
-    BREAKPOINT_DESKTOP: 1200,
-    
-    // Z-index values
-    Z_INDEX_MODAL: 1000,
-    Z_INDEX_TOOLTIP: 1010,
-    Z_INDEX_DROPDOWN: 1020,
-    
-    // Pagination
-    DEFAULT_PAGE_SIZE: 10,
-    MAX_PAGE_SIZE: 100
+    BREAKPOINTS: {
+        MOBILE: 576,
+        TABLET: 768,
+        DESKTOP: 992,
+        WIDE: 1200,
+    },
+
+    // Z-index layers
+    Z_INDEX: {
+        DROPDOWN: 1000,
+        MODAL: 1050,
+        TOOLTIP: 1060,
+        NOTIFICATION: 1070,
+    }
 };
 
-/**
- * Regular expressions for validation
- */
-export const REGEX_PATTERNS = {
-    EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    DATE: /^\d{2}\/\d{2}\/\d{4}$/,
-    PHONE: /^\(\d{2}\)\s\d{4,5}-\d{4}$/,
-    CPF: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
+// ============================================================================
+// VALIDATION CONSTANTS
+// ============================================================================
+
+export const VALIDATION = {
+    // Guest count limits
+    GUESTS: {
+        MIN: 1,
+        MAX: 10,
+        DEFAULT: 2,
+    },
+
+    // Date range limits (in days)
+    DATE_RANGE: {
+        MIN_NIGHTS: 1,
+        MAX_NIGHTS: 30,
+        MAX_ADVANCE_BOOKING_DAYS: 365,
+    },
+
+    // Text field limits
+    TEXT: {
+        MIN_SEARCH_LENGTH: 2,
+        MAX_HOTEL_NAME_LENGTH: 100,
+    }
 };
+
+// ============================================================================
+// FEATURE FLAGS
+// ============================================================================
+
+export const FEATURES = {
+    ENABLE_CACHING: true,
+    ENABLE_RETRY: true,
+    ENABLE_ANALYTICS: false,
+    ENABLE_DEBUG_MODE: false,
+};
+
+// ============================================================================
+// ERROR CODES
+// ============================================================================
+
+export const ERROR_CODES = {
+    // Booking rule violations
+    BOOKING_RULE: {
+        WEEKEND_ONLY: 'WEEKEND_ONLY',
+        MIN_NIGHTS: 'MIN_NIGHTS',
+        MAX_ADVANCE: 'MAX_ADVANCE',
+        CLOSED_DATES: 'CLOSED_DATES',
+    },
+
+    // API errors
+    API_ERROR: {
+        NETWORK: 'NETWORK_ERROR',
+        TIMEOUT: 'TIMEOUT_ERROR',
+        INVALID_RESPONSE: 'INVALID_RESPONSE',
+        RATE_LIMIT: 'RATE_LIMIT_EXCEEDED',
+    },
+
+    // Client errors
+    CLIENT_ERROR: {
+        INVALID_INPUT: 'INVALID_INPUT',
+        MISSING_REQUIRED: 'MISSING_REQUIRED',
+        CACHE_FULL: 'CACHE_FULL',
+    }
+};
+
+// ============================================================================
+// DATE FORMATS
+// ============================================================================
+
+export const DATE_FORMATS = {
+    ISO_8601: 'YYYY-MM-DD',           // API format
+    DISPLAY_SHORT: 'DD/MM/YYYY',      // Brazilian format
+    DISPLAY_LONG: 'DD [de] MMMM [de] YYYY',
+    TIME_24H: 'HH:mm',
+    DATETIME: 'DD/MM/YYYY HH:mm',
+};
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Convert time constant to human readable string
+ * @param {number} ms - Time in milliseconds
+ * @returns {string} Human readable time
+ */
+export function formatDuration(ms) {
+    if (ms < TIME.SECOND) return `${ms}ms`;
+    if (ms < TIME.MINUTE) return `${Math.round(ms / TIME.SECOND)}s`;
+    if (ms < TIME.HOUR) return `${Math.round(ms / TIME.MINUTE)}min`;
+    if (ms < TIME.DAY) return `${Math.round(ms / TIME.HOUR)}h`;
+    return `${Math.round(ms / TIME.DAY)}d`;
+}
+
+/**
+ * Validate if a value is within min/max range
+ * @param {number} value - Value to validate
+ * @param {number} min - Minimum value
+ * @param {number} max - Maximum value
+ * @returns {boolean} True if valid
+ */
+export function inRange(value, min, max) {
+    return value >= min && value <= max;
+}
+
+/**
+ * Get timeout value based on operation type
+ * @param {string} type - Operation type ('default', 'search', 'weekendSearch')
+ * @returns {number} Timeout in milliseconds
+ */
+export function getTimeout(type = 'default') {
+    return TIME.TIMEOUT[type.toUpperCase()] || TIME.TIMEOUT.DEFAULT;
+}

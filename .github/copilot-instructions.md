@@ -129,15 +129,8 @@ mpbarbosa_site/
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
 │   ├── pull_all_submodules.sh  # Update all submodules
 │   ├── push_all_submodules.sh  # Deploy submodule changes
-│   ├── cleanup_old_folders.sh  # Automated cleanup of old workflow/backlog folders
+│   ├── cleanup_old_folders.sh  # Automated cleanup utilities
 │   ├── fix_documentation_consistency.sh  # Documentation consistency fixes
-│   ├── workflow/               # Modular workflow architecture (v2.0.0)
-│   │   ├── execute_tests_docs_workflow.sh  # Main workflow script (4,740 lines)
-│   │   ├── lib/               # 13 library modules
-│   │   ├── steps/             # 13 step modules (step_00 through step_12)
-│   │   ├── backlog/           # Workflow execution history
-│   │   ├── logs/              # Workflow execution logs
-│   │   └── summaries/         # Step execution summaries
 │   └── README.md              # Shell scripts documentation
 ├── public/                     # Deployment staging directory (sync_to_public.sh output)
 │   ├── index.html             # Synchronized main page
@@ -303,47 +296,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 # - WorkingDirectory and User must be configured for production environment
 ```
 
-#### Tests & Documentation Workflow Automation (v2.0.0)
-```bash
-# Full automated workflow (13 steps: Step 0-12)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
 
-# Preview without executing
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
-
-# Automatic mode (CI/CD compatible, no prompts)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
-
-# Interactive mode with confirmations (default)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --interactive
-
-# Features:
-# - Complete tests & documentation update automation
-# - AI-powered analysis with GitHub Copilot CLI integration
-# - Copilot CLI authentication validation with graceful degradation
-# - 13 workflow steps (Step 0-12) with specialized AI personas
-# - AI-powered conventional commit message generation (Step 11)
-# - Markdown linting automation with AI assistance (Step 12)
-# - Automatic documentation saving to proper folders (Step 1)
-# - Two-phase validation (automated + AI-powered)
-# - Smart triggering (auto/interactive/optional modes)
-# - Comprehensive error handling with colored output
-# - Progress tracking and workflow state management
-#
-# Architecture (v2.0.0 - Complete Modularization ✅):
-# - Fully modularized: 27 modules (14 libraries [13 .sh + ai_helpers.yaml] + 13 steps)
-# - Main workflow script: 4,740 lines with module loading architecture
-# - Library modules: 14 files (ai_helpers.sh + ai_helpers.yaml, backlog, colors, config,
-#   file_operations, git_cache, metrics_validation, performance, session_manager, step_execution, summary, utils, validation)
-# - Step modules: 13 files (step_00 through step_12)
-# - Total modular code: 6,993 lines extracted from monolithic architecture
-# - YAML configuration system: Externalized AI prompt templates (762 lines)
-# - Professional separation of concerns with single responsibility principle
-# - Comprehensive automated test coverage (54 tests, 100% pass rate)
-# - Reusable components across scripts
-# - Module Documentation: shell_scripts/workflow/README.md
-# - Completion Report: docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md
-```
 
 #### Submodule Management
 ```bash
@@ -486,16 +439,7 @@ The project uses npm overrides to resolve transitive dependency vulnerabilities:
   - Brands, Regular, and Solid icon sets
 - **jQuery 3.x**: JavaScript library (bundled in assets/js/jquery.min.js)
 
-### Workflow Automation Tools
-- `execute_tests_docs_workflow.sh` (v2.0.0) - AI-powered tests & documentation automation
-  - 13-step workflow for comprehensive project maintenance
-  - GitHub Copilot CLI integration with specialized personas
-  - Conventional commit message generation
-  - Smart modes: interactive, auto, dry-run
-  - **Modular architecture**: 26 modules (13 libraries + 13 steps)
-  - **6,993 lines modularized** for professional separation of concerns
-  - **YAML configuration system**: Externalized AI prompt templates (762 lines)
-  - See: `shell_scripts/workflow/README.md` for module documentation
+
 
 ## Modular Architecture Excellence
 
@@ -584,6 +528,19 @@ The project now maintains both legacy (`src/`) and modern (`public/`) directorie
 - Reduces redundant API calls
 - Improves application performance
 
+**Logger Service** (`logger.js`):
+- Centralized logging with environment-aware log levels
+- Singleton pattern for consistent logging across application
+- Production mode: ERROR level only (suppresses debug/info/warn logs)
+- Development mode: DEBUG level with localStorage persistence
+- Log level management: DEBUG, INFO, WARN, ERROR, NONE
+- Formatted log messages with timestamps and context
+- Performance timing with `time()` and `timeEnd()` methods
+- Log grouping for related messages (collapsed or expanded)
+- Emoji logging for better development visibility
+- Future-ready error tracking integration (Sentry, Rollbar)
+- Global `setLogLevel()` function exposed in development
+
 #### CSS Architecture (`css/`)
 
 **Global Styles** (`global/`):
@@ -627,12 +584,32 @@ Comprehensive third-party library bundling:
 
 #### JavaScript Module Architecture
 
+**hotelSearch.js** - Main Search Orchestration:
+- HotelSearchOrchestrator class for coordinating search operations
+- Integration with BuscaVagasAPIClient for backend communication
+- Search lifecycle state management with SearchLifecycleStateMachine
+- Guest filtering integration with GuestNumberFilter
+- UI state management and result rendering
+- Error handling and user feedback
+- Cache-aware search with hotelCache service
+- Support for single weekend and multi-weekend searches
+
+**searchLifecycleState.js** - Search State Machine:
+- SearchLifecycleStateMachine class for search flow control
+- State management: IDLE → LOADING → RESULTS → ERROR
+- State transition validation and lifecycle hooks
+- Event-driven architecture for state changes
+- Integration with filter state management
+- Tracks search initiation and completion
+- Enables/disables filters based on search lifecycle
+
 **guestCounter.js** (FR-004A - Filter State Management):
 - GuestFilterStateManager class for filter enable/disable control
 - Filter disabled on page load, enabled after first search
 - Visual feedback with CSS state classes (filter-enabled/disabled)
 - Interactive element control (readonly attribute management)
 - Plus/minus button handlers with filter state validation
+- Integration with searchLifecycleState for state synchronization
 
 **guestNumberFilter.js** (FR-004B - Client-Side Filtering):
 - GuestNumberFilter class for vacancy filtering logic
@@ -640,6 +617,13 @@ Comprehensive third-party library bundling:
 - applyFilter() method: Hide/show vacancies based on guest count
 - Filter statistics tracking (visible/hidden hotels and vacancies)
 - Graceful degradation: Show vacancies without capacity info
+- Real-time filtering as guest count changes
+
+**global.js** - Global Utilities:
+- Shared utility functions used across modules
+- DOM manipulation helpers
+- Common validation functions
+- Date formatting utilities
 
 #### Integration with Busca Vagas Backend
 - **Backend Repository**: `../busca_vagas` (sibling project)
@@ -821,37 +805,9 @@ Critical deployment and maintenance patterns:
 
 # Legacy deployment v2.0.0 (uses public directory as source, requires sync_to_public.sh step1 first)
 sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
-
-# Tests & Documentation workflow automation (AI-powered)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --interactive  # Default mode
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto        # CI/CD mode
-
-# Modular workflow architecture (v2.0.0 - Complete Modularization)
-# See: shell_scripts/workflow/README.md for module documentation
-# 26 modules total:
-# - 13 libraries: ai_helpers.sh, ai_helpers.yaml (YAML config), backlog, colors, config,
-#                 file_operations, git_cache, performance, session_manager, step_execution,
-#                 summary, utils, validation
-# - 13 steps: step_00 through step_12 (Pre-Analysis through Markdown Linting)
-# Main workflow script: 4,740 lines with module loading architecture
-# Total modular code: 6,993 lines (excluding test/utility scripts)
-# YAML configuration: 762 lines of externalized AI prompt templates
-# Workflow locations: backlog/, logs/, summaries/ all in shell_scripts/workflow/
-#
-# Recent Improvements (December 15, 2025):
-# - Increased output limits for better debugging visibility:
-#   - Step 7 (Test Execution): Test output from 100 → 200 lines
-#   - Step 8 (Dependencies): Production deps from 20 → 50, outdated from 10 → 20 lines
-#   - Step 9 (Code Quality): File preview from 30 → 50 lines
-# - Enhanced AI context with more comprehensive data for analysis
-# - Auto-mode improvements: Automatic issue extraction from Copilot logs in Step 1
-#   - Auto-parses structured issues (Critical/High/Medium/Low/Recommendations)
-#   - Fallback to summary extraction when structured output unavailable
-#   - Eliminates manual copy-paste in CI/CD workflows
 ```
 
-**Key Patterns**:
+**Key Deployment Patterns**:
 - Always use `--dry-run` first to preview operations before executing
 - For deployment: Use `sync_to_public.sh --step1` to prepare files in /public directory
 - Step 2 options: Either `sync_to_public.sh --step2` or legacy `deploy_to_webserver.sh` (v2.0.0)
@@ -862,87 +818,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 - Legacy script requires sudo for web server directory access
 - Git validation updated: deploy_to_webserver checks project root, not source directory
 
-### AI-Powered Workflow Automation Best Practices
 
-The `execute_tests_docs_workflow.sh` script demonstrates professional AI integration patterns:
-
-#### AI Persona Selection Strategy
-- **Match personas to task domain**: Each workflow step uses specialized expertise (Git Workflow Specialist, DevOps Engineer, QA Automation Specialist)
-- **Combine complementary skills**: Complex tasks benefit from dual personas (e.g., "Git Workflow Specialist + Technical Communication Expert")
-- **Provide comprehensive context**: AI quality depends on repository state, diff analysis, and categorized changes
-
-#### Modern Copilot CLI Integration
-- **Authentication Validation**: Automatic checks for Copilot CLI authentication status
-- **Multiple Auth Methods**: Supports COPILOT_GITHUB_TOKEN, GH_TOKEN, GITHUB_TOKEN, or gh CLI
-- **Graceful Error Handling**: Clear guidance when authentication fails
-- **Use `copilot -p` for interactive workflows**: Embrace the conversation UI rather than fighting it
-- **Copy-paste workflow**: Let AI generate in its UI, then user copies/pastes the result (interactive mode)
-- **Auto-extraction workflow**: Automatically parse structured issues from Copilot logs (auto mode)
-- **Smart triggering**: Auto mode with automatic parsing, Interactive mode with manual input, Optional mode provides choice
-- **Graceful degradation**: Always provide fallbacks when Copilot CLI unavailable
-
-#### Two-Phase Validation Architecture
-All AI-enhanced steps follow this pattern:
-1. **Phase 1 - Automated Detection**: Fast checks for common issues (4-9 automated checks per step)
-2. **Phase 2 - AI-Powered Analysis**: Deep analysis with specialized persona prompts (5+ analysis categories)
-
-Example from Step 11 (Git Finalization):
-- **Phase 1**: Git state analysis, change enumeration, diff statistics, commit type inference
-- **Phase 2**: AI-powered conventional commit message generation with comprehensive git context
-
-#### Conventional Commit Message Generation (Step 11)
-Step 11 showcases AI-assisted git best practices with complete modular implementation:
-
-**Phase 1 - Automated Git Analysis** (4 checks):
-- Repository state analysis (branch, commits ahead/behind)
-- Change enumeration (modified, staged, untracked, deleted files)
-- Diff statistics and file categorization (docs, tests, scripts, code)
-- Commit type inference based on change patterns
-
-**Phase 2 - AI Commit Message Generation** (5 tasks):
-- Conventional commit message crafting (type, scope, subject)
-- Semantic context integration with workflow metadata
-- Change impact description and file change statistics
-- Breaking change detection and documentation
-- Professional commit body & footer generation
-
-**AI Integration Features**:
-- Git Workflow Specialist + Technical Communication Expert persona
-- Interactive copy-paste workflow from Copilot UI
-- Auto-mode with intelligent default messages and automatic issue extraction
-- Conventional commits standard compliance
-- Semantic versioning best practices integration
-
-**Module**: `shell_scripts/workflow/steps/step_11_git.sh` (417 lines)
-
-#### Step 1 - Documentation Update Enhancements
-Step 1 now includes automatic documentation saving, version consistency management, and improved AI integration:
-
-**Auto-Save Documentation Feature**:
-- `determine_doc_folder()` - Intelligent folder detection based on file path
-- `save_ai_generated_docs()` - Automatic saving to proper location
-- Supports docs/, shell_scripts/, src/, and root directory files
-- Creates target folders automatically if they don't exist
-- Fallback to backlog for manual review if auto-save fails
-
-**Automatic Version Consistency Updates**:
-- Detects version mismatches across documentation files
-- Automatically updates version references in README.md and .github/copilot-instructions.md
-- Uses sed with backup (.bak) for safe automated updates
-- Reports success/failure for each file updated
-- Saves version inconsistencies to backlog for tracking
-
-**AI Integration**:
-- Copilot CLI authentication validation before execution
-- Multiple authentication method support
-- Clear error messages with authentication instructions
-- Graceful fallback when CLI unavailable
-- **Auto-mode issue extraction**: Automatically parses structured issues from Copilot logs
-  - Extracts Critical/High/Medium/Low priority issues and recommendations
-  - Falls back to summary extraction when structured output unavailable
-  - Saves issues to backlog automatically in CI/CD workflows
-
-**Module**: `shell_scripts/workflow/steps/step_01_documentation.sh` (417 lines with auto-save and version management)
 
 ## 📖 Related Documentation References
 

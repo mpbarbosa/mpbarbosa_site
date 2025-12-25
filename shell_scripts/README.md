@@ -37,12 +37,6 @@ What do you need to do?
 │        When: Changes made to git submodule content
 │        Note: Sibling projects (monitora_vagas, busca_vagas) managed independently
 │
-├─ 🧪 RUN TESTS & UPDATE DOCS?
-│  └─ Run: ./shell_scripts/workflow/execute_tests_docs_workflow.sh
-│     Purpose: 13-step AI-powered test & documentation workflow
-│     When: After significant changes, before commits
-│     Modes: --interactive (default), --auto (CI/CD with auto-extraction), --dry-run (preview)
-│
 ├─ 🔗 VALIDATE SECURITY?
 │  └─ Run: ./shell_scripts/validate_external_links.sh
 │     Purpose: Check external links for security attributes
@@ -67,7 +61,6 @@ What do you need to do?
 | Start work session | `./shell_scripts/pull_all_submodules.sh` | Daily |
 | Test deployment | `./shell_scripts/sync_to_public.sh --step1 --dry-run` | Before production |
 | Deploy to production | `./shell_scripts/sync_to_public.sh --both-steps` | Weekly/as needed |
-| Run tests & docs | `./shell_scripts/workflow/execute_tests_docs_workflow.sh` | Before major commits |
 | Validate links | `./shell_scripts/validate_external_links.sh --fix` | After link changes |
 | Better AI prompts | `./shell_scripts/copilot_with_enhanced_prompt.sh "task"` | As needed |
 
@@ -85,11 +78,9 @@ graph TD
         C --> D{What Changed?}
 
         D -->|External Links| E[validate_external_links.sh --fix]
-        D -->|Code/Tests| F[execute_tests_docs_workflow.sh]
         D -->|Submodule Content| G[push_all_submodules.sh]
 
         E --> H[Git Commit]
-        F --> H
         G --> H
     end
 
@@ -127,13 +118,10 @@ graph TD
     subgraph "Script Dependencies"
         T2[copilot_with_enhanced_prompt.sh] -.depends on.-> S2[enhance_prompt.sh]
         D2[deploy_to_webserver.sh] -.uses.-> SY[sync_to_public.sh step1]
-        E2[execute_tests_docs_workflow.sh] -.can call.-> S2
-        E2 -.can call.-> T2
     end
 
     style B fill:#90EE90
     style E fill:#FFD700
-    style F fill:#87CEEB
     style M fill:#FF6B6B
     style N fill:#FF6B6B
     style O fill:#FF6B6B
@@ -159,10 +147,9 @@ graph TD
 4. **🔗 Script Dependencies** (Dotted lines): Inter-script relationships
    - `copilot_with_enhanced_prompt.sh` depends on `enhance_prompt.sh`
    - `deploy_to_webserver.sh` uses output from `sync_to_public.sh --step1`
-   - `execute_tests_docs_workflow.sh` can invoke AI prompt scripts
 
 **Key Decision Points**:
-- 🔶 **What Changed?** → Determines which validation/testing to run
+- 🔶 **What Changed?** → Determines which validation to run
 - 🔶 **Deploy Where?** → Chooses deployment path (test/production/legacy)
 - 🔶 **Approve?** → Manual review gate before production
 - 🔶 **Just Enhance or Execute?** → AI workflow selection
@@ -186,18 +173,17 @@ graph TD
     ┌────────────────┐
     │  What Changed? │
     └────────┬───────┘
-         ┌───┴───┬──────────┬──────────┐
-         ▼       ▼          ▼          ▼
-    External  Code/   Submodule   Nothing
-     Links   Tests    Content
-         │       │          │
+         ┌───┴───┬──────────┐
          ▼       ▼          ▼
-validate_  execute_  push_all_
-external_  tests_    submodules.sh
-links.sh   docs_
-           workflow.sh
-         │       │          │
-         └───┬───┴──────────┘
+    External Submodule  Nothing
+     Links   Content
+         │       │
+         ▼       ▼
+validate_  push_all_
+external_  submodules.sh
+links.sh
+         │       │
+         └───┬───┘
              ▼
         Git Commit
              │
@@ -281,8 +267,6 @@ public.sh        │ ✅ PRODUCTION │
 
 copilot_with_enhanced_prompt.sh ───depends on──► enhance_prompt.sh
 deploy_to_webserver.sh ─────────uses output──► sync_to_public.sh (step1)
-execute_tests_docs_workflow.sh ──can invoke──► enhance_prompt.sh
-                                ──can invoke──► copilot_with_enhanced_prompt.sh
 ```
 
 ---
@@ -300,7 +284,6 @@ chmod +x shell_scripts/pull_all_submodules.sh
 chmod +x shell_scripts/push_all_submodules.sh
 chmod +x shell_scripts/sync_to_public.sh
 chmod +x shell_scripts/deploy_to_webserver.sh
-chmod +x shell_scripts/workflow/execute_tests_docs_workflow.sh
 chmod +x shell_scripts/validate_external_links.sh
 chmod +x shell_scripts/enhance_prompt.sh
 chmod +x shell_scripts/copilot_with_enhanced_prompt.sh
@@ -327,7 +310,6 @@ ls -l shell_scripts/*.sh
 | `push_all_submodules.sh` | Push changes to submodules | ✅ Yes |
 | `sync_to_public.sh` | Two-step deployment | ✅ Yes |
 | `deploy_to_webserver.sh` | Legacy nginx deployment | ✅ Yes (requires sudo) |
-| `execute_tests_docs_workflow.sh` | AI-powered test & docs | ✅ Yes |
 | `validate_external_links.sh` | Link security validation | ✅ Yes |
 | `enhance_prompt.sh` | AI prompt enhancement | ✅ Yes |
 | `copilot_with_enhanced_prompt.sh` | Enhanced Copilot execution | ✅ Yes |
@@ -339,7 +321,7 @@ ls -l shell_scripts/*.sh
 ### 🧹 Maintenance & Cleanup Scripts
 
 #### `cleanup_old_folders.sh`
-**Purpose**: Clean up workflow output folders, keeping only the last 15 subfolders
+**Purpose**: Clean up old backup and temporary folders
 
 **Features**:
 - ✅ Manages backlog, logs, and summaries directories
@@ -817,217 +799,6 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 
 ---
 
-### 📋 `execute_tests_docs_workflow.sh` (v2.0.0)
-**Purpose**: AI-powered automation for complete tests and documentation update workflow
-
-**Architecture Status**: 🎉 **Complete Modularization** (v2.0.0)
-- ✅ **26 extracted modules**: 13 library modules + 13 step modules
-- ✅ **Main script**: 4,740 lines with module loading architecture
-- ✅ **Total modular code**: 6,993 lines
-- ✅ **Single responsibility**: Each module focused on specific domain
-- ✅ **Testable components**: 54 automated tests with 100% pass rate
-
-**Features**:
-- ✅ **13-step comprehensive workflow** from analysis to git finalization
-- ✅ **AI-powered analysis** using GitHub Copilot CLI with 12 specialized personas
-- ✅ **Copilot CLI authentication validation**: Automatic checks with multiple auth method support
-- ✅ **Step 1 auto-save documentation**: Intelligent folder detection and automatic file saving with fallback to backlog
-- ✅ **Automatic version consistency updates**: Detects and fixes version mismatches across documentation files (README.md, .github/copilot-instructions.md)
-- ✅ **Two-phase validation architecture**: Automated detection + AI-powered deep analysis
-- ✅ **Conventional commit generation**: AI-assisted commit message creation with git context
-- ✅ **Smart triggering modes**: Auto, Interactive, and Dry-run
-- ✅ **Progress tracking**: Workflow state management with completion status
-- ✅ **Comprehensive validation**: Documentation consistency, test coverage, dependencies
-- ✅ **Temporary file cleanup**: Automatic cleanup with trap handlers
-- ✅ **Colored output**: Professional progress indicators and status messages
-
-**Usage**:
-```bash
-# Full automated workflow (interactive mode, default)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh
-
-# Preview without executing
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run
-
-# Automatic mode (CI/CD compatible, no prompts)
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --auto
-
-# Combined for safe testing
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --dry-run --auto
-
-# Show help and options
-./shell_scripts/workflow/execute_tests_docs_workflow.sh --help
-```
-
-**Workflow Steps**:
-1. **Step 0**: Pre-Analysis - Git status, commits, change scope definition
-2. **Step 1**: Update Documentation - AI-powered documentation specialist analysis
-3. **Step 2**: Check Consistency - AI-powered cross-reference and version validation
-4. **Step 3**: Validate Script References - AI-powered DevOps documentation expert
-5. **Step 4**: Validate Directory Structure - AI-powered software architect review
-6. **Step 5**: Review Existing Tests - AI-powered QA engineer analysis
-7. **Step 6**: Generate New Tests - AI-powered TDD expert test generation
-8. **Step 7**: Execute Test Suite - AI-powered CI/CD specialist execution & analysis (output: 200 lines)
-9. **Step 8**: Validate Dependencies - AI-powered package management specialist (deps: 50, outdated: 20)
-10. **Step 9**: Code Quality Validation - AI-powered software quality engineer (preview: 50 lines)
-11. **Step 10**: Context Analysis - AI-powered technical project manager summary
-12. **Step 11**: Git Finalization - AI-powered conventional commit message generation
-13. **Step 12**: Markdown Linting - AI-assisted markdown validation with mdl
-
-**Recent Improvements** (December 15, 2025):
-- 📊 **Enhanced Output Limits**: Increased visibility for AI analysis
-  - Step 7: Test output increased from 100 → 200 lines
-  - Step 8: Production dependencies from 20 → 50, outdated packages from 10 → 20 lines
-  - Step 9: File preview from 30 → 50 lines
-- 🧠 **Better AI Context**: More comprehensive debugging data for deeper analysis
-
-**AI-Enhanced Features**:
-- **12 Specialized AI Personas**: Each step uses domain-expert personas (Git Workflow Specialist, DevOps Engineer, QA Automation Engineer, etc.)
-- **Modern Copilot CLI Integration**: Uses `copilot -p` for interactive persona-based analysis
-- **Conventional Commits**: Step 11 generates professional commit messages following conventional commit standards
-- **Graceful Fallbacks**: Works without Copilot CLI installed (automated validation continues)
-- **Context-Rich Prompts**: AI receives comprehensive repository state, diff analysis, and categorized changes
-
-**Best Practices Applied** (v2.0.0):
-- ✓ Interactive `copilot -p` workflow with copy-paste for AI output
-- ✓ Auto-mode skip for interactive AI features (CI/CD compatibility)
-- ✓ Temporary file management with automatic cleanup
-- ✓ Comprehensive git context analysis for commit messages
-- ✓ Two-phase architecture: Automated + AI-powered validation
-- ✓ **Modular architecture**: Professional separation of concerns
-- ✓ **Reusable components**: Libraries shared across multiple scripts
-- ✓ **Testable modules**: Comprehensive test coverage with Jest
-
-**Modular Architecture** (v2.0.0 - Complete):
-The workflow script now uses a fully modularized architecture with automatic module loading:
-
-- **Main Workflow Script**: 4,740 lines
-  - Module loading system for libraries and steps
-  - Execution orchestration and flow control
-  - Progress tracking and workflow state management
-
-- **13 Library Modules**:
-  - `lib/config.sh` - Configuration and constants
-  - `lib/colors.sh` - ANSI color definitions
-  - `lib/utils.sh` - Utility functions
-  - `lib/git_cache.sh` - Git state caching
-  - `lib/validation.sh` - Pre-flight checks
-  - `lib/backlog.sh` - Issue tracking
-  - `lib/summary.sh` - Summary generation
-  - `lib/ai_helpers.sh` - AI integration
-  - `lib/file_operations.sh` - File management utilities
-  - `lib/performance.sh` - Performance optimization
-  - `lib/session_manager.sh` - Session state management
-  - `lib/step_execution.sh` - Step execution framework
-  - `lib/metrics_validation.sh` - Project metrics validation and consistency checks
-
-- **13 Step Modules** (step_00 through step_12):
-  - `steps/step_00_analyze.sh` - Pre-workflow change analysis
-  - `steps/step_01_documentation.sh` - Documentation updates
-  - `steps/step_02_consistency.sh` - Consistency analysis
-  - `steps/step_03_script_refs.sh` - Script reference validation
-  - `steps/step_04_directory.sh` - Directory structure validation
-  - `steps/step_05_test_review.sh` - Test review
-  - `steps/step_06_test_gen.sh` - Test generation
-  - `steps/step_07_test_exec.sh` - Test execution
-  - `steps/step_08_dependencies.sh` - Dependency validation
-  - `steps/step_09_code_quality.sh` - Code quality validation
-  - `steps/step_10_context.sh` - Context analysis
-  - `steps/step_11_git.sh` - **AI-powered git finalization** ⭐
-  - `steps/step_12_markdown_lint.sh` - **Markdown linting validation** ⭐
-
-**Total Modular Code**: 6,993 lines across 26 modules
-
-**Related Documentation**:
-- Module Documentation: `/shell_scripts/workflow/README.md`
-- Development Plan: `/docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md`
-- Phase 1 Completion: `/docs/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md`
-- Phase 2 Completion: `/docs/WORKFLOW_MODULARIZATION_PHASE2_COMPLETION.md`
-- Phase 3 Completion: `/docs/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md` ⭐
-- Step 11 Enhancement: `/docs/STEP11_GIT_FINALIZATION_ENHANCEMENT.md`
-- Workflow Specification: `/prompts/tests_documentation_update_enhanced.txt`
-
-**Workflow Output Directories**:
-
-The workflow automation script generates three types of outputs in dedicated directories:
-
-#### 📊 `/shell_scripts/workflow/logs/` - Raw Execution Logs (v1.5.0)
-**Purpose**: Complete execution traces and AI session logs
-
-**Contents**:
-- `workflow_YYYYMMDD_HHMMSS/` - Individual workflow run logs
-  - `step{N}_copilot_*.log` - GitHub Copilot CLI interaction logs for AI-enhanced steps
-  - `workflow_execution.log` - Main script execution trace (optional)
-
-**Use Cases**:
-- Debugging workflow script behavior
-- Auditing AI-powered analysis sessions
-- Troubleshooting GitHub Copilot CLI integration
-- Performance monitoring and optimization
-
-**Retention**: 30 days (raw debugging data, high volume)
-
-**Documentation**: `/shell_scripts/workflow/logs/README.md`
-
-#### 📋 `/shell_scripts/workflow/backlog/` - Detailed Issue Reports (v1.3.0)
-**Purpose**: Comprehensive technical findings and validation output
-
-**Contents**:
-- `workflow_YYYYMMDD_HHMMSS/` - Individual workflow run reports
-  - `WORKFLOW_SUMMARY.md` - Overview of entire run
-  - `step{N}_{description}.md` - Detailed findings with raw output per step
-
-**Use Cases**:
-- Detailed troubleshooting and debugging
-- Finding specific file/line references for issues
-- Understanding validation tool output
-- Tracking issue resolution progress
-
-**Retention**: 90 days (detailed history for recurring problems)
-
-**Documentation**: `/shell_scripts/workflow/backlog/README.md`
-
-#### 📝 `/shell_scripts/workflow/summaries/` - High-Level Conclusions (v1.4.0)
-**Purpose**: Quick-reference status summaries for rapid review
-
-**Contents**:
-- `workflow_YYYYMMDD_HHMMSS/` - Individual workflow run summaries
-  - `step{N}_{description}_summary.md` - Concise 2-3 sentence conclusions with status (✅/⚠️/❌)
-
-**Use Cases**:
-- Quick status checks for team updates
-- Daily standup reports
-- Code review preparation
-- CI/CD pipeline status parsing
-
-**Retention**: Indefinite (lightweight, high value for trend analysis)
-
-**Documentation**: `/shell_scripts/workflow/summaries/README.md`
-
-#### Output Directory Comparison
-
-| Directory | Version | Purpose | Audience | Length | Retention |
-|-----------|---------|---------|----------|--------|-----------|
-| **shell_scripts/workflow/logs/** | v1.5.0 | Raw traces & AI sessions | Developers (debug) | Full logs | 30 days |
-| **shell_scripts/workflow/backlog/** | v1.3.0 | Detailed reports | Developers (fixing) | Full reports | 90 days |
-| **shell_scripts/workflow/summaries/** | v1.4.0 | Quick conclusions | Managers (overview) | 2-3 sentences | Indefinite |
-
-#### Version Evolution Timeline
-
-- **v1.2.0** (Nov 4, 2025): Initial AI-powered workflow automation
-- **v1.3.0** (Nov 5, 2025): Added `/shell_scripts/workflow/backlog/` for issue tracking
-- **v1.4.0** (Nov 6, 2025): Added `/shell_scripts/workflow/summaries/` for quick-reference conclusions
-- **v1.5.0** (Nov 9, 2025): Added `/shell_scripts/workflow/logs/` for execution traces + performance optimization
-
-#### Quick Reference: Which Directory to Use?
-
-**For Quick Status**: → `/shell_scripts/workflow/summaries/` (2-3 sentence conclusions, ✅/⚠️/❌ status)
-**For Debugging**: → `/shell_scripts/workflow/logs/` (raw execution traces, AI session logs)
-**For Fixing Issues**: → `/shell_scripts/workflow/backlog/` (detailed findings, file references, raw tool output)
-**For Team Updates**: → `/shell_scripts/workflow/summaries/` (lightweight, easy to share)
-**For Trend Analysis**: → `/shell_scripts/workflow/summaries/` (kept indefinitely, compare across runs)
-
----
 
 ### ✅ `validate_external_links.sh`
 **Purpose**: Validates that all external links follow the security policy of opening in new tabs with proper attributes
@@ -1465,7 +1236,6 @@ When contributing to these scripts:
   - **Markdown Linting**: Comprehensive `.mdlrc` configuration for AI-generated documentation
   - **Node.js Version Lock**: v25.2.1 with nvm and fnm compatibility
   - **Documentation Expansion**: 7 new guides (Dependabot, Markdown Linting, Selenium E2E, Test Environment, Naming Conventions)
-  - **Workflow Enhancements**: AI-powered Step 11 (Git Finalization) and Step 12 (Markdown Linting) improvements
 - **v1.0.0** (October 27, 2025): Initial release with full hierarchical submodule support
   - **Features**: Pull/push scripts with proper order, stash handling, comprehensive logging
 
