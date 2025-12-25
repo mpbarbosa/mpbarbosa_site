@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { execSync, spawn } from 'child_process';
+import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,7 +19,7 @@ const checkScriptExecutable = (scriptPath) => {
   try {
     const stats = fs.statSync(scriptPath);
     return stats.isFile() && (stats.mode & 0o111) !== 0;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -40,10 +40,10 @@ describe('Shell Scripts Functionality', () => {
         'sync_to_public.sh',
         'pull_all_submodules.sh',
         'push_all_submodules.sh',
-        'README.md'
+        'README.md',
       ];
 
-      requiredScripts.forEach(script => {
+      requiredScripts.forEach((script) => {
         const scriptPath = path.join(shellScriptsDir, script);
         expect(fs.existsSync(scriptPath)).toBe(true);
       });
@@ -54,10 +54,10 @@ describe('Shell Scripts Functionality', () => {
         'deploy_to_webserver.sh',
         'sync_to_public.sh',
         'pull_all_submodules.sh',
-        'push_all_submodules.sh'
+        'push_all_submodules.sh',
       ];
 
-      executableScripts.forEach(script => {
+      executableScripts.forEach((script) => {
         const scriptPath = path.join(shellScriptsDir, script);
         if (fs.existsSync(scriptPath)) {
           expect(checkScriptExecutable(scriptPath)).toBe(true);
@@ -76,7 +76,7 @@ describe('Shell Scripts Functionality', () => {
 
       const content = fs.readFileSync(deployScript, 'utf8');
       expect(content.startsWith('#!/bin/bash')).toBe(true);
-      
+
       // Check for essential functions
       expect(content).toContain('create_backup');
       expect(content).toContain('deploy_files');
@@ -112,7 +112,7 @@ describe('Shell Scripts Functionality', () => {
       // Test dry-run mode (should not make any changes)
       const child = spawn('bash', [deployScript, '--dry-run'], {
         cwd: projectRoot,
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
 
       let stdout = '';
@@ -129,11 +129,11 @@ describe('Shell Scripts Functionality', () => {
       child.on('close', (code) => {
         // Dry-run should complete without errors or with controlled exit
         expect(code === 0 || code === 1).toBe(true); // 1 is acceptable for dry-run validation
-        
+
         // Should contain dry-run indicators
         const output = stdout + stderr;
         expect(output.toLowerCase()).toMatch(/dry.?run|would|simulation|preview/);
-        
+
         done();
       });
 
@@ -155,7 +155,7 @@ describe('Shell Scripts Functionality', () => {
 
       const content = fs.readFileSync(syncScript, 'utf8');
       expect(content.startsWith('#!/bin/bash')).toBe(true);
-      
+
       // Check for essential functions
       expect(content).toContain('copy_index_html');
       expect(content).toContain('copy_css_assets');
@@ -185,8 +185,6 @@ describe('Shell Scripts Functionality', () => {
 
   describe('Sync to Public Script Comprehensive Tests', () => {
     const syncScript = path.join(shellScriptsDir, 'sync_to_public.sh');
-    const publicDir = path.join(projectRoot, 'public');
-    const srcDir = path.join(projectRoot, 'src');
 
     beforeAll(() => {
       // Skip all tests if script doesn't exist
@@ -197,7 +195,9 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Script Structure and Configuration', () => {
       test('should have proper bash safety settings', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('set -e'); // Exit on any error
@@ -205,15 +205,17 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should define all required configuration variables', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         // Directory configuration
         expect(content).toContain('PROJECT_ROOT=');
         expect(content).toContain('SOURCE_DIR=');
         expect(content).toContain('PUBLIC_DIR=');
-        
+
         // Script settings
         expect(content).toContain('DRY_RUN=false');
         expect(content).toContain('VERBOSE=false');
@@ -221,18 +223,22 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should have color definitions for output formatting', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         const colorVariables = ['RED', 'GREEN', 'YELLOW', 'BLUE', 'PURPLE', 'CYAN', 'WHITE', 'NC'];
-        colorVariables.forEach(color => {
+        colorVariables.forEach((color) => {
           expect(content).toContain(`${color}=`);
         });
       });
 
       test('should have comprehensive help documentation', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('show_help()');
@@ -245,37 +251,49 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Utility Functions', () => {
       test('should define all required print functions', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         const printFunctions = [
-          'print_header', 'print_info', 'print_success', 
-          'print_warning', 'print_error', 'print_step'
+          'print_header',
+          'print_info',
+          'print_success',
+          'print_warning',
+          'print_error',
+          'print_step',
         ];
-        
-        printFunctions.forEach(func => {
+
+        printFunctions.forEach((func) => {
           expect(content).toContain(`${func}()`);
         });
       });
 
       test('should have generic reusable copy functions', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         const genericFunctions = [
-          'copy_single_file', 'copy_directory', 
-          'copy_specific_files', 'validate_path'
+          'copy_single_file',
+          'copy_directory',
+          'copy_specific_files',
+          'validate_path',
         ];
-        
-        genericFunctions.forEach(func => {
+
+        genericFunctions.forEach((func) => {
           expect(content).toContain(`${func}()`);
         });
       });
 
       test('should have environment validation function', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('validate_environment()');
@@ -283,7 +301,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should have backup functionality', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('create_backup()');
@@ -294,46 +314,53 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Specific Copy Functions', () => {
       test('should have all main file copy functions', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
-        const copyFunctions = [
-          'copy_index_html', 'copy_robots_txt', 'copy_humans_txt'
-        ];
-        
-        copyFunctions.forEach(func => {
+
+        const copyFunctions = ['copy_index_html', 'copy_robots_txt', 'copy_humans_txt'];
+
+        copyFunctions.forEach((func) => {
           expect(content).toContain(`${func}()`);
         });
       });
 
       test('should have asset copy functions', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         const assetFunctions = [
-          'copy_css_assets', 'copy_js_assets', 'copy_sass_assets',
-          'copy_webfonts', 'copy_images'
+          'copy_css_assets',
+          'copy_js_assets',
+          'copy_sass_assets',
+          'copy_webfonts',
+          'copy_images',
         ];
-        
-        assetFunctions.forEach(func => {
+
+        assetFunctions.forEach((func) => {
           expect(content).toContain(`${func}()`);
         });
       });
 
       test('should have Music in Numbers submodule copy functions', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         const submoduleFunctions = [
           'copy_music_in_numbers_submodule',
           'copy_music_in_numbers_scripts',
-          'copy_music_in_numbers_styles'
+          'copy_music_in_numbers_styles',
         ];
-        
-        submoduleFunctions.forEach(func => {
+
+        submoduleFunctions.forEach((func) => {
           expect(content).toContain(`${func}()`);
         });
       });
@@ -341,18 +368,22 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Command Line Argument Parsing', () => {
       test('should support all documented command line options', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         const options = ['--dry-run', '--verbose', '--no-backup', '--help'];
-        options.forEach(option => {
+        options.forEach((option) => {
           expect(content).toContain(option);
         });
       });
 
       test('should handle unknown options gracefully', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('Unknown option');
@@ -362,7 +393,9 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Main Execution Flow', () => {
       test('should have proper main function structure', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('main()');
@@ -370,20 +403,22 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should call all copy functions in logical order', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         // Extract main function content
         const mainMatch = content.match(/main\(\)\s*{([\s\S]*?)^}/m);
         if (mainMatch) {
           const mainContent = mainMatch[1];
-          
+
           // Check that validation comes first
           const validatePos = mainContent.indexOf('validate_environment');
           const firstCopyPos = mainContent.indexOf('copy_index_html');
           expect(validatePos).toBeLessThan(firstCopyPos);
-          
+
           // Check that summary comes last
           const summaryPos = mainContent.indexOf('show_summary');
           const lastCopyPos = mainContent.lastIndexOf('copy_');
@@ -394,7 +429,9 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Error Handling and Validation', () => {
       test('should validate project directory structure', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('copilot-instructions.md');
@@ -402,14 +439,18 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should handle missing source directory', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('Source directory not found');
       });
 
       test('should create public directory if missing', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('Public directory not found, creating');
@@ -419,32 +460,36 @@ describe('Shell Scripts Functionality', () => {
 
     describe('File Pattern Matching', () => {
       test('should define proper file patterns for different asset types', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         // Image file patterns
         expect(content).toContain('*.jpg');
         expect(content).toContain('*.png');
         expect(content).toContain('*.svg');
         expect(content).toContain('*.webp');
-        
+
         // Font file patterns
         expect(content).toContain('*.woff');
         expect(content).toContain('*.woff2');
         expect(content).toContain('*.ttf');
-        
+
         // JavaScript file patterns
         expect(content).toContain('*.js');
         expect(content).toContain('*.mjs');
-        
+
         // CSS file patterns
         expect(content).toContain('*.css');
         expect(content).toContain('*.scss');
       });
 
       test('should handle special pattern types in validation', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('image_files');
@@ -455,7 +500,9 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Backup Management', () => {
       test('should create timestamped backups', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('backup_timestamp=$(date');
@@ -463,7 +510,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should clean up old backups', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('keep only last 5');
@@ -471,7 +520,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should exclude backups from backup process', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('! -name ".backups"');
@@ -480,7 +531,9 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Verbose Output and Summary', () => {
       test('should provide detailed verbose information', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('if [[ "$VERBOSE" == "true" ]]');
@@ -489,7 +542,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should show comprehensive summary', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('show_summary()');
@@ -498,7 +553,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should support tree command for directory display', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('command -v tree');
@@ -515,7 +572,7 @@ describe('Shell Scripts Functionality', () => {
 
         const child = spawn('bash', [syncScript, '--step1', '--dry-run'], {
           cwd: projectRoot,
-          stdio: ['pipe', 'pipe', 'pipe']
+          stdio: ['pipe', 'pipe', 'pipe'],
         });
 
         let stdout = '';
@@ -529,19 +586,19 @@ describe('Shell Scripts Functionality', () => {
           stderr += data.toString();
         });
 
-        child.on('close', (code) => {
+        child.on('close', () => {
           const output = stdout + stderr;
-          
+
           // Should indicate dry-run mode
           expect(output).toContain('DRY RUN');
           expect(output).toContain('[DRY RUN]');
-          
+
           // Should show what would be copied
           expect(output).toContain('Would copy');
-          
+
           // Should not create actual files in dry-run mode
           expect(output).toContain('No changes will be made');
-          
+
           done();
         });
 
@@ -559,7 +616,7 @@ describe('Shell Scripts Functionality', () => {
 
         const child = spawn('bash', [syncScript, '--step1', '--dry-run', '--verbose'], {
           cwd: projectRoot,
-          stdio: ['pipe', 'pipe', 'pipe']
+          stdio: ['pipe', 'pipe', 'pipe'],
         });
 
         let stdout = '';
@@ -573,14 +630,14 @@ describe('Shell Scripts Functionality', () => {
           stderr += data.toString();
         });
 
-        child.on('close', (code) => {
+        child.on('close', () => {
           const output = stdout + stderr;
-          
+
           // Should show detailed information in verbose mode
           expect(output).toMatch(/files to copy|Source:|Destination:/);
           expect(output).toContain('Files to copy:');
           expect(output).toMatch(/Would copy|files to copy/);
-          
+
           done();
         });
 
@@ -600,7 +657,7 @@ describe('Shell Scripts Functionality', () => {
 
         const child = spawn('bash', [syncScript, '--help'], {
           cwd: projectRoot,
-          stdio: ['pipe', 'pipe', 'pipe']
+          stdio: ['pipe', 'pipe', 'pipe'],
         });
 
         let stdout = '';
@@ -611,7 +668,7 @@ describe('Shell Scripts Functionality', () => {
 
         child.on('close', (code) => {
           expect(code).toBe(0);
-          
+
           // Should contain all help sections
           expect(stdout).toContain('USAGE:');
           expect(stdout).toContain('DESCRIPTION:');
@@ -619,13 +676,13 @@ describe('Shell Scripts Functionality', () => {
           expect(stdout).toContain('EXAMPLES:');
           expect(stdout).toContain('DIRECTORIES:');
           expect(stdout).toContain('FILES TO SYNC:');
-          
+
           // Should list all supported files and directories
           expect(stdout).toContain('index.html');
           expect(stdout).toContain('robots.txt');
           expect(stdout).toContain('assets/css/');
           expect(stdout).toContain('music_in_numbers');
-          
+
           done();
         });
 
@@ -638,10 +695,12 @@ describe('Shell Scripts Functionality', () => {
 
     describe('File System Operations', () => {
       test('should handle missing optional files gracefully', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         // Should handle missing optional files
         expect(content).toContain('not found in source directory');
         expect(content).toContain('Expected:');
@@ -649,7 +708,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should preserve file permissions during copy operations', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('cp -r');
@@ -658,7 +719,9 @@ describe('Shell Scripts Functionality', () => {
       });
 
       test('should handle recursive directory copying', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('cp -r "$source_dir"/* "$dest_dir/"');
@@ -669,23 +732,27 @@ describe('Shell Scripts Functionality', () => {
 
     describe('Music in Numbers Integration', () => {
       test('should handle complete Music in Numbers submodule structure', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
-        
+
         // Should copy HTML files
         expect(content).toContain('index.html music_in_numbers.html artist.html');
-        
+
         // Should handle scripts directory with API architectures
         expect(content).toContain('API Class Architectures');
         expect(content).toContain('API architectures');
-        
+
         // Should handle styles directory
         expect(content).toContain('Music in Numbers styles');
       });
 
       test('should provide detailed verbose output for submodule files', () => {
-        if (!fs.existsSync(syncScript)) return;
+        if (!fs.existsSync(syncScript)) {
+          return;
+        }
 
         const content = fs.readFileSync(syncScript, 'utf8');
         expect(content).toContain('Main JavaScript modules:');
@@ -726,10 +793,10 @@ describe('Shell Scripts Functionality', () => {
 
     test('should have comprehensive README documentation', () => {
       expect(fs.existsSync(readmePath)).toBe(true);
-      
+
       const content = fs.readFileSync(readmePath, 'utf8');
       expect(content.length).toBeGreaterThan(500); // Should be substantial documentation
-      
+
       // Should document all major scripts
       expect(content).toContain('deploy_to_webserver.sh');
       expect(content).toContain('sync_to_public.sh');
@@ -757,34 +824,26 @@ describe('Project Navigation Integration', () => {
   describe('Project Redirect Pages', () => {
     test('should have pages directory with redirect files', () => {
       expect(fs.existsSync(pagesDir)).toBe(true);
-      
-      const requiredPages = [
-        'music-in-numbers.html',
-        'guia-turistico.html',
-        'monitora-vagas.html'
-      ];
 
-      requiredPages.forEach(page => {
+      const requiredPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
+
+      requiredPages.forEach((page) => {
         const pagePath = path.join(pagesDir, page);
         expect(fs.existsSync(pagePath)).toBe(true);
       });
     });
 
     test('should have proper HTML structure in redirect pages', () => {
-      const redirectPages = [
-        'music-in-numbers.html',
-        'guia-turistico.html',
-        'monitora-vagas.html'
-      ];
+      const redirectPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
 
-      redirectPages.forEach(page => {
+      redirectPages.forEach((page) => {
         const pagePath = path.join(pagesDir, page);
         if (fs.existsSync(pagePath)) {
           const content = fs.readFileSync(pagePath, 'utf8');
-          
+
           // Should have meta refresh redirect functionality
           expect(content).toMatch(/http-equiv="refresh"|window\.location/);
-          
+
           // Should contain meta tag
           expect(content).toContain('<meta');
         }
@@ -792,19 +851,15 @@ describe('Project Navigation Integration', () => {
     });
 
     test('should have consistent redirect patterns', () => {
-      const redirectPages = [
-        'music_in_numbers.html',
-        'guia_turistico.html',
-        'monitora_vagas.html'
-      ];
+      const redirectPages = ['music_in_numbers.html', 'guia_turistico.html', 'monitora_vagas.html'];
 
       const redirectTargets = [];
 
-      redirectPages.forEach(page => {
+      redirectPages.forEach((page) => {
         const pagePath = path.join(pagesDir, page);
         if (fs.existsSync(pagePath)) {
           const content = fs.readFileSync(pagePath, 'utf8');
-          
+
           // Extract redirect target
           const refreshMatch = content.match(/url=([^"]+)/);
           if (refreshMatch) {
@@ -814,8 +869,8 @@ describe('Project Navigation Integration', () => {
       });
 
       // All redirects should follow the submodule pattern
-      redirectTargets.forEach(target => {
-        expect(target).toMatch(/\.\.\/submodules\/[^\/]+\/src/);
+      redirectTargets.forEach((target) => {
+        expect(target).toMatch(/\.\.\/submodules\/[^/]+\/src/);
       });
     });
   });
@@ -829,7 +884,7 @@ describe('Project Navigation Integration', () => {
       }
 
       const content = fs.readFileSync(indexPath, 'utf8');
-      
+
       // Should link to music in numbers project (currently implemented)
       expect(content).toContain('music_in_numbers');
       // Note: guia_turistico and monitora_vagas may not be linked in the current HTML5 UP template
@@ -841,7 +896,7 @@ describe('Project Navigation Integration', () => {
       }
 
       const content = fs.readFileSync(indexPath, 'utf8');
-      
+
       // Current implementation uses direct submodule links
       expect(content).toMatch(/submodules\/music_in_numbers/);
       // HTML5 UP template structure may use different navigation patterns

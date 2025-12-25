@@ -2,11 +2,10 @@
  * @jest-environment node
  */
 
-import { execSync, spawn } from 'child_process';
+import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { tmpdir } from 'os';
 
 // Helper function to get project root directory
 const getProjectRoot = () => {
@@ -16,28 +15,28 @@ const getProjectRoot = () => {
 };
 
 // Helper function to create temporary test directory
-const createTempTestDir = () => {
-  const tempDir = fs.mkdtempSync(path.join(tmpdir(), 'sync-test-'));
-  return tempDir;
-};
+// const createTempTestDir = () => {
+//   const tempDir = fs.mkdtempSync(path.join(tmpdir(), 'sync-test-'));
+//   return tempDir;
+// };
 
 // Helper function to clean up temporary directory
-const cleanupTempDir = (dir) => {
-  try {
-    if (fs.existsSync(dir)) {
-      fs.rmSync(dir, { recursive: true, force: true });
-    }
-  } catch (error) {
-    console.warn(`Failed to cleanup temp directory: ${dir}`, error);
-  }
-};
+// const cleanupTempDir = (dir) => {
+//   try {
+//     if (fs.existsSync(dir)) {
+//       fs.rmSync(dir, { recursive: true, force: true });
+//     }
+//   } catch (error) {
+//     console.warn(`Failed to cleanup temp directory: ${dir}`, error);
+//   }
+// };
 
 // Helper function to run script with timeout
 const runScriptWithTimeout = (scriptPath, args = [], timeout = 30000) => {
   return new Promise((resolve, reject) => {
     const child = spawn('bash', [scriptPath, ...args], {
       cwd: getProjectRoot(),
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
 
     let stdout = '';
@@ -70,8 +69,6 @@ const runScriptWithTimeout = (scriptPath, args = [], timeout = 30000) => {
 describe('sync_to_public.sh - Comprehensive Test Suite', () => {
   const projectRoot = getProjectRoot();
   const syncScript = path.join(projectRoot, 'shell_scripts', 'sync_to_public.sh');
-  const srcDir = path.join(projectRoot, 'src');
-  const publicDir = path.join(projectRoot, 'public');
 
   // Skip all tests if script doesn't exist
   beforeAll(() => {
@@ -88,7 +85,7 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
       }
 
       expect(fs.existsSync(syncScript)).toBe(true);
-      
+
       const stats = fs.statSync(syncScript);
       expect(stats.isFile()).toBe(true);
       expect(stats.mode & 0o111).not.toBe(0); // Has execute permission
@@ -115,14 +112,18 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should have proper bash safety settings', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('set -e'); // Exit on error
       expect(scriptContent).toContain('set -u'); // Exit on undefined variables
     });
 
     test('should define all required configuration constants', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const requiredConfigs = [
         'SCRIPT_DIR=',
@@ -131,25 +132,29 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         'PUBLIC_DIR=',
         'DRY_RUN=false',
         'VERBOSE=false',
-        'CREATE_BACKUP=true'
+        'CREATE_BACKUP=true',
       ];
 
-      requiredConfigs.forEach(config => {
+      requiredConfigs.forEach((config) => {
         expect(scriptContent).toContain(config);
       });
     });
 
     test('should define complete color palette for output', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const colors = ['RED', 'GREEN', 'YELLOW', 'BLUE', 'PURPLE', 'CYAN', 'WHITE', 'NC'];
-      colors.forEach(color => {
+      colors.forEach((color) => {
         expect(scriptContent).toMatch(new RegExp(`${color}='\\\\033\\[`));
       });
     });
 
     test('should have comprehensive version and description headers', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('MP Barbosa Site - Two-Step Deployment Script');
       expect(scriptContent).toContain('Author: MP Barbosa');
@@ -168,33 +173,45 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should define all print utility functions', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const printFunctions = [
-        'print_header()', 'print_info()', 'print_success()',
-        'print_warning()', 'print_error()', 'print_step()'
+        'print_header()',
+        'print_info()',
+        'print_success()',
+        'print_warning()',
+        'print_error()',
+        'print_step()',
       ];
 
-      printFunctions.forEach(func => {
+      printFunctions.forEach((func) => {
         expect(scriptContent).toContain(func);
       });
     });
 
     test('should define generic copy functions', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const copyFunctions = [
-        'copy_single_file()', 'copy_directory()',
-        'copy_specific_files()', 'validate_path()'
+        'copy_single_file()',
+        'copy_directory()',
+        'copy_specific_files()',
+        'validate_path()',
       ];
 
-      copyFunctions.forEach(func => {
+      copyFunctions.forEach((func) => {
         expect(scriptContent).toContain(func);
       });
     });
 
     test('should have environment validation and backup functions', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('validate_environment()');
       expect(scriptContent).toContain('create_backup()');
@@ -212,46 +229,55 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should implement all core file copy functions', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
-      const coreFunctions = [
-        'copy_index_html()', 'copy_robots_txt()', 'copy_humans_txt()'
-      ];
+      const coreFunctions = ['copy_index_html()', 'copy_robots_txt()', 'copy_humans_txt()'];
 
-      coreFunctions.forEach(func => {
+      coreFunctions.forEach((func) => {
         expect(scriptContent).toContain(func);
       });
     });
 
     test('should implement all asset copy functions', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const assetFunctions = [
-        'copy_css_assets()', 'copy_js_assets()', 'copy_sass_assets()',
-        'copy_webfonts()', 'copy_images()'
+        'copy_css_assets()',
+        'copy_js_assets()',
+        'copy_sass_assets()',
+        'copy_webfonts()',
+        'copy_images()',
       ];
 
-      assetFunctions.forEach(func => {
+      assetFunctions.forEach((func) => {
         expect(scriptContent).toContain(func);
       });
     });
 
     test('should implement Music in Numbers submodule functions', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const submoduleFunctions = [
         'copy_music_in_numbers_submodule()',
         'copy_music_in_numbers_scripts()',
-        'copy_music_in_numbers_styles()'
+        'copy_music_in_numbers_styles()',
       ];
 
-      submoduleFunctions.forEach(func => {
+      submoduleFunctions.forEach((func) => {
         expect(scriptContent).toContain(func);
       });
     });
 
     test('should implement additional resources and validation', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('copy_additional_resources()');
       expect(scriptContent).toContain('validate_sync()');
@@ -260,10 +286,12 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
 
   describe('Command Line Interface', () => {
     test('should display help information', async () => {
-      if (!fs.existsSync(syncScript)) return;
+      if (!fs.existsSync(syncScript)) {
+        return;
+      }
 
       const result = await runScriptWithTimeout(syncScript, ['--help'], 10000);
-      
+
       expect(result.code).toBe(0);
       expect(result.stdout).toContain('MP Barbosa Site - Two-Step Deployment Script');
       expect(result.stdout).toContain('USAGE:');
@@ -276,20 +304,24 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should handle unknown options gracefully', async () => {
-      if (!fs.existsSync(syncScript)) return;
+      if (!fs.existsSync(syncScript)) {
+        return;
+      }
 
       const result = await runScriptWithTimeout(syncScript, ['--unknown-option'], 5000);
-      
+
       expect(result.code).toBe(1);
       expect(result.stderr || result.stdout).toContain('Unknown option');
       expect(result.stderr || result.stdout).toContain('Use --help for usage information');
     });
 
     test('should support dry-run mode', async () => {
-      if (!fs.existsSync(syncScript)) return;
+      if (!fs.existsSync(syncScript)) {
+        return;
+      }
 
       const result = await runScriptWithTimeout(syncScript, ['--step1', '--dry-run'], 20000);
-      
+
       const output = result.stdout + result.stderr;
       expect(output).toContain('DRY RUN');
       expect(output).toContain('[DRY RUN]');
@@ -298,10 +330,16 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     }, 25000);
 
     test('should support verbose mode with dry-run', async () => {
-      if (!fs.existsSync(syncScript)) return;
+      if (!fs.existsSync(syncScript)) {
+        return;
+      }
 
-      const result = await runScriptWithTimeout(syncScript, ['--step1', '--dry-run', '--verbose'], 20000);
-      
+      const result = await runScriptWithTimeout(
+        syncScript,
+        ['--step1', '--dry-run', '--verbose'],
+        20000,
+      );
+
       const output = result.stdout + result.stderr;
       // The script uses different verbose patterns
       expect(output).toMatch(/files to copy|Would copy/);
@@ -320,37 +358,45 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should define comprehensive image file patterns', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.bmp', '.ico'];
-      imageExtensions.forEach(ext => {
+      imageExtensions.forEach((ext) => {
         expect(scriptContent).toContain(`*${ext}`);
       });
     });
 
     test('should define comprehensive font file patterns', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const fontExtensions = ['.eot', '.svg', '.ttf', '.woff', '.woff2', '.otf'];
-      fontExtensions.forEach(ext => {
+      fontExtensions.forEach((ext) => {
         expect(scriptContent).toContain(`*${ext}`);
       });
     });
 
     test('should define JavaScript and CSS file patterns', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const codeExtensions = ['.js', '.mjs', '.css', '.scss'];
-      codeExtensions.forEach(ext => {
+      codeExtensions.forEach((ext) => {
         expect(scriptContent).toContain(`*${ext}`);
       });
     });
 
     test('should handle special pattern types for validation', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       const specialPatterns = ['image_files', 'font_files', 'js_files'];
-      specialPatterns.forEach(pattern => {
+      specialPatterns.forEach((pattern) => {
         expect(scriptContent).toContain(pattern);
       });
     });
@@ -366,28 +412,36 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should validate project directory structure', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('.github/copilot-instructions.md');
       expect(scriptContent).toContain('Not in MP Barbosa site project directory');
     });
 
     test('should handle missing source directory', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Source directory not found');
       expect(scriptContent).toContain('exit 1');
     });
 
     test('should create public directory if missing', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Public directory not found, creating');
       expect(scriptContent).toContain('mkdir -p "$PUBLIC_DIR"');
     });
 
     test('should handle optional vs required files differently', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('required="${4:-false}"');
       expect(scriptContent).toContain('if [[ "$required" == "true" ]]');
@@ -405,7 +459,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should create timestamped backups', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('backup_timestamp=$(date +"%Y%m%d_%H%M%S")');
       expect(scriptContent).toContain('backup_$backup_timestamp');
@@ -413,7 +469,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should manage backup retention', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('keep only last 5');
       expect(scriptContent).toContain('backup_count -gt 5');
@@ -421,14 +479,18 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should exclude backup directory from backup process', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('! -name ".backups"');
       expect(scriptContent).toContain('-mindepth 1 -maxdepth 1 ! -name ".backups"');
     });
 
     test('should support disabling backup creation', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('CREATE_BACKUP=');
       expect(scriptContent).toContain('--no-backup');
@@ -446,14 +508,18 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should handle Music in Numbers HTML files', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('index.html music_in_numbers.html artist.html');
       expect(scriptContent).toContain('Music in Numbers submodule');
     });
 
     test('should handle JavaScript modules and API architectures', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Main JavaScript modules:');
       expect(scriptContent).toContain('API Class Architectures:');
@@ -462,7 +528,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should handle CSS stylesheets', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Music in Numbers styles');
       expect(scriptContent).toContain('CSS files:');
@@ -470,7 +538,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should provide detailed verbose output for submodule structure', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('API architectures to copy:');
       expect(scriptContent).toContain('files_in_dir');
@@ -488,7 +558,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should provide comprehensive deployment summary', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('show_summary()');
       expect(scriptContent).toContain('DEPLOYMENT SUMMARY');
@@ -497,7 +569,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should support tree command for directory display', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('command -v tree');
       expect(scriptContent).toContain('tree "$PUBLIC_DIR"');
@@ -505,15 +579,19 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should handle fallback when tree command unavailable', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('find "$PUBLIC_DIR"');
       expect(scriptContent).toContain('-not -path "*/.backups/*"');
-      expect(scriptContent).toContain('sed \'s|^\'');
+      expect(scriptContent).toContain("sed 's|^'");
     });
 
     test('should show file counts for different asset types', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('($css_count files)');
       expect(scriptContent).toContain('($js_count files)');
@@ -532,14 +610,18 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should have proper main function structure', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('main() {');
       expect(scriptContent).toContain('main "$@"');
     });
 
     test('should parse command line arguments correctly', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('while [[ $# -gt 0 ]]');
       expect(scriptContent).toContain('case $1 in');
@@ -550,21 +632,25 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should execute functions in logical order', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       // Extract main function content for order verification
       const mainFunctionRegex = /main\(\)\s*{([\s\S]*?)^}/m;
       const match = scriptContent.match(mainFunctionRegex);
-      
+
       if (match) {
         const mainContent = match[1];
-        
+
         // Validation should come first in execute_step_1
-        const executeStep1Content = scriptContent.substring(scriptContent.indexOf('execute_step_1() {'));
+        const executeStep1Content = scriptContent.substring(
+          scriptContent.indexOf('execute_step_1() {'),
+        );
         const validatePos = executeStep1Content.indexOf('validate_environment');
         const firstCopyPos = executeStep1Content.indexOf('copy_index_html');
         expect(validatePos).toBeLessThan(firstCopyPos);
-        
+
         // Summary should come after all copy operations
         const summaryPos = mainContent.indexOf('show_summary');
         const lastValidatePos = mainContent.indexOf('validate_sync');
@@ -573,7 +659,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should provide appropriate success and completion messages', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Step 1 completed successfully!');
       expect(scriptContent).toContain('Files are ready in public folder for production deployment');
@@ -591,7 +679,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should use safe file operations', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('mkdir -p'); // Safe directory creation
       expect(scriptContent).toContain('cp -r'); // Recursive copy
@@ -599,7 +689,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should handle file existence checks', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('if [[ ! -f "$source_file"');
       expect(scriptContent).toContain('if [[ ! -d "$source_dir"');
@@ -608,7 +700,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should use proper file size and stat operations', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('du -h');
       expect(scriptContent).toContain('du -sh');
@@ -617,7 +711,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should handle special characters in file paths safely', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       // Should use proper quoting
       expect(scriptContent).toContain('"$source_file"');
@@ -637,7 +733,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should provide extension points for additional resources', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('copy_additional_resources()');
       expect(scriptContent).toContain('Placeholder for future resource copying');
@@ -645,7 +743,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should have well-documented function interfaces', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Usage: copy_single_file');
       expect(scriptContent).toContain('Usage: copy_directory');
@@ -654,7 +754,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
     });
 
     test('should maintain version information and changelog capability', () => {
-      if (!scriptContent) return;
+      if (!scriptContent) {
+        return;
+      }
 
       expect(scriptContent).toContain('Version: 2.0.0');
       expect(scriptContent).toContain('Created: November 4, 2025');
@@ -664,47 +766,55 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
 
   describe('Integration Test - Dry Run Execution', () => {
     test('should complete full dry-run without errors', async () => {
-      if (!fs.existsSync(syncScript)) return;
+      if (!fs.existsSync(syncScript)) {
+        return;
+      }
 
       const result = await runScriptWithTimeout(syncScript, ['--step1', '--dry-run'], 30000);
-      
+
       const output = result.stdout + result.stderr;
-      
+
       // Should indicate proper dry-run execution
       expect(output).toContain('MP BARBOSA SITE - TWO-STEP DEPLOYMENT');
       expect(output).toContain('DRY RUN MODE - No changes will be made');
       expect(output).toContain('DEPLOYMENT SUMMARY');
       expect(output).toContain('DRY RUN (preview only)');
-      
+
       // Should validate all major steps
       expect(output).toContain('Validating environment');
       expect(output).toContain('Copying index.html');
       expect(output).toContain('Checking for additional resources');
-      
+
       // Exit code should be 0 for successful dry-run
       expect(result.code).toBe(0);
     }, 35000);
 
     test('should show expected file operations in verbose dry-run', async () => {
-      if (!fs.existsSync(syncScript)) return;
+      if (!fs.existsSync(syncScript)) {
+        return;
+      }
 
-      const result = await runScriptWithTimeout(syncScript, ['--step1', '--dry-run', '--verbose'], 30000);
-      
+      const result = await runScriptWithTimeout(
+        syncScript,
+        ['--step1', '--dry-run', '--verbose'],
+        30000,
+      );
+
       const output = result.stdout + result.stderr;
-      
+
       // Should show detailed dry-run information
       expect(output).toContain('[DRY RUN] Would copy:');
       expect(output).toContain('files to copy:');
       // Note: The script uses different verbose output format than expected
       expect(output).toMatch(/Source:|files to copy:/);
       expect(output).toMatch(/files to copy|Would copy/);
-      
+
       // Should mention major file types that would be processed
       if (output.includes('robots.txt') || output.includes('humans.txt')) {
         // These are optional files that may or may not be present
         expect(output).toMatch(/robots\.txt|humans\.txt/);
       }
-      
+
       // Should handle submodule paths correctly
       if (output.includes('music_in_numbers')) {
         expect(output).toContain('submodules/music_in_numbers');

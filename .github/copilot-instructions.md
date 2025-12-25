@@ -14,10 +14,11 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 
 **Architecture Highlights**:
 - **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
-- **Multi-project structure**: Main site + 2 git submodules (Music in Numbers, Guia Turístico) + 2 sibling projects (Monitora Vagas, Busca Vagas)
+- **Multi-project structure**: Main site + 4 sibling projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
 - **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
+- **Sibling project integration**: Four external projects deployed alongside main site (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
 The Music in Numbers subproject has achieved **outstanding architectural transformation**:
@@ -67,17 +68,17 @@ The project includes comprehensive development environment configuration:
 - The server runs at: `http://127.0.0.1:8080` or `http://localhost:8080`
 - Live reload is automatically enabled for HTML, CSS, and JavaScript changes
 
-### Git Submodules (REQUIRES AUTHENTICATION)
-- **WARNING**: Submodules require GitHub authentication and will fail in environments without proper credentials
-- Two git submodules exist for personal projects:
-  - `src/submodules/music_in_numbers` → Music in Numbers (Spotify analytics) project
-  - `src/submodules/guia_turistico` → Guia Turístico (Travel Guide) project
-- Two sibling projects (not submodules):
+### Git Submodules (DEPRECATED - NOW SIBLING PROJECTS)
+- **All submodules have been converted to sibling projects for easier management**
+- Four sibling projects (not submodules):
+  - `../music_in_numbers` → Music in Numbers (Spotify analytics) - Client-side web application
+  - `../guia_turistico` → Guia Turístico (Travel Guide) - Tourism guide application
   - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - React SPA with API client
   - `../busca_vagas` → Busca Vagas (backend API service) - Node.js/Express with Puppeteer scraping
-- To initialize submodules (when authenticated): `git submodule update --init --recursive`
-- Automated submodule management available: `./shell_scripts/pull_all_submodules.sh`
-- If submodules fail to initialize, the project links will show 404 errors but the main site will function normally
+- Sibling projects are managed independently in their own repositories
+- Deployment is handled via `sync_to_public.sh` which copies from sibling directories
+- If sibling projects aren't cloned, deployment will skip them with warnings
+- **Note**: All projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas) are now sibling projects for consistent architecture
 
 ## Validation and Testing
 
@@ -177,8 +178,10 @@ mpbarbosa_site/
 │       │       │   └── jquery-validate/     # jQuery validation plugin
 │       │       ├── sw.js                    # Service worker for PWA support
 │       │       └── favicon.ico              # Application favicon
-│       ├── music_in_numbers/  # Spotify analytics submodule
-│       └── guia_turistico/    # Travel guide submodule
+│       ├── music_in_numbers/  # Spotify analytics sibling project
+│       ├── guia_turistico/    # Travel guide sibling project
+│       ├── monitora_vagas/    # AFPESP hotel monitoring sibling project
+│       └── busca_vagas/       # Backend API service sibling project
 ├── src/                        # Main source directory
 │   ├── index.html             # Main landing page (HTML5 UP Dimension template)
 │   ├── package.json           # Node.js dependencies and scripts
@@ -202,10 +205,8 @@ mpbarbosa_site/
 │   │   ├── music-in-numbers.html    # Redirects to submodule (renamed from music_in_numbers.html)
 │   │   ├── guia-turistico.html      # Redirects to submodule (renamed from guia_turistico.html)
 │   │   └── monitora-vagas.html      # Redirects to sibling project (renamed from monitora_vagas.html)
-│   └── submodules/            # Git submodules for projects
-│       ├── music_in_numbers/  # Spotify analytics (client-side)
-│       └── guia_turistico/    # Travel guide (client-side)
-├── .gitmodules               # Git submodule configuration (music_in_numbers, guia_turistico)
+│   └── submodules/            # Sibling project content (deployed from ../project_name)
+├── .gitmodules               # Git submodule configuration (DEPRECATED - now empty)
 ├── index.html               # Simple redirect to mpbarbosa.com
 └── README.md               # Project documentation
 ```
@@ -240,7 +241,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Parametrized step control (--step1, --step2, --both-steps)
 # - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
-# - Music in Numbers submodule support with complete module architecture
+# - Music in Numbers sibling project support with complete module architecture
+# - Guia Turístico sibling project support with complete project structure
 # - Monitora Vagas dual-directory deployment:
 #   - Both src/ (legacy) and public/ (modern v2.0.0) folder support
 #   - Modern configuration layer architecture (app.js, constants.js, environment.js, index.js)
@@ -298,20 +300,25 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 
 
 
-#### Submodule Management
+#### Sibling Project Management
 ```bash
-# Update all git submodules (music_in_numbers, guia_turistico) from remote repositories
-./shell_scripts/pull_all_submodules.sh
+# All projects are now sibling projects (no git submodules)
+# Manage each project independently in their own directories:
 
-# Deploy changes to all git submodules
-./shell_scripts/push_all_submodules.sh --handle-stash
+# Music in Numbers (Spotify analytics)
+cd ../music_in_numbers && git pull && git push
 
-# Preview submodule operations
-./shell_scripts/pull_all_submodules.sh --dry-run
-./shell_scripts/push_all_submodules.sh --dry-run
+# Guia Turístico (Travel guide)
+cd ../guia_turistico && git pull && git push
 
-# Note: Monitora Vagas and Busca Vagas are now sibling projects
-# Manage them independently at ../monitora_vagas and ../busca_vagas
+# Monitora Vagas (Hotel monitoring)
+cd ../monitora_vagas && git pull && git push
+
+# Busca Vagas (Backend API)
+cd ../busca_vagas && git pull && git push
+
+# Note: pull_all_submodules.sh and push_all_submodules.sh scripts are deprecated
+# Each sibling project should be managed independently
 ```
 
 ### Important Notes
@@ -342,7 +349,8 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
    ```
 
 2. **Access Method Testing**: Always test both access patterns:
-   - Direct submodule access: `http://127.0.0.1:8080/submodules/music_in_numbers/src/`
+   - Direct sibling project access: `http://127.0.0.1:8080/submodules/music_in_numbers/src/`
+   - Direct sibling project access: `http://127.0.0.1:8080/submodules/guia_turistico/`
    - Main site integration: Via redirect pages or navigation
 
 3. **Path Strategy Consistency**: Never mix relative and absolute server-root paths within the same HTML file
@@ -354,7 +362,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 ## Troubleshooting
 
 ### Common Issues
-1. **404 errors for project links**: Normal when submodules aren't initialized
+1. **404 errors for project links**: Normal when sibling projects aren't cloned to parent directory
 2. **Template assets not loading**: Verify `assets/` directory structure is intact
 3. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
 4. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
@@ -407,8 +415,8 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
     ],
     "collectCoverageFrom": [
       "scripts/**/*.{js,mjs}",
-      "submodules/guia_turistico/src/libs/guia_js/src/**/*.js",
-      "submodules/music_in_numbers/src/**/*.js"
+      "../guia_turistico/src/libs/guia_js/src/**/*.js",
+      "../music_in_numbers/src/**/*.js"
     ]
   }
 }
@@ -639,8 +647,8 @@ The `sync_to_public.sh` script (v2.0.0) handles dual-directory deployment:
 - **Validation**: Both directories validated for HTML and JS files
 - **Backward Compatibility**: Ensures smooth transition from legacy to modern architecture
 
-### Music in Numbers Subproject Structure
-The Music in Numbers project demonstrates **professional-grade modular architecture**:
+### Music in Numbers Sibling Project Structure
+The Music in Numbers sibling project (located at `../music_in_numbers`) demonstrates **professional-grade modular architecture**:
 
 #### HTML Pages (Clean Semantic Structure)
 - `src/index.html` (246 lines) - Main analytics dashboard
@@ -825,13 +833,17 @@ sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 For comprehensive development guidance, consult these detailed documentation resources:
 
 ### Development Environment & Tools
+- **⭐ [Code Quality Remediation Plan](../docs/development-guides/CODE_QUALITY_REMEDIATION_PLAN.md)** - Comprehensive roadmap for code quality improvements (87 hours, 407% ROI, Grade B+ → A+)
+- **⭐ [Quick Remediation Checklist](../docs/QUICK_REMEDIATION_CHECKLIST.md)** - Quick start guide for implementing quality improvements
 - **[Dependabot Setup Guide](../docs/development-guides/DEPENDABOT_SETUP.md)** - Automated dependency monitoring and security updates configuration
 - **[Security Vulnerability Resolution](../docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security audit resolution using package overrides (8 vulnerabilities fixed: 5 High, 3 Moderate)
 - **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
 - **[Markdown Linting Solution Summary](../docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
 - **[Selenium E2E Setup Guide](../docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
-- **[Test Environment Configuration Report](../docs/development-guides/TEST_ENVIRONMENT_CONFIGURATION_REPORT.md)** - Test environment setup analysis
-- **[Test Environment Final Report](../docs/development-guides/TEST_ENVIRONMENT_FINAL_REPORT.md)** - Comprehensive test environment documentation
+- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Consolidated testing and QA documentation (234/247 tests passing)
+- **[Test Quick Start](../docs/testing-qa/TEST_QUICK_START.md)** - Get started with testing in 5 minutes
+- **[Test Execution Guide](../docs/testing-qa/TEST_EXECUTION_GUIDE.md)** - Running tests, debugging failures, coverage analysis
+- **[Test Failure Troubleshooting](../docs/testing-qa/TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues and known failures
 - **[Naming Convention Fix Report](../docs/implementation-reports/NAMING_CONVENTION_FIX_REPORT.md)** - File naming standardization improvements
 
 ### AI Integration & Prompts

@@ -1,0 +1,14 @@
+node_modules/
+coverage/
+*.min.js
+*.min.css
+assets/js/jquery.min.js
+assets/js/main.js
+assets/js/util.js
+assets/webfonts/
+submodules/
+public/
+dist/
+build/
+eslint-report.json
+package-lock.json

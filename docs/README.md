@@ -64,6 +64,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Testing & Quality Assurance
 
+- **[Code Quality Remediation Plan](development-guides/CODE_QUALITY_REMEDIATION_PLAN.md)** - Comprehensive code quality improvement roadmap with prioritized action items (87 hours total, 407% ROI) ⭐ **NEW**
 - **[Comprehensive Testing Guide](testing-qa/COMPREHENSIVE_TESTING_GUIDE.md)** - Complete test strategy consolidating TEST_COVERAGE_ANALYSIS_REPORT.md and TEST_STRATEGY_REPORT.md (84KB, 2,887 lines) ⭐ **NEW**
 - **[Test Failure Analysis Consolidated](testing-qa/TEST_FAILURE_ANALYSIS_CONSOLIDATED.md)** - Root cause analysis and actionable fixes for test failures
 - **[Test Quick Start Guide v2](testing-qa/TEST_QUICK_START_GUIDE_v2.md)** - Quick reference for running and debugging tests

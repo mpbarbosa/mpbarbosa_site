@@ -31,7 +31,7 @@ describe('Project Navigation Integration Tests', () => {
     beforeEach(() => {
       const indexPath = path.join(srcDir, 'index.html');
       indexHTML = loadHTMLFile(indexPath);
-      
+
       if (indexHTML) {
         document.body.innerHTML = indexHTML;
       }
@@ -57,11 +57,11 @@ describe('Project Navigation Integration Tests', () => {
       }
 
       const projectLinks = document.querySelectorAll('a[href*="submodules/"]');
-      
+
       // Test passes if we have at least one project link and it's properly formatted
       expect(projectLinks.length).toBeGreaterThan(0);
-      
-      projectLinks.forEach(link => {
+
+      projectLinks.forEach((link) => {
         expect(link.href).toBeTruthy();
         expect(link.textContent.trim()).toBeTruthy();
       });
@@ -97,7 +97,7 @@ describe('Project Navigation Integration Tests', () => {
     const redirectPages = [
       { file: 'music-in-numbers.html', project: 'music_in_numbers' },
       { file: 'guia-turistico.html', project: 'guia_turistico' },
-      { file: 'monitora-vagas.html', project: 'monitora_vagas' }
+      { file: 'monitora-vagas.html', project: 'monitora_vagas' },
     ];
 
     redirectPages.forEach(({ file, project }) => {
@@ -159,15 +159,17 @@ describe('Project Navigation Integration Tests', () => {
     test('should have proper ARIA labels and semantic markup', () => {
       const indexPath = path.join(srcDir, 'index.html');
       const indexHTML = loadHTMLFile(indexPath);
-      
+
       if (!indexHTML) {
         return;
       }
 
       document.body.innerHTML = indexHTML;
 
-      const projectSection = document.querySelector('#projects, [aria-label*="project"], .projects-section');
-      
+      const projectSection = document.querySelector(
+        '#projects, [aria-label*="project"], .projects-section',
+      );
+
       if (projectSection) {
         // Should have proper heading structure
         const headings = projectSection.querySelectorAll('h1, h2, h3, h4, h5, h6');
@@ -175,11 +177,11 @@ describe('Project Navigation Integration Tests', () => {
 
         // Links should have descriptive text or aria-label
         const projectLinks = projectSection.querySelectorAll('a[href*="pages/"]');
-        projectLinks.forEach(link => {
+        projectLinks.forEach((link) => {
           const hasDescriptiveText = link.textContent.trim().length > 3;
           const hasAriaLabel = link.hasAttribute('aria-label');
           const hasTitle = link.hasAttribute('title');
-          
+
           expect(hasDescriptiveText || hasAriaLabel || hasTitle).toBeTruthy();
         });
       }
@@ -188,7 +190,7 @@ describe('Project Navigation Integration Tests', () => {
     test('should have keyboard navigation support', () => {
       const indexPath = path.join(srcDir, 'index.html');
       const indexHTML = loadHTMLFile(indexPath);
-      
+
       if (!indexHTML) {
         return;
       }
@@ -196,11 +198,11 @@ describe('Project Navigation Integration Tests', () => {
       document.body.innerHTML = indexHTML;
 
       const projectLinks = document.querySelectorAll('a[href*="pages/"]');
-      
-      projectLinks.forEach(link => {
+
+      projectLinks.forEach((link) => {
         // Links should be focusable by default
         expect(link.tabIndex >= 0 || !link.hasAttribute('tabindex')).toBeTruthy();
-        
+
         // Should not have disabled or hidden states that break keyboard navigation
         expect(link.style.display).not.toBe('none');
         expect(link.style.visibility).not.toBe('hidden');
@@ -212,14 +214,14 @@ describe('Project Navigation Integration Tests', () => {
   describe('Project Integration with Submodules', () => {
     test('should have .gitmodules configuration for all projects', () => {
       const gitmodulesPath = path.join(projectRoot, '.gitmodules');
-      
+
       if (!fs.existsSync(gitmodulesPath)) {
         console.warn('.gitmodules not found, skipping test');
         return;
       }
 
       const gitmodulesContent = fs.readFileSync(gitmodulesPath, 'utf8');
-      
+
       // Should include all three submodules
       expect(gitmodulesContent).toContain('music_in_numbers');
       expect(gitmodulesContent).toContain('guia_turistico');
@@ -228,20 +230,20 @@ describe('Project Navigation Integration Tests', () => {
 
     test('should have consistent submodule directory structure', () => {
       const submodulesDir = path.join(srcDir, 'submodules');
-      
+
       if (!fs.existsSync(submodulesDir)) {
         console.warn('submodules directory not found, skipping test');
         return;
       }
 
       const expectedSubmodules = ['music_in_numbers', 'guia_turistico', 'monitora_vagas'];
-      
-      expectedSubmodules.forEach(submodule => {
+
+      expectedSubmodules.forEach((submodule) => {
         const submodulePath = path.join(submodulesDir, submodule);
-        
+
         // Directory should exist (may be empty if not initialized)
         expect(fs.existsSync(submodulePath)).toBe(true);
-        
+
         if (fs.existsSync(submodulePath) && fs.statSync(submodulePath).isDirectory()) {
           // If submodule is initialized, should have src directory
           const srcPath = path.join(submodulePath, 'src');
@@ -256,15 +258,15 @@ describe('Project Navigation Integration Tests', () => {
   describe('Performance and Loading Considerations', () => {
     test('should have minimal but functional redirect pages', () => {
       const redirectPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
-      
-      redirectPages.forEach(page => {
+
+      redirectPages.forEach((page) => {
         const pagePath = path.join(srcDir, 'pages', page);
         const content = loadHTMLFile(pagePath);
-        
+
         if (content) {
           // Should have meta refresh tag
           expect(content).toMatch(/http-equiv="refresh"/i);
-          
+
           // Should be a minimal but functional redirect
           expect(content.trim().length).toBeGreaterThan(10);
         }
@@ -273,14 +275,14 @@ describe('Project Navigation Integration Tests', () => {
 
     test('should have reasonable redirect timing', () => {
       const redirectPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
-      
-      redirectPages.forEach(page => {
+
+      redirectPages.forEach((page) => {
         const pagePath = path.join(srcDir, 'pages', page);
         const content = loadHTMLFile(pagePath);
-        
+
         if (content) {
           const refreshMatch = content.match(/content="(\d+);/);
-          
+
           if (refreshMatch) {
             const refreshTime = parseInt(refreshMatch[1]);
             // Should redirect within reasonable time (0-5 seconds)

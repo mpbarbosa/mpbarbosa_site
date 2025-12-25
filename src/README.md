@@ -39,16 +39,19 @@ mpbarbosa_site/src/
 To set up the project locally, follow these steps:
 
 1. Clone the repository:
+
    ```
    git clone https://github.com/yourusername/mpbarbosa-landing-page.git
    ```
 
 2. Navigate to the project directory:
+
    ```
    cd mpbarbosa-landing-page
    ```
 
 3. Install the dependencies:
+
    ```
    npm install
    ```
@@ -58,6 +61,7 @@ To set up the project locally, follow these steps:
 ## Features
 
 ### Core Website Features
+
 - **Material Design UI**: Modern, professional interface with Google Material Components
 - **Responsive Design**: Optimal viewing across all devices and screen sizes
 - **Interactive Contact Form**: JavaScript-powered form with validation and feedback
@@ -67,6 +71,7 @@ To set up the project locally, follow these steps:
 ### Featured Personal Projects (Git Submodules)
 
 #### 🎵 Music in Numbers - Advanced Analytics Platform
+
 - **Complete Modular Architecture**: 85.8% code reduction across major pages
 - **Professional Features**: Genre analysis, mood detection, personalized insights
 - **Technical Excellence**: OAuth 2.0 PKCE, Chart.js visualizations, export capabilities
@@ -76,11 +81,13 @@ To set up the project locally, follow these steps:
 - **Status**: Production-ready with enterprise-grade architecture
 
 #### 🗺️ Guia Turístico - Interactive Travel Guide
+
 - Location-based travel recommendations and cultural insights
 - Interactive maps with route planning capabilities
 - **Status**: Active development
 
 ### Development Excellence
+
 - **Zero Build Process**: Direct browser execution with live development server
 - **Modern Standards**: HTML5, CSS Grid, ES6+ JavaScript with defer loading
 - **Performance Optimized**: Parallel script loading and intelligent caching

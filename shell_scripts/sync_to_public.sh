@@ -365,10 +365,8 @@ FILES TO SYNC:
     - assets/sass/ (SASS source files and partials)
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
-    - submodules/music_in_numbers/src/ (Music in Numbers HTML files)
-    - submodules/music_in_numbers/src/scripts/ (Music in Numbers JavaScript modules)
-    - submodules/music_in_numbers/src/styles/ (Music in Numbers CSS stylesheets)
-    - submodules/guia_turistico/ (Guia Turistico travel guide)
+    - submodules/music_in_numbers/src/ (Music in Numbers sibling project)
+    - submodules/guia_turistico/ (Guia Turistico sibling project)
     - submodules/monitora_vagas/src/ (Monitora Vagas legacy implementation)
     - submodules/monitora_vagas/public/ (Monitora Vagas modern v2.0.0)
     - submodules/busca_vagas/client/public/ (Busca Vagas frontend)
@@ -660,252 +658,132 @@ copy_images() {
     return 0
 }
 
-# Copy Music in Numbers submodule files
-copy_music_in_numbers_submodule() {
-    print_step "Copying Music in Numbers submodule files"
-    copy_specific_files "$SOURCE_DIR/submodules/music_in_numbers/src" "$PUBLIC_DIR/submodules/music_in_numbers/src" "Music in Numbers submodule" "index.html music_in_numbers.html artist.html"
-}
-
-# Copy Music in Numbers scripts folder
-copy_music_in_numbers_scripts() {
-    print_step "Copying Music in Numbers scripts folder"
+# Copy Music in Numbers sibling project
+copy_music_in_numbers_project() {
+    print_step "Copying Music in Numbers project content"
     
-    local source_dir="$SOURCE_DIR/submodules/music_in_numbers/src/scripts"
-    local dest_dir="$PUBLIC_DIR/submodules/music_in_numbers/src/scripts"
+    # Music in Numbers sibling project deployment
+    # Location: ../music_in_numbers
+    # Strategy: Copy src/ folder with complete module architecture
     
-    if [[ ! -d "$source_dir" ]]; then
-        print_warning "Music in Numbers scripts directory not found in source"
-        print_info "  Expected: $source_dir"
+    local source_project="$PROJECT_ROOT/../music_in_numbers"
+    local dest_dir="$PUBLIC_DIR/submodules/music_in_numbers"
+    
+    # Check if sibling project exists
+    if [[ ! -d "$source_project" ]]; then
+        print_warning "Music in Numbers sibling project not found"
+        print_info "  Expected location: $source_project"
+        print_info "  Skipping Music in Numbers deployment"
         return 0
     fi
     
-    # Count all JavaScript files using proper find syntax
-    local js_count=$(find "$source_dir" -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
-    local dirs_count=$(find "$source_dir" -mindepth 1 -type d | wc -l)
-    
     if [[ "$DRY_RUN" == "false" ]]; then
-        # Create destination directory if it doesn't exist
+        # Create destination directory
         mkdir -p "$dest_dir"
         
-        # Copy all files and directories recursively
-        cp -r "$source_dir"/* "$dest_dir/"
-        print_success "Copied: Music in Numbers scripts ($js_count JavaScript files, $dirs_count subdirectories)"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_dir"
-            print_info "  Destination: $dest_dir"
-            print_info "  JavaScript files: $js_count"
-            print_info "  Subdirectories: $dirs_count"
+        # Copy src folder (module architecture with HTML, scripts, styles)
+        if [[ -d "$source_project/src" ]]; then
+            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            local src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            local src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
             
-            # Show main JavaScript files (root level)
-            local main_js_files=$(find "$dest_dir" -maxdepth 1 \( -name "*.js" -o -name "*.mjs" \))
-            if [[ -n "$main_js_files" ]]; then
-                print_info "  Main JavaScript modules:"
-                echo "$main_js_files" | head -10 | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
-            fi
+            # Copy complete src directory structure
+            cp -r "$source_project/src" "$dest_dir/"
+            print_success "Copied: Music in Numbers src/ folder ($src_html HTML, $src_js JS files, $src_css CSS files)"
             
-            # Show API subdirectories
-            local api_dirs=$(find "$dest_dir" -mindepth 1 -maxdepth 1 -type d)
-            if [[ -n "$api_dirs" ]]; then
-                print_info "  API Class Architectures:"
-                echo "$api_dirs" | while read dir; do
-                    if [[ -d "$dir" ]]; then
-                        local dirname=$(basename "$dir")
-                        local files_in_dir=$(find "$dir" -name "*.js" | wc -l)
-                        print_info "    - $dirname/ ($files_in_dir files)"
-                    fi
-                done
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $source_project/src"
+                print_info "  Destination: $dest_dir/src"
+                print_info "  HTML files: $src_html"
+                print_info "  JavaScript files: $src_js"
+                print_info "  CSS files: $src_css"
             fi
+        else
+            print_warning "Music in Numbers src/ folder not found"
         fi
     else
-        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
+        print_info "[DRY RUN] Would copy Music in Numbers project"
         
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  JavaScript files to copy: $js_count"
-            print_info "  Subdirectories to copy: $dirs_count"
+        if [[ -d "$source_project/src" ]]; then
+            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            local src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            local src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
             
-            # Show preview of main files
-            local main_js_files=$(find "$source_dir" -maxdepth 1 \( -name "*.js" -o -name "*.mjs" \))
-            if [[ -n "$main_js_files" ]]; then
-                print_info "  Main JavaScript modules to copy:"
-                echo "$main_js_files" | head -5 | while read file; do
-                    if [[ -f "$file" ]]; then
-                        local filename=$(basename "$file")
-                        local filesize=$(du -h "$file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done
-                
-                local main_count=$(echo "$main_js_files" | wc -l)
-                if [[ $main_count -gt 5 ]]; then
-                    print_info "    ... and $((main_count - 5)) more main modules"
-                fi
-            fi
-            
-            # Show preview of API directories
-            local api_dirs=$(find "$source_dir" -mindepth 1 -maxdepth 1 -type d)
-            if [[ -n "$api_dirs" ]]; then
-                print_info "  API architectures to copy:"
-                echo "$api_dirs" | head -3 | while read dir; do
-                    if [[ -d "$dir" ]]; then
-                        local dirname=$(basename "$dir")
-                        local files_in_dir=$(find "$dir" -name "*.js" | wc -l)
-                        print_info "    - $dirname/ ($files_in_dir files)"
-                    fi
-                done
-                
-                local api_count=$(echo "$api_dirs" | wc -l)
-                if [[ $api_count -gt 3 ]]; then
-                    print_info "    ... and $((api_count - 3)) more API architectures"
-                fi
-            fi
+            print_info "  Source: $source_project/src"
+            print_info "  Destination: $dest_dir/src"
+            print_info "  HTML files to copy: $src_html"
+            print_info "  JavaScript files to copy: $src_js"
+            print_info "  CSS files to copy: $src_css"
+        else
+            print_warning "  Music in Numbers src/ folder not found at $source_project/src"
         fi
     fi
     
     return 0
 }
 
-# Copy Music in Numbers styles folder
-copy_music_in_numbers_styles() {
-    print_step "Copying Music in Numbers styles folder"
+# Copy Guia Turistico sibling project
+copy_guia_turistico_project() {
+    print_step "Copying Guia Turistico project content"
     
-    local source_dir="$SOURCE_DIR/submodules/music_in_numbers/src/styles"
-    local dest_dir="$PUBLIC_DIR/submodules/music_in_numbers/src/styles"
+    # Guia Turistico sibling project deployment
+    # Location: ../guia_turistico
+    # Strategy: Copy src/ folder with complete project structure
     
-    if [[ ! -d "$source_dir" ]]; then
-        print_warning "Music in Numbers styles directory not found in source"
-        print_info "  Expected: $source_dir"
-        return 0
-    fi
-    
-    # Count all CSS files using proper find syntax
-    local css_count=$(find "$source_dir" -type f -name "*.css" | wc -l)
-    
-    if [[ "$DRY_RUN" == "false" ]]; then
-        # Create destination directory if it doesn't exist
-        mkdir -p "$dest_dir"
-        
-        # Copy all files
-        cp -r "$source_dir"/* "$dest_dir/"
-        print_success "Copied: Music in Numbers styles ($css_count CSS files)"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_dir"
-            print_info "  Destination: $dest_dir"
-            print_info "  CSS files: $css_count"
-            
-            # Show detailed file information
-            local css_files=$(find "$dest_dir" -maxdepth 1 -name "*.css")
-            if [[ -n "$css_files" ]]; then
-                print_info "  CSS files copied:"
-                while IFS= read -r css_file; do
-                    if [[ -f "$css_file" ]]; then
-                        local filename=$(basename "$css_file")
-                        local filesize=$(du -h "$css_file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done <<< "$css_files"
-            fi
-        fi
-    else
-        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir"
-        
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  CSS files to copy: $css_count"
-            
-            # Show what files would be copied
-            local css_files=$(find "$source_dir" -maxdepth 1 -name "*.css")
-            if [[ -n "$css_files" ]]; then
-                print_info "  CSS files to copy:"
-                while IFS= read -r css_file; do
-                    if [[ -f "$css_file" ]]; then
-                        local filename=$(basename "$css_file")
-                        local filesize=$(du -h "$css_file" | cut -f1)
-                        print_info "    - $filename ($filesize)"
-                    fi
-                done <<< "$css_files"
-            fi
-        fi
-    fi
-    
-    return 0
-}
-
-# Copy Guia Turistico repository content
-copy_guia_turistico_repository() {
-    print_step "Copying Guia Turistico repository content"
-    
-    # Guia Turistico repository content deployment
-    # Repository: https://github.com/mpbarbosa/guia_turistico
-    # Strategy: Download to /tmp, extract src folder content to public folder
-    
-    local tmp_dir="/tmp/guia_turistico_download_$$"
-    local repo_url="https://github.com/mpbarbosa/guia_turistico"
+    local source_project="$PROJECT_ROOT/../guia_turistico"
     local dest_dir="$PUBLIC_DIR/submodules/guia_turistico"
     
+    # Check if sibling project exists
+    if [[ ! -d "$source_project" ]]; then
+        print_warning "Guia Turistico sibling project not found"
+        print_info "  Expected location: $source_project"
+        print_info "  Skipping Guia Turistico deployment"
+        return 0
+    fi
+    
     if [[ "$DRY_RUN" == "false" ]]; then
-        # Create temporary directory
-        mkdir -p "$tmp_dir"
+        # Create destination directory
+        mkdir -p "$dest_dir"
         
-        # Clone repository to temporary location
-        print_info "Downloading guia_turistico repository to temporary location..."
-        if git clone --depth 1 "$repo_url" "$tmp_dir" > /dev/null 2>&1; then
-            print_success "Repository downloaded successfully"
+        # Copy src folder (complete project structure)
+        if [[ -d "$source_project/src" ]]; then
+            local src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
+            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            local src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
+            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
-            # Check if src folder exists in the cloned repository
-            if [[ -d "$tmp_dir/src" ]]; then
-                # Count files to copy
-                local html_count=$(find "$tmp_dir/src" -type f -name "*.html" 2>/dev/null | wc -l)
-                local js_count=$(find "$tmp_dir/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-                local css_count=$(find "$tmp_dir/src" -type f -name "*.css" 2>/dev/null | wc -l)
-                local dirs_count=$(find "$tmp_dir/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
-                
-                # Create destination directory
-                mkdir -p "$dest_dir"
-                
-                # Copy src folder content to destination
-                cp -r "$tmp_dir/src"/* "$dest_dir/"
-                print_success "Copied: Guia Turistico content ($html_count HTML, $js_count JS, $css_count CSS files, $dirs_count subdirectories)"
-                
-                if [[ "$VERBOSE" == "true" ]]; then
-                    print_info "  Repository: $repo_url"
-                    print_info "  Temp location: $tmp_dir"
-                    print_info "  Destination: $dest_dir"
-                    print_info "  HTML files: $html_count"
-                    print_info "  JavaScript files: $js_count"
-                    print_info "  CSS files: $css_count"
-                    print_info "  Subdirectories: $dirs_count"
-                fi
-            else
-                print_warning "src folder not found in guia_turistico repository"
-                print_info "  Checked: $tmp_dir/src"
+            # Copy complete src directory structure
+            cp -r "$source_project/src"/* "$dest_dir/"
+            print_success "Copied: Guia Turistico src/ folder ($src_html HTML, $src_js JS, $src_css CSS files, $src_dirs subdirectories)"
+            
+            if [[ "$VERBOSE" == "true" ]]; then
+                print_info "  Source: $source_project/src"
+                print_info "  Destination: $dest_dir"
+                print_info "  HTML files: $src_html"
+                print_info "  JavaScript files: $src_js"
+                print_info "  CSS files: $src_css"
+                print_info "  Subdirectories: $src_dirs"
             fi
-            
-            # Clean up temporary directory
-            rm -rf "$tmp_dir"
-            print_info "Temporary files cleaned up"
         else
-            print_error "Failed to clone guia_turistico repository"
-            print_info "  Repository: $repo_url"
-            print_info "  Destination: $tmp_dir"
-            # Clean up on failure
-            rm -rf "$tmp_dir"
-            return 1
+            print_warning "Guia Turistico src/ folder not found"
         fi
     else
-        print_info "[DRY RUN] Would download: $repo_url → $tmp_dir"
-        print_info "[DRY RUN] Would copy: $tmp_dir/src/* → $dest_dir/"
+        print_info "[DRY RUN] Would copy Guia Turistico project"
         
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Repository URL: $repo_url"
-            print_info "  Temporary location: $tmp_dir"
-            print_info "  Final destination: $dest_dir"
+        if [[ -d "$source_project/src" ]]; then
+            local src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
+            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            local src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
+            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            
+            print_info "  Source: $source_project/src"
+            print_info "  Destination: $dest_dir"
+            print_info "  HTML files to copy: $src_html"
+            print_info "  JavaScript files to copy: $src_js"
+            print_info "  CSS files to copy: $src_css"
+            print_info "  Subdirectories to copy: $src_dirs"
+        else
+            print_warning "  Guia Turistico src/ folder not found at $source_project/src"
         fi
     fi
     
@@ -1101,9 +979,7 @@ validate_sync() {
         "$PUBLIC_DIR/assets/sass|SASS assets directory|*.scss|false"
         "$PUBLIC_DIR/assets/webfonts|Webfonts directory|font_files|false"
         "$PUBLIC_DIR/images|Images directory|image_files|false"
-        "$PUBLIC_DIR/submodules/music_in_numbers/src|Music in Numbers submodule|*.html|false"
-        "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts|Music in Numbers scripts|js_files|false"
-        "$PUBLIC_DIR/submodules/music_in_numbers/src/styles|Music in Numbers styles|*.css|false"
+        "$PUBLIC_DIR/submodules/music_in_numbers/src|Music in Numbers sibling project|*.html|false"
         "$PUBLIC_DIR/submodules/monitora_vagas/src|Monitora Vagas src folder|*.js|false"
         "$PUBLIC_DIR/submodules/monitora_vagas/public|Monitora Vagas public folder|*.html|false"
     )
@@ -1218,12 +1094,9 @@ show_summary() {
             fi
             if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src" ]]; then
                 local html_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src" -maxdepth 1 -name "*.html" | wc -l)
-                echo -e "  ✓ Music in Numbers submodule ($html_count HTML files)"
-            fi
-            if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" ]]; then
-                local js_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
-                local dirs_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -mindepth 1 -type d | wc -l)
-                echo -e "  ✓ Music in Numbers scripts ($js_count JS files, $dirs_count API architectures)"
+                local js_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+                local css_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
+                echo -e "  ✓ Music in Numbers sibling project ($html_count HTML, $js_count JS, $css_count CSS files)"
             fi
             if [[ -d "$PUBLIC_DIR/submodules/monitora_vagas/src" ]]; then
                 local html_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -name "*.html" | wc -l)
@@ -1246,10 +1119,10 @@ show_summary() {
                 echo -e "  ✓ index.html deployed"
             fi
             if [[ -d "$PRODUCTION_DIR/submodules/music_in_numbers" ]]; then
-                echo -e "  ✓ Music in Numbers submodule deployed"
+                echo -e "  ✓ Music in Numbers sibling project deployed"
             fi
             if [[ -d "$PRODUCTION_DIR/submodules/monitora_vagas" ]]; then
-                echo -e "  ✓ Monitora Vagas submodule deployed"
+                echo -e "  ✓ Monitora Vagas sibling project deployed"
             fi
             if [[ -f "/etc/systemd/system/busca_vagas_node_app.service" ]]; then
                 echo -e "  ✓ Busca Vagas systemd service deployed"
@@ -1575,10 +1448,8 @@ execute_step_1() {
     copy_sass_assets
     copy_webfonts
     copy_images
-    copy_music_in_numbers_submodule
-    copy_music_in_numbers_scripts
-    copy_music_in_numbers_styles
-    copy_guia_turistico_repository
+    copy_music_in_numbers_project
+    copy_guia_turistico_project
     copy_monitora_vagas_project
     copy_busca_vagas_project
     copy_additional_resources
