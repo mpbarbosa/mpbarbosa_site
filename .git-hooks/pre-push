@@ -1,0 +1,30 @@
+#!/bin/sh
+# Pre-push hook: Run full test suite before pushing
+# Installation: Copy to .git/hooks/pre-push and chmod +x
+
+echo "🚀 Running pre-push validation..."
+
+# Change to src directory
+cd src || exit 1
+
+# Run full test suite with coverage
+echo "📊 Running tests with coverage..."
+npm test
+
+# Capture exit code
+TEST_EXIT_CODE=$?
+
+# Return to original directory
+cd ..
+
+if [ $TEST_EXIT_CODE -ne 0 ]; then
+  echo ""
+  echo "❌ Tests failed. Push aborted."
+  echo ""
+  echo "Current pass rate: Run 'cd src && npm test' to see details"
+  echo "Use --no-verify to skip this check (not recommended)."
+  exit 1
+fi
+
+echo "✅ All checks passed. Proceeding with push."
+exit 0

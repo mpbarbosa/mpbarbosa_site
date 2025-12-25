@@ -671,7 +671,7 @@ jobs:
 
 - **[TEST_IMPROVEMENT_ROADMAP.md](TEST_IMPROVEMENT_ROADMAP.md)** - Core improvement plan
 - **[TEST_BEST_PRACTICES_ASSESSMENT.md](TEST_BEST_PRACTICES_ASSESSMENT.md)** - Best practices
-- **[SELENIUM_E2E_SETUP_GUIDE.md](../archive/SELENIUM_E2E_SETUP_GUIDE.md)** - Legacy E2E setup
+- **[SELENIUM_E2E_SETUP_GUIDE.md](../../development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - E2E testing setup (if needed)
 
 ---
 

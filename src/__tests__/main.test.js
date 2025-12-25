@@ -2,29 +2,40 @@
  * @jest-environment jsdom
  */
 
-import { describe, test, expect, beforeEach, jest } from '@jest/globals';
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { setupSmoothScrolling, setupContactForm, initializeSite } from '../scripts/main.mjs';
+import {
+  fullPageStructure,
+  emptyNavigation,
+  generateMultipleNavLinks,
+  minimalForm,
+  formTestData,
+  formFieldSelectors,
+} from './fixtures/index.js';
 
 describe('Main Site JavaScript Functionality', () => {
+  let originalScrollIntoView;
+  let originalAlert;
+
   beforeEach(() => {
-    // Set up DOM elements for testing
-    document.body.innerHTML = `
-      <nav>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <section id="about">About Section</section>
-      <section id="projects">Projects Section</section>
-      <section id="contact">
-        <form id="contact-form">
-          <input type="text" name="name" required>
-          <input type="email" name="email" required>
-          <textarea name="message" required></textarea>
-          <button type="submit">Send</button>
-        </form>
-      </section>
-    `;
+    // Save originals
+    originalScrollIntoView = Element.prototype.scrollIntoView;
+    originalAlert = window.alert;
+
+    // Set up DOM using centralized fixture
+    document.body.innerHTML = fullPageStructure;
+  });
+
+  afterEach(() => {
+    // Restore originals
+    Element.prototype.scrollIntoView = originalScrollIntoView;
+    window.alert = originalAlert;
+
+    // Clean up DOM
+    document.body.innerHTML = '';
+
+    // Clear all mocks
+    jest.clearAllMocks();
   });
 
   describe('Smooth Scrolling Navigation', () => {
@@ -161,7 +172,7 @@ describe('Main Site JavaScript Functionality', () => {
 
   describe('Edge Cases and Boundary Conditions', () => {
     test('should handle zero navigation links', () => {
-      document.body.innerHTML = '<div>No navigation</div>';
+      document.body.innerHTML = emptyNavigation;
 
       const linkCount = setupSmoothScrolling();
 
@@ -252,13 +263,8 @@ describe('Main Site JavaScript Functionality', () => {
     test('should handle multiple form submissions', () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
-      // Re-setup form for clean test
-      document.body.innerHTML = `
-        <form id="contact-form">
-          <input type="text" name="name" required>
-          <button type="submit">Send</button>
-        </form>
-      `;
+      // Re-setup form for clean test using fixture
+      document.body.innerHTML = minimalForm;
 
       setupContactForm();
 
@@ -380,15 +386,15 @@ describe('Main Site JavaScript Functionality', () => {
       contactLink.dispatchEvent(new Event('click'));
       expect(mockScrollIntoView).toHaveBeenCalledTimes(3);
 
-      // User fills and submits form
+      // User fills and submits form using test data
       const form = document.getElementById('contact-form');
-      const nameInput = form.querySelector('input[name="name"]');
-      const emailInput = form.querySelector('input[name="email"]');
-      const messageInput = form.querySelector('textarea[name="message"]');
+      const nameInput = form.querySelector(formFieldSelectors.name);
+      const emailInput = form.querySelector(formFieldSelectors.email);
+      const messageInput = form.querySelector(formFieldSelectors.message);
 
-      nameInput.value = 'John Doe';
-      emailInput.value = 'john@example.com';
-      messageInput.value = 'Hello, this is a test message!';
+      nameInput.value = formTestData.validData.name;
+      emailInput.value = formTestData.validData.email;
+      messageInput.value = formTestData.validData.message;
 
       form.dispatchEvent(new Event('submit'));
 
@@ -480,13 +486,8 @@ describe('Main Site JavaScript Functionality', () => {
     });
 
     test('should handle large number of navigation links', () => {
-      // Create many navigation links
-      const navHtml = Array.from({ length: 100 }, (_, i) => {
-        return `<a href="#section${i}">Section ${i}</a>
-                <div id="section${i}">Content ${i}</div>`;
-      }).join('');
-
-      document.body.innerHTML = navHtml;
+      // Use fixture generator for performance testing
+      document.body.innerHTML = generateMultipleNavLinks(100);
 
       const linkCount = setupSmoothScrolling();
 

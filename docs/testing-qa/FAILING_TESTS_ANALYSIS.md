@@ -1,18 +1,18 @@
 # Failing Tests Analysis & Fix Strategy
 
 **Date**: 2025-12-25  
-**Test Status**: 235 passing / 12 failing / 247 total (95.1% pass rate)  
+**Test Status** (Last Verified: 2025-12-25): 208 passing / 17 failing / 225 total (92.4% pass rate)  
 **Priority**: 🟡 **MEDIUM-HIGH** - Improve to 100% pass rate
 
 ---
 
 ## Executive Summary
 
-**Current Failure Rate**: 5.3% (12 failing tests)
+**Current Failure Rate**: 7.6% (17 failing tests)
 
 **Root Causes**:
 1. **Hardcoded String Expectations** - Tests check for exact strings that changed in scripts
-2. **Path Changes** - Tests expect `src/submodules/` but it was removed
+2. **Path Changes** - Tests expect old directory structure (submodules architecture deprecated)
 3. **Script Refactoring** - Function names and patterns changed in shell scripts
 4. **Deprecated Scripts** - Tests still check for scripts moved to `deprecated/`
 

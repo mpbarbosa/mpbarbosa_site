@@ -2,19 +2,19 @@
 
 > **📋 Document Scope: MP Barbosa Projects - Canonical Reference**
 > This is the **canonical version** of Git best practices for all MP Barbosa projects.
-> **Submodule Versions**: Each submodule may have a project-specific customization in their repository.
-> **See Also**: [src/submodules/README.md](/src/submodules/README.md) for submodule-specific guidance.
+> **Sibling Projects**: Each sibling project is managed independently in its own repository.
+> **Architecture**: This project uses sibling project architecture - see [docs/TERMINOLOGY_STANDARDIZATION.md](../TERMINOLOGY_STANDARDIZATION.md)
 
 ## Overview
 
-This guide establishes best practices for Git operations in MP Barbosa projects, ensuring proper version control, file history preservation, and clear change tracking across all repositories and submodules.
+This guide establishes best practices for Git operations in MP Barbosa projects, ensuring proper version control, file history preservation, and clear change tracking across all repositories and sibling projects.
 
 ## Table of Contents
 
 1. [File Operations](#file-operations)
 2. [Commit Best Practices](#commit-best-practices)
 3. [Branch Management](#branch-management)
-4. [Submodule Management](#submodule-management)
+4. [Sibling Project Management](#sibling-project-management)
 5. [Collaboration Guidelines](#collaboration-guidelines)
 6. [Common Pitfalls and Solutions](#common-pitfalls-and-solutions)
 7. [Quick Reference Commands](#quick-reference-commands)
@@ -191,40 +191,41 @@ git push origin docs/reorganize-structure
 git checkout main
 ```
 
-## Submodule Management
+## Sibling Project Management
 
-### Updating Submodules After File Operations
+> **⚠️ Architecture Note**: This project uses **sibling project architecture**, not git submodules.
+> Sibling projects are independent repositories managed separately. See [docs/TERMINOLOGY_STANDARDIZATION.md](../TERMINOLOGY_STANDARDIZATION.md)
 
-When you move files in a submodule, you need to update the parent repositories:
+### Managing Sibling Projects
+
+Sibling projects are located in the parent directory and managed independently:
 
 ```bash
-# 1. In the submodule (e.g., guia_js)
-cd src/submodules/guia_turistico/src/libs/guia_js
+# Navigate to sibling project
+cd ../music_in_numbers
+
+# Perform file operations with git mv
 git mv docs/file.md .github/file.md
 git commit -m "docs: Move file.md to .github/"
 git push origin main
 
-# 2. In the intermediate repository (e.g., guia_turistico)
-cd ../../..  # Go to guia_turistico root
-git add src/libs/guia_js
-git commit -m "Update guia_js submodule with documentation reorganization"
+# Navigate to another sibling project
+cd ../guia_turistico
+git mv docs/guide.md docs/updated-guide.md
+git commit -m "docs: Rename guide.md"
 git push origin main
 
-# 3. In the main repository
-cd ../../../..  # Go to main repository root
-git add src/submodules/guia_turistico
-git commit -m "Update guia_turistico submodule with latest changes"
-git push origin main
+# Each project is independent - no parent repository updates needed
 ```
 
-### Submodule File Organization Workflow
+### Sibling Project File Organization Workflow
 
 ```bash
-# Complete workflow for submodule file reorganization
+# Example workflow for sibling project file reorganization
 #!/bin/bash
 
-# Navigate to submodule
-cd src/submodules/guia_turistico/src/libs/guia_js
+# Navigate to sibling project
+cd ../music_in_numbers
 
 # Perform file operations with git mv
 git mv docs/JAVASCRIPT_BEST_PRACTICES.md .github/
@@ -234,20 +235,36 @@ git rm docs/obsolete-file.md
 # Update documentation references
 # Edit INDEX.md or other files to reflect new paths
 
-# Commit submodule changes
+# Commit changes
 git add -A
 git commit -m "docs: Reorganize documentation structure
 
 - Move JavaScript guidelines to .github/
-- Remove obsolete documentation
+- Remove obsolete documentation  
 - Update cross-references for new file locations"
 
-# Push submodule changes
+# Push changes
 git push origin main
 
-# Update parent repositories
-cd ../../..  # guia_turistico
-git add src/libs/guia_js
+# Return to main project
+cd ../mpbarbosa_site
+
+# Deploy updated sibling projects (if needed)
+./shell_scripts/sync_to_public.sh --step1
+```
+
+### Working with Multiple Sibling Projects
+
+```bash
+# Update all sibling projects at once
+for project in music_in_numbers guia_turistico monitora_vagas busca_vagas; do
+    echo "Updating $project..."
+    cd ../$project && git pull && git push
+    cd ../mpbarbosa_site
+done
+
+# Or use individual commands as documented in .github/copilot-instructions.md
+```
 git commit -m "Update guia_js submodule with documentation improvements"
 git push origin main
 
@@ -312,7 +329,7 @@ Note: File history may be broken due to using mv instead of git mv"
 git mv docs/javascript/* .github/javascript/
 git commit -m "rename: Move JavaScript documentation to .github/"
 
-git mv docs/testing/* .github/testing/
+git mv docs/testing-qa/* .github/testing-qa/
 git commit -m "rename: Move testing documentation to .github/"
 
 # Update references in separate commit

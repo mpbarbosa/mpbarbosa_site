@@ -1,0 +1,28 @@
+/* TEAM */
+
+Owner, Developer & Manager: Marcelo Pereira Barbosa
+Email: mpbarbosa@gmail.com
+Location: Brazil
+
+/* THANKS */
+
+HTML5 Boilerplate team for providing the foundation
+Material Design team for the design system
+Google Fonts for the typography
+
+/* TECHNOLOGY COLOPHON */
+
+HTML5, CSS3, JavaScript
+Material Design 3 (Material Web Components)
+Google Fonts (Roboto)
+Material Icons
+Live Server for development
+Git for version control
+Node.js and npm for package management
+
+/* SITE */
+
+Last update: 2025/01/15
+Language: English / Portuguese
+Doctype: HTML5
+IDE: Visual Studio Code

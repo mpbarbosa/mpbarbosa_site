@@ -83,14 +83,43 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 ## `sync_to_public.sh`
 
-### Version 2.0.0 (Current)
+### Version 2.1.0 (Current)
+**Release Date**: December 25, 2025
+
+**Architecture Migration - Sibling Projects**:
+- ✅ **Complete migration from submodules to sibling projects** (all projects moved to top level of public/)
+- ✅ Busca Vagas moved from `public/submodules/busca_vagas/` to `public/busca_vagas/`
+- ✅ Guia Turístico moved from `public/submodules/guia_turistico/` to `public/guia_turistico/`
+- ✅ Music in Numbers moved from `public/submodules/music_in_numbers/` to `public/music_in_numbers/`
+- ✅ Monitora Vagas continues at `public/monitora_vagas/` (already migrated)
+- ✅ **Removed `public/submodules/` directory entirely** - Clean architecture achieved
+- ✅ Updated all deployment functions (`copy_busca_vagas_project`, `copy_guia_turistico_project`, `copy_music_in_numbers_project`)
+- ✅ All projects now deploy to consistent top-level structure
+- ✅ Terminology standardization: "sibling projects" vs deprecated "git submodules"
+
+**Documentation Updates**:
+- Updated deployment architecture diagrams
+- Removed legacy "submodules" terminology from comments
+- Added migration notes to BUSCA_VAGAS_RESTRUCTURING.md, GUIA_TURISTICO_RESTRUCTURING.md, MUSIC_IN_NUMBERS_RESTRUCTURING_COMPLETE.md
+- See [docs/TERMINOLOGY_STANDARDIZATION.md](../docs/TERMINOLOGY_STANDARDIZATION.md) for complete architecture guide
+
+**Breaking Changes**:
+- URL structure changed: `/submodules/{project}/` → `/{project}/`
+- Nginx redirects recommended for backward compatibility:
+  ```nginx
+  location ~ ^/submodules/(.*)$ {
+      return 301 /$1;
+  }
+  ```
+
+### Version 2.0.0
 **Release Date**: November 9, 2025
 
 **Features**:
 - ✅ Two-step deployment architecture (Source → Public → Production)
 - ✅ Parametrized step control (--step1, --step2, --both-steps)
 - ✅ Flexible production directory configuration (default: /var/www/html)
-- ✅ Music in Numbers submodule support with complete module architecture
+- ✅ Sibling projects deployment (Music in Numbers, Guia Turístico, Busca Vagas, Monitora Vagas)
 - ✅ Enhanced backup system for both public and production directories
 - ✅ Production environment validation with permission checks
 - ✅ Comprehensive error handling with colored output
@@ -137,7 +166,7 @@ This document tracks version history and changes for shell scripts in the mpbarb
 - Backup system with timestamp-based versioning
 - Permission management (755/644) with www-data ownership
 - Dry-run mode for safe preview
-- Git submodule validation (checks project root)
+- Sibling project validation (checks project root)
 - **Comprehensive test coverage** (849-line shared Jest test suite, 53 tests, 52/53 passing - 98.1%)
 
 **Architecture Changes (v2.0.0)**:
@@ -153,9 +182,28 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 ---
 
-## `pull_all_submodules.sh`
+## `pull_all_submodules.sh` (DEPRECATED)
 
-### Current Version
+**Status**: ⚠️ DEPRECATED as of December 25, 2025
+**Reason**: Project migrated from git submodules to sibling project architecture
+
+### Migration Note
+This script is no longer needed. Sibling projects are now managed independently:
+
+```bash
+# Old way (deprecated)
+./shell_scripts/pull_all_submodules.sh
+
+# New way (use standard git commands in each project)
+cd ../music_in_numbers && git pull
+cd ../guia_turistico && git pull
+cd ../monitora_vagas && git pull
+cd ../busca_vagas && git pull
+```
+
+See [docs/development-guides/GIT_BEST_PRACTICES_GUIDE.md](../docs/development-guides/GIT_BEST_PRACTICES_GUIDE.md) for sibling project management.
+
+### Historical Features (Prior to Deprecation)
 **Features**:
 - Hierarchical submodule updates (bottom-up)
 - Dry-run mode
@@ -164,9 +212,28 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 ---
 
-## `push_all_submodules.sh`
+## `push_all_submodules.sh` (DEPRECATED)
 
-### Current Version
+**Status**: ⚠️ DEPRECATED as of December 25, 2025
+**Reason**: Project migrated from git submodules to sibling project architecture
+
+### Migration Note
+This script is no longer needed. Sibling projects are now managed independently:
+
+```bash
+# Old way (deprecated)
+./shell_scripts/push_all_submodules.sh
+
+# New way (use standard git commands in each project)
+cd ../music_in_numbers && git push
+cd ../guia_turistico && git push
+cd ../monitora_vagas && git push
+cd ../busca_vagas && git push
+```
+
+See [docs/development-guides/GIT_BEST_PRACTICES_GUIDE.md](../docs/development-guides/GIT_BEST_PRACTICES_GUIDE.md) for sibling project management.
+
+### Historical Features (Prior to Deprecation)
 **Features**:
 - Hierarchical submodule deployment (bottom-up)
 - Stash handling (--handle-stash)
@@ -177,7 +244,7 @@ This document tracks version history and changes for shell scripts in the mpbarb
 
 ## Monitora Vagas Project Updates
 
-### December 2, 2025 - Direct Fetch API Integration
+### December 25, 2025 - Direct Fetch API Integration
 **Recent Enhancements**:
 - ✅ Replaced API client service layer with direct fetch implementation
 - ✅ Added interactive hotel selection dropdown with dynamic population
@@ -237,4 +304,4 @@ All version references must be synchronized across:
 
 ---
 
-**Last Updated**: December 2, 2025
+**Last Updated**: December 25, 2025

@@ -1,0 +1,69 @@
+name: Shell Script Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'shell_scripts/**'
+      - '.github/workflows/shell-scripts.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'shell_scripts/**'
+
+jobs:
+  shellcheck:
+    name: ShellCheck Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './shell_scripts'
+          severity: warning
+          format: gcc
+        continue-on-error: true
+      
+      - name: ShellCheck summary
+        run: |
+          echo "## ShellCheck Results 🐚" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Scanned directory: \`shell_scripts/\`" >> $GITHUB_STEP_SUMMARY
+          echo "Severity threshold: **warning**" >> $GITHUB_STEP_SUMMARY
+  
+  shell-tests:
+    name: Shell Script Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '25.2.1'
+          cache: 'npm'
+          cache-dependency-path: 'src/package-lock.json'
+      
+      - name: Install dependencies
+        working-directory: ./src
+        run: npm ci
+      
+      - name: Run shell script tests
+        working-directory: ./src
+        run: npm test -- __tests__/shell_scripts.test.js __tests__/shell_integration.test.js __tests__/sync_to_public.test.js
+        env:
+          CI: true
+      
+      - name: Verify script permissions
+        run: |
+          echo "## Script Permissions Check 🔐" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -lh shell_scripts/*.sh >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

@@ -66,7 +66,10 @@ describe('Sibling Project Deployment', () => {
       'utf8'
     );
     expect(copilotInstructions).toContain('sibling projects');
-    expect(copilotInstructions).toContain('public/submodules/');
+    // Note: public/submodules/ directory removed in architecture migration
+    expect(copilotInstructions).toContain('public/busca_vagas/');
+    expect(copilotInstructions).toContain('public/guia_turistico/');
+    expect(copilotInstructions).toContain('public/music_in_numbers/');
   });
 });
 
@@ -78,11 +81,13 @@ const deprecatedScripts = [
 ];
 
 // 4. Refactor sync_to_public.test.js (PRIMARY)
-// Use regex patterns instead of exact strings
-expect(content).toMatch(/javascript|JS/i);
-expect(content).toMatch(/modules?/i);
-expect(content).toMatch(/API|api/);
+// Use regex patterns instead of exact strings for flexible matching
+expect(content).toMatch(`/javascript|JS/i`);  // Regex pattern: "javascript" OR "JS" (case-insensitive)
+expect(content).toMatch(`/modules?/i`);  // Regex pattern: "module" or "modules" (case-insensitive)
+expect(content).toMatch(`/API|api/`);  // Regex pattern: "API" or "api"
 ```
+
+**Note on Regex Patterns**: The patterns shown above use backticks for documentation clarity. In actual JavaScript code, use regex literals without backticks.
 
 **Success Criteria**:
 - ✅ 247/247 tests passing (100%)
@@ -380,9 +385,11 @@ describe('Project Redirect Pages', () => {
 // ❌ BEFORE: Exact match
 expect(content).toContain('Main JavaScript modules:');
 
-// ✅ AFTER: Flexible regex
-expect(content).toMatch(/javascript\s+modules?/i);
+// ✅ AFTER: Flexible regex pattern matching
+expect(content).toMatch(`/javascript\\s+modules?/i`);  // Regex: "javascript module(s)" with whitespace
 ```
+
+**Note**: Regex patterns shown with backticks (`) for documentation. In code, use regex literals: `/pattern/flags`
 
 #### B. Remove Commented Code (1-2 hours)
 

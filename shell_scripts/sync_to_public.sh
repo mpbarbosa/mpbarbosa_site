@@ -365,12 +365,12 @@ FILES TO SYNC:
     - assets/sass/ (SASS source files and partials)
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
-    - submodules/music_in_numbers/src/ (Music in Numbers sibling project)
-    - submodules/guia_turistico/ (Guia Turistico sibling project)
-    - submodules/monitora_vagas/src/ (Monitora Vagas legacy implementation)
-    - submodules/monitora_vagas/public/ (Monitora Vagas modern v2.0.0)
-    - submodules/busca_vagas/client/public/ (Busca Vagas frontend)
-    - submodules/busca_vagas/src/ (Busca Vagas API server)
+    - music_in_numbers/src/ (Music in Numbers sibling project)
+    - guia_turistico/ (Guia Turistico sibling project)
+    - monitora_vagas/src/ (Monitora Vagas legacy implementation)
+    - monitora_vagas/public/ (Monitora Vagas modern v2.0.0)
+    - busca_vagas/client/public/ (Busca Vagas frontend)
+    - busca_vagas/src/ (Busca Vagas API server - backend only)
     - Additional resources can be added by extending this script
 
 EOF
@@ -667,7 +667,7 @@ copy_music_in_numbers_project() {
     # Strategy: Copy src/ folder with complete module architecture
     
     local source_project="$PROJECT_ROOT/../music_in_numbers"
-    local dest_dir="$PUBLIC_DIR/submodules/music_in_numbers"
+    local dest_dir="$PUBLIC_DIR/music_in_numbers"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
@@ -731,7 +731,7 @@ copy_guia_turistico_project() {
     # Strategy: Copy src/ folder with complete project structure
     
     local source_project="$PROJECT_ROOT/../guia_turistico"
-    local dest_dir="$PUBLIC_DIR/submodules/guia_turistico"
+    local dest_dir="$PUBLIC_DIR/guia_turistico"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
@@ -799,7 +799,7 @@ copy_monitora_vagas_project() {
     # Strategy: Copy both src/ and public/ folders with symlink resolution
     
     local source_project="$PROJECT_ROOT/../monitora_vagas"
-    local dest_dir="$PUBLIC_DIR/submodules/monitora_vagas"
+    local dest_dir="$PUBLIC_DIR/monitora_vagas"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
@@ -873,9 +873,10 @@ copy_busca_vagas_project() {
     # Busca Vagas sibling project deployment
     # Location: ../busca_vagas
     # Strategy: Copy client/public/ folder and src/ API server code
+    # Deployment: public/busca_vagas (backend API, not in submodules)
     
     local source_project="$PROJECT_ROOT/../busca_vagas"
-    local dest_dir="$PUBLIC_DIR/submodules/busca_vagas"
+    local dest_dir="$PUBLIC_DIR/busca_vagas"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
@@ -979,9 +980,9 @@ validate_sync() {
         "$PUBLIC_DIR/assets/sass|SASS assets directory|*.scss|false"
         "$PUBLIC_DIR/assets/webfonts|Webfonts directory|font_files|false"
         "$PUBLIC_DIR/images|Images directory|image_files|false"
-        "$PUBLIC_DIR/submodules/music_in_numbers/src|Music in Numbers sibling project|*.html|false"
-        "$PUBLIC_DIR/submodules/monitora_vagas/src|Monitora Vagas src folder|*.js|false"
-        "$PUBLIC_DIR/submodules/monitora_vagas/public|Monitora Vagas public folder|*.html|false"
+        "$PUBLIC_DIR/music_in_numbers/src|Music in Numbers sibling project|*.html|false"
+        "$PUBLIC_DIR/monitora_vagas/src|Monitora Vagas src folder|*.js|false"
+        "$PUBLIC_DIR/monitora_vagas/public|Monitora Vagas public folder|*.html|false"
     )
     
     # Validate each path using the generic validation function
@@ -1004,27 +1005,27 @@ validate_sync() {
     fi
     
     # Add specific verbose information for Music in Numbers files if needed
-    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/submodules/music_in_numbers/src" ]]; then
+    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/music_in_numbers/src" ]]; then
         for file in "index.html" "music_in_numbers.html"; do
-            if [[ -f "$PUBLIC_DIR/submodules/music_in_numbers/src/$file" ]]; then
-                local file_size=$(du -h "$PUBLIC_DIR/submodules/music_in_numbers/src/$file" | cut -f1)
+            if [[ -f "$PUBLIC_DIR/music_in_numbers/src/$file" ]]; then
+                local file_size=$(du -h "$PUBLIC_DIR/music_in_numbers/src/$file" | cut -f1)
                 print_info "    - $file ($file_size)"
             fi
         done
     fi
     
     # Add specific verbose information for Busca Vagas files if needed
-    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/submodules/busca_vagas/client/public" ]]; then
-        if [[ -f "$PUBLIC_DIR/submodules/busca_vagas/client/public/index.html" ]]; then
-            local file_size=$(du -h "$PUBLIC_DIR/submodules/busca_vagas/client/public/index.html" | cut -f1)
+    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/busca_vagas/client/public" ]]; then
+        if [[ -f "$PUBLIC_DIR/busca_vagas/client/public/index.html" ]]; then
+            local file_size=$(du -h "$PUBLIC_DIR/busca_vagas/client/public/index.html" | cut -f1)
             print_info "    - index.html ($file_size)"
         fi
     fi
     
     # Add specific verbose information for Monitora Vagas files if needed
-    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/submodules/monitora_vagas/src" ]]; then
-        if [[ -f "$PUBLIC_DIR/submodules/monitora_vagas/src/index.html" ]]; then
-            local file_size=$(du -h "$PUBLIC_DIR/submodules/monitora_vagas/src/index.html" | cut -f1)
+    if [[ "$VERBOSE" == "true" && -d "$PUBLIC_DIR/monitora_vagas/src" ]]; then
+        if [[ -f "$PUBLIC_DIR/monitora_vagas/src/index.html" ]]; then
+            local file_size=$(du -h "$PUBLIC_DIR/monitora_vagas/src/index.html" | cut -f1)
             print_info "    - index.html ($file_size)"
         fi
     fi
@@ -1092,15 +1093,15 @@ show_summary() {
                 local image_count=$(find "$PUBLIC_DIR/images" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
                 echo -e "  ✓ Images ($image_count files)"
             fi
-            if [[ -d "$PUBLIC_DIR/submodules/music_in_numbers/src" ]]; then
-                local html_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src" -maxdepth 1 -name "*.html" | wc -l)
-                local js_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-                local css_count=$(find "$PUBLIC_DIR/submodules/music_in_numbers/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
+            if [[ -d "$PUBLIC_DIR/music_in_numbers/src" ]]; then
+                local html_count=$(find "$PUBLIC_DIR/music_in_numbers/src" -maxdepth 1 -name "*.html" | wc -l)
+                local js_count=$(find "$PUBLIC_DIR/music_in_numbers/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+                local css_count=$(find "$PUBLIC_DIR/music_in_numbers/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
                 echo -e "  ✓ Music in Numbers sibling project ($html_count HTML, $js_count JS, $css_count CSS files)"
             fi
-            if [[ -d "$PUBLIC_DIR/submodules/monitora_vagas/src" ]]; then
-                local html_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -name "*.html" | wc -l)
-                local js_count=$(find "$PUBLIC_DIR/submodules/monitora_vagas/src" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
+            if [[ -d "$PUBLIC_DIR/monitora_vagas/src" ]]; then
+                local html_count=$(find "$PUBLIC_DIR/monitora_vagas/src" -maxdepth 1 -name "*.html" | wc -l)
+                local js_count=$(find "$PUBLIC_DIR/monitora_vagas/src" -maxdepth 1 -type f \( -name "*.js" -o -name "*.mjs" \) | wc -l)
                 echo -e "  ✓ Monitora Vagas submodule ($html_count HTML files, $js_count JS files)"
             fi
             echo ""
@@ -1121,7 +1122,7 @@ show_summary() {
             if [[ -d "$PRODUCTION_DIR/submodules/music_in_numbers" ]]; then
                 echo -e "  ✓ Music in Numbers sibling project deployed"
             fi
-            if [[ -d "$PRODUCTION_DIR/submodules/monitora_vagas" ]]; then
+            if [[ -d "$PRODUCTION_DIR/monitora_vagas" ]]; then
                 echo -e "  ✓ Monitora Vagas sibling project deployed"
             fi
             if [[ -f "/etc/systemd/system/busca_vagas_node_app.service" ]]; then

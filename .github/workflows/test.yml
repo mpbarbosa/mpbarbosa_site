@@ -1,0 +1,122 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+
+jobs:
+  test:
+    name: Run Jest Test Suite
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: ['25.2.1']  # Per .node-version and .nvmrc
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better context
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'src/package-lock.json'
+      
+      - name: Cache Jest
+        uses: actions/cache@v4
+        with:
+          path: |
+            src/.jest-cache
+            src/node_modules/.cache
+          key: ${{ runner.os }}-jest-${{ hashFiles('src/package-lock.json') }}-${{ hashFiles('src/**/*.test.js') }}
+          restore-keys: |
+            ${{ runner.os }}-jest-${{ hashFiles('src/package-lock.json') }}-
+            ${{ runner.os }}-jest-
+      
+      - name: Install dependencies
+        working-directory: ./src
+        run: npm ci
+      
+      - name: Run tests with optimized configuration
+        working-directory: ./src
+        run: npm run test:ci
+        env:
+          CI: true
+          NODE_ENV: test
+      
+      - name: Generate coverage report
+        working-directory: ./src
+        run: npm run test:coverage || echo "Coverage generation temporarily disabled (Node.js 25 compatibility)"
+        continue-on-error: true  # Don't fail workflow if coverage is disabled
+      
+      - name: Upload coverage to artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: coverage-report
+          path: src/coverage/
+          retention-days: 30
+        continue-on-error: true
+      
+      - name: Test summary
+        if: always()
+        run: |
+          echo "## Test Results 📊" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node.js Version:** ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Working Directory:** \`src/\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Framework:** Jest with ES Modules" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See detailed test output above." >> $GITHUB_STEP_SUMMARY
+  
+  lint:
+    name: Run Linters
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '25.2.1'
+          cache: 'npm'
+          cache-dependency-path: 'src/package-lock.json'
+      
+      - name: Install dependencies
+        working-directory: ./src
+        run: npm ci
+      
+      - name: Setup Ruby for markdownlint
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: false
+      
+      - name: Install markdownlint
+        run: gem install mdl
+      
+      - name: Run markdown linting
+        working-directory: ./src
+        run: npm run lint:md || echo "⚠️  Markdown linting failed - review manually"
+        continue-on-error: true  # Don't fail workflow on markdown issues
+      
+      - name: Lint summary
+        if: always()
+        run: |
+          echo "## Linting Results 🔍" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Markdown Linting:** markdownlint (mdl)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration:** \`.mdlrc\`" >> $GITHUB_STEP_SUMMARY

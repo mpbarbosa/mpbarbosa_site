@@ -359,7 +359,7 @@ validate_deployment() {
         print_success "Guia Turístico submodule deployed"
     fi
     
-    if [[ -d "$DEST_DIR/submodules/monitora_vagas" ]]; then
+    if [[ -d "$DEST_DIR/monitora_vagas" ]]; then
         print_success "Monitora Vagas submodule deployed"
     fi
     

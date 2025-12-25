@@ -3,7 +3,7 @@
 **MP Barbosa Personal Website - Test Suite Documentation**
 
 **Last Updated:** 2025-12-25  
-**Test Status:** 234 passing / 13 failing / 247 total (94.7% pass rate)  
+**Test Status** (Last Verified: 2025-12-25): 208 passing / 17 failing / 225 total (92.4% pass rate)  
 **Coverage:** Jest with jsdom environment  
 **Test Directory:** `src/__tests__/` (Jest standard location)
 
@@ -22,7 +22,8 @@
 
 ### Reference Documents
 
-4. **[TEST_FAILURE_TROUBLESHOOTING.md](TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues
+4. **[REGEX_PATTERN_DOCUMENTATION_GUIDE.md](REGEX_PATTERN_DOCUMENTATION_GUIDE.md)** ⭐ **NEW** - Regex pattern documentation standards in tests
+5. **[TEST_FAILURE_TROUBLESHOOTING.md](TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues
 5. **[TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md)** - Test structure and patterns
 6. **[TEST_COVERAGE_REPORT.md](TEST_COVERAGE_REPORT.md)** - Coverage metrics and gaps
 7. **[TEST_COVERAGE_GAPS_ANALYSIS.md](TEST_COVERAGE_GAPS_ANALYSIS.md)** ⚠️ **CRITICAL** - Coverage collection broken (Node.js v25.2.1 issue)
@@ -256,6 +257,24 @@ afterEach(() => {
 ```
 
 ### Issue: Tests Pass Locally, Fail in CI
+
+**Symptom:** Different test results between local and CI environments
+
+**Cause:** Environment differences, timing issues, missing dependencies
+
+**CI Implementation:**
+
+```yaml
+# GitHub Actions workflows configured:
+# 1. .github/workflows/test.yml - Full Jest test suite
+# 2. .github/workflows/shell-scripts.yml - Shell script validation
+# 3. .github/workflows/accessibility.yml - Accessibility testing
+
+# Run on: push to main, pull requests
+# Node.js version: 25.2.1 (via .nvmrc)
+```
+
+**Fix:**
 
 **Cause:** Environment differences, timing issues
 

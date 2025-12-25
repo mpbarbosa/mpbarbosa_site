@@ -217,6 +217,4 @@ __marimo__/
 
 # Project-specific backup files
 # Created by sync_to_public.sh script
-.backups/
-public/.backups/
-.backups/
+

@@ -37,6 +37,11 @@ describe('Project Navigation Integration Tests', () => {
       }
     });
 
+    afterEach(() => {
+      // Clean up DOM
+      document.body.innerHTML = '';
+    });
+
     test('should have Music in Numbers project link in landing page', () => {
       if (!indexHTML) {
         console.warn('index.html not found, skipping test');

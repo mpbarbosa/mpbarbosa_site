@@ -1,0 +1,28 @@
+#!/bin/sh
+# Pre-commit hook: Run tests before allowing commit
+# Installation: Copy to .git/hooks/pre-commit and chmod +x
+
+echo "🧪 Running pre-commit tests..."
+
+# Change to src directory
+cd src || exit 1
+
+# Run tests
+npm test
+
+# Capture exit code
+TEST_EXIT_CODE=$?
+
+# Return to original directory
+cd ..
+
+if [ $TEST_EXIT_CODE -ne 0 ]; then
+  echo ""
+  echo "❌ Tests failed. Commit aborted."
+  echo ""
+  echo "Fix the failing tests before committing, or use --no-verify to skip this check."
+  exit 1
+fi
+
+echo "✅ All tests passed. Proceeding with commit."
+exit 0

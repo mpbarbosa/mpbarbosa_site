@@ -12,9 +12,11 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Main Project Documentation
 
-- **[Project Overview](../README.md)** - Main repository information
+- **[Project Overview](../.github/copilot-instructions.md)** - Comprehensive project guide (863 lines, 46.6KB) ⭐ **PRIMARY REFERENCE**
+- **[Development Guidelines](../.github/copilot-instructions.md)** - Coding standards, architecture, and workflow
 - **[Source Structure](../src/README.md)** - Source code organization
-- **[Development Guidelines](../.github/copilot-instructions.md)** - Coding standards and workflow
+- **[Validation Report 2025-12-25](VALIDATION_REPORT_20251225.md)** - Documentation quality validation results ⭐ **NEW**
+- **[Session Summary 2024-12-25](../SESSION_SUMMARY_2024-12-25.md)** - Test coverage improvement session ⭐ **NEW**
 
 ### Shell Scripts and Deployment
 
@@ -53,9 +55,12 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Documentation Standards & Best Practices
 
+- **[JSDoc Style Guide](development-guides/JSDOC_STYLE_GUIDE.md)** - Canonical JSDoc standards for all JavaScript code documentation ⭐ **NEW**
+- **[Git Best Practices Guide](development-guides/GIT_BEST_PRACTICES_GUIDE.md)** - Canonical Git workflow standards for sibling project architecture ⭐ **UPDATED 2025-12-25**
 - **[Markdown Best Practices](documentation-standards/MARKDOWN_BEST_PRACTICES.md)** - Comprehensive markdown style guide ⭐ **NEW**
 - **[Markdown Linting Implementation](documentation-standards/MARKDOWN_LINTING_IMPLEMENTATION.md)** - Automated markdown linting workflow ⭐ **NEW**
 - **[Documentation Style Guide](documentation-standards/DOCUMENTATION_STYLE_GUIDE.md)** - Formatting conventions, emoji usage guidelines, and document structure
+- **[Documentation Consistency Issues](documentation-standards/DOCUMENTATION_CONSISTENCY_ISSUES_20251225.md)** - Critical issues resolved: terminology, broken links, test status ⭐ **NEW 2025-12-25**
 
 ### Security & Dependency Management
 
@@ -69,12 +74,20 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Testing & Quality Assurance
 
+- **[Testing & QA Documentation Index](testing-qa/README.md)** - Central index for all test documentation (208/225 passing, 92.4%) ⭐ **UPDATED 2025-12-25**
+- **[Test Quick Start](testing-qa/TEST_QUICK_START.md)** - Get started with testing in 5 minutes ⭐ **UPDATED 2025-12-25**
+- **[Test Coverage Improvements 2024-12-25](testing-qa/TEST_COVERAGE_IMPROVEMENTS_2024-12-25.md)** - +54 tests added (279 total, 92.1% pass rate) ⭐ **NEW**
+- **[Test Failure Root Cause Analysis](testing-qa/TEST_FAILURE_ROOT_CAUSE_ANALYSIS.md)** - Detailed analysis of 13 current failures ⭐ **UPDATED 2025-12-25**
+- **[Test Improvement Roadmap](testing-qa/TEST_IMPROVEMENT_ROADMAP.md)** - Complete 16-week improvement plan (72-94h) ⭐ **UPDATED 2025-12-25**
+- **[Regex Pattern Documentation Guide](testing-qa/REGEX_PATTERN_DOCUMENTATION_GUIDE.md)** - Standards for regex documentation in tests ⭐ **NEW 2025-12-25**
 - **[Code Quality Remediation Plan](development-guides/CODE_QUALITY_REMEDIATION_PLAN.md)** - Comprehensive code quality improvement roadmap with prioritized action items (87 hours total, 407% ROI) ⭐ **NEW**
-- **[Comprehensive Testing Guide](testing-qa/COMPREHENSIVE_TESTING_GUIDE.md)** - Complete test strategy consolidating TEST_COVERAGE_ANALYSIS_REPORT.md and TEST_STRATEGY_REPORT.md (84KB, 2,887 lines) ⭐ **NEW**
-- **[Test Failure Analysis Consolidated](testing-qa/TEST_FAILURE_ANALYSIS_CONSOLIDATED.md)** - Root cause analysis and actionable fixes for test failures
-- **[Test Quick Start Guide v2](testing-qa/TEST_QUICK_START_GUIDE_v2.md)** - Quick reference for running and debugging tests
-- **[Test Generation Recommendations](testing-qa/TEST_GENERATION_RECOMMENDATIONS.md)** - AI-powered test case generation guidelines
-- **[Test Execution Analysis](testing-qa/TEST_EXECUTION_ANALYSIS_COMPREHENSIVE.md)** - Comprehensive test execution diagnostics and analysis
+- **[Comprehensive Testing Guide](testing-qa/COMPREHENSIVE_TESTING_GUIDE.md)** - Complete test strategy consolidating TEST_COVERAGE_ANALYSIS_REPORT.md and TEST_STRATEGY_REPORT.md (84KB, 2,887 lines) ⭐ **ARCHIVED**
+- **[Test Failure Analysis Consolidated](testing-qa/TEST_FAILURE_ANALYSIS_CONSOLIDATED.md)** - Root cause analysis and actionable fixes for test failures ⭐ **ARCHIVED**
+- **[Test Quick Start Guide v2](testing-qa/TEST_QUICK_START_GUIDE_v2.md)** - Quick reference for running and debugging tests ⭐ **ARCHIVED**
+- **[Test Generation Recommendations](testing-qa/TEST_GENERATION_RECOMMENDATIONS.md)** - AI-powered test case generation guidelines ⭐ **ARCHIVED**
+- **[Test Execution Analysis](testing-qa/TEST_EXECUTION_ANALYSIS_COMPREHENSIVE.md)** - Comprehensive test execution diagnostics and analysis ⭐ **ARCHIVED**
+
+**Note**: Archived test documents (23 files, 548KB) moved to Git history. Access with: `git show HEAD~N:docs/testing-qa/archive/FILENAME.md`
 
 #### Code Quality Assessment Reports
 
@@ -85,9 +98,19 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Advanced Architecture Patterns
 
+- **[Git Best Practices Guide](development-guides/GIT_BEST_PRACTICES_GUIDE.md)** - Canonical Git workflow standards for sibling project architecture ⭐ **UPDATED 2025-12-25**
+- **[JSDoc Style Guide](development-guides/JSDOC_STYLE_GUIDE.md)** - JavaScript documentation standards with ESLint integration ⭐ **NEW**
 - **[Functional Core, Imperative Shell Guide](development-guides/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Comprehensive architectural pattern guide with proven implementation strategies
 - **[Python Migration Plan](implementation-reports/PYTHON_MIGRATION_PLAN.md)** - Strategic migration from shell to Python for enhanced functionality
 - **[Dependency Injection Best Practices](development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
+
+### Architecture Migration (December 2025)
+
+- **[Terminology Standardization](TERMINOLOGY_STANDARDIZATION.md)** - "Submodules" → "Sibling Projects" migration complete ⭐ **NEW 2025-12-25**
+- **[Music in Numbers Restructuring](MUSIC_IN_NUMBERS_RESTRUCTURING_COMPLETE.md)** - Complete modularization achievement (85.8% code reduction) ⭐ **NEW**
+- **[Guia Turístico Restructuring](GUIA_TURISTICO_RESTRUCTURING.md)** - Top-level deployment migration ⭐ **NEW**
+- **[Busca Vagas Restructuring](BUSCA_VAGAS_RESTRUCTURING.md)** - Backend API architecture changes ⭐ **NEW**
+- **[Archive Removal Summary](ARCHIVE_REMOVAL_SUMMARY.md)** - 23 files (548KB) moved to Git history ⭐ **NEW 2025-12-25**
 
 ### Class Extraction Initiative
 

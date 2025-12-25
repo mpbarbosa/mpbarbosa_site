@@ -17,11 +17,18 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 
 **Architecture Highlights**:
 - **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
-- **Multi-project structure**: Main site + 4 sibling projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
+- **Sibling project structure**: Main site + 4 independent sibling projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced architectural patterns**: Dependency injection, functional core/imperative shell architecture
 - **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
 - **Sibling project integration**: Four external projects deployed alongside main site (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
+
+### 🏗️ **Sibling Project Architecture** (Important Terminology)
+This project uses a **sibling project architecture** where external repositories live alongside the main repository:
+- **What they are**: Independent Git repositories in parent directory (`../*`)
+- **NOT git submodules**: `.gitmodules` is empty, no `git submodule` commands used
+- **Deployment**: All projects deploy to top level of `public/` directory
+- **Management**: Each project managed independently with standard git commands
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
 The Music in Numbers sibling project has achieved **outstanding architectural transformation**:
@@ -65,6 +72,14 @@ The project includes comprehensive development environment configuration:
 - Auto-assigns PRs to @mpbarbosa with conventional commit messages
 - See: `docs/development-guides/DEPENDABOT_SETUP.md` for configuration details
 
+**Git Hooks** (`.git-hooks/`):
+- Custom git hook implementation for code quality enforcement
+- Pre-commit hook: Runs accessibility tests, markdown linting, and shell script validation
+- Pre-push hook: Runs full test suite before pushing changes
+- Installation: `./shell_scripts/install_hooks.sh` (creates symlinks from `.git-hooks/` to `.git/hooks/`)
+- Prevents commits/pushes that fail quality checks
+- See: `.git-hooks/README.md` for hook documentation
+
 ### Running the Development Server
 - Start the development server: `npm start` -- starts instantly (under 5 seconds)
 - Alternative command: `npx live-server --port=8080`
@@ -72,16 +87,17 @@ The project includes comprehensive development environment configuration:
 - Live reload is automatically enabled for HTML, CSS, and JavaScript changes
 
 ### Sibling Projects Architecture
-- **All four projects are sibling projects managed independently in their own repositories**
+- **All four projects are independent repositories managed as sibling projects**
 - Four sibling projects:
   - `../music_in_numbers` → Music in Numbers (Spotify analytics) - Client-side web application
   - `../guia_turistico` → Guia Turístico (Travel Guide) - Tourism guide application
   - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - Vanilla JavaScript SPA with API client
   - `../busca_vagas` → Busca Vagas (backend API service) - Node.js/Express with Puppeteer scraping
-- Sibling projects are managed independently in their own repositories
-- Deployment is handled via `sync_to_public.sh` which copies from sibling directories to `public/submodules/` (legacy directory naming)
-- If sibling projects aren't cloned to parent directory, deployment will skip them with warnings
-- **Note**: Git submodules are deprecated - `.gitmodules` file is empty, all projects use sibling architecture
+- Each sibling project is managed independently in its own repository
+- Deployment is handled via `sync_to_public.sh` which copies from sibling directories to `public/` directory
+- **Architecture Complete**: All sibling projects now deployed at top level of `public/` directory
+- **Legacy Directory Removed**: The `public/submodules/` directory has been completely migrated out
+- **Architecture Note**: This project does NOT use git submodules (`.gitmodules` is empty) - all projects use independent sibling architecture
 
 ## Validation and Testing
 
@@ -111,8 +127,8 @@ The project includes comprehensive development environment configuration:
    - Navigate to "Projetos (IA)" section
    - Click "Scripts de automação", "Music in Numbers", and "Monitora Vagas" project links
    - **Expected behavior**: Project links will show 404 errors unless `sync_to_public.sh --step1` has been run to deploy sibling projects
-   - This is normal behavior when sibling projects aren't deployed to `public/submodules/` directory
-   - All project links point to `public/submodules/` deployment directory
+   - This is normal behavior when sibling projects aren't deployed to `public/` directory
+   - All project links point to top-level directories in `public/`
 
 ### Performance and Layout
 - Test responsive design by resizing browser window (breakpoints: XLarge, Large, Medium, Small, XSmall)
@@ -131,60 +147,61 @@ mpbarbosa_site/
 ├── shell_scripts/              # Automation and deployment scripts
 │   ├── sync_to_public.sh       # Two-step deployment script (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
-│   ├── pull_all_submodules.sh  # DEPRECATED: Update sibling projects (use git pull in each project)
-│   ├── push_all_submodules.sh  # DEPRECATED: Push sibling projects (use git push in each project)
+│   ├── pull_all_submodules.sh  # DEPRECATED: Use "cd ../PROJECT && git pull" instead
+│   ├── push_all_submodules.sh  # DEPRECATED: Use "cd ../PROJECT && git push" instead
 │   ├── cleanup_old_folders.sh  # Automated cleanup utilities
 │   ├── fix_documentation_consistency.sh  # Documentation consistency fixes
 │   └── README.md              # Shell scripts documentation
 ├── public/                     # Deployment staging directory (sync_to_public.sh output)
 │   ├── index.html             # Synchronized main page
 │   ├── assets/                # Synchronized HTML5 UP Dimension assets
-│   ├── api/                   # Busca Vagas API proxy (symlink to backend in production)
-│   └── submodules/            # Sibling project deployment directory (legacy naming)
-│       ├── monitora_vagas/    # AFPESP hotel monitoring vanilla JavaScript app
-│       │   ├── src/           # Legacy source files
-│       │   │   ├── services/apiClient.js    # Original API client implementation
-│       │   │   ├── services/hotelCache.js   # Original caching layer
-│       │   │   └── styles/main.css          # Original stylesheet
-│       │   └── public/        # Modern production build (v2.0.0)
-│       │       ├── index.html               # Main UI with hotel search form
-│       │       ├── archived-versions/       # Historical UI iterations
-│       │       │   ├── api-test.html        # API testing tool
-│       │       │   ├── index-md3-cards.html # Material Design 3 cards version
-│       │       │   ├── index-md3.html       # Material Design 3 version
-│       │       │   └── index-original-backup.html # Original backup
-│       │       ├── config/                  # Configuration layer architecture
-│       │       │   ├── app.js               # Application constants and metadata
-│       │       │   ├── constants.js         # Business logic constants
-│       │       │   ├── environment.js       # Environment detection and API URLs
-│       │       │   └── index.js             # Unified configuration exports
-│       │       ├── services/                # Service layer
-│       │       │   ├── apiClient.js         # BuscaVagasAPIClient class with fetch
-│       │       │   └── hotelCache.js        # Hotel data caching service
-│       │       ├── js/                      # Application scripts
-│       │       │   ├── global.js            # Global utilities
-│       │       │   ├── guestCounter.js      # Guest counter widget with filter state management (FR-004A)
-│       │       │   ├── guestNumberFilter.js # Client-side guest number filtering (FR-004B)
-│       │       │   └── noScrollInterface.js # No-scroll UI optimization
-│       │       ├── css/                     # Modular CSS architecture
-│       │       │   ├── main.css             # Main stylesheet aggregator
-│       │       │   ├── global/              # Global styles (reset, base, variables)
-│       │       │   ├── components/          # Component styles (progress-bar, search-form)
-│       │       │   └── pages/               # Page-specific styles (home.css)
-│       │       ├── vendor/                  # Third-party libraries
-│       │       │   ├── jquery/              # jQuery 3.x
-│       │       │   ├── datepicker/          # Daterangepicker + Moment.js
-│       │       │   ├── select2/             # Select2 dropdown library
-│       │       │   ├── font-awesome-4.7/    # Font Awesome icons
-│       │       │   ├── mdi-font/            # Material Design Iconic Font
-│       │       │   ├── bootstrap-wizard/    # Bootstrap wizard components
-│       │       │   └── jquery-validate/     # jQuery validation plugin
-│       │       ├── sw.js                    # Service worker for PWA support
-│       │       └── favicon.ico              # Application favicon
-│       ├── music_in_numbers/  # Spotify analytics sibling project
-│       ├── guia_turistico/    # Travel guide sibling project
-│       ├── monitora_vagas/    # AFPESP hotel monitoring sibling project
-│       └── busca_vagas/       # Backend API service sibling project
+│   ├── busca_vagas/           # Busca Vagas API backend (not in submodules)
+│   │   ├── client/public/     # Frontend HTML interface
+│   │   └── src/               # Node.js/Express API server with Puppeteer
+│   ├── monitora_vagas/        # AFPESP hotel monitoring vanilla JavaScript app
+│   │   ├── src/               # Legacy source files
+│   │   │   ├── services/apiClient.js    # Original API client implementation
+│   │   │   ├── services/hotelCache.js   # Original caching layer
+│   │   │   └── styles/main.css          # Original stylesheet
+│   │   └── public/            # Modern production build (v2.0.0)
+│   │       ├── index.html                   # Main UI with hotel search form
+│   │       ├── archived-versions/           # Historical UI iterations
+│   │       │   ├── api-test.html            # API testing tool
+│   │       │   ├── index-md3-cards.html     # Material Design 3 cards version
+│   │       │   ├── index-md3.html           # Material Design 3 version
+│   │       │   └── index-original-backup.html # Original backup
+│   │       ├── config/                      # Configuration layer architecture
+│   │       │   ├── app.js                   # Application constants and metadata
+│   │       │   ├── constants.js             # Business logic constants
+│   │       │   ├── environment.js           # Environment detection and API URLs
+│   │       │   └── index.js                 # Unified configuration exports
+│   │       ├── services/                    # Service layer
+│   │       │   ├── apiClient.js             # BuscaVagasAPIClient class with fetch
+│   │       │   └── hotelCache.js            # Hotel data caching service
+│   │       ├── js/                          # Application scripts
+│   │       │   ├── global.js                # Global utilities
+│   │       │   ├── guestCounter.js          # Guest counter widget with filter state management (FR-004A)
+│   │       │   ├── guestNumberFilter.js     # Client-side guest number filtering (FR-004B)
+│   │       │   └── noScrollInterface.js     # No-scroll UI optimization
+│   │       ├── css/                         # Modular CSS architecture
+│   │       │   ├── main.css                 # Main stylesheet aggregator
+│   │       │   ├── global/                  # Global styles (reset, base, variables)
+│   │       │   ├── components/              # Component styles (progress-bar, search-form)
+│   │       │   └── pages/                   # Page-specific styles (home.css)
+│   │       ├── vendor/                      # Third-party libraries
+│   │       │   ├── jquery/                  # jQuery 3.x
+│       │   ├── datepicker/          # Daterangepicker + Moment.js
+│       │   ├── select2/             # Select2 dropdown library
+│       │   ├── font-awesome-4.7/    # Font Awesome icons
+│       │   ├── mdi-font/            # Material Design Iconic Font
+│       │   ├── bootstrap-wizard/    # Bootstrap wizard components
+│       │   └── jquery-validate/     # jQuery validation plugin
+│       ├── sw.js                    # Service worker for PWA support
+│       └── favicon.ico              # Application favicon
+│   ├── busca_vagas/           # Busca Vagas API backend
+│   ├── guia_turistico/        # Travel guide sibling project
+│   ├── monitora_vagas/        # Hotel monitoring sibling project
+│   └── music_in_numbers/      # Spotify analytics sibling project
 ├── src/                        # Main source directory
 │   ├── index.html             # Main landing page (HTML5 UP Dimension template)
 │   ├── package.json           # Node.js dependencies and scripts
@@ -205,25 +222,22 @@ mpbarbosa_site/
 │   │   ├── header.html       # Standalone header component
 │   │   └── projects.html     # Standalone projects page
 │   ├── pages/                 # Redirect pages for projects
-│   │   ├── music-in-numbers.html    # Redirects to public/submodules/music_in_numbers/
-│   │   ├── guia-turistico.html      # Redirects to public/submodules/guia_turistico/
-│   │   └── monitora-vagas.html      # Redirects to public/submodules/monitora_vagas/
+│   │   ├── music-in-numbers.html    # Redirects to public/music_in_numbers/
+│   │   ├── guia-turistico.html      # Redirects to public/guia_turistico/
+│   │   └── monitora-vagas.html      # Redirects to public/monitora_vagas/
 ├── .ai_workflow/              # AI workflow automation (gitignored, 1.3M)
 │   ├── backlog/               # Workflow task backlog with timestamped sessions
 │   ├── logs/                  # Workflow execution logs and debugging output
 │   ├── prompts/               # AI prompt templates and library
 │   └── summaries/             # Workflow session summaries and reports
-├── .backups/                  # Project-level backups (gitignored, 14M)
-│   └── workflow_migration_*/  # Dated backup directories from migrations
-├── .gitmodules               # Git submodule configuration (DEPRECATED - now empty)
+├── .gitmodules               # Empty file (git submodules deprecated, sibling architecture used)
 ├── index.html               # Simple redirect to mpbarbosa.com
 └── README.md               # Project documentation
 ```
 
-**Note**: Utility directories (`.ai_workflow/`, `.backups/`, `public/.backups/`) are gitignored and contain:
+**Note**: The `.ai_workflow/` utility directory is gitignored and contains:
 - **AI workflow state**: Automation session data, logs, and summaries (1.3M)
-- **Backup archives**: Deployment and migration backups (14M project, 588M public)
-- These directories are automatically managed and not tracked in version control
+- This directory is automatically managed and not tracked in version control
 
 ```
 
@@ -276,7 +290,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Dry-run mode for safe operation preview
 # - Proper web server permissions (755 for directories, 644 for files)
 # - Detailed deployment summary with file counts and validation
-# - Project test status (Dec 2025): 235/247 tests passing (95.1% pass rate)
+# - Project test status (Dec 2025): 208/225 tests passing (92.4% pass rate)
+# - Test coverage: Temporarily disabled due to Node.js 25.2.1 compatibility (see docs/testing-qa/COVERAGE_ISSUE.md)
 
 # Features (deploy_to_webserver.sh v2.0.0):
 # - Uses public directory as source (requires sync_to_public.sh step1 first)
@@ -286,7 +301,8 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Enhanced permission management for web-ready files
 # - Git validation updated to check project root instead of source directory
 # - All file paths updated for new public directory structure
-# - Comprehensive test coverage shared with sync_to_public.sh
+# - Comprehensive test suite with 225 tests (92.4% pass rate)
+# - Coverage reporting temporarily disabled (Node.js 25 compatibility issue)
 ```
 
 #### Busca Vagas API Server (Systemd Service)
@@ -332,18 +348,19 @@ cd ../monitora_vagas && git pull && git push
 # Busca Vagas (Backend API)
 cd ../busca_vagas && git pull && git push
 
-# Deploy sibling projects to public/submodules/ (legacy directory naming):
+# Deploy sibling projects to public/ directory (top level):
 ./shell_scripts/sync_to_public.sh --step1
 ```
 
 ### Important Notes
 - **Linting Tools**: Markdown linting available via `npm run lint:md` (markdownlint with `.mdlrc` configuration); no ESLint or HTMLHint configured
-- **Jest Testing Framework**: Comprehensive test suite exists in `src/__tests__/` with coverage reporting
+- **Jest Testing Framework**: Comprehensive test suite in `src/__tests__/` (Jest standard location for co-located tests)
 - **ES Modules**: Project uses `"type": "module"` with `.mjs` files for modern JavaScript
 - **Dependabot Integration**: Automated weekly dependency updates with PR grouping and security alerts (see `docs/development-guides/DEPENDABOT_SETUP.md`)
+- **Git Hooks**: Pre-commit and pre-push hooks for quality enforcement (see `.git-hooks/README.md`)
 - **EditorConfig**: Code formatting standards enforced via `.editorconfig` for consistent style across editors
 - **Node.js Version**: Project uses v25.2.1 (managed via `.node-version` and `.nvmrc`)
-- **No CI/CD**: No GitHub Actions or other continuous integration configured yet
+- **GitHub Actions CI**: Three workflows configured - accessibility testing, shell script validation, and Jest test suite
 - **HTML5 UP Dimension Template**: Uses responsive template with Font Awesome icons and jQuery utilities
 - **External dependencies**: Font Awesome webfonts bundled locally, jQuery and utilities included in assets
 - **Browser compatibility**: Designed for modern browsers supporting ES6+, CSS Grid, and HTML5 features
@@ -355,17 +372,17 @@ cd ../busca_vagas && git pull && git push
 1. **Sibling Project HTML Files**: Use relative paths only
 
    ```html
-   <!-- ✅ CORRECT for sibling project files deployed to public/submodules/ -->
+   <!-- ✅ CORRECT for sibling project files deployed to public/ directory -->
    <link rel="stylesheet" href="styles/themes.css">
    <script defer src="scripts/utils.js"></script>
 
    <!-- ❌ WRONG - causes 404 errors -->
-   <link rel="stylesheet" href="submodules/music_in_numbers/src/styles/themes.css">
+   <link rel="stylesheet" href="public/music_in_numbers/src/styles/themes.css">
    ```
 
 2. **Access Method Testing**: Always test both access patterns:
-   - Direct deployment access: `http://127.0.0.1:8080/submodules/music_in_numbers/src/`
-   - Direct deployment access: `http://127.0.0.1:8080/submodules/guia_turistico/`
+   - Direct deployment access: `http://127.0.0.1:8080/music_in_numbers/src/`
+   - Direct deployment access: `http://127.0.0.1:8080/guia_turistico/`
    - Main site integration: Via redirect pages (`src/pages/*.html`)
 
 3. **Path Strategy Consistency**: Never mix relative and absolute server-root paths within the same HTML file
@@ -377,7 +394,7 @@ cd ../busca_vagas && git pull && git push
 ## Troubleshooting
 
 ### Common Issues
-1. **404 errors for project links**: Normal when sibling projects aren't deployed to `public/submodules/` - run `sync_to_public.sh --step1` to deploy
+1. **404 errors for project links**: Normal when sibling projects aren't deployed to `public/` - run `sync_to_public.sh --step1` to deploy
 2. **Template assets not loading**: Verify `assets/` directory structure is intact
 3. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
 4. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
@@ -855,7 +872,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
 - **[Markdown Linting Solution Summary](../docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
 - **[Selenium E2E Setup Guide](../docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
-- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Consolidated testing and QA documentation (235/247 tests passing, Dec 2025)
+- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Consolidated testing and QA documentation (208/225 tests passing as of Dec 2025)
 - **[Test Quick Start](../docs/testing-qa/TEST_QUICK_START.md)** - Get started with testing in 5 minutes
 - **[Test Execution Guide](../docs/testing-qa/TEST_EXECUTION_GUIDE.md)** - Running tests, debugging failures, coverage analysis
 - **[Test Failure Troubleshooting](../docs/testing-qa/TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues and known failures
@@ -914,7 +931,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Resource Path Guide](../docs/deployment-architecture/RESOURCE_PATH_GUIDE.md)** - Path resolution troubleshooting
 
 **Testing & Quality**:
-- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Test suite documentation (235/247 tests, 95.1%)
+- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Test suite documentation (208/225 tests, 92.4%)
 - **[Code Quality Remediation Plan](../docs/development-guides/CODE_QUALITY_REMEDIATION_PLAN.md)** - Quality improvement roadmap
 - **[Test Failure Troubleshooting](../docs/testing-qa/TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues
 

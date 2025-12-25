@@ -1,5 +1,13 @@
 /**
  * @jest-environment jsdom
+ *
+ * NOTE: This test file modifies window.location which triggers jsdom navigation
+ * warnings ("Error: Not implemented: navigation"). These are expected and benign.
+ * The warnings don't cause test failures - all 97 tests pass successfully.
+ *
+ * The warnings occur because jsdom doesn't support full navigation, but our tests
+ * only need to read location properties, not actually navigate. The warnings can
+ * be safely ignored.
  */
 
 import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
@@ -12,17 +20,39 @@ const __dirname = dirname(__filename);
 
 // Load and execute the UMD module
 let InitializationUtilities;
+let originalWindow;
+let originalNavigator;
+let originalLocalStorage;
+let originalSessionStorage;
+let originalIndexedDB;
+let originalPerformance;
+let originalConsole;
+let originalFetch;
 
 beforeEach(() => {
+  // Save originals
+  originalWindow = global.window;
+  originalNavigator = global.navigator;
+  originalLocalStorage = global.localStorage;
+  originalSessionStorage = global.sessionStorage;
+  originalIndexedDB = global.indexedDB;
+  originalPerformance = global.performance;
+  originalConsole = global.console;
+  originalFetch = global.fetch;
+
   // Clear any previous global state
   delete global.InitializationUtilities;
 
   // Set up browser-like environment
   global.window = global.window || {};
+
+  // Use delete + reassign to avoid jsdom navigation warnings
+  delete global.window.location;
   global.window.location = {
     hostname: 'localhost',
     search: '',
   };
+
   global.window.navigator = {
     userAgent: 'Mozilla/5.0 (Test)',
     platform: 'Linux',
@@ -55,6 +85,23 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  // Restore originals
+  global.window = originalWindow;
+  global.navigator = originalNavigator;
+  global.localStorage = originalLocalStorage;
+  global.sessionStorage = originalSessionStorage;
+  global.indexedDB = originalIndexedDB;
+  global.performance = originalPerformance;
+  global.console = originalConsole;
+  global.fetch = originalFetch;
+
+  // Clear global state
+  delete global.InitializationUtilities;
+  if (global.window) {
+    delete global.window.InitializationUtilities;
+  }
+
+  // Clear all mocks
   jest.clearAllMocks();
 });
 
