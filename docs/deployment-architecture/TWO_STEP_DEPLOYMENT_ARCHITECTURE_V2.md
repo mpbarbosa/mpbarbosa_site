@@ -14,7 +14,7 @@ The Two-Step Deployment Architecture v2.0.0 represents a major enhancement to th
 ### Key Achievements
 - ✅ **Parametrized deployment**: Independent step execution with --step1, --step2, --both-steps options
 - ✅ **Flexible production paths**: Configurable production directory (default: /var/www/html)
-- ✅ **Comprehensive test coverage**: 849 lines, 53 tests, 52/53 passing (98.1% pass rate)
+- ✅ **Comprehensive test coverage**: Project-wide 235/247 tests passing (95.1% pass rate, Dec 2025)
 - ✅ **Enhanced backup system**: Separate backups for public and production directories
 - ✅ **Legacy compatibility**: Updated deploy_to_webserver.sh to use public directory as source
 - ✅ **Production validation**: Enhanced environment checks and permission validation
@@ -458,7 +458,8 @@ All modes support safety parameters:
 
 ### Testing Documentation
 - **Test Suite**: `src/__tests__/shell_scripts.test.js` - Comprehensive test coverage
-- **Test Results**: 52/53 tests passing (98.1% success rate)
+- **Project Test Status** (Dec 2025): 235 passed, 12 failed, 247 total (95.1% pass rate)
+- **Known Issues**: 12 failing tests in shell_scripts.test.js (content validation updates needed)
 
 ---
 

@@ -180,10 +180,10 @@ beforeAll(async () => {
 ### Phase 6: Run Verification Tests (5 minutes)
 
 ```bash
-# Test 1: Verify system shell
+# Test 1: Verify system shell (using /bin/sh shell binary)
 /bin/sh -c "echo 'Shell test OK'"
 
-# Test 2: Verify Node.js spawn
+# Test 2: Verify Node.js spawn (spawns /bin/sh process)
 node -e "const { spawn } = require('child_process'); \
          const proc = spawn('/bin/sh', ['-c', 'echo test']); \
          proc.stdout.on('data', d => console.log('Output:', d.toString()));"

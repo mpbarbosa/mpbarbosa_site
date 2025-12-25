@@ -8,40 +8,71 @@
 
 ### Shell Scripts Test Suite (13 failures)
 
-**File:** `src/__tests__/shell_scripts.test.js`
+**File:** `src/__tests__/shell_scripts.test.js`  
+**Status:** 234/247 tests passing (94.7% pass rate)  
+**Last Updated:** December 25, 2025
 
 #### Failure Pattern
 
 ```
 Expected: "Main JavaScript modules:"
-Received: Different content
+Received: Different or missing content
+
+Expected: "API Class Architectures:"
+Received: Different or missing content
 ```
 
-#### Root Cause
+#### Root Cause Analysis
 
-`sync_to_public.sh` v2.0.0 refactoring changed internal structure without updating test expectations.
+**Primary Issue:** Brittle test patterns using exact string matching instead of flexible regex patterns
+
+**Contributing Factors:**
+1. `sync_to_public.sh` v2.0.0 refactoring changed internal comment structure
+2. Tests use `toContain()` with exact strings instead of `toMatch()` with regex
+3. Script documentation evolved but test expectations didn't update
+4. 12 of 13 failures are in sync_to_public.sh validation tests
+
+**See:** TEST_PRACTICE_VIOLATIONS_ANALYSIS.md for comprehensive analysis
 
 #### Fix Strategy
 
-**Option 1: Update Tests (Recommended)**
+**Option 1: Update Tests with Flexible Patterns (Recommended)**
 
 ```javascript
-// Update expected content in shell_scripts.test.js
-expect(content).toContain('# JavaScript Modules'); // New format
-// instead of
-expect(content).toContain('Main JavaScript modules:'); // Old format
+// ❌ BEFORE: Brittle exact string match
+expect(content).toContain('Main JavaScript modules:');
+expect(content).toContain('API Class Architectures:');
+
+// ✅ AFTER: Flexible regex pattern
+expect(content).toMatch(/javascript\s+modules?/i);
+expect(content).toMatch(/API|api/);
+expect(content).toMatch(/architecture/i);
 ```
 
-**Option 2: Run Tests with Current Expectations**
+**Benefit:** Tests become resilient to minor wording changes while still validating core functionality.
+
+**Option 2: Run Tests Excluding Shell Scripts (Temporary Workaround)**
 
 ```bash
-# Skip failing tests temporarily
+# Skip failing shell script tests temporarily
 npm test -- --testPathIgnorePatterns=shell_scripts.test.js
+
+# Or run specific passing tests
+npm test -- main.test.js
+npm test -- project_navigation.test.js
 ```
+
+**Option 3: Update sync_to_public.sh Documentation (Not Recommended)**
+
+Reverting script comments is not recommended as v2.0.0 improvements should be preserved.
 
 #### Priority
 
-**Medium** - Tests are outdated, not code. Functionality is correct.
+**High** - Tests need updates to match new implementation (4-6 hours estimated, see TEST_IMPROVEMENT_ROADMAP.md Phase 1.1)
+
+**Impact:** 5.3% test failure rate affects test suite credibility
+
+**ROI:** Fixing brittle assertions provides 300-400% return on investment (see WEAK_ASSERTION_PATTERNS_ANALYSIS.md)
 
 ---
 

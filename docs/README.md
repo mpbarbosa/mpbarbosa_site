@@ -62,6 +62,11 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Security Vulnerability Resolution](development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security audit resolution using package overrides (8 vulnerabilities fixed: 5 High, 3 Moderate) ⭐ **NEW**
 - **[Dependabot Configuration](../.github/dependabot.yml)** - Automated weekly dependency monitoring and security updates
 
+#### Dependency Analysis Reports
+
+- **[Comprehensive Dependency Analysis Report](dependency-management/COMPREHENSIVE_DEPENDENCY_ANALYSIS_REPORT.md)** - Detailed dependency ecosystem analysis
+- **[Dependency Analysis Comprehensive](dependency-management/DEPENDENCY_ANALYSIS_COMPREHENSIVE.md)** - In-depth dependency evaluation and recommendations
+
 ### Testing & Quality Assurance
 
 - **[Code Quality Remediation Plan](development-guides/CODE_QUALITY_REMEDIATION_PLAN.md)** - Comprehensive code quality improvement roadmap with prioritized action items (87 hours total, 407% ROI) ⭐ **NEW**
@@ -70,6 +75,13 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 - **[Test Quick Start Guide v2](testing-qa/TEST_QUICK_START_GUIDE_v2.md)** - Quick reference for running and debugging tests
 - **[Test Generation Recommendations](testing-qa/TEST_GENERATION_RECOMMENDATIONS.md)** - AI-powered test case generation guidelines
 - **[Test Execution Analysis](testing-qa/TEST_EXECUTION_ANALYSIS_COMPREHENSIVE.md)** - Comprehensive test execution diagnostics and analysis
+
+#### Code Quality Assessment Reports
+
+- **[Code Quality Comprehensive Assessment](code-quality/CODE_QUALITY_COMPREHENSIVE_ASSESSMENT.md)** - Detailed code quality metrics and analysis
+- **[Code Quality Mitigation Strategy](code-quality/CODE_QUALITY_MITIGATION_STRATEGY.md)** - Strategic approach to code quality improvements
+- **[Comprehensive Code Quality Assessment Report](code-quality/COMPREHENSIVE_CODE_QUALITY_ASSESMENT_REPORT.md)** - Complete quality evaluation
+- **[Quick Remediation Checklist](code-quality/QUICK_REMEDIATION_CHECKLIST.md)** - Fast-track quality improvement actions
 
 ### Advanced Architecture Patterns
 
@@ -81,7 +93,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 #### **Phase 4: AddressDataExtractor Legacy Facade** ✅ **COMPLETED**
 
-- **[CLASS_EXTRACTION_PHASE_4.md](../src/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
+- **[CLASS_EXTRACTION_PHASE_4.md](../public/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
 - **Status**: All 4 phases completed (October 16, 2025)
 - **Achievement**: 11 classes extracted with 100% backward compatibility
 
@@ -96,27 +108,27 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Related Technical Documentation
 
-Located in submodules (requires authentication):
+Located in public/submodules (deployed via sync_to_public.sh):
 
 #### Core Architecture Documentation
 
-- **[Class Extraction Summary](../src/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_SUMMARY.md)** - Overview of all 4 phases
-- **[JavaScript Async-Await Best Practices](../src/submodules/guia_turistico/src/libs/guia_js/docs/javascript-async-await-best-practices.md)** - Async programming patterns
-- **[Low Coupling Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
-- **[High Cohesion Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/HIGH_COHESION_GUIDE.md)** - Single responsibility patterns
-- **[Referential Transparency Guide](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
+- **[Class Extraction Summary](../public/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_SUMMARY.md)** - Overview of all 4 phases
+- **[JavaScript Async-Await Best Practices](../public/submodules/guia_turistico/src/libs/guia_js/docs/javascript-async-await-best-practices.md)** - Async programming patterns
+- **[Low Coupling Guide](../public/submodules/guia_turistico/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
+- **[High Cohesion Guide](../public/submodules/guia_turistico/src/libs/guia_js/.github/HIGH_COHESION_GUIDE.md)** - Single responsibility patterns
+- **[Referential Transparency Guide](../public/submodules/guia_turistico/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
 
 #### Music in Numbers Project Documentation
 
-- **[JavaScript Modularization Report](../src/submodules/music_in_numbers/JAVASCRIPT_MODULARIZATION_COMPLETION_REPORT.md)** - Complete modularization achievements
-- **[Analytics API Extraction Report](../src/submodules/music_in_numbers/docs/ANALYTICS_API_EXTRACTION_COMPLETION_REPORT.md)** - Enterprise-grade analytics architecture
+- **[JavaScript Modularization Report](../public/submodules/music_in_numbers/JAVASCRIPT_MODULARIZATION_COMPLETION_REPORT.md)** - Complete modularization achievements
+- **[Analytics API Extraction Report](../public/submodules/music_in_numbers/docs/ANALYTICS_API_EXTRACTION_COMPLETION_REPORT.md)** - Enterprise-grade analytics architecture
 - **[Modularization Achievements Summary](development-guides/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - Overall project transformation results
 
 #### Implementation Documentation
 
-- **[AddressDataExtractor Module](../src/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
-- **[Integration Tests](../src/submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js)** - Comprehensive test coverage
-- **[Refactoring Summary](../src/submodules/guia_turistico/src/libs/guia_js/.github/REFACTORING_SUMMARY.md)** - Complete initiative overview
+- **[AddressDataExtractor Module](../public/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
+- **[Integration Tests](../public/submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js)** - Comprehensive test coverage
+- **[Refactoring Summary](../public/submodules/guia_turistico/src/libs/guia_js/.github/REFACTORING_SUMMARY.md)** - Complete initiative overview
 
 ## Project Architecture
 
@@ -321,11 +333,33 @@ Follow the established MP Barbosa coding standards:
 
 ## Contact
 
+For questions or contributions, please refer to the GitHub repository.
+
+---
+
+## 📋 Documentation Maintenance
+
+### Documentation Update Summaries
+
+Timestamped summaries of major documentation updates:
+
+- **[Documentation Update Summary 2025-12-18](documentation-updates/DOCUMENTATION_UPDATE_SUMMARY_20251218.md)** - Latest comprehensive update
+- **[Documentation Update Summary 2025-12-17 (Post-Commit)](documentation-updates/DOCUMENTATION_UPDATE_SUMMARY_20251217_POST_COMMIT.md)** - Post-commit refinements
+- **[Documentation Update Summary 2025-12-17](documentation-updates/DOCUMENTATION_UPDATE_SUMMARY_20251217.md)** - Major documentation reorganization
+
+### Miscellaneous Documentation
+
+- **[Documentation Updates](misc/documentation_updates.md)** - General documentation maintenance notes
+
+**Note**: Documentation update summaries are timestamped records of significant documentation changes. For current documentation status, see the main sections above.
+
+---
+
 For questions about this documentation or the class extraction initiative, refer to the development guidelines in the [Copilot Instructions](../.github/copilot-instructions.md).
 
 ---
 
-**Last Updated**: November 16, 2025
-**Status**: Phase 4 Complete - All class extraction phases successfully implemented
-**Workflow**: v2.0.0 - Complete modularization (25 modules, 6,893 lines extracted) ⭐
+**Last Updated**: 2025-12-25  
+**Status**: Phase 4 Complete - All class extraction phases successfully implemented  
+**Workflow**: v2.0.0 - Complete modularization (25 modules, 6,893 lines extracted) ⭐  
 **Author**: MP Barbosa with GitHub Copilot assistance

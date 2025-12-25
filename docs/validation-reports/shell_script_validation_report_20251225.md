@@ -214,7 +214,7 @@ All scripts are documented in `shell_scripts/README.md`:
 - ✅ **Parametrized step control**: Execute step1, step2, or both independently
 - ✅ **Production directory configuration**: `--production-dir` parameter support
 - ✅ **Enhanced summary reporting**: Separate summaries for each deployment step
-- ✅ **Comprehensive test coverage**: 849 lines of Jest tests (53 tests, 52/53 passing)
+- ✅ **Test coverage**: Project-wide 235/247 tests passing (95.1% pass rate, as of Dec 25, 2025)
 - ✅ **Improved help documentation**: Step-specific examples and options
 
 **Features:**
@@ -555,7 +555,7 @@ RED, GREEN, YELLOW, BLUE, PURPLE, CYAN, WHITE, NC  # ANSI color codes
    - Two-step deployment architecture
    - Staging (step1) and production (step2) phases
    - Parametrized execution control
-   - Comprehensive test coverage (849 lines, 52/53 passing)
+   - Project test status: 235/247 passing (95.1%, Dec 25, 2025)
 
 2. ✅ **deploy_to_webserver.sh** (v2.0.0)
    - Legacy production deployment

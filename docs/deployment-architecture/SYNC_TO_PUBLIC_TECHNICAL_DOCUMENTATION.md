@@ -467,8 +467,8 @@ copy_single_file "/test/source" "/test/dest" "test file" "false"
 
 The script is backed by a comprehensive Jest test suite:
 
-- **Test File**: `src/__tests__/shell_scripts.test.js` (849 lines)
-- **Test Coverage**: 53 tests total, 52/53 passing (98.1% pass rate)
+- **Test File**: `src/__tests__/shell_scripts.test.js` (comprehensive coverage)
+- **Project Test Status** (Dec 2025): 235 passed, 12 failed, 247 total (95.1% pass rate)
 - **Test Categories**:
   - Directory structure validation
   - Deployment script functionality
@@ -555,7 +555,7 @@ The `sync_to_public.sh` script demonstrates **enterprise-grade shell scripting**
 - **User Experience**: Color-coded output and detailed progress reporting
 - **Maintainability**: Clear code structure and extension points
 - **Documentation**: Comprehensive inline and external documentation
-- **Test Coverage**: 849-line Jest test suite with 53 tests, 52/53 passing (98.1% pass rate)
+- **Test Coverage**: Project-wide 235/247 tests passing (95.1% pass rate, Dec 2025)
 - **Automated Validation**: Comprehensive test scenarios for all deployment steps
 
 This technical implementation serves as a **reference example** for professional shell script development, demonstrating advanced bash programming techniques and software engineering best practices.

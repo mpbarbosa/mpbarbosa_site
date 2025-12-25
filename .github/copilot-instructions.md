@@ -6,6 +6,9 @@
 > Well within AI context limits (128K+ tokens for modern models).
 > Alternative: Split into `/docs/` if file exceeds 1,000 lines or 200K characters.
 
+> **📅 Last Verified**: 2025-12-25  
+> This document is actively maintained and verified for accuracy.
+
 **ALWAYS** reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the information here.
 
 ## Project Overview
@@ -16,12 +19,12 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 - **HTML5 UP Dimension Template**: Fully responsive design with modern CSS3/HTML5 features and Font Awesome integration
 - **Multi-project structure**: Main site + 4 sibling projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
-- **Advanced submodule patterns**: Dependency injection, functional core/imperative shell architecture
+- **Advanced architectural patterns**: Dependency injection, functional core/imperative shell architecture
 - **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
 - **Sibling project integration**: Four external projects deployed alongside main site (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
-The Music in Numbers subproject has achieved **outstanding architectural transformation**:
+The Music in Numbers sibling project has achieved **outstanding architectural transformation**:
 - **Overall Code Reduction**: 85.8% (2,161 → 306 lines across major pages)
 - **Index.html**: 84.5% reduction (1,581 → 246 lines) with 9 JavaScript modules
 - **Artist.html**: 89.7% reduction (580 → 60 lines) with 3 specialized modules
@@ -68,17 +71,17 @@ The project includes comprehensive development environment configuration:
 - The server runs at: `http://127.0.0.1:8080` or `http://localhost:8080`
 - Live reload is automatically enabled for HTML, CSS, and JavaScript changes
 
-### Git Submodules (DEPRECATED - NOW SIBLING PROJECTS)
-- **All submodules have been converted to sibling projects for easier management**
-- Four sibling projects (not submodules):
+### Sibling Projects Architecture
+- **All four projects are sibling projects managed independently in their own repositories**
+- Four sibling projects:
   - `../music_in_numbers` → Music in Numbers (Spotify analytics) - Client-side web application
   - `../guia_turistico` → Guia Turístico (Travel Guide) - Tourism guide application
-  - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - React SPA with API client
+  - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - Vanilla JavaScript SPA with API client
   - `../busca_vagas` → Busca Vagas (backend API service) - Node.js/Express with Puppeteer scraping
 - Sibling projects are managed independently in their own repositories
-- Deployment is handled via `sync_to_public.sh` which copies from sibling directories
-- If sibling projects aren't cloned, deployment will skip them with warnings
-- **Note**: All projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas) are now sibling projects for consistent architecture
+- Deployment is handled via `sync_to_public.sh` which copies from sibling directories to `public/submodules/` (legacy directory naming)
+- If sibling projects aren't cloned to parent directory, deployment will skip them with warnings
+- **Note**: Git submodules are deprecated - `.gitmodules` file is empty, all projects use sibling architecture
 
 ## Validation and Testing
 
@@ -107,9 +110,9 @@ The project includes comprehensive development environment configuration:
 4. **Project Links**:
    - Navigate to "Projetos (IA)" section
    - Click "Scripts de automação", "Music in Numbers", and "Monitora Vagas" project links
-   - **Expected behavior**: Submodule links will show 404 errors unless submodules are properly initialized
-   - This is normal and documented behavior in environments without authentication
-   - All project links follow consistent submodule navigation pattern
+   - **Expected behavior**: Project links will show 404 errors unless `sync_to_public.sh --step1` has been run to deploy sibling projects
+   - This is normal behavior when sibling projects aren't deployed to `public/submodules/` directory
+   - All project links point to `public/submodules/` deployment directory
 
 ### Performance and Layout
 - Test responsive design by resizing browser window (breakpoints: XLarge, Large, Medium, Small, XSmall)
@@ -128,8 +131,8 @@ mpbarbosa_site/
 ├── shell_scripts/              # Automation and deployment scripts
 │   ├── sync_to_public.sh       # Two-step deployment script (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
-│   ├── pull_all_submodules.sh  # Update all submodules
-│   ├── push_all_submodules.sh  # Deploy submodule changes
+│   ├── pull_all_submodules.sh  # DEPRECATED: Update sibling projects (use git pull in each project)
+│   ├── push_all_submodules.sh  # DEPRECATED: Push sibling projects (use git push in each project)
 │   ├── cleanup_old_folders.sh  # Automated cleanup utilities
 │   ├── fix_documentation_consistency.sh  # Documentation consistency fixes
 │   └── README.md              # Shell scripts documentation
@@ -137,7 +140,7 @@ mpbarbosa_site/
 │   ├── index.html             # Synchronized main page
 │   ├── assets/                # Synchronized HTML5 UP Dimension assets
 │   ├── api/                   # Busca Vagas API proxy (symlink to backend in production)
-│   └── submodules/            # Synchronized subproject content
+│   └── submodules/            # Sibling project deployment directory (legacy naming)
 │       ├── monitora_vagas/    # AFPESP hotel monitoring vanilla JavaScript app
 │       │   ├── src/           # Legacy source files
 │       │   │   ├── services/apiClient.js    # Original API client implementation
@@ -202,13 +205,26 @@ mpbarbosa_site/
 │   │   ├── header.html       # Standalone header component
 │   │   └── projects.html     # Standalone projects page
 │   ├── pages/                 # Redirect pages for projects
-│   │   ├── music-in-numbers.html    # Redirects to submodule (renamed from music_in_numbers.html)
-│   │   ├── guia-turistico.html      # Redirects to submodule (renamed from guia_turistico.html)
-│   │   └── monitora-vagas.html      # Redirects to sibling project (renamed from monitora_vagas.html)
-│   └── submodules/            # Sibling project content (deployed from ../project_name)
+│   │   ├── music-in-numbers.html    # Redirects to public/submodules/music_in_numbers/
+│   │   ├── guia-turistico.html      # Redirects to public/submodules/guia_turistico/
+│   │   └── monitora-vagas.html      # Redirects to public/submodules/monitora_vagas/
+├── .ai_workflow/              # AI workflow automation (gitignored, 1.3M)
+│   ├── backlog/               # Workflow task backlog with timestamped sessions
+│   ├── logs/                  # Workflow execution logs and debugging output
+│   ├── prompts/               # AI prompt templates and library
+│   └── summaries/             # Workflow session summaries and reports
+├── .backups/                  # Project-level backups (gitignored, 14M)
+│   └── workflow_migration_*/  # Dated backup directories from migrations
 ├── .gitmodules               # Git submodule configuration (DEPRECATED - now empty)
 ├── index.html               # Simple redirect to mpbarbosa.com
 └── README.md               # Project documentation
+```
+
+**Note**: Utility directories (`.ai_workflow/`, `.backups/`, `public/.backups/`) are gitignored and contain:
+- **AI workflow state**: Automation session data, logs, and summaries (1.3M)
+- **Backup archives**: Deployment and migration backups (14M project, 588M public)
+- These directories are automatically managed and not tracked in version control
+
 ```
 
 ### Development Workflow
@@ -260,7 +276,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Dry-run mode for safe operation preview
 # - Proper web server permissions (755 for directories, 644 for files)
 # - Detailed deployment summary with file counts and validation
-# - Comprehensive test coverage (849 lines, 53 tests, 52/53 passing)
+# - Project test status (Dec 2025): 235/247 tests passing (95.1% pass rate)
 
 # Features (deploy_to_webserver.sh v2.0.0):
 # - Uses public directory as source (requires sync_to_public.sh step1 first)
@@ -302,8 +318,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 
 #### Sibling Project Management
 ```bash
-# All projects are now sibling projects (no git submodules)
-# Manage each project independently in their own directories:
+# All projects are sibling projects - manage each independently:
 
 # Music in Numbers (Spotify analytics)
 cd ../music_in_numbers && git pull && git push
@@ -317,8 +332,8 @@ cd ../monitora_vagas && git pull && git push
 # Busca Vagas (Backend API)
 cd ../busca_vagas && git pull && git push
 
-# Note: pull_all_submodules.sh and push_all_submodules.sh scripts are deprecated
-# Each sibling project should be managed independently
+# Deploy sibling projects to public/submodules/ (legacy directory naming):
+./shell_scripts/sync_to_public.sh --step1
 ```
 
 ### Important Notes
@@ -337,10 +352,10 @@ cd ../busca_vagas && git pull && git push
 ### Critical Path Resolution Guidelines (October 2025)
 **ALWAYS** follow these path resolution rules to prevent critical resource loading failures:
 
-1. **Submodule HTML Files**: Use relative paths only
+1. **Sibling Project HTML Files**: Use relative paths only
 
    ```html
-   <!-- ✅ CORRECT for submodule files -->
+   <!-- ✅ CORRECT for sibling project files deployed to public/submodules/ -->
    <link rel="stylesheet" href="styles/themes.css">
    <script defer src="scripts/utils.js"></script>
 
@@ -349,9 +364,9 @@ cd ../busca_vagas && git pull && git push
    ```
 
 2. **Access Method Testing**: Always test both access patterns:
-   - Direct sibling project access: `http://127.0.0.1:8080/submodules/music_in_numbers/src/`
-   - Direct sibling project access: `http://127.0.0.1:8080/submodules/guia_turistico/`
-   - Main site integration: Via redirect pages or navigation
+   - Direct deployment access: `http://127.0.0.1:8080/submodules/music_in_numbers/src/`
+   - Direct deployment access: `http://127.0.0.1:8080/submodules/guia_turistico/`
+   - Main site integration: Via redirect pages (`src/pages/*.html`)
 
 3. **Path Strategy Consistency**: Never mix relative and absolute server-root paths within the same HTML file
 
@@ -362,7 +377,7 @@ cd ../busca_vagas && git pull && git push
 ## Troubleshooting
 
 ### Common Issues
-1. **404 errors for project links**: Normal when sibling projects aren't cloned to parent directory
+1. **404 errors for project links**: Normal when sibling projects aren't deployed to `public/submodules/` - run `sync_to_public.sh --step1` to deploy
 2. **Template assets not loading**: Verify `assets/` directory structure is intact
 3. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
 4. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
@@ -840,7 +855,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Best practices for AI-generated documentation and mdl configuration
 - **[Markdown Linting Solution Summary](../docs/documentation-standards/MARKDOWN_LINTING_SOLUTION_SUMMARY.md)** - Complete solution for recurring markdown linting issues
 - **[Selenium E2E Setup Guide](../docs/development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration (Status: Not Yet Configured)
-- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Consolidated testing and QA documentation (234/247 tests passing)
+- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Consolidated testing and QA documentation (235/247 tests passing, Dec 2025)
 - **[Test Quick Start](../docs/testing-qa/TEST_QUICK_START.md)** - Get started with testing in 5 minutes
 - **[Test Execution Guide](../docs/testing-qa/TEST_EXECUTION_GUIDE.md)** - Running tests, debugging failures, coverage analysis
 - **[Test Failure Troubleshooting](../docs/testing-qa/TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues and known failures
@@ -881,5 +896,43 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Shell Script Validation History](../docs/validation-reports/SHELL_SCRIPT_VALIDATION_HISTORY_CONSOLIDATED.md)** - Shell script quality and best practices compliance history
 
 **Note**: Individual timestamped validation reports have been archived into consolidated files to maintain repository cleanliness while preserving complete historical analysis.
+
+---
+
+## 🔗 See Also
+
+### Quick Navigation to Key Documentation
+
+**Getting Started**:
+- **[Project README](../README.md)** - Project overview and setup
+- **[Testing Quick Start](../docs/testing-qa/TEST_QUICK_START.md)** - Get testing in 5 minutes
+- **[Shell Scripts README](../shell_scripts/README.md)** - All automation scripts
+
+**Deployment & Architecture**:
+- **[Deployment Architecture Index](../docs/deployment-architecture/README.md)** - Deployment documentation hub
+- **[Two-Step Deployment v2.0.0](../docs/deployment-architecture/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Complete deployment workflow
+- **[Resource Path Guide](../docs/deployment-architecture/RESOURCE_PATH_GUIDE.md)** - Path resolution troubleshooting
+
+**Testing & Quality**:
+- **[Testing Documentation Index](../docs/testing-qa/README.md)** - Test suite documentation (235/247 tests, 95.1%)
+- **[Code Quality Remediation Plan](../docs/development-guides/CODE_QUALITY_REMEDIATION_PLAN.md)** - Quality improvement roadmap
+- **[Test Failure Troubleshooting](../docs/testing-qa/TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues
+
+**Development Guides**:
+- **[Security Vulnerability Resolution](../docs/development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security fixes
+- **[Dependabot Setup](../docs/development-guides/DEPENDABOT_SETUP.md)** - Automated dependency updates
+- **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Documentation standards
+
+**Workflow Automation**:
+- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - v1.0.0 through v2.0.0
+- **[Workflow Modular Architecture](../shell_scripts/workflow/README.md)** - Complete module documentation
+- **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Automation roadmap
+
+**Architecture Patterns**:
+- **[Dependency Injection Best Practices](../docs/development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns
+- **[Functional Core, Imperative Shell Guide](../docs/development-guides/FUNCTIONAL_CORE_IMPERATIVE_SHELL_GUIDE.md)** - Architecture pattern
+- **[Modularization Achievements](../docs/development-guides/MODULARIZATION_ACHIEVEMENTS_SUMMARY.md)** - 85.8% code reduction
+
+---
 
 Always verify the development server starts successfully and the main page loads before making any modifications to the codebase.

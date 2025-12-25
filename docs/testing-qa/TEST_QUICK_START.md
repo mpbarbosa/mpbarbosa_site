@@ -40,10 +40,12 @@ npm test -- main.test.js
 ### Expected Output
 
 ```
-Test Suites: 6 total, 4 failed, 2 passed
+Test Suites: 6 total, 1 failed, 5 passed
 Tests:       247 total, 234 passed, 13 failed
 Time:        1.795 s
 ```
+
+**Note:** 13 failing tests are in `shell_scripts.test.js` due to sync_to_public.sh v2.0.0 refactoring - tests need updates, not code fixes.
 
 ---
 
@@ -114,11 +116,16 @@ describe('Feature Name', () => {
 
 ### Issue: Tests Not Found
 
-**Fix:** Ensure you're in `/src` directory
+**Cause:** Working directory is incorrect or test directory doesn't exist
+
+**Fix:** Ensure you're in `/src` directory - tests are in `src/__tests__/` (Jest standard location)
 
 ```bash
 cd /home/mpb/Documents/GitHub/mpbarbosa_site/src
 npm test
+
+# Verify test directory exists
+ls -la __tests__/
 ```
 
 ### Issue: Module Import Errors

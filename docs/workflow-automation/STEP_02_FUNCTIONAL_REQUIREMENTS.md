@@ -152,8 +152,8 @@ The system SHALL detect broken absolute path references in documentation files.
 
 | Format | Extracted | Example |
 |--------|-----------|---------|
-| Markdown link | ✅ | `[text](/path/to/file.md)` |
-| Image reference | ✅ | `![alt](/images/pic.png)` |
+| Markdown link | ✅ | `[text](/path/to/file.md)` _(example)_ |
+| Image reference | ✅ | `![alt](/images/pic.png)` _(example)_ |
 | Relative path | ❌ | `[text](../file.md)` |
 
 #### FR-2.2 Priority Documentation Files
@@ -266,7 +266,7 @@ The system SHALL create backlog reports for detected consistency issues and auto
 
 ### Broken References
 ⚠️  **BROKEN LINK**: [source_file] references missing file
-   - Reference: /path/to/missing/file
+   - Reference: /path/to/missing/file _(example path - not a real file)_
    - Line [N]: [content]
    - Action: Update reference or restore missing file
 
@@ -594,6 +594,7 @@ The system SHALL generate comprehensive broken reference reports.
 **Report Format:**
 
 ```text
+# Example output format - paths below are not real files
 filename: /path/to/missing/file
 .github/copilot-instructions.md: /docs/MISSING.md
 README.md: /shell_scripts/DELETED.sh
@@ -922,6 +923,7 @@ v1           → Missing MINOR and PATCH
 **Detected Patterns:**
 
 ```markdown
+# Example patterns - not real file paths
 [Link text](/absolute/path/to/file.md)
 ![Image alt](/images/picture.png)
 [Reference](/docs/MISSING.md)
@@ -972,6 +974,7 @@ VALIDATION TASKS:
 **Broken References File Content:**
 
 ```text
+# Example broken references - not real files
 README.md: /docs/MISSING_GUIDE.md
 .github/copilot-instructions.md: /shell_scripts/deprecated_script.sh
 docs/ARCHITECTURE.md: /images/deleted_diagram.png

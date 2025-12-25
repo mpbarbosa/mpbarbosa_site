@@ -2,9 +2,10 @@
 
 **MP Barbosa Personal Website - Test Suite Documentation**
 
-**Last Updated:** December 25, 2025  
-**Test Status:** 234 passing / 13 failing / 247 total  
-**Coverage:** Jest with jsdom environment
+**Last Updated:** 2025-12-25  
+**Test Status:** 234 passing / 13 failing / 247 total (94.7% pass rate)  
+**Coverage:** Jest with jsdom environment  
+**Test Directory:** `src/__tests__/` (Jest standard location)
 
 ---
 
@@ -14,13 +15,23 @@
 
 1. **[TEST_QUICK_START.md](TEST_QUICK_START.md)** - Get started with testing in 5 minutes
 2. **[TEST_EXECUTION_GUIDE.md](TEST_EXECUTION_GUIDE.md)** - Running tests, debugging failures
-3. **[TEST_STRATEGY_OVERVIEW.md](TEST_STRATEGY_OVERVIEW.md)** - Testing philosophy and approach
+3. **[TEST_FAILURE_ROOT_CAUSE_ANALYSIS.md](TEST_FAILURE_ROOT_CAUSE_ANALYSIS.md)** 🔍 **DETAILED** - Root cause analysis for 13 current failures (2-4h fixes)
+4. **[TEST_IMPROVEMENT_ROADMAP.md](TEST_IMPROVEMENT_ROADMAP.md)** ⭐ **MASTER PLAN** - Complete 16-week improvement roadmap (72-94h, A+ target)
+5. **[FUTURE_TEST_ENHANCEMENTS.md](FUTURE_TEST_ENHANCEMENTS.md)** 🚀 **ADVANCED** - Future enhancements & Level 5 maturity (40-60h, Quarters 2-4)
+6. **[TEST_STRATEGY_OVERVIEW.md](TEST_STRATEGY_OVERVIEW.md)** - Testing philosophy and approach
 
 ### Reference Documents
 
 4. **[TEST_FAILURE_TROUBLESHOOTING.md](TEST_FAILURE_TROUBLESHOOTING.md)** - Fix common test issues
 5. **[TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md)** - Test structure and patterns
 6. **[TEST_COVERAGE_REPORT.md](TEST_COVERAGE_REPORT.md)** - Coverage metrics and gaps
+7. **[TEST_COVERAGE_GAPS_ANALYSIS.md](TEST_COVERAGE_GAPS_ANALYSIS.md)** ⚠️ **CRITICAL** - Coverage collection broken (Node.js v25.2.1 issue)
+8. **[FAILING_TESTS_ANALYSIS.md](FAILING_TESTS_ANALYSIS.md)** 🔧 **ACTION NEEDED** - 12 failing tests analysis & fix strategy (4-6 hours)
+9. **[MISSING_EDGE_CASES_ANALYSIS.md](MISSING_EDGE_CASES_ANALYSIS.md)** 📋 **IMPROVEMENT** - Edge case coverage gaps & implementation plan (18-24 hours)
+10. **[WEAK_ASSERTION_PATTERNS_ANALYSIS.md](WEAK_ASSERTION_PATTERNS_ANALYSIS.md)** 💪 **IMPROVEMENT** - Assertion quality & remediation guide (10-13 hours, 300-400% ROI)
+11. **[TEST_DATA_MANAGEMENT_ANALYSIS.md](TEST_DATA_MANAGEMENT_ANALYSIS.md)** 🔧 **IMPROVEMENT** - Eliminate hardcoded test data (6-8 hours, 300-400% ROI)
+12. **[TEST_BEST_PRACTICES_ASSESSMENT.md](TEST_BEST_PRACTICES_ASSESSMENT.md)** ⭐ **GUIDE** - Current best practices & improvement roadmap (B+ → A+ grade)
+13. **[TEST_PRACTICE_VIOLATIONS_ANALYSIS.md](TEST_PRACTICE_VIOLATIONS_ANALYSIS.md)** ⚠️ **VIOLATIONS** - Systematic violations & remediation (10-14 hours, 50% maintenance reduction)
 
 ---
 
@@ -49,8 +60,9 @@ npm run test:coverage
 - **Total Tests:** 247
 - **Passing:** 234 (94.7%)
 - **Failing:** 13 (5.3%)
-- **Test Suites:** 6 total (4 failed, 2 passed)
+- **Test Suites:** 6 total (1 failed, 5 passed)
 - **Execution Time:** ~1.8 seconds
+- **Test Location:** `/src/__tests__/` (Jest standard directory)
 
 ### Test Suite Breakdown
 
@@ -59,7 +71,7 @@ npm run test:coverage
 | `main.test.js` | ~40 | 40 | 0 | ✅ Passing |
 | `project_navigation.test.js` | ~30 | 30 | 0 | ✅ Passing |
 | `InitializationUtilities.test.js` | ~35 | 35 | 0 | ✅ Passing |
-| `shell_scripts.test.js` | ~85 | 72 | 13 | ⚠️ Failing |
+| `shell_scripts.test.js` | ~85 | 72 | 13 | ⚠️ Failing (sync_to_public.sh v2.0.0 content mismatch) |
 | `sync_to_public.test.js` | ~40 | 40 | 0 | ✅ Passing |
 | `documentation.test.js` | ~17 | 17 | 0 | ✅ Passing |
 
@@ -67,13 +79,15 @@ npm run test:coverage
 
 **Shell Scripts Test Suite (13 failures):**
 
-1. **sync_to_public.sh structure validation** - Expected content checks failing
-2. **Documentation consistency** - Missing expected comment blocks
-3. **Function structure** - Code organization changes not reflected in tests
+1. **sync_to_public.sh structure validation** - Expected content checks failing (12 tests)
+2. **Music in Numbers module validation** - Expected "Main JavaScript modules:" string missing
+3. **API Architecture validation** - Expected "API Class Architectures:" string missing
 
-**Root Cause:** Recent refactoring of `sync_to_public.sh` (v2.0.0) changed internal structure without updating test expectations.
+**Root Cause:** Recent refactoring of `sync_to_public.sh` (v2.0.0) changed internal structure and comment formatting without updating test expectations. Tests use exact string matching instead of flexible regex patterns.
 
-**Fix Priority:** Medium (tests need updates to match new implementation)
+**Fix Priority:** High (tests need updates to match new implementation - brittle string matching identified in TEST_PRACTICE_VIOLATIONS_ANALYSIS.md)
+
+**Estimated Fix Time:** 4-6 hours (see TEST_IMPROVEMENT_ROADMAP.md Phase 1)
 
 ---
 
@@ -210,10 +224,13 @@ jest.mock('fs');
 
 ### Coverage Gaps
 
-1. **Monitora Vagas modules** - Client-side filtering not fully covered
-2. **Music in Numbers** - Artist page modules need tests
-3. **Error handling** - Edge cases in API clients
+**⚠️ CRITICAL:** Coverage collection broken on Node.js v25.2.1 (see TEST_COVERAGE_GAPS_ANALYSIS.md)
+
+1. **Monitora Vagas modules** - Client-side filtering not fully covered (guestCounter.js, guestNumberFilter.js)
+2. **Music in Numbers** - Artist page modules need tests (9 new ES6 modules added in modularization)
+3. **Error handling** - Edge cases in API clients (30+ edge cases identified, see MISSING_EDGE_CASES_ANALYSIS.md)
 4. **Theme system** - Dark mode and accessibility features
+5. **Sibling projects** - Out of scope (each project maintains own test suite, see Phase 4 of TEST_IMPROVEMENT_ROADMAP.md)
 
 ---
 
@@ -324,6 +341,32 @@ The following documents contain valuable historical analysis but may not reflect
 2. Review relevant test suite in `src/__tests__/`
 3. Run with `--verbose` flag for detailed output
 4. Check Jest configuration in `src/package.json`
+
+---
+
+## 📖 See Also
+
+### Related Documentation
+
+- **[Code Quality Remediation Plan](../code-quality/CODE_QUALITY_REMEDIATION_PLAN.md)** - Comprehensive code quality improvement roadmap (87 hours, 407% ROI)
+- **[Quick Remediation Checklist](../code-quality/QUICK_REMEDIATION_CHECKLIST.md)** - Quick wins for immediate code quality improvements
+- **[Selenium E2E Setup Guide](../development-guides/SELENIUM_E2E_SETUP_GUIDE.md)** - Browser automation test configuration
+- **[Security Vulnerability Resolution](../development-guides/SECURITY_VULNERABILITY_RESOLUTION.md)** - npm security audit and fixes
+- **[Dependency Injection Best Practices](../development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise architecture patterns
+
+### Workflow Automation
+
+- **[Workflow Automation Version Evolution](../workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v2.0.0
+- **[Tests & Documentation Workflow Plan](../workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive automation development plan
+
+### Shell Scripts & Deployment
+
+- **[Shell Scripts Documentation](../../shell_scripts/README.md)** - Automation and deployment scripts
+- **[Two-Step Deployment Architecture](../deployment-architecture/TWO_STEP_DEPLOYMENT_ARCHITECTURE_V2.md)** - Production deployment workflow
+
+### Documentation Standards
+
+- **[Documentation Consistency Issues](../documentation-standards/DOCUMENTATION_CONSISTENCY_ISSUES_20251225.md)** - Comprehensive documentation audit findings (24 issues across 51+ files)
 
 ---
 

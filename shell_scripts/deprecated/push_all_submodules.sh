@@ -1,12 +1,29 @@
 #!/bin/bash
 
 # =============================================================================
-# Push All Submodules Script
+# Push All Submodules Script (DEPRECATED)
+# =============================================================================
+# ⚠️  DEPRECATION WARNING ⚠️
+# This script is DEPRECATED as of December 2025.
+# 
+# REASON: The project has migrated from git submodules to sibling projects.
+# All four projects (music_in_numbers, guia_turistico, monitora_vagas, 
+# busca_vagas) are now managed as independent sibling repositories.
+#
+# RECOMMENDED WORKFLOW:
+# Instead of using this script, manage each sibling project directly:
+#
+#   cd ../music_in_numbers && git add . && git commit && git push
+#   cd ../guia_turistico && git add . && git commit && git push
+#   cd ../monitora_vagas && git add . && git commit && git push
+#   cd ../busca_vagas && git add . && git commit && git push
+#
+# See: .github/copilot-instructions.md for current sibling project workflow
 # =============================================================================
 # Description: Pushes all modified files in proper hierarchical order (bottom-up)
 # Author: MP Barbosa
 # Date: October 27, 2025
-# Version: 1.0.0
+# Version: 1.0.0 (DEPRECATED - December 25, 2025)
 #
 # This script follows the git best practices guide for submodule management:
 # 1. Push deepest nested submodules first (bottom-up approach)
@@ -27,9 +44,29 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
+# Display deprecation warning
+echo -e "${RED}╔════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${RED}║                    ⚠️  DEPRECATION WARNING ⚠️                     ║${NC}"
+echo -e "${RED}╠════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${RED}║ This script is DEPRECATED as of December 2025                     ║${NC}"
+echo -e "${RED}║                                                                    ║${NC}"
+echo -e "${RED}║ REASON: Project migrated from git submodules to sibling projects  ║${NC}"
+echo -e "${RED}║                                                                    ║${NC}"
+echo -e "${RED}║ RECOMMENDED: Use direct git commands in each project:             ║${NC}"
+echo -e "${YELLOW}║   cd ../music_in_numbers && git push                              ║${NC}"
+echo -e "${YELLOW}║   cd ../guia_turistico && git push                                ║${NC}"
+echo -e "${YELLOW}║   cd ../monitora_vagas && git push                                ║${NC}"
+echo -e "${YELLOW}║   cd ../busca_vagas && git push                                   ║${NC}"
+echo -e "${RED}║                                                                    ║${NC}"
+echo -e "${RED}║ See: .github/copilot-instructions.md for current workflow         ║${NC}"
+echo -e "${RED}╚════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+read -p "Press Enter to continue anyway, or Ctrl+C to exit..."
+echo ""
+
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HANDLE_STASH=false
 
 # Logging functions

@@ -1,12 +1,29 @@
 #!/bin/bash
 
 # =============================================================================
-# Pull All Submodules Script
+# Pull All Submodules Script (DEPRECATED)
+# =============================================================================
+# ⚠️  DEPRECATION WARNING ⚠️
+# This script is DEPRECATED as of December 2025.
+# 
+# REASON: The project has migrated from git submodules to sibling projects.
+# All four projects (music_in_numbers, guia_turistico, monitora_vagas, 
+# busca_vagas) are now managed as independent sibling repositories.
+#
+# RECOMMENDED WORKFLOW:
+# Instead of using this script, manage each sibling project directly:
+#
+#   cd ../music_in_numbers && git pull
+#   cd ../guia_turistico && git pull
+#   cd ../monitora_vagas && git pull
+#   cd ../busca_vagas && git pull
+#
+# See: .github/copilot-instructions.md for current sibling project workflow
 # =============================================================================
 # Description: Pulls the main repository and all submodules in proper hierarchical order
 # Author: MP Barbosa
 # Date: October 27, 2025
-# Version: 1.0.0
+# Version: 1.0.0 (DEPRECATED - December 25, 2025)
 #
 # This script follows the git best practices guide for submodule management:
 # 1. Main repository first (detects current branch dynamically)
@@ -26,9 +43,29 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
+# Display deprecation warning
+echo -e "${RED}╔════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${RED}║                    ⚠️  DEPRECATION WARNING ⚠️                     ║${NC}"
+echo -e "${RED}╠════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${RED}║ This script is DEPRECATED as of December 2025                     ║${NC}"
+echo -e "${RED}║                                                                    ║${NC}"
+echo -e "${RED}║ REASON: Project migrated from git submodules to sibling projects  ║${NC}"
+echo -e "${RED}║                                                                    ║${NC}"
+echo -e "${RED}║ RECOMMENDED: Use direct git commands in each project:             ║${NC}"
+echo -e "${YELLOW}║   cd ../music_in_numbers && git pull                              ║${NC}"
+echo -e "${YELLOW}║   cd ../guia_turistico && git pull                                ║${NC}"
+echo -e "${YELLOW}║   cd ../monitora_vagas && git pull                                ║${NC}"
+echo -e "${YELLOW}║   cd ../busca_vagas && git pull                                   ║${NC}"
+echo -e "${RED}║                                                                    ║${NC}"
+echo -e "${RED}║ See: .github/copilot-instructions.md for current workflow         ║${NC}"
+echo -e "${RED}╚════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+read -p "Press Enter to continue anyway, or Ctrl+C to exit..."
+echo ""
+
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 STASH_MESSAGE="Temporary stash for pull operations - $(date)"
 
 # Logging functions

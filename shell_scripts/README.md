@@ -1,6 +1,6 @@
 # Shell Scripts Directory
 
-This directory contains shell automation scripts for managing the MP Barbosa personal website project, its git submodules (Music in Numbers, Guia Turístico), and sibling projects (Monitora Vagas, Busca Vagas).
+This directory contains shell automation scripts for managing the MP Barbosa personal website project and its four sibling projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas).
 
 ## 🗺️ Quick Script Selection Guide
 
@@ -31,11 +31,11 @@ What do you need to do?
 │  │        Purpose: Deploy public/ to /var/www/html
 │  │        When: Public directory already prepared
 │  │
-│  └─ Push git submodule changes to remote?
+│  └─ Push sibling project changes to remote?
 │     └─ Run: ./shell_scripts/push_all_submodules.sh --handle-stash
-│        Purpose: Push git submodules (music_in_numbers, guia_turistico) hierarchically
-│        When: Changes made to git submodule content
-│        Note: Sibling projects (monitora_vagas, busca_vagas) managed independently
+│        Purpose: Push changes to sibling projects (convenience script)
+│        When: Changes made to sibling project content
+│        Note: Direct git push in each project directory is preferred
 │
 ├─ 🔗 VALIDATE SECURITY?
 │  └─ Run: ./shell_scripts/validate_external_links.sh
@@ -306,8 +306,8 @@ ls -l shell_scripts/*.sh
 
 | Script | Purpose | Executable Required |
 |--------|---------|---------------------|
-| `pull_all_submodules.sh` | Pull main repo + submodules | ✅ Yes |
-| `push_all_submodules.sh` | Push changes to submodules | ✅ Yes |
+| `deprecated/pull_all_submodules.sh` | 🔴 DEPRECATED - Use direct git commands | ❌ Not recommended |
+| `deprecated/push_all_submodules.sh` | 🔴 DEPRECATED - Use direct git commands | ❌ Not recommended |
 | `sync_to_public.sh` | Two-step deployment | ✅ Yes |
 | `deploy_to_webserver.sh` | Legacy nginx deployment | ✅ Yes (requires sudo) |
 | `validate_external_links.sh` | Link security validation | ✅ Yes |
@@ -616,61 +616,16 @@ validate_all_documentation_metrics
 
 ## Available Scripts
 
-### 🔄 `pull_all_submodules.sh`
-**Purpose**: Pulls the main repository and all submodules in proper hierarchical order
+### 🔴 Deprecated Scripts
 
-**Features**:
-- ✅ Dynamic branch detection (works with any branch, not just main)
-- ✅ Pulls main repository on current branch first
-- ✅ Recursively fetches and updates all submodules
-- ✅ Enhanced recursive submodule discovery using `git submodule foreach`
-- ✅ Handles nested submodules with absolute path resolution
-- ✅ Safe stash management for local changes
-- ✅ Comprehensive status verification for initialized submodules
-- ✅ Colored output for better visibility
+**Note**: The following scripts have been moved to `shell_scripts/deprecated/` and are no longer recommended:
 
-**Usage**:
-```bash
-./shell_scripts/pull_all_submodules.sh           # Pull everything
-./shell_scripts/pull_all_submodules.sh --help    # Show help
-./shell_scripts/pull_all_submodules.sh --dry-run # Preview operations
-```
+- `deprecated/pull_all_submodules.sh` - Use direct `git pull` in each sibling project
+- `deprecated/push_all_submodules.sh` - Use direct `git push` in each sibling project
 
-**Order of Operations**:
-1. Detect current branch and fetch from origin
-2. Pull main repository on current branch
-3. Recursively fetch all initialized submodules
-4. Update all submodules to latest remote versions
-5. Verify individual submodule status with absolute paths
-6. Initialize any missing submodules
-7. Show final status summary
+**Reason**: Project migrated from git submodules to sibling project architecture (December 2025).
 
----
-
-### 🚀 `push_all_submodules.sh`
-**Purpose**: Pushes all modified files in proper hierarchical order (bottom-up approach)
-
-**Features**:
-- ✅ Bottom-up push strategy (deepest submodules first)
-- ✅ Interactive commit message prompts
-- ✅ Submodule reference updates in main repository
-- ✅ Optional stash handling and commitment
-- ✅ Comprehensive status verification
-- ✅ Colored output for better visibility
-
-**Usage**:
-```bash
-./shell_scripts/push_all_submodules.sh                  # Push all changes interactively
-./shell_scripts/push_all_submodules.sh --handle-stash  # Include stashed modifications
-./shell_scripts/push_all_submodules.sh --dry-run       # Preview operations
-./shell_scripts/push_all_submodules.sh --help          # Show help
-```
-
-**Push Order**:
-1. Deepest nested submodules first
-2. Direct submodules
-3. Update main repository submodule references
-4. Main repository last
+**See**: `shell_scripts/deprecated/README.md` for migration details and current recommended workflow.
 
 ---
 
@@ -691,8 +646,10 @@ validate_all_documentation_metrics
 - ✅ Parametrized execution (step1, step2, or both-steps)
 - ✅ Production directory configuration support (default: `/var/www/html`)
 - ✅ Comprehensive asset management (HTML, CSS, JS, images, webfonts)
-- ✅ Music in Numbers submodule support with complete module architecture
-
+- ✅ Music in Numbers sibling project support with complete module architecture
+- ✅ Guia Turístico sibling project support with complete project structure
+- ✅ Monitora Vagas dual-directory deployment (src/ + public/)
+- ✅ Busca Vagas full-stack deployment (client HTML + server API)
 - ✅ Enhanced backup system for both public and production deployments
 - ✅ Comprehensive validation and reporting for each step
 - ✅ Dry-run mode for safe operation preview
@@ -714,8 +671,8 @@ validate_all_documentation_metrics
 1. Environment validation and backup creation
 2. Main HTML files (index.html, robots.txt, humans.txt)
 3. Asset directories (CSS, JS, SASS, webfonts, images)
-4. Music in Numbers git submodule (3 HTML files, 15+ JS modules, 4 CSS files)
-5. Guia Turístico git submodule
+4. Music in Numbers sibling project (3 HTML files, 15+ JS modules, 4 CSS files)
+5. Guia Turístico sibling project
 6. Monitora Vagas sibling project from ../monitora_vagas:
    - **src/ folder**: Legacy implementation (services, styles)
    - **public/ folder**: Modern v2.0.0 implementation with:
@@ -787,7 +744,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 ```
 
 **Deployment Process**:
-1. Validate environment and git submodules (checks `PROJECT_ROOT`, not source)
+1. Validate environment and project repository
 2. **Verify `/public` directory exists** (fails if missing - run `sync_to_public.sh --step1` first)
 3. Create backup of existing deployment to `/var/www/backups/mpbarbosa.com`
 4. Copy all files from `/public` to `/var/www/mpbarbosa.com` using rsync
@@ -804,7 +761,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 **Purpose**: Validates that all external links follow the security policy of opening in new tabs with proper attributes
 
 **Features**:
-- ✅ Scans all HTML files across main site and submodules
+- ✅ Scans all HTML files across main site and deployed sibling projects
 - ✅ Identifies external links (http/https URLs in `<a>` tags)
 - ✅ Validates `target="_blank"` attribute presence
 - ✅ Validates `rel="noopener noreferrer"` security attributes
@@ -836,7 +793,7 @@ cd /path/to/mpbarbosa_site && ./shell_scripts/validate_external_links.sh
 src/index.html              # Main landing page
 src/components/*.html       # Component files
 src/pages/*.html           # Redirect pages
-src/submodules/*/src/*.html # Submodule HTML files
+public/submodules/*/src/*.html # Submodule HTML files (via sync_to_public.sh)
 ```
 
 **Output Format**:
@@ -1040,16 +997,17 @@ mpbarbosa_site/ (main repository)
 │   ├── sync_to_public.sh       # Two-step deployment (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment (v2.0.0)
 │   └── README.md               # This documentation
-├── src/submodules/             # Git submodules only
-│   ├── guia_turistico/        # Travel guide project (git submodule)
-│   │   └── src/libs/
-│   │       ├── guia_js/       # JavaScript library (nested)
-│   │       └── sidra/         # IBGE data library (nested)
-│   └── music_in_numbers/      # Spotify analytics project (git submodule)
+├── public/submodules/          # Deployed submodules (via sync_to_public.sh)
+│   ├── guia_turistico/        # Travel guide project (from sibling)
+│   ├── music_in_numbers/      # Spotify analytics project (from sibling)
+│   ├── monitora_vagas/        # Job monitoring project (from sibling)
+│   └── busca_vagas/           # Job search platform (from sibling)
 ├── docs/                      # Documentation including git best practices
 └── ../                        # Sibling projects (not git submodules)
-    ├── monitora_vagas/        # Job monitoring project (sibling)
-    └── busca_vagas/           # Job search platform (sibling)
+    ├── guia_turistico/        # Travel guide project
+    ├── music_in_numbers/      # Spotify analytics project
+    ├── monitora_vagas/        # Job monitoring project
+    └── busca_vagas/           # Job search platform
 ```
 
 ## Usage Examples
@@ -1116,7 +1074,12 @@ sudo ./shell_scripts/deploy_to_webserver.sh                # Deploy to productio
 
 # Check repository status after operations
 git status
-git submodule status --recursive
+
+# Check sibling project status (if needed)
+cd ../music_in_numbers && git status
+cd ../guia_turistico && git status
+cd ../monitora_vagas && git status
+cd ../busca_vagas && git status
 ```
 
 ## Error Handling
