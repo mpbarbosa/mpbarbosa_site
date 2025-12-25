@@ -27,6 +27,98 @@
  * - ThemeUtilities.js (configuration management + DI)
  * - ExportUtilities.js (multi-format support + environment detection)
  * - ArtistUtilities.js (specialized utilities + comprehensive factories)
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * 📍 QUICK NAVIGATION (16 Static Methods - Jump to Categories)
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
+ * 🔧 CONFIGURATION & HELPERS (2 methods)
+ *    • CONFIG getter           - Centralized configuration constants (LOCALHOST_HOSTNAMES,
+ *                                PRIVATE_NETWORK_PREFIXES, DEBUG_URL_PARAMS)
+ *    • isLocalhost()           - Validate if hostname is localhost/private network
+ *                                Supports: localhost, 127.0.0.1, [::1], 192.168.*,
+ *                                10.*, 172.16-31.* (complete RFC1918 ranges)
+ *
+ * 🌍 ENVIRONMENT DETECTION (2 methods)
+ *    • detectEnvironment()           - Detect runtime environment (browser/Node.js/worker)
+ *                                      Returns: isBrowser, isNode, hasLocalStorage, etc.
+ *    • detectDevelopmentEnvironment() - Detect development indicators (localhost, debug
+ *                                      params, dev tools, test/dev hostnames)
+ *
+ * 🌐 BROWSER CAPABILITIES (1 method)
+ *    • getBrowserCapabilities()  - Detect browser features (service workers, localStorage,
+ *                                  WebSockets, fetch, Promises, async/await)
+ *
+ * 📚 LIBRARY/CLASS ACCESS (4 methods)
+ *    • getInitializationValidators() - Access InitializationValidators class with fallback
+ *    • getInitializationProcessors() - Access InitializationProcessors class with fallback
+ *    • getInitializationUIBuilders() - Access InitializationUIBuilders class with fallback
+ *    • getInitializationCore()       - Access InitializationCore class with fallback
+ *
+ * 🏭 DI CONTAINER FACTORIES (4 methods)
+ *    • createProductionDIContainer()  - Production dependency injection container
+ *    • createDevelopmentDIContainer() - Development DI container with debug features
+ *    • createTestDIContainer()        - Test DI container with mocks and stubs
+ *    • createFallbackDIContainer()    - Minimal fallback DI container
+ *
+ * 🛠️ UTILITY FUNCTIONS (3 methods)
+ *    • createLogger()             - Create safe console logger (log/warn/error/debug levels)
+ *    • createPerformanceTracker() - Create performance.mark/measure wrapper
+ *    • getModuleInfo()            - Get module metadata (version, dependencies, capabilities)
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * 💡 COMMON USE CASES
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
+ * ✅ Test environment setup:
+ *    const container = InitializationUtilities.createTestDIContainer();
+ *
+ * ✅ Check if running locally:
+ *    if (InitializationUtilities.isLocalhost(window.location.hostname)) {
+ *      console.log('Running on localhost or private network');
+ *    }
+ *
+ * ✅ Detect browser features before using them:
+ *    const capabilities = InitializationUtilities.getBrowserCapabilities();
+ *    if (capabilities.serviceWorkers) {
+ *      navigator.serviceWorker.register('/sw.js');
+ *    }
+ *
+ * ✅ Environment-specific logic:
+ *    const env = InitializationUtilities.detectEnvironment();
+ *    if (env.isBrowser && env.hasLocalStorage) {
+ *      localStorage.setItem('key', 'value');
+ *    }
+ *
+ * ✅ Development mode detection:
+ *    const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
+ *    if (devEnv.isDevelopment) {
+ *      console.log('Running in development mode:', devEnv.indicators);
+ *    }
+ *
+ * ✅ Create debug logger:
+ *    const logger = InitializationUtilities.createLogger('debug');
+ *    logger('Debug message');
+ *
+ * ✅ Track initialization performance:
+ *    const perf = InitializationUtilities.createPerformanceTracker();
+ *    perf.mark('init-start');
+ *    // ... initialization code ...
+ *    perf.mark('init-end');
+ *    perf.measure('total-init', 'init-start', 'init-end');
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * 📊 FILE STATISTICS (As of 2025-12-25)
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
+ * Lines of Code:        891 lines
+ * Static Methods:       16 methods
+ * Test Coverage:        97 tests (100% method coverage)
+ * Dependencies:         Zero external dependencies
+ * Module Pattern:       UMD (Universal Module Definition)
+ * Browser Support:      ES6+ (Chrome 51+, Firefox 54+, Safari 10+, Edge 15+)
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
  */
 
 // Multi-environment compatibility
