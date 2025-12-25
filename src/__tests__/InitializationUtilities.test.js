@@ -233,6 +233,120 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
   });
 
+  describe('CONFIG constant', () => {
+    test('should have LOCALHOST_HOSTNAMES array', () => {
+      const config = InitializationUtilities.CONFIG;
+
+      expect(config).toHaveProperty('LOCALHOST_HOSTNAMES');
+      expect(Array.isArray(config.LOCALHOST_HOSTNAMES)).toBe(true);
+      expect(config.LOCALHOST_HOSTNAMES).toContain('localhost');
+      expect(config.LOCALHOST_HOSTNAMES).toContain('127.0.0.1');
+      expect(config.LOCALHOST_HOSTNAMES).toContain('[::1]');
+    });
+
+    test('should have PRIVATE_NETWORK_PREFIXES array', () => {
+      const config = InitializationUtilities.CONFIG;
+
+      expect(config).toHaveProperty('PRIVATE_NETWORK_PREFIXES');
+      expect(Array.isArray(config.PRIVATE_NETWORK_PREFIXES)).toBe(true);
+      expect(config.PRIVATE_NETWORK_PREFIXES).toContain('192.168.');
+      expect(config.PRIVATE_NETWORK_PREFIXES).toContain('10.');
+      expect(config.PRIVATE_NETWORK_PREFIXES).toContain('172.16.');
+      expect(config.PRIVATE_NETWORK_PREFIXES).toContain('172.31.');
+    });
+
+    test('should have DEBUG_URL_PARAMS array', () => {
+      const config = InitializationUtilities.CONFIG;
+
+      expect(config).toHaveProperty('DEBUG_URL_PARAMS');
+      expect(Array.isArray(config.DEBUG_URL_PARAMS)).toBe(true);
+      expect(config.DEBUG_URL_PARAMS).toContain('debug');
+      expect(config.DEBUG_URL_PARAMS).toContain('dev');
+      expect(config.DEBUG_URL_PARAMS).toContain('development');
+    });
+
+    test('should be frozen (immutable)', () => {
+      const config = InitializationUtilities.CONFIG;
+
+      // Object.freeze() prevents extensions in strict mode (throws TypeError)
+      // In non-strict mode, assignment fails silently
+      const originalLength = Object.keys(config).length;
+
+      // Verify object is frozen
+      expect(Object.isFrozen(config)).toBe(true);
+
+      // Attempt to add property (will fail silently or throw)
+      try {
+        config.NEW_PROPERTY = 'test';
+      } catch (error) {
+        // Expected in strict mode
+        expect(error).toBeInstanceOf(TypeError);
+      }
+
+      // Verify no new properties were added
+      expect(Object.keys(config).length).toBe(originalLength);
+      expect(config.NEW_PROPERTY).toBeUndefined();
+    });
+  });
+
+  describe('isLocalhost() static method', () => {
+    test('should detect localhost hostname', () => {
+      expect(InitializationUtilities.isLocalhost('localhost')).toBe(true);
+    });
+
+    test('should detect 127.0.0.1 (IPv4 loopback)', () => {
+      expect(InitializationUtilities.isLocalhost('127.0.0.1')).toBe(true);
+    });
+
+    test('should detect [::1] (IPv6 loopback)', () => {
+      expect(InitializationUtilities.isLocalhost('[::1]')).toBe(true);
+    });
+
+    test('should detect 192.168.x.x private network', () => {
+      expect(InitializationUtilities.isLocalhost('192.168.1.1')).toBe(true);
+      expect(InitializationUtilities.isLocalhost('192.168.0.1')).toBe(true);
+      expect(InitializationUtilities.isLocalhost('192.168.255.255')).toBe(true);
+    });
+
+    test('should detect 10.x.x.x private network (RFC1918 Class A)', () => {
+      expect(InitializationUtilities.isLocalhost('10.0.0.1')).toBe(true);
+      expect(InitializationUtilities.isLocalhost('10.1.2.3')).toBe(true);
+      expect(InitializationUtilities.isLocalhost('10.255.255.255')).toBe(true);
+    });
+
+    test('should detect 172.16-31.x.x private network (RFC1918 Class B)', () => {
+      expect(InitializationUtilities.isLocalhost('172.16.0.1')).toBe(true);
+      expect(InitializationUtilities.isLocalhost('172.20.5.10')).toBe(true);
+      expect(InitializationUtilities.isLocalhost('172.31.255.255')).toBe(true);
+    });
+
+    test('should NOT detect 172.15.x.x (outside RFC1918 range)', () => {
+      expect(InitializationUtilities.isLocalhost('172.15.0.1')).toBe(false);
+    });
+
+    test('should NOT detect 172.32.x.x (outside RFC1918 range)', () => {
+      expect(InitializationUtilities.isLocalhost('172.32.0.1')).toBe(false);
+    });
+
+    test('should NOT detect public IP addresses', () => {
+      expect(InitializationUtilities.isLocalhost('8.8.8.8')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('1.1.1.1')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('93.184.216.34')).toBe(false);
+    });
+
+    test('should NOT detect production hostnames', () => {
+      expect(InitializationUtilities.isLocalhost('example.com')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('www.example.com')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('api.production.com')).toBe(false);
+    });
+
+    test('should handle edge cases gracefully', () => {
+      expect(InitializationUtilities.isLocalhost('')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('not-an-ip')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('192.167.1.1')).toBe(false); // Close but not 192.168
+    });
+  });
+
   describe('getBrowserCapabilities()', () => {
     test('should detect all browser capabilities', () => {
       global.navigator.serviceWorker = {};

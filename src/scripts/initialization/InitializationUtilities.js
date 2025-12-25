@@ -63,9 +63,63 @@
      */
     class InitializationUtilities {
       /**
+       * Configuration Constants
+       * Centralized configuration for environment detection and network validation
+       */
+      static get CONFIG() {
+        return Object.freeze({
+          // Network Configuration - Localhost Detection
+          LOCALHOST_HOSTNAMES: ['localhost', '127.0.0.1', '[::1]'],
+
+          // RFC1918 Private Network Ranges (comprehensive coverage)
+          PRIVATE_NETWORK_PREFIXES: [
+            '192.168.', // Class C private (192.168.0.0/16)
+            '10.', // Class A private (10.0.0.0/8)
+            // Class B private (172.16.0.0/12)
+            '172.16.',
+            '172.17.',
+            '172.18.',
+            '172.19.',
+            '172.20.',
+            '172.21.',
+            '172.22.',
+            '172.23.',
+            '172.24.',
+            '172.25.',
+            '172.26.',
+            '172.27.',
+            '172.28.',
+            '172.29.',
+            '172.30.',
+            '172.31.',
+          ],
+
+          // URL Parameters for Debug Mode Detection
+          DEBUG_URL_PARAMS: ['debug', 'dev', 'development'],
+        });
+      }
+
+      /**
        * Environment Detection Methods
        * Pure functions for detecting runtime environment and capabilities
        */
+
+      /**
+       * Check if hostname is localhost or private network
+       * @param {string} hostname - Hostname to check
+       * @returns {boolean} True if localhost or private network
+       */
+      static isLocalhost(hostname) {
+        const config = this.CONFIG;
+
+        // Check exact hostname matches
+        if (config.LOCALHOST_HOSTNAMES.includes(hostname)) {
+          return true;
+        }
+
+        // Check private network prefix matches
+        return config.PRIVATE_NETWORK_PREFIXES.some((prefix) => hostname.startsWith(prefix));
+      }
 
       /**
        * Detect the current runtime environment
@@ -131,21 +185,20 @@
           };
 
           if (typeof window !== 'undefined') {
-            // Check for localhost
+            // Check for localhost using centralized configuration
             const hostname = window.location.hostname;
-            devEnvironment.isLocalhost =
-              hostname === 'localhost' ||
-              hostname === '127.0.0.1' ||
-              hostname.startsWith('192.168.');
+            devEnvironment.isLocalhost = InitializationUtilities.isLocalhost(hostname);
 
             // Check for dev tools
             devEnvironment.hasDevTools =
               typeof window.chrome !== 'undefined' && typeof window.chrome.devtools !== 'undefined';
 
-            // Check URL parameters for debug flags
+            // Check URL parameters for debug flags using centralized configuration
             const urlParams = new URLSearchParams(window.location.search);
-            devEnvironment.debugMode =
-              urlParams.has('debug') || urlParams.has('dev') || urlParams.has('development');
+            const config = InitializationUtilities.CONFIG;
+            devEnvironment.debugMode = config.DEBUG_URL_PARAMS.some((param) =>
+              urlParams.has(param),
+            );
 
             // Collect indicators
             if (devEnvironment.isLocalhost) {
