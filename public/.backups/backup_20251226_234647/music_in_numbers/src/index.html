@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify OAuth 2.0 Authentication</title>
+
+    <!-- External CSS Files -->
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/export-modal.css">
+</head>
+
+<body>
+    <!-- Skip Link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Theme Controls -->
+    <div class="theme-controls" role="toolbar" aria-label="Theme controls">
+        <button class="theme-btn" id="lightTheme" onclick="setTheme('light')" aria-label="Switch to light theme"
+            title="Light theme (Alt+L)">
+            ☀️
+        </button>
+        <button class="theme-btn active" id="darkTheme" onclick="setTheme('dark')" aria-label="Switch to dark theme"
+            title="Dark theme (Alt+D)">
+            🌙
+        </button>
+        <button class="theme-btn" id="highContrastTheme" onclick="setTheme('high-contrast')"
+            aria-label="Switch to high contrast theme" title="High contrast theme (Alt+H)">
+            🔆
+        </button>
+    </div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div class="keyboard-help" role="complementary" aria-label="Keyboard shortcuts">
+        <h4 style="margin: 0 0 8px 0; color: var(--text-primary);">Keyboard Shortcuts</h4>
+        <div class="shortcut">
+            <span>Light theme</span>
+            <span class="key">Alt+L</span>
+        </div>
+        <div class="shortcut">
+            <span>Dark theme</span>
+            <span class="key">Alt+D</span>
+        </div>
+        <div class="shortcut">
+            <span>High contrast</span>
+            <span class="key">Alt+H</span>
+        </div>
+        <div class="shortcut">
+            <span>Connect to Spotify</span>
+            <span class="key">Alt+C</span>
+        </div>
+    </div>
+
+    <div class="container" role="main" id="main-content">
+        <div class="header">
+            <h1><svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                    <path
+                        d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.349-.841.46-1.24.24-3.24-1.98-8.16-2.58-11.94-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                </svg> Spotify OAuth 2.0</h1>
+            <p>Connect to Spotify API securely</p>
+        </div>
+
+        <div class="content">
+            <div class="step">
+                <h3>Step 1: Set up your Spotify App</h3>
+                <p>Create an app at Spotify Developer Dashboard and set redirect URI to: <span id="redirectUri"></span>
+                </p>
+            </div>
+
+            <div class="step" style="background-color: #e8f5e8; border-left: 4px solid #1DB954;">
+                <h3>🎵 Advanced Music Analytics Permissions</h3>
+                <p>This app requests the following permissions to provide comprehensive music insights:</p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Basic Profile</strong> - Your display name and profile picture</li>
+                    <li><strong>Top Tracks & Artists</strong> - Your most played music over time</li>
+                    <li><strong>Recently Played</strong> - Your listening history and patterns</li>
+                    <li><strong>Playlists</strong> - Access to your saved playlists</li>
+                    <li><strong>Saved Music</strong> - Your liked songs and albums</li>
+                    <li><strong>Current Playback</strong> - Real-time now playing information</li>
+                </ul>
+            </div>
+
+            <div class="form-group" role="group" aria-labelledby="clientId-label">
+                <label for="clientId" id="clientId-label">Client ID:</label>
+                <input type="text" id="clientId" placeholder="Enter your Spotify Client ID" aria-required="true"
+                    aria-describedby="clientId-help" autocomplete="off" spellcheck="false">
+                <div id="clientId-help" class="sr-only">
+                    Enter the Client ID from your Spotify app dashboard
+                </div>
+            </div>
+
+            <button onclick="initiateAuth()" id="connectBtn" aria-describedby="connect-help" accesskey="c">
+                🎵 Connect to Spotify
+            </button>
+            <div id="connect-help" class="sr-only">
+                Connects to Spotify using OAuth 2.0 authentication. Keyboard shortcut: Alt+C
+            </div>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <div class="form-group">
+                <label for="authCode">Authorization Code:</label>
+                <input type="text" id="authCode" placeholder="Paste authorization code here">
+            </div>
+
+            <button onclick="exchangeCodeForToken()">Exchange Code for Token</button>
+
+            <div class="divider">
+                <span>DEVELOPMENT</span>
+            </div>
+
+            <div class="form-group">
+                <label for="mockToken">Mock Access Token (for development):</label>
+                <input type="text" id="mockToken" placeholder="Paste your existing access token here">
+            </div>
+
+            <button onclick="setMockToken()" style="background-color: #e91e63;">Set Mock Token</button>
+
+            <div id="result" class="result"></div>
+
+            <div id="userInfo" class="user-info" style="display: none;">
+                <h3>User Information</h3>
+                <div class="info-row">
+                    <div class="info-label">Name:</div>
+                    <div id="userName" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div id="userEmail" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Country:</div>
+                    <div id="userCountry" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Subscription:</div>
+                    <div id="userProduct" class="info-value"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">User ID:</div>
+                    <div id="userId" class="info-value"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>You need to <a href="https://developer.spotify.com/dashboard/" target="_blank">create a Spotify App</a>
+                first</p>
+        </div>
+    </div>
+    <a href="submodules/music_in_numbers/src/artist.html" class="artist-page-link">Página do Artista</a>
+
+    <!-- Export Modal for Track 4 -->
+    <div id="exportModal" class="export-modal" style="display: none;">
+        <div class="export-modal-content">
+            <div class="export-modal-header">
+                <h2>📊 Export Your Music Analytics</h2>
+                <button class="export-close" onclick="hideExportModal()"
+                    aria-label="Close export modal">&times;</button>
+            </div>
+
+            <div class="export-modal-body">
+                <div class="export-formats">
+                    <h3>🎯 Choose Export Format</h3>
+                    <div class="format-grid">
+                        <div class="format-option" onclick="selectExportFormat('pdf')" data-format="pdf">
+                            <div class="format-icon">📄</div>
+                            <h4>PDF Report</h4>
+                            <p>Professional analytics report with charts and insights</p>
+                            <span class="format-tag">Recommended</span>
+                        </div>
+
+                        <div class="format-option" onclick="selectExportFormat('csv')" data-format="csv">
+                            <div class="format-icon">📊</div>
+                            <h4>CSV Data</h4>
+                            <p>Raw data for spreadsheet analysis</p>
+                            <span class="format-tag">Data Analysis</span>
+                        </div>
+
+                        <div class="format-option" onclick="selectExportFormat('json')" data-format="json">
+                            <div class="format-icon">🔗</div>
+                            <h4>JSON Export</h4>
+                            <p>Structured data for developers</p>
+                            <span class="format-tag">Developers</span>
+                        </div>
+
+                        <div class="format-option" onclick="selectExportFormat('images')" data-format="images">
+                            <div class="format-icon">🖼️</div>
+                            <h4>Chart Images</h4>
+                            <p>High-quality chart images</p>
+                            <span class="format-tag">Social Media</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-options" id="exportOptions" style="display: none;">
+                    <h3>⚙️ Export Options</h3>
+                    <div id="exportOptionsContent">
+                        <!-- Dynamic content based on selected format -->
+                    </div>
+                </div>
+
+                <div class="export-actions">
+                    <button id="exportButton" onclick="executeExport()" disabled>
+                        <span class="export-btn-icon">⬇️</span>
+                        <span class="export-btn-text">Export</span>
+                    </button>
+                    <button onclick="hideExportModal()" class="export-cancel">Cancel</button>
+                </div>
+
+                <div class="export-progress" id="exportProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Preparing export...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Libraries for Track 4 - Load deferred for better performance -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <!-- Core JavaScript modules - Load deferred in dependency order -->
+    <script defer src="scripts/performance.js"></script>
+    <script defer src="scripts/utils.js"></script>
+    <script defer src="scripts/theme-manager.js"></script>
+    <!-- Spotify API modules (order is important for dependencies) -->
+    <script defer src="scripts/spotify-api/SpotifyApiValidators.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiRequestBuilders.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiResponseProcessors.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiUtilities.js"></script>
+    <script defer src="scripts/spotify-api/SpotifyApiCore.js"></script>
+    <script defer src="scripts/spotify-api/SpotifySessionDetector.js"></script>
+    <script defer src="scripts/spotify-api.js"></script>
+    <script defer src="scripts/analytics.js"></script>
+    <script defer src="scripts/ui-components.js"></script>
+    <script defer src="scripts/real-time.js"></script>
+    <script defer src="scripts/data-export.js"></script>
+    <script defer src="scripts/initialization.js"></script>
+</body>
+
+</html>

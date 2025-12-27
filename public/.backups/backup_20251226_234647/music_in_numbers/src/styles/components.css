@@ -1,0 +1,166 @@
+/* ===== UI COMPONENTS AND ACCESSIBILITY ===== */
+
+/* Skip link for screen readers */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    z-index: 10000;
+    font-weight: bold;
+    transition: var(--transition-fast);
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Keyboard shortcuts help */
+.keyboard-help {
+    position: fixed;
+    bottom: var(--spacing-lg);
+    left: var(--spacing-lg);
+    background-color: var(--surface-color);
+    border: var(--border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    opacity: 0.8;
+    transition: var(--transition);
+    max-width: 250px;
+}
+
+.keyboard-help:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.shortcut {
+    display: flex;
+    justify-content: space-between;
+    margin: var(--spacing-xs) 0;
+}
+
+.key {
+    background-color: var(--accent-color-alpha);
+    color: var(--accent-color);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+/* Artist page navigation link */
+.artist-page-link {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: calc(var(--spacing-lg) + 140px); /* Position to the left of theme controls */
+    color: white;
+    text-decoration: none;
+    background-color: #1DB954;
+    padding: 10px 15px;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 999;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.artist-page-link:hover {
+    background-color: #1ed760;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.artist-page-link:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* Responsive adjustments for fixed elements */
+@media (max-width: 768px) {
+    .theme-controls {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .artist-page-link {
+        top: calc(var(--spacing-lg) + 140px); /* Move below theme controls on mobile */
+        right: var(--spacing-lg);
+        font-size: var(--font-size-xs);
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .theme-controls {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+    }
+    
+    .artist-page-link {
+        top: calc(var(--spacing-sm) + 120px);
+        right: var(--spacing-sm);
+        padding: 6px 10px;
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus indicators for better accessibility */
+*:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    padding: 8px;
+    text-decoration: none;
+    border-radius: var(--border-radius-sm);
+    z-index: 1001;
+    transition: var(--transition);
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Responsive adjustments for components */
+@media (max-width: 768px) {
+    .keyboard-help {
+        display: none; /* Hide on mobile for better UX */
+    }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .keyboard-help {
+        display: none;
+    }
+}

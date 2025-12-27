@@ -1,0 +1,198 @@
+/*
+================================================================================
+ARTIST PAGE COMPONENT STYLES - MUSIC IN NUMBERS
+================================================================================
+
+This file contains all CSS styles specific to the artist.html page, extracted
+from the embedded <style> block to follow separation of concerns principles.
+
+ORGANIZATION:
+- Spotify Profile Button
+- Artist Image Display
+- Instagram Integration
+- Spotify Links
+- Error Messages
+- Raw Data Display
+- Responsive Design
+- Loading States
+
+DEPENDENCIES:
+- main.css (base styles and layout)
+- components.css (shared UI components)
+- themes.css (theme system)
+
+See: .github/HTML_CSS_JS_SEPARATION.md for detailed guidelines
+================================================================================
+*/
+
+/* ===== Spotify Profile Button ===== */
+.spotify-profile-btn-container {
+    padding: 1rem 0.75rem;
+}
+
+.spotify-profile-btn {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    min-height: 44px;
+    transition: background-color 0.3s ease;
+}
+
+.spotify-profile-btn:hover {
+    background-color: #1ed760;
+}
+
+.spotify-profile-btn:focus {
+    outline: 2px solid #1DB954;
+    outline-offset: 2px;
+}
+
+.spotify-profile-btn i {
+    margin-right: 8px;
+}
+
+/* ===== Artist Image Display ===== */
+.artist-image-container {
+    position: relative;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.artist-image {
+    border-radius: 8px;
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.artist-name-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    border-radius: 0 0 8px 8px;
+}
+
+/* ===== Instagram Integration ===== */
+.instagram-link-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.instagram-link {
+    color: #E4405F;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #E4405F;
+    border-radius: 20px;
+    min-height: 44px;
+    min-width: 44px;
+    transition: all 0.3s;
+}
+
+.instagram-link:hover {
+    background-color: #E4405F;
+    color: white;
+}
+
+.instagram-link:focus {
+    outline: 2px solid #E4405F;
+    outline-offset: 2px;
+}
+
+.instagram-link i {
+    margin-right: 5px;
+}
+
+/* ===== Spotify Links ===== */
+.spotify-link {
+    color: #1DB954;
+    text-decoration: underline;
+}
+
+.spotify-link:hover {
+    color: #1ed760;
+}
+
+/* ===== Error Messages ===== */
+.error-message {
+    color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #ff6b6b;
+}
+
+.error-message a {
+    color: #1DB954;
+    font-weight: 600;
+}
+
+/* ===== Raw Data Display ===== */
+.raw-data-summary {
+    cursor: pointer;
+    color: #1DB954;
+    font-weight: 600;
+    min-height: 44px;
+    padding: 10px;
+}
+
+.raw-data-summary:focus {
+    outline: 2px solid #1DB954;
+    outline-offset: 2px;
+}
+
+.raw-data-pre {
+    background: #232323;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.nav-option.active {
+    opacity: 1;
+}
+
+/* ===== Responsive Design ===== */
+/* Adapts layout for mobile devices */
+@media (max-width: 768px) {
+    .artist-image-container {
+        float: none;
+        margin-right: 0;
+    }
+
+    .artist-name-overlay {
+        font-size: 1.5em;
+    }
+}
+
+/* ===== Loading State ===== */
+/* Displays loading indicator while fetching data */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.loading::after {
+    content: "Loading...";
+    color: #1DB954;
+    font-size: 1.2em;
+}

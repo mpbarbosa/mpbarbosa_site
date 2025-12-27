@@ -290,7 +290,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Dry-run mode for safe operation preview
 # - Proper web server permissions (755 for directories, 644 for files)
 # - Detailed deployment summary with file counts and validation
-# - Project test status (Dec 2025): 208/225 tests passing (92.4% pass rate)
+# - Project test status (Dec 2025): 256/287 tests passing (89.2% pass rate)
 # - Test coverage: Temporarily disabled due to Node.js 25.2.1 compatibility (see docs/testing-qa/COVERAGE_ISSUE.md)
 
 # Features (deploy_to_webserver.sh v2.0.0):

@@ -6,11 +6,65 @@
 
 ## Current Known Failures
 
-### Shell Scripts Test Suite (13 failures)
+### Accessibility Test Suite (Browser Teardown Issues)
+
+**File:** `src/__tests__/accessibility.test.mjs`  
+**Status:** Failed with Puppeteer teardown error  
+**Last Updated:** December 27, 2025
+
+#### Failure Pattern
+
+```
+TypeError: Cannot read properties of undefined (reading 'close')
+A worker process has failed to exit gracefully and has been force exited.
+```
+
+#### Root Cause Analysis
+
+**Primary Issue:** Puppeteer browser instance not properly initialized before teardown
+
+**Contributing Factors:**
+1. `browser` variable is undefined when `afterAll()` hook runs
+2. Async initialization issues in test setup
+3. Worker process leaking due to improper teardown
+4. Missing error handling for browser launch failures
+
+#### Fix Strategy
+
+**Option 1: Add Null Check (Recommended)**
+
+```javascript
+// ✅ Safe teardown with null check
+afterAll(async () => {
+  if (browser) {
+    await browser.close();
+  }
+});
+```
+
+**Option 2: Run with --detectOpenHandles**
+
+```bash
+# Find leaked resources
+npm test -- --detectOpenHandles accessibility.test.mjs
+```
+
+**Option 3: Skip Accessibility Tests Temporarily**
+
+```bash
+# Skip failing accessibility tests temporarily
+npm test -- --testPathIgnorePatterns=accessibility.test.mjs
+```
+
+#### Priority
+
+**High** - Browser resource leaks affect test reliability and CI/CD performance
+
+### Shell Scripts Test Suite (Multiple failures)
 
 **File:** `src/__tests__/shell_scripts.test.js`  
-**Status:** 234/247 tests passing (94.7% pass rate)  
-**Last Updated:** December 25, 2025
+**Status:** Multiple test failures across sync_to_public.sh tests  
+**Last Updated:** December 27, 2025
 
 #### Failure Pattern
 

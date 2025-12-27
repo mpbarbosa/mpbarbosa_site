@@ -40,12 +40,15 @@ npm test -- main.test.js
 ### Expected Output
 
 ```
-Test Suites: 6 total, 1 failed, 5 passed
-Tests:       247 total, 234 passed, 13 failed
-Time:        1.795 s
+Test Suites: 9 total, 7 failed, 2 passed
+Tests:       287 total, 256 passed, 31 failed
+Time:        2.03 s
 ```
 
-**Note:** 13 failing tests are in `shell_scripts.test.js` due to sync_to_public.sh v2.0.0 refactoring - tests need updates, not code fixes.
+**Note:** Current test failures (31 total, as of 2025-12-27):
+- **Accessibility tests** (accessibility.test.mjs): Browser teardown issues with Puppeteer
+- **Shell script tests** (shell_scripts.test.js): sync_to_public.sh v2.0.0 refactoring - tests need updates
+- **Other tests**: Various integration and unit test failures requiring investigation
 
 ---
 

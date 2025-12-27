@@ -4,7 +4,7 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html>
+<html lang="pt-BR">
   <head>
     <title>mpbarbosa.com</title>
     <meta charset="utf-8" />
@@ -39,7 +39,7 @@
             </p>
           </div>
         </div>
-        <nav>
+        <nav role="navigation" aria-label="Main navigation">
           <ul>
             <li><a href="#intro">Intro</a></li>
             <li><a href="#projetos">Projetos (IA)</a></li>
@@ -56,11 +56,13 @@
       </header>
 
       <!-- Main -->
-      <div id="main">
+      <main id="main" role="main">
         <!-- Intro -->
         <article id="intro">
           <h2 class="major">Intro</h2>
-          <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+          <span class="image main"
+            ><img src="images/pic01.jpg" alt="Technology and software development illustration"
+          /></span>
           <p>
             Depois de 25 anos de experiência em desenvolvimento de software e estando com algum
             tempo livre, decidi criar este site para compartilhar meus projetos e interesses. By the
@@ -82,7 +84,9 @@
         <!-- Projetos (IA) -->
         <article id="projetos">
           <h2 class="major">Projetos (IA)</h2>
-          <span class="image main"><img src="images/pic02.jpg" alt="" /></span>
+          <span class="image main"
+            ><img src="images/pic02.jpg" alt="AI-assisted projects showcase"
+          /></span>
           <p>Projetos desenvolvidos com o auxílio de IA.</p>
           <ul>
             <li>
@@ -95,7 +99,7 @@
             </li>
             <li>
               <a
-                href="submodules/music_in_numbers/src/music_in_numbers.html"
+                href="music_in_numbers/src/music_in_numbers.html"
                 target="_blank"
                 rel="noopener noreferrer"
                 >Music in Numbers - Análise de dados Spotify</a
@@ -107,9 +111,7 @@
               >
             </li>
             <li>
-              <a href="submodules/guia_turistico/" target="_blank" rel="noopener noreferrer"
-                >Guia Turístico</a
-              >
+              <a href="guia_turistico/" target="_blank" rel="noopener noreferrer">Guia Turístico</a>
             </li>
           </ul>
         </article>
@@ -117,7 +119,9 @@
         <!-- About -->
         <article id="about">
           <h2 class="major">About</h2>
-          <span class="image main"><img src="images/pic03.jpg" alt="" /></span>
+          <span class="image main"
+            ><img src="images/pic03.jpg" alt="MP Barbosa profile and background"
+          /></span>
           <p>
             Lorem ipsum dolor sit amet, consectetur et adipiscing elit. Praesent eleifend dignissim
             arcu, at eleifend sapien imperdiet ac. Aliquam erat volutpat. Praesent urna nisi,
@@ -152,16 +156,24 @@
           </form>
           <ul class="icons">
             <li>
-              <a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a>
+              <a href="#" class="icon brands fa-twitter" aria-label="Twitter profile"
+                ><span class="label">Twitter</span></a
+              >
             </li>
             <li>
-              <a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a>
+              <a href="#" class="icon brands fa-facebook-f" aria-label="Facebook profile"
+                ><span class="label">Facebook</span></a
+              >
             </li>
             <li>
-              <a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a>
+              <a href="#" class="icon brands fa-instagram" aria-label="Instagram profile"
+                ><span class="label">Instagram</span></a
+              >
             </li>
             <li>
-              <a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a>
+              <a href="#" class="icon brands fa-github" aria-label="GitHub profile"
+                ><span class="label">GitHub</span></a
+              >
             </li>
           </ul>
         </article>
@@ -233,20 +245,24 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
             <h4>Icons</h4>
             <ul class="icons">
               <li>
-                <a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a>
+                <a href="#" class="icon brands fa-twitter" aria-label="Twitter profile"
+                  ><span class="label">Twitter</span></a
+                >
               </li>
               <li>
-                <a href="#" class="icon brands fa-facebook-f"
+                <a href="#" class="icon brands fa-facebook-f" aria-label="Facebook profile"
                   ><span class="label">Facebook</span></a
                 >
               </li>
               <li>
-                <a href="#" class="icon brands fa-instagram"
+                <a href="#" class="icon brands fa-instagram" aria-label="Instagram profile"
                   ><span class="label">Instagram</span></a
                 >
               </li>
               <li>
-                <a href="#" class="icon brands fa-github"><span class="label">Github</span></a>
+                <a href="#" class="icon brands fa-github" aria-label="GitHub profile"
+                  ><span class="label">Github</span></a
+                >
               </li>
             </ul>
 
@@ -443,10 +459,10 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
             </form>
           </section>
         </article>
-      </div>
+      </main>
 
       <!-- Footer -->
-      <footer id="footer">
+      <footer id="footer" role="contentinfo">
         <p class="copyright">
           &copy; Untitled. Design:
           <a href="https://html5up.net" target="_blank" rel="noopener noreferrer">HTML5 UP</a>.

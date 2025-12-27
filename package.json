@@ -1,0 +1,18 @@
+{
+  "name": "mpbarbosa-site-root",
+  "version": "1.0.0",
+  "description": "Root-level package.json for project-wide test execution",
+  "private": true,
+  "scripts": {
+    "test": "cd src && npm test",
+    "test:ci": "cd src && npm run test:ci",
+    "test:coverage": "cd src && npm run test:coverage",
+    "test:watch": "cd src && npm run test:watch",
+    "start": "cd src && npm start",
+    "lint:md": "cd src && npm run lint:md"
+  },
+  "engines": {
+    "node": ">=25.2.1",
+    "npm": ">=10.0.0"
+  }
+}

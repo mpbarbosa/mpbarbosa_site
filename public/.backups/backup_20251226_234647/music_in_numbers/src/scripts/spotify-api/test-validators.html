@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotifyApiValidators Test</title>
+</head>
+<body>
+    <h1>SpotifyApiValidators Test</h1>
+    <div id="test-results"></div>
+
+    <script src="SpotifyApiValidators.js"></script>
+    <script>
+        function runTests() {
+            const results = [];
+            
+            // Test validateClientId
+            try {
+                const validClientId = SpotifyApiValidators.validateClientId('a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6');
+                const invalidClientId = SpotifyApiValidators.validateClientId('invalid');
+                
+                results.push(`✅ validateClientId: Valid ID returned ${validClientId.isValid}`);
+                results.push(`✅ validateClientId: Invalid ID returned ${!invalidClientId.isValid}`);
+            } catch (error) {
+                results.push(`❌ validateClientId failed: ${error.message}`);
+            }
+            
+            // Test validateAccessToken
+            try {
+                const validToken = SpotifyApiValidators.validateAccessToken('BQC4YXNhY2Nlc3NfdG9rZW4');
+                const invalidToken = SpotifyApiValidators.validateAccessToken('');
+                
+                results.push(`✅ validateAccessToken: Valid token returned ${validToken.isValid}`);
+                results.push(`✅ validateAccessToken: Invalid token returned ${!invalidToken.isValid}`);
+            } catch (error) {
+                results.push(`❌ validateAccessToken failed: ${error.message}`);
+            }
+            
+            // Test validateLimit
+            try {
+                const validLimit = SpotifyApiValidators.validateLimit(20);
+                const invalidLimit = SpotifyApiValidators.validateLimit(100);
+                
+                results.push(`✅ validateLimit: Valid limit returned ${validLimit.isValid}`);
+                results.push(`✅ validateLimit: Invalid limit returned ${!invalidLimit.isValid}`);
+            } catch (error) {
+                results.push(`❌ validateLimit failed: ${error.message}`);
+            }
+            
+            // Test validateTimeRange
+            try {
+                const validTimeRange = SpotifyApiValidators.validateTimeRange('medium_term');
+                const invalidTimeRange = SpotifyApiValidators.validateTimeRange('invalid');
+                
+                results.push(`✅ validateTimeRange: Valid range returned ${validTimeRange.isValid}`);
+                results.push(`✅ validateTimeRange: Invalid range returned ${!invalidTimeRange.isValid}`);
+            } catch (error) {
+                results.push(`❌ validateTimeRange failed: ${error.message}`);
+            }
+            
+            // Display results
+            document.getElementById('test-results').innerHTML = 
+                '<h2>Test Results:</h2>' + 
+                results.map(result => `<p>${result}</p>`).join('');
+            
+            // Log to console as well
+            console.log('SpotifyApiValidators Test Results:');
+            results.forEach(result => console.log(result));
+            
+            return results.filter(r => r.includes('❌')).length === 0;
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const success = runTests();
+            if (success) {
+                console.log('🎉 All tests passed!');
+            } else {
+                console.log('💥 Some tests failed!');
+            }
+        });
+    </script>
+</body>
+</html>

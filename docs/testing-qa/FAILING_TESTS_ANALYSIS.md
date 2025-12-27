@@ -1,25 +1,31 @@
 # Failing Tests Analysis & Fix Strategy
 
-**Date**: 2025-12-25  
-**Test Status** (Last Verified: 2025-12-25): 208 passing / 17 failing / 225 total (92.4% pass rate)  
-**Priority**: 🟡 **MEDIUM-HIGH** - Improve to 100% pass rate
+**Date**: 2025-12-27  
+**Test Status** (Last Verified: 2025-12-27): 256 passing / 31 failing / 287 total (89.2% pass rate)  
+**Priority**: 🔴 **HIGH** - Critical failures in accessibility + shell scripts
 
 ---
 
 ## Executive Summary
 
-**Current Failure Rate**: 7.6% (17 failing tests)
+**Current Failure Rate**: 10.8% (31 failing tests)
 
 **Root Causes**:
-1. **Hardcoded String Expectations** - Tests check for exact strings that changed in scripts
-2. **Path Changes** - Tests expect old directory structure (submodules architecture deprecated)
-3. **Script Refactoring** - Function names and patterns changed in shell scripts
-4. **Deprecated Scripts** - Tests still check for scripts moved to `deprecated/`
+1. **Accessibility Test Browser Teardown** - Puppeteer browser instance not properly initialized (CRITICAL)
+2. **Hardcoded String Expectations** - Tests check for exact strings that changed in scripts
+3. **Path Changes** - Tests expect old directory structure (submodules architecture deprecated)
+4. **Script Refactoring** - Function names and patterns changed in shell scripts
+5. **Deprecated Scripts** - Tests still check for scripts moved to `deprecated/`
 
 **Impact**: 
+- 🔴 **CRITICAL**: Browser resource leaks in accessibility tests affect CI/CD reliability
 - ⚠️ Tests still validate core functionality
 - ⚠️ Failures are assertion mismatches, not functional bugs
 - ⚠️ Prevents clean CI/CD integration
+
+**New Failures Since 2025-12-25**:
+- Accessibility tests: Puppeteer browser teardown issues
+- Additional shell script test failures (increased from 17 to 31 total failures)
 
 ---
 
