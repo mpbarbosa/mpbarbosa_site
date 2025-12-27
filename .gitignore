@@ -1,5 +1,8 @@
 .ai_workflow/
 
+# Deprecated directories (migration artifacts)
+public.deprecated/
+
 # Node.js dependencies
 node_modules/
 package-lock.json

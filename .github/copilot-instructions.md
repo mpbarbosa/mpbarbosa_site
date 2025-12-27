@@ -20,15 +20,17 @@ This is a static HTML personal portfolio website for MP Barbosa built on the **H
 - **Sibling project structure**: Main site + 4 independent sibling projects (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
 - **Modern ES Modules**: `"type": "module"` with `.mjs` files and comprehensive Jest testing
 - **Advanced architectural patterns**: Dependency injection, functional core/imperative shell architecture
-- **Professional deployment**: Two-step deployment architecture (v2.0.0) with automated shell scripts for production nginx deployment
+- **Professional deployment**: Two-step git-based staging architecture (v3.0.0) with automated shell scripts for production nginx deployment
 - **Sibling project integration**: Four external projects deployed alongside main site (Music in Numbers, Guia Turístico, Monitora Vagas, Busca Vagas)
+- **Git-versioned staging**: Dedicated mpbarbosa.com repository for staging with full version control and rollback capability
 
 ### 🏗️ **Sibling Project Architecture** (Important Terminology)
 This project uses a **sibling project architecture** where external repositories live alongside the main repository:
 - **What they are**: Independent Git repositories in parent directory (`../*`)
 - **NOT git submodules**: `.gitmodules` is empty, no `git submodule` commands used
-- **Deployment**: All projects deploy to top level of `public/` directory
+- **Deployment**: All projects deploy to `../mpbarbosa.com/` staging repository (v3.0.0)
 - **Management**: Each project managed independently with standard git commands
+- **Staging Repository**: `../mpbarbosa.com/` is a dedicated git repository for staging before production deployment
 
 ### 🎉 **Recent Major Achievement: Complete Modularization Success**
 The Music in Numbers sibling project has achieved **outstanding architectural transformation**:
@@ -94,9 +96,9 @@ The project includes comprehensive development environment configuration:
   - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - Vanilla JavaScript SPA with API client
   - `../busca_vagas` → Busca Vagas (backend API service) - Node.js/Express with Puppeteer scraping
 - Each sibling project is managed independently in its own repository
-- Deployment is handled via `sync_to_public.sh` which copies from sibling directories to `public/` directory
-- **Architecture Complete**: All sibling projects now deployed at top level of `public/` directory
-- **Legacy Directory Removed**: The `public/submodules/` directory has been completely migrated out
+- Deployment is handled via `sync_to_staging.sh` which copies from sibling directories to `mpbarbosa.com/` directory
+- **Architecture Complete**: All sibling projects now deployed at top level of `mpbarbosa.com/` directory
+- **Legacy Directory Removed**: The `mpbarbosa.com/submodules/` directory has been completely migrated out
 - **Architecture Note**: This project does NOT use git submodules (`.gitmodules` is empty) - all projects use independent sibling architecture
 
 ## Validation and Testing
@@ -126,9 +128,9 @@ The project includes comprehensive development environment configuration:
 4. **Project Links**:
    - Navigate to "Projetos (IA)" section
    - Click "Scripts de automação", "Music in Numbers", and "Monitora Vagas" project links
-   - **Expected behavior**: Project links will show 404 errors unless `sync_to_public.sh --step1` has been run to deploy sibling projects
-   - This is normal behavior when sibling projects aren't deployed to `public/` directory
-   - All project links point to top-level directories in `public/`
+   - **Expected behavior**: Project links will show 404 errors unless `sync_to_staging.sh --step1` has been run to deploy sibling projects
+   - This is normal behavior when sibling projects aren't deployed to `mpbarbosa.com/` directory
+   - All project links point to top-level directories in `mpbarbosa.com/`
 
 ### Performance and Layout
 - Test responsive design by resizing browser window (breakpoints: XLarge, Large, Medium, Small, XSmall)
@@ -145,25 +147,25 @@ mpbarbosa_site/
 ├── .github/                    # GitHub configuration and workflows
 │   └── copilot-instructions.md # These instructions
 ├── shell_scripts/              # Automation and deployment scripts
-│   ├── sync_to_public.sh       # Two-step deployment script (v2.0.0)
+│   ├── sync_to_staging.sh       # Two-step deployment script (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment to nginx
 │   ├── pull_all_submodules.sh  # DEPRECATED: Use "cd ../PROJECT && git pull" instead
 │   ├── push_all_submodules.sh  # DEPRECATED: Use "cd ../PROJECT && git push" instead
 │   ├── cleanup_old_folders.sh  # Automated cleanup utilities
 │   ├── fix_documentation_consistency.sh  # Documentation consistency fixes
 │   └── README.md              # Shell scripts documentation
-├── public/                     # Deployment staging directory (sync_to_public.sh output)
+├── mpbarbosa.com/                     # Deployment staging directory (sync_to_staging.sh output)
 │   ├── index.html             # Synchronized main page
 │   ├── assets/                # Synchronized HTML5 UP Dimension assets
 │   ├── busca_vagas/           # Busca Vagas API backend (not in submodules)
-│   │   ├── client/public/     # Frontend HTML interface
+│   │   ├── client/mpbarbosa.com/     # Frontend HTML interface
 │   │   └── src/               # Node.js/Express API server with Puppeteer
 │   ├── monitora_vagas/        # AFPESP hotel monitoring vanilla JavaScript app
 │   │   ├── src/               # Legacy source files
 │   │   │   ├── services/apiClient.js    # Original API client implementation
 │   │   │   ├── services/hotelCache.js   # Original caching layer
 │   │   │   └── styles/main.css          # Original stylesheet
-│   │   └── public/            # Modern production build (v2.0.0)
+│   │   └── mpbarbosa.com/            # Modern production build (v2.0.0)
 │   │       ├── index.html                   # Main UI with hotel search form
 │   │       ├── archived-versions/           # Historical UI iterations
 │   │       │   ├── api-test.html            # API testing tool
@@ -222,9 +224,9 @@ mpbarbosa_site/
 │   │   ├── header.html       # Standalone header component
 │   │   └── projects.html     # Standalone projects page
 │   ├── pages/                 # Redirect pages for projects
-│   │   ├── music-in-numbers.html    # Redirects to public/music_in_numbers/
-│   │   ├── guia-turistico.html      # Redirects to public/guia_turistico/
-│   │   └── monitora-vagas.html      # Redirects to public/monitora_vagas/
+│   │   ├── music-in-numbers.html    # Redirects to mpbarbosa.com/music_in_numbers/
+│   │   ├── guia-turistico.html      # Redirects to mpbarbosa.com/guia_turistico/
+│   │   └── monitora-vagas.html      # Redirects to mpbarbosa.com/monitora_vagas/
 ├── .ai_workflow/              # AI workflow automation (gitignored, 1.3M)
 │   ├── backlog/               # Workflow task backlog with timestamped sessions
 │   ├── logs/                  # Workflow execution logs and debugging output
@@ -255,26 +257,26 @@ The project includes comprehensive shell scripts for deployment and maintenance:
 ```bash
 # Two-Step Deployment Process:
 # Step 1: Source → Public (staging)
-./shell_scripts/sync_to_public.sh --step1 --verbose
+./shell_scripts/sync_to_staging.sh --step1 --verbose
 
 # Step 2: Public → Production (deployment)
-./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/html
+./shell_scripts/sync_to_staging.sh --step2 --production-dir /var/www/html
 
 # Combined deployment (both steps)
-./shell_scripts/sync_to_public.sh --both-steps
+./shell_scripts/sync_to_staging.sh --both-steps
 
 # Legacy deployment script v2.0.0 (uses public directory as source)
-# Requires sync_to_public.sh --step1 to prepare files first
+# Requires sync_to_staging.sh --step1 to prepare files first
 sudo ./shell_scripts/deploy_to_webserver.sh
 
-# Features (sync_to_public.sh v2.0.0):
+# Features (sync_to_staging.sh v2.0.0):
 # - Parametrized step control (--step1, --step2, --both-steps)
 # - Flexible production directory configuration (default: /var/www/html)
 # - Comprehensive asset management (HTML, CSS, JS, images, webfonts)
 # - Music in Numbers sibling project support with complete module architecture
 # - Guia Turístico sibling project support with complete project structure
 # - Monitora Vagas dual-directory deployment:
-#   - Both src/ (legacy) and public/ (modern v2.0.0) folder support
+#   - Both src/ (legacy) and mpbarbosa.com/ (modern v2.0.0) folder support
 #   - Modern configuration layer architecture (app.js, constants.js, environment.js, index.js)
 #   - BuscaVagasAPIClient class with fetch API and timeout handling
 #   - Modular CSS architecture (global/, components/, pages/)
@@ -294,7 +296,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 # - Test coverage: Temporarily disabled due to Node.js 25.2.1 compatibility (see docs/testing-qa/COVERAGE_ISSUE.md)
 
 # Features (deploy_to_webserver.sh v2.0.0):
-# - Uses public directory as source (requires sync_to_public.sh step1 first)
+# - Uses public directory as source (requires sync_to_staging.sh step1 first)
 # - Simplified deployment path with pre-staged files
 # - Maintains backward compatibility with existing workflows
 # - Automatic validation of public directory preparation
@@ -348,8 +350,8 @@ cd ../monitora_vagas && git pull && git push
 # Busca Vagas (Backend API)
 cd ../busca_vagas && git pull && git push
 
-# Deploy sibling projects to public/ directory (top level):
-./shell_scripts/sync_to_public.sh --step1
+# Deploy sibling projects to mpbarbosa.com/ directory (top level):
+./shell_scripts/sync_to_staging.sh --step1
 ```
 
 ### Important Notes
@@ -372,12 +374,12 @@ cd ../busca_vagas && git pull && git push
 1. **Sibling Project HTML Files**: Use relative paths only
 
    ```html
-   <!-- ✅ CORRECT for sibling project files deployed to public/ directory -->
+   <!-- ✅ CORRECT for sibling project files deployed to mpbarbosa.com/ directory -->
    <link rel="stylesheet" href="styles/themes.css">
    <script defer src="scripts/utils.js"></script>
 
    <!-- ❌ WRONG - causes 404 errors -->
-   <link rel="stylesheet" href="public/music_in_numbers/src/styles/themes.css">
+   <link rel="stylesheet" href="mpbarbosa.com/music_in_numbers/src/styles/themes.css">
    ```
 
 2. **Access Method Testing**: Always test both access patterns:
@@ -394,7 +396,7 @@ cd ../busca_vagas && git pull && git push
 ## Troubleshooting
 
 ### Common Issues
-1. **404 errors for project links**: Normal when sibling projects aren't deployed to `public/` - run `sync_to_public.sh --step1` to deploy
+1. **404 errors for project links**: Normal when sibling projects aren't deployed to `mpbarbosa.com/` - run `sync_to_staging.sh --step1` to deploy
 2. **Template assets not loading**: Verify `assets/` directory structure is intact
 3. **Port conflicts**: If port 8080 is in use, live-server will automatically find another available port
 4. **Font Awesome icons not showing**: Check that `assets/webfonts/` directory contains all font files
@@ -487,7 +489,7 @@ The project uses npm overrides to resolve transitive dependency vulnerabilities:
 The Monitora Vagas project showcases **production-ready vanilla JavaScript SPA with modern configuration architecture and client-side filtering**:
 
 #### Directory Structure
-The project now maintains both legacy (`src/`) and modern (`public/`) directories:
+The project now maintains both legacy (`src/`) and modern (`mpbarbosa.com/`) directories:
 
 **Legacy Structure** (`src/`):
 - Original implementation with inline configuration
@@ -495,7 +497,7 @@ The project now maintains both legacy (`src/`) and modern (`public/`) directorie
 - Monolithic CSS architecture
 - Maintained for backward compatibility
 
-**Modern Structure v2.0.0** (`public/`):
+**Modern Structure v2.0.0** (`mpbarbosa.com/`):
 - **Configuration Layer**: Modular config architecture with separation of concerns
 - **Service Layer**: Enhanced API client with environment detection
 - **CSS Architecture**: Component-based styling with global, component, and page-specific modules
@@ -673,9 +675,9 @@ Comprehensive third-party library bundling:
 - **CORS**: Configured for `http://localhost:5173` (development)
 
 #### Deployment Strategy
-The `sync_to_public.sh` script (v2.0.0) handles dual-directory deployment:
+The `sync_to_staging.sh` script (v2.0.0) handles dual-directory deployment:
 - **src/ folder**: Legacy implementation copied as-is
-- **public/ folder**: Modern implementation with symlink resolution (`cp -rL`)
+- **mpbarbosa.com/ folder**: Modern implementation with symlink resolution (`cp -rL`)
 - **Validation**: Both directories validated for HTML and JS files
 - **Backward Compatibility**: Ensures smooth transition from legacy to modern architecture
 
@@ -839,19 +841,19 @@ Critical deployment and maintenance patterns:
 # - Safe stash management and comprehensive verification
 
 # Two-step production deployment with nginx integration (v2.0.0)
-./shell_scripts/sync_to_public.sh --step1 --dry-run
-./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/html
-./shell_scripts/sync_to_public.sh --both-steps
+./shell_scripts/sync_to_staging.sh --step1 --dry-run
+./shell_scripts/sync_to_staging.sh --step2 --production-dir /var/www/html
+./shell_scripts/sync_to_staging.sh --both-steps
 
-# Legacy deployment v2.0.0 (uses public directory as source, requires sync_to_public.sh step1 first)
+# Legacy deployment v2.0.0 (uses public directory as source, requires sync_to_staging.sh step1 first)
 sudo ./shell_scripts/deploy_to_webserver.sh --dry-run
 ```
 
 **Key Deployment Patterns**:
 - Always use `--dry-run` first to preview operations before executing
-- For deployment: Use `sync_to_public.sh --step1` to prepare files in /public directory
-- Step 2 options: Either `sync_to_public.sh --step2` or legacy `deploy_to_webserver.sh` (v2.0.0)
-- Both scripts now at v2.0.0: `sync_to_public.sh` with two-step architecture, `deploy_to_webserver.sh` with public source
+- For deployment: Use `sync_to_staging.sh --step1` to prepare files in /public directory
+- Step 2 options: Either `sync_to_staging.sh --step2` or legacy `deploy_to_webserver.sh` (v2.0.0)
+- Both scripts now at v2.0.0: `sync_to_staging.sh` with two-step architecture, `deploy_to_webserver.sh` with public source
 - Legacy `deploy_to_webserver.sh` uses `/public` as source (requires step1 to run first)
 - Production directory is configurable via `--production-dir` parameter (default: `/var/www/html`)
 - Use `--both-steps` for complete source-to-production deployment in one command
