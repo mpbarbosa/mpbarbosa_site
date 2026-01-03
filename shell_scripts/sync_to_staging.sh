@@ -424,8 +424,10 @@ create_backup() {
             
             print_success "Backup created: $backup_path"
             
+            # Declaration
+            local backup_count
             # Clean up old backups (keep only last 5)
-            local backup_count=$(find "$STAGING_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
+            backup_count=$(find "$STAGING_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
             if [[ $backup_count -gt 5 ]]; then
                 find "$STAGING_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - 5)) | xargs rm -rf
                 print_info "Cleaned up old backups (keeping last 5)"
@@ -599,9 +601,11 @@ copy_images() {
         print_info "  Expected: $source_dir"
         return 0
     fi
-    
+
+    # Declaration - SC2155
+    local image_count
     # Count all image files using proper find syntax
-    local image_count=$(find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
+    image_count=$(find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
     
     if [[ "$DRY_RUN" == "false" ]]; then
         # Create destination directory if it doesn't exist
@@ -619,14 +623,23 @@ copy_images() {
             # Show first few image files if not too many
             if [[ $image_count -gt 0 && $image_count -le 10 ]]; then
                 find "$dest_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -10 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+
+                   # Declaration - SC2155
+                    local filename
+                    local filesize
+
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
             elif [[ $image_count -gt 10 ]]; then
                 find "$dest_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -5 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+                    # Declaration - SC2155
+                    local filename
+                    local filesize
+
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
                 print_info "    ... and $((image_count - 5)) more image files"
@@ -640,14 +653,22 @@ copy_images() {
             
             if [[ $image_count -gt 0 && $image_count -le 5 ]]; then
                 find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -5 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+                    # Declaration - SC2155
+                    local filename
+                    local filesize
+                    
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
             elif [[ $image_count -gt 5 ]]; then
                 find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -3 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+                    # Declaration - SC2155
+                    local filename
+                    local filesize
+
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
                 print_info "    ... and $((image_count - 3)) more image files"
@@ -683,9 +704,14 @@ copy_music_in_numbers_project() {
         
         # Copy src folder (module architecture with HTML, scripts, styles)
         if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css
+            
+            src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
             
             # Copy complete src directory structure
             cp -r "$source_project/src" "$dest_dir/"
@@ -705,9 +731,14 @@ copy_music_in_numbers_project() {
         print_info "[DRY RUN] Would copy Music in Numbers project"
         
         if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css        
+        
+            src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
             
             print_info "  Source: $source_project/src"
             print_info "  Destination: $dest_dir/src"
@@ -729,9 +760,13 @@ copy_guia_turistico_project() {
     # Guia Turistico sibling project deployment
     # Location: ../guia_turistico
     # Strategy: Copy src/ folder with complete project structure
-    
-    local source_project="$PROJECT_ROOT/../guia_turistico"
-    local dest_dir="$STAGING_DIR/guia_turistico"
+
+    # Declaration - SC2155
+    local source_project
+    local dest_dir
+
+    source_project="$PROJECT_ROOT/../guia_turistico"
+    dest_dir="$STAGING_DIR/guia_turistico"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
@@ -747,10 +782,16 @@ copy_guia_turistico_project() {
         
         # Copy src folder (complete project structure)
         if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
-            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css
+            local src_dirs
+
+            src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
+            src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
             # Copy complete src directory structure
             cp -r "$source_project/src"/* "$dest_dir/"
@@ -771,10 +812,16 @@ copy_guia_turistico_project() {
         print_info "[DRY RUN] Would copy Guia Turistico project"
         
         if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
-            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css
+            local src_dirs
+        
+            src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
+            src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
             print_info "  Source: $source_project/src"
             print_info "  Destination: $dest_dir"
@@ -1339,7 +1386,7 @@ copy_systemd_service() {
     fi
 }
 
-# Restart and enable system services (nginx)
+# Restart and enable system services (nginx, Node.js apps)
 # Executed at the end of Step 2 to activate deployed changes
 restart_system_services() {
     print_step "Restarting and enabling system services"
@@ -1352,6 +1399,7 @@ restart_system_services() {
             print_info "  Manually run the following commands:"
             echo ""
             print_info "    sudo systemctl daemon-reload"
+            print_info "    sudo systemctl restart busca_vagas_node_app"
             print_info "    sudo systemctl restart nginx"
             echo ""
             return 0
@@ -1363,6 +1411,14 @@ restart_system_services() {
             print_success "Systemd daemon reloaded"
         else
             print_warning "Failed to reload systemd daemon"
+        fi
+        
+        # Restart Busca Vagas Node.js API service
+        print_info "Restarting Busca Vagas Node.js API service..."
+        if systemctl restart busca_vagas_node_app 2>/dev/null; then
+            print_success "Busca Vagas API service restarted successfully"
+        else
+            print_warning "Failed to restart Busca Vagas API service (may not be installed or running)"
         fi
         
         # Restart nginx web server
@@ -1377,6 +1433,7 @@ restart_system_services() {
     else
         print_info "[DRY RUN] Would execute service restart commands:"
         print_info "  sudo systemctl daemon-reload"
+        print_info "  sudo systemctl restart busca_vagas_node_app"
         print_info "  sudo systemctl restart nginx"
     fi
 }
