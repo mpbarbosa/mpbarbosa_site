@@ -337,6 +337,7 @@ STEP OPTIONS (at least one required):
     --production-dir    Set custom production directory (default: /var/www/html)
 
 GENERAL OPTIONS:
+    --source <dir>      Source folder to deploy: dist or src (default: src)
     --dry-run           Preview operations without making changes
     --verbose           Show detailed output
     --no-backup         Skip creating backup of existing files
@@ -347,6 +348,7 @@ EXAMPLES:
     $0 --step1                              # Copy source to public only
     $0 --step2                              # Copy public to production only
     $0 --both-steps                         # Execute both steps
+    $0 --step1 --source dist               # Deploy from dist/ instead of src/
     $0 --step1 --dry-run --verbose          # Preview step 1 with details
     $0 --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
     $0 --both-steps --no-backup --verbose   # Both steps without backup
@@ -759,11 +761,13 @@ copy_guia_turistico_project() {
     
     # Guia Turistico sibling project deployment
     # Location: ../guia_turistico
-    # Strategy: Copy src/ folder with complete project structure
+    # Strategy: Run Vite production build (npm run build) then copy dist/ folder.
+    #           Falls back to src/ with a warning if dist/ is unavailable after build.
 
     # Declaration - SC2155
     local source_project
     local dest_dir
+    local copy_source
 
     source_project="$PROJECT_ROOT/../guia_turistico"
     dest_dir="$STAGING_DIR/guia_turistico"
@@ -775,30 +779,53 @@ copy_guia_turistico_project() {
         print_info "  Skipping Guia Turistico deployment"
         return 0
     fi
-    
+
+    # --- Resolve copy source: prefer Vite dist/, fall back to src/ ---
+    _resolve_guia_turistico_source() {
+        # Attempt Vite production build if package.json defines a build script
+        if [[ -f "$source_project/package.json" ]] && grep -q '"build"' "$source_project/package.json"; then
+            print_info "  Running Vite production build for Guia Turistico..."
+            if (cd "$source_project" && npm run build --silent 2>&1); then
+                print_success "  Vite build succeeded"
+            else
+                print_warning "  Vite build failed; will attempt fallback"
+            fi
+        fi
+
+        if [[ -d "$source_project/dist" ]]; then
+            copy_source="$source_project/dist"
+        elif [[ -d "$source_project/src" ]]; then
+            print_warning "Guia Turistico dist/ not found after build; falling back to src/"
+            copy_source="$source_project/src"
+        else
+            copy_source=""
+        fi
+    }
+
     if [[ "$DRY_RUN" == "false" ]]; then
         # Create destination directory
         mkdir -p "$dest_dir"
-        
-        # Copy src folder (complete project structure)
-        if [[ -d "$source_project/src" ]]; then
+
+        _resolve_guia_turistico_source
+
+        if [[ -n "$copy_source" ]]; then
             # Declaration - SC2155
             local src_html
             local src_js
             local src_css
             local src_dirs
 
-            src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
-            src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
-            src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            src_html=$(find "$copy_source" -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$copy_source" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$copy_source" -type f -name "*.css" 2>/dev/null | wc -l)
+            src_dirs=$(find "$copy_source" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
-            # Copy complete src directory structure
-            cp -r "$source_project/src"/* "$dest_dir/"
-            print_success "Copied: Guia Turistico src/ folder ($src_html HTML, $src_js JS, $src_css CSS files, $src_dirs subdirectories)"
+            # Copy production build output
+            cp -r "$copy_source"/. "$dest_dir/"
+            print_success "Copied: Guia Turistico $(basename "$copy_source")/ ($src_html HTML, $src_js JS, $src_css CSS files, $src_dirs subdirectories)"
             
             if [[ "$VERBOSE" == "true" ]]; then
-                print_info "  Source: $source_project/src"
+                print_info "  Source: $copy_source"
                 print_info "  Destination: $dest_dir"
                 print_info "  HTML files: $src_html"
                 print_info "  JavaScript files: $src_js"
@@ -806,31 +833,41 @@ copy_guia_turistico_project() {
                 print_info "  Subdirectories: $src_dirs"
             fi
         else
-            print_warning "Guia Turistico src/ folder not found"
+            print_warning "Guia Turistico: no dist/ or src/ folder found; skipping"
         fi
     else
-        print_info "[DRY RUN] Would copy Guia Turistico project"
-        
-        if [[ -d "$source_project/src" ]]; then
+        print_info "[DRY RUN] Would build and copy Guia Turistico project"
+
+        # Resolve without actually building in dry-run
+        if [[ -d "$source_project/dist" ]]; then
+            copy_source="$source_project/dist"
+        elif [[ -d "$source_project/src" ]]; then
+            copy_source="$source_project/src"
+            print_warning "  [DRY RUN] dist/ not found; would fall back to src/"
+        else
+            copy_source=""
+        fi
+
+        if [[ -n "$copy_source" ]]; then
             # Declaration - SC2155
             local src_html
             local src_js
             local src_css
             local src_dirs
         
-            src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
-            src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
-            src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            src_html=$(find "$copy_source" -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$copy_source" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$copy_source" -type f -name "*.css" 2>/dev/null | wc -l)
+            src_dirs=$(find "$copy_source" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
-            print_info "  Source: $source_project/src"
+            print_info "  Source (would use): $copy_source"
             print_info "  Destination: $dest_dir"
             print_info "  HTML files to copy: $src_html"
             print_info "  JavaScript files to copy: $src_js"
             print_info "  CSS files to copy: $src_css"
             print_info "  Subdirectories to copy: $src_dirs"
         else
-            print_warning "  Guia Turistico src/ folder not found at $source_project/src"
+            print_warning "  [DRY RUN] No dist/ or src/ folder found"
         fi
     fi
     
@@ -1559,6 +1596,20 @@ main() {
                 STEP_SOURCE_TO_STAGING=true
                 STEP_STAGING_TO_PRODUCTION=true
                 shift
+                ;;
+            --source)
+                if [[ -n "${2:-}" ]]; then
+                    if [[ "$2" == "dist" || "$2" == "src" ]]; then
+                        SOURCE_DIR="$PROJECT_ROOT/$2"
+                        shift 2
+                    else
+                        print_error "--source requires 'dist' or 'src'"
+                        exit 1
+                    fi
+                else
+                    print_error "--source requires a value: dist or src"
+                    exit 1
+                fi
                 ;;
             --production-dir)
                 if [[ -n "${2:-}" ]]; then

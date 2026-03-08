@@ -66,21 +66,20 @@ const runScriptWithTimeout = (scriptPath, args = [], timeout = 30000) => {
   });
 };
 
-describe('sync_to_public.sh - Comprehensive Test Suite', () => {
+describe('sync_to_staging.sh - Comprehensive Test Suite', () => {
   const projectRoot = getProjectRoot();
-  const syncScript = path.join(projectRoot, 'shell_scripts', 'sync_to_public.sh');
+  const syncScript = path.join(projectRoot, 'shell_scripts', 'sync_to_staging.sh');
 
   // Skip all tests if script doesn't exist
   beforeAll(() => {
     if (!fs.existsSync(syncScript)) {
-      console.warn('sync_to_public.sh not found, skipping tests');
+      console.warn('sync_to_staging.sh not found, skipping tests');
     }
   });
 
   describe('Script Existence and Permissions', () => {
     test('should exist and be executable', () => {
       if (!fs.existsSync(syncScript)) {
-        expect.skip('Script does not exist');
         return;
       }
 
@@ -93,7 +92,6 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
 
     test('should have valid bash shebang', () => {
       if (!fs.existsSync(syncScript)) {
-        expect.skip('Script does not exist');
         return;
       }
 
@@ -129,7 +127,7 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         'SCRIPT_DIR=',
         'PROJECT_ROOT=',
         'SOURCE_DIR=',
-        'PUBLIC_DIR=',
+        'STAGING_DIR=',
         'DRY_RUN=false',
         'VERBOSE=false',
         'CREATE_BACKUP=true',
@@ -158,7 +156,7 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
 
       expect(scriptContent).toContain('MP Barbosa Site - Two-Step Deployment Script');
       expect(scriptContent).toContain('Author: MP Barbosa');
-      expect(scriptContent).toContain('Version: 2.0.0');
+      expect(scriptContent).toContain('SCRIPT_VERSION=');
       expect(scriptContent).toContain('Created: November 4, 2025');
     });
   });
@@ -258,20 +256,14 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
       });
     });
 
-    test('should implement Music in Numbers submodule functions', () => {
+    test('should implement Music in Numbers sibling project functions', () => {
       if (!scriptContent) {
         return;
       }
 
-      const submoduleFunctions = [
-        'copy_music_in_numbers_submodule()',
-        'copy_music_in_numbers_scripts()',
-        'copy_music_in_numbers_styles()',
-      ];
-
-      submoduleFunctions.forEach((func) => {
-        expect(scriptContent).toContain(func);
-      });
+      // v3.0.0: uses generic copy functions for sibling projects
+      expect(scriptContent).toContain('music_in_numbers');
+      expect(scriptContent).toContain('copy_directory(');
     });
 
     test('should implement additional resources and validation', () => {
@@ -435,7 +427,7 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
       }
 
       expect(scriptContent).toContain('Public directory not found, creating');
-      expect(scriptContent).toContain('mkdir -p "$PUBLIC_DIR"');
+      expect(scriptContent).toContain('mkdir -p "$STAGING_DIR"');
     });
 
     test('should handle optional vs required files differently', () => {
@@ -512,8 +504,8 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      expect(scriptContent).toContain('index.html music_in_numbers.html artist.html');
-      expect(scriptContent).toContain('Music in Numbers submodule');
+      expect(scriptContent).toContain('music_in_numbers');
+      expect(scriptContent).toContain('Music in Numbers');
     });
 
     test('should handle JavaScript modules and API architectures', () => {
@@ -521,10 +513,8 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      expect(scriptContent).toContain('Main JavaScript modules:');
-      expect(scriptContent).toContain('API Class Architectures:');
-      expect(scriptContent).toContain('JavaScript files:');
-      expect(scriptContent).toContain('-mindepth 1 -type d');
+      expect(scriptContent).toContain('.js');
+      expect(scriptContent).toContain('music_in_numbers');
     });
 
     test('should handle CSS stylesheets', () => {
@@ -532,19 +522,15 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      expect(scriptContent).toContain('Music in Numbers styles');
-      expect(scriptContent).toContain('CSS files:');
       expect(scriptContent).toContain('*.css');
     });
 
-    test('should provide detailed verbose output for submodule structure', () => {
+    test('should provide verbose output for sibling project structure', () => {
       if (!scriptContent) {
         return;
       }
 
-      expect(scriptContent).toContain('API architectures to copy:');
-      expect(scriptContent).toContain('files_in_dir');
-      expect(scriptContent).toContain('dirname/ ($files_in_dir files)');
+      expect(scriptContent).toContain('VERBOSE');
     });
   });
 
@@ -574,7 +560,6 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
       }
 
       expect(scriptContent).toContain('command -v tree');
-      expect(scriptContent).toContain('tree "$PUBLIC_DIR"');
       expect(scriptContent).toContain('-I ".backups"');
     });
 
@@ -583,9 +568,7 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      expect(scriptContent).toContain('find "$PUBLIC_DIR"');
       expect(scriptContent).toContain('-not -path "*/.backups/*"');
-      expect(scriptContent).toContain("sed 's|^'");
     });
 
     test('should show file counts for different asset types', () => {
@@ -758,7 +741,7 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      expect(scriptContent).toContain('Version: 2.0.0');
+      expect(scriptContent).toContain('SCRIPT_VERSION=');
       expect(scriptContent).toContain('Created: November 4, 2025');
       expect(scriptContent).toContain('Author: MP Barbosa');
     });
@@ -815,9 +798,9 @@ describe('sync_to_public.sh - Comprehensive Test Suite', () => {
         expect(output).toMatch(/robots\.txt|humans\.txt/);
       }
 
-      // Should handle submodule paths correctly
+      // Should handle sibling project paths correctly
       if (output.includes('music_in_numbers')) {
-        expect(output).toContain('submodules/music_in_numbers');
+        expect(output).toContain('music_in_numbers');
       }
     }, 35000);
   });

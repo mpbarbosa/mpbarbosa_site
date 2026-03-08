@@ -35,7 +35,7 @@ describe('Shell Scripts Functionality', () => {
     });
 
     test('should contain all required shell scripts', () => {
-      const requiredScripts = ['deploy_to_webserver.sh', 'sync_to_public.sh', 'README.md'];
+      const requiredScripts = ['deploy_to_webserver.sh', 'sync_to_staging.sh', 'README.md'];
 
       requiredScripts.forEach((script) => {
         const scriptPath = path.join(shellScriptsDir, script);
@@ -55,7 +55,7 @@ describe('Shell Scripts Functionality', () => {
     });
 
     test('should have executable permissions on shell scripts', () => {
-      const executableScripts = ['deploy_to_webserver.sh', 'sync_to_public.sh'];
+      const executableScripts = ['deploy_to_webserver.sh', 'sync_to_staging.sh'];
 
       executableScripts.forEach((script) => {
         const scriptPath = path.join(shellScriptsDir, script);
@@ -201,7 +201,7 @@ describe('Shell Scripts Functionality', () => {
 
       // Should document all major scripts
       expect(content).toContain('deploy_to_webserver.sh');
-      expect(content).toContain('sync_to_public.sh');
+      expect(content).toContain('sync_to_staging.sh');
       expect(content).toContain('pull_all_submodules.sh');
       expect(content).toContain('push_all_submodules.sh');
     });
@@ -299,8 +299,8 @@ describe('Project Navigation Integration', () => {
 
       const content = fs.readFileSync(indexPath, 'utf8');
 
-      // Current implementation uses direct submodule links
-      expect(content).toMatch(/submodules\/music_in_numbers/);
+      // Current implementation uses top-level sibling project links
+      expect(content).toMatch(/music_in_numbers/);
       // HTML5 UP template structure may use different navigation patterns
     });
   });

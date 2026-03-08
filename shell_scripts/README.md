@@ -16,13 +16,13 @@ What do you need to do?
 │
 ├─ 📤 DEPLOY CODE CHANGES?
 │  ├─ To staging (public directory)?
-│  │  └─ Run: ./shell_scripts/sync_to_public.sh --step1
+│  │  └─ Run: ./shell_scripts/sync_to_staging.sh --step1
 │  │     Purpose: Sync src/ to public/ for testing
 │  │     When: Testing deployment before production
 │  │
 │  ├─ To production (nginx server)?
 │  │  ├─ Full two-step deployment?
-│  │  │  └─ Run: ./shell_scripts/sync_to_public.sh --both-steps
+│  │  │  └─ Run: ./shell_scripts/sync_to_staging.sh --both-steps
 │  │  │     Purpose: Complete staging + production deployment
 │  │  │     When: Ready to go live with changes
 │  │  │
@@ -59,8 +59,8 @@ What do you need to do?
 | Task | Command | Frequency |
 |------|---------|-----------|
 | Start work session | `./shell_scripts/pull_all_submodules.sh` | Daily |
-| Test deployment | `./shell_scripts/sync_to_public.sh --step1 --dry-run` | Before production |
-| Deploy to production | `./shell_scripts/sync_to_public.sh --both-steps` | Weekly/as needed |
+| Test deployment | `./shell_scripts/sync_to_staging.sh --step1 --dry-run` | Before production |
+| Deploy to production | `./shell_scripts/sync_to_staging.sh --both-steps` | Weekly/as needed |
 | Validate links | `./shell_scripts/validate_external_links.sh --fix` | After link changes |
 | Better AI prompts | `./shell_scripts/copilot_with_enhanced_prompt.sh "task"` | As needed |
 
@@ -87,14 +87,14 @@ graph TD
     subgraph "Deployment Workflow"
         H --> I{Deploy Where?}
 
-        I -->|Test First| J[sync_to_public.sh --step1 --dry-run]
+        I -->|Test First| J[sync_to_staging.sh --step1 --dry-run]
         J --> K[Review Changes]
         K --> L{Approve?}
 
-        L -->|Yes| M[sync_to_public.sh --both-steps]
+        L -->|Yes| M[sync_to_staging.sh --both-steps]
         L -->|No| C
 
-        I -->|Quick Production| N[sync_to_public.sh --both-steps]
+        I -->|Quick Production| N[sync_to_staging.sh --both-steps]
         I -->|Already Staged| O[deploy_to_webserver.sh]
 
         M --> P[✅ Live on Production]
@@ -117,7 +117,7 @@ graph TD
 
     subgraph "Script Dependencies"
         T2[copilot_with_enhanced_prompt.sh] -.depends on.-> S2[enhance_prompt.sh]
-        D2[deploy_to_webserver.sh] -.uses.-> SY[sync_to_public.sh step1]
+        D2[deploy_to_webserver.sh] -.uses.-> SY[sync_to_staging.sh step1]
     end
 
     style B fill:#90EE90
@@ -146,7 +146,7 @@ graph TD
 
 4. **🔗 Script Dependencies** (Dotted lines): Inter-script relationships
    - `copilot_with_enhanced_prompt.sh` depends on `enhance_prompt.sh`
-   - `deploy_to_webserver.sh` uses output from `sync_to_public.sh --step1`
+   - `deploy_to_webserver.sh` uses output from `sync_to_staging.sh --step1`
 
 **Key Decision Points**:
 - 🔶 **What Changed?** → Determines which validation to run
@@ -266,7 +266,7 @@ public.sh        │ ✅ PRODUCTION │
 └─────────────────────────────────────────────────────────────────────┘
 
 copilot_with_enhanced_prompt.sh ───depends on──► enhance_prompt.sh
-deploy_to_webserver.sh ─────────uses output──► sync_to_public.sh (step1)
+deploy_to_webserver.sh ─────────uses output──► sync_to_staging.sh (step1)
 ```
 
 ---
@@ -282,7 +282,7 @@ chmod +x shell_scripts/*.sh
 # Or make individual scripts executable
 chmod +x shell_scripts/pull_all_submodules.sh
 chmod +x shell_scripts/push_all_submodules.sh
-chmod +x shell_scripts/sync_to_public.sh
+chmod +x shell_scripts/sync_to_staging.sh
 chmod +x shell_scripts/deploy_to_webserver.sh
 chmod +x shell_scripts/validate_external_links.sh
 chmod +x shell_scripts/enhance_prompt.sh
@@ -308,7 +308,7 @@ ls -l shell_scripts/*.sh
 |--------|---------|---------------------|
 | `deprecated/pull_all_submodules.sh` | 🔴 DEPRECATED - Use direct git commands | ❌ Not recommended |
 | `deprecated/push_all_submodules.sh` | 🔴 DEPRECATED - Use direct git commands | ❌ Not recommended |
-| `sync_to_public.sh` | Two-step deployment | ✅ Yes |
+| `sync_to_staging.sh` | Two-step deployment | ✅ Yes |
 | `deploy_to_webserver.sh` | Legacy nginx deployment | ✅ Yes (requires sudo) |
 | `validate_external_links.sh` | Link security validation | ✅ Yes |
 | `enhance_prompt.sh` | AI prompt enhancement | ✅ Yes |
@@ -629,7 +629,7 @@ validate_all_documentation_metrics
 
 ---
 
-### 📁 `sync_to_public.sh` (Two-Step Deployment Architecture v2.0.0)
+### 📁 `sync_to_staging.sh` (Two-Step Deployment Architecture v2.0.0)
 **Purpose**: Two-step deployment process for MP Barbosa site with parametrized step control
 
 **Recent Changes (v2.0.0)**:
@@ -657,13 +657,13 @@ validate_all_documentation_metrics
 **Usage**:
 ```bash
 # Step Options (at least one required)
-./shell_scripts/sync_to_public.sh --step1                              # Copy source to public only
-./shell_scripts/sync_to_public.sh --step2                              # Copy public to production only
-./shell_scripts/sync_to_public.sh --both-steps                         # Execute both steps
-./shell_scripts/sync_to_public.sh --step1 --dry-run --verbose          # Preview step 1 with details
-./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
-./shell_scripts/sync_to_public.sh --both-steps --no-backup --verbose   # Both steps without backup
-./shell_scripts/sync_to_public.sh --help                               # Show help
+./shell_scripts/sync_to_staging.sh --step1                              # Copy source to public only
+./shell_scripts/sync_to_staging.sh --step2                              # Copy public to production only
+./shell_scripts/sync_to_staging.sh --both-steps                         # Execute both steps
+./shell_scripts/sync_to_staging.sh --step1 --dry-run --verbose          # Preview step 1 with details
+./shell_scripts/sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
+./shell_scripts/sync_to_staging.sh --both-steps --no-backup --verbose   # Both steps without backup
+./shell_scripts/sync_to_staging.sh --help                               # Show help
 ```
 
 **Two-Step Process**:
@@ -712,11 +712,11 @@ validate_all_documentation_metrics
 ### 🌐 `deploy_to_webserver.sh` (Legacy Deployment v2.0.0)
 **Purpose**: Deploys the website to nginx web server directory for production hosting
 
-**⚠️ Architecture Note**: This script now uses the `/public` directory as its source (prepared by `sync_to_public.sh`). For modern deployments, use the two-step `sync_to_public.sh` workflow instead.
+**⚠️ Architecture Note**: This script now uses the `/public` directory as its source (prepared by `sync_to_staging.sh`). For modern deployments, use the two-step `sync_to_staging.sh` workflow instead.
 
 **Recent Changes (v2.0.0)**:
 - ✅ **Source changed**: Now deploys from `PROJECT_ROOT/public` instead of `PROJECT_ROOT`
-- ✅ **Dependency requirement**: Requires `sync_to_public.sh --step1` to be run first
+- ✅ **Dependency requirement**: Requires `sync_to_staging.sh --step1` to be run first
 - ✅ **Git validation**: Checks project root for git repository (not source directory)
 - ✅ **Path updates**: All validation paths updated for new public directory structure
 - ✅ **Comprehensive test coverage**: 849 lines of Jest tests (53 tests, 52/53 passing)
@@ -734,7 +734,7 @@ validate_all_documentation_metrics
 **Usage**:
 ```bash
 # First, prepare files in public directory
-./shell_scripts/sync_to_public.sh --step1
+./shell_scripts/sync_to_staging.sh --step1
 
 # Then deploy to production (requires sudo)
 sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
@@ -745,14 +745,14 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 
 **Deployment Process**:
 1. Validate environment and project repository
-2. **Verify `/public` directory exists** (fails if missing - run `sync_to_public.sh --step1` first)
+2. **Verify `/public` directory exists** (fails if missing - run `sync_to_staging.sh --step1` first)
 3. Create backup of existing deployment to `/var/www/backups/mpbarbosa.com`
 4. Copy all files from `/public` to `/var/www/mpbarbosa.com` using rsync
 5. Set proper web server permissions (www-data:www-data, 755/644)
 6. Validate deployment structure (checks `index.html`, `assets/css/main.css`, `assets/js/main.js`)
 7. Check nginx configuration
 
-**Modern Alternative**: Use `sync_to_public.sh --both-steps` for the complete two-step deployment workflow with production directory configuration support.
+**Modern Alternative**: Use `sync_to_staging.sh --both-steps` for the complete two-step deployment workflow with production directory configuration support.
 
 ---
 
@@ -793,7 +793,7 @@ cd /path/to/mpbarbosa_site && ./shell_scripts/validate_external_links.sh
 src/index.html              # Main landing page
 src/components/*.html       # Component files
 src/pages/*.html           # Redirect pages
-public/submodules/*/src/*.html # Submodule HTML files (via sync_to_public.sh)
+public/submodules/*/src/*.html # Submodule HTML files (via sync_to_staging.sh)
 ```
 
 **Output Format**:
@@ -994,10 +994,10 @@ mpbarbosa_site/ (main repository)
 ├── shell_scripts/              # These automation scripts
 │   ├── pull_all_submodules.sh  # Git submodule synchronization
 │   ├── push_all_submodules.sh  # Git submodule publishing
-│   ├── sync_to_public.sh       # Two-step deployment (v2.0.0)
+│   ├── sync_to_staging.sh       # Two-step deployment (v2.0.0)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment (v2.0.0)
 │   └── README.md               # This documentation
-├── public/submodules/          # Deployed submodules (via sync_to_public.sh)
+├── public/submodules/          # Deployed submodules (via sync_to_staging.sh)
 │   ├── guia_turistico/        # Travel guide project (from sibling)
 │   ├── music_in_numbers/      # Spotify analytics project (from sibling)
 │   ├── monitora_vagas/        # Job monitoring project (from sibling)
@@ -1018,13 +1018,13 @@ mpbarbosa_site/ (main repository)
 ./shell_scripts/pull_all_submodules.sh
 
 # Stage content in public directory for validation
-./shell_scripts/sync_to_public.sh --step1 --verbose
+./shell_scripts/sync_to_staging.sh --step1 --verbose
 
 # Validate external links policy compliance
 ./shell_scripts/validate_external_links.sh
 
 # Deploy to production when ready
-./shell_scripts/sync_to_public.sh --step2
+./shell_scripts/sync_to_staging.sh --step2
 
 # End of day: push all changes
 ./shell_scripts/push_all_submodules.sh
@@ -1036,17 +1036,17 @@ mpbarbosa_site/ (main repository)
 ### Production Deployment Workflow (Two-Step Process)
 ```bash
 # Option 1: Two-step process (recommended for staging validation)
-./shell_scripts/sync_to_public.sh --step1 --verbose        # Stage files in public folder
+./shell_scripts/sync_to_staging.sh --step1 --verbose        # Stage files in public folder
 # Validate staged files, then deploy to production
-./shell_scripts/sync_to_public.sh --step2 --dry-run        # Preview production deployment
-./shell_scripts/sync_to_public.sh --step2                  # Deploy to production
+./shell_scripts/sync_to_staging.sh --step2 --dry-run        # Preview production deployment
+./shell_scripts/sync_to_staging.sh --step2                  # Deploy to production
 
 # Option 2: Combined deployment (direct source to production)
-./shell_scripts/sync_to_public.sh --both-steps --verbose   # Execute both steps
-./shell_scripts/sync_to_public.sh --both-steps --dry-run   # Preview entire workflow
+./shell_scripts/sync_to_staging.sh --both-steps --verbose   # Execute both steps
+./shell_scripts/sync_to_staging.sh --both-steps --dry-run   # Preview entire workflow
 
 # Option 3: Custom production directory
-./shell_scripts/sync_to_public.sh --step2 --production-dir /var/www/mpbarbosa
+./shell_scripts/sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa
 
 # Legacy deployment script (still available)
 ./shell_scripts/deploy_to_webserver.sh --dry-run           # Preview deployment
@@ -1059,9 +1059,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh                # Deploy to productio
 ./shell_scripts/pull_all_submodules.sh --dry-run
 
 # Preview two-step deployment process
-./shell_scripts/sync_to_public.sh --step1 --dry-run        # Preview step 1 (source to public)
-./shell_scripts/sync_to_public.sh --step2 --dry-run        # Preview step 2 (public to production)
-./shell_scripts/sync_to_public.sh --both-steps --dry-run   # Preview entire workflow
+./shell_scripts/sync_to_staging.sh --step1 --dry-run        # Preview step 1 (source to public)
+./shell_scripts/sync_to_staging.sh --step2 --dry-run        # Preview step 2 (public to production)
+./shell_scripts/sync_to_staging.sh --both-steps --dry-run   # Preview entire workflow
 
 # Preview what would be pushed
 ./shell_scripts/push_all_submodules.sh --dry-run

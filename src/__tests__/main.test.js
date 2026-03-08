@@ -18,8 +18,11 @@ describe('Main Site JavaScript Functionality', () => {
   let originalAlert;
 
   beforeEach(() => {
-    // Save originals
+    // Save originals and ensure scrollIntoView mock is always available
     originalScrollIntoView = Element.prototype.scrollIntoView;
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = jest.fn();
+    }
     originalAlert = window.alert;
 
     // Set up DOM using centralized fixture
