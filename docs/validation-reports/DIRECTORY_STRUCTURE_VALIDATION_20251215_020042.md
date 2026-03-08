@@ -846,7 +846,7 @@ The standards in this directory are applied throughout the workflow automation s
 
 ## Version
 
-- **Standard Version**: v1.0.0
+- **Standard Version**: v1.1.0
 - **Last Updated**: 2025-01-13
 - **Status**: Active Project Standard
 ```

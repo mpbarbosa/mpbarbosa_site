@@ -209,7 +209,7 @@ Always use ISO 8601 extended format in version history:
 - Enhanced code block guidelines
 - Language identifier best practices
 
-### v1.0.0 (2025-11-09)
+### v1.1.0 (2025-11-09)
 
 - Initial style guide creation
 ```
@@ -373,7 +373,7 @@ Use this consistent set of emojis across all documents:
 > **📋 Document Type: [Type]**
 > Brief description or metadata
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Date**: 2025-11-09
 ```
 
@@ -546,7 +546,7 @@ Place the table of contents after metadata and before main content:
 
 > **📋 Document Type: Technical Guide**
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Date**: 2025-11-09
 **Status**: Active
 
@@ -694,14 +694,14 @@ function example() {
   return "Hello World";
 }
 
-const data = { version: "1.0.0" };
+const data = { version: "1.1.0" };
 ```
 
 #### JSON
 
 ```json
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "test": "jest"
   }
@@ -742,7 +742,7 @@ When showing markdown syntax in documentation, use `markdown`:
 def example():
     return "Hello World"
 
-data = {"version": "1.0.0"}
+data = {"version": "1.1.0"}
 ```
 
 ### Language Identifier Best Practices
@@ -766,7 +766,7 @@ Show both command and expected output:
 ```bash
 $ npm test
 
-> mpbarbosa-landing-page@1.0.0 test
+> mpbarbosa-landing-page@1.1.0 test
 > jest
 
 PASS  __tests__/main.test.js
@@ -926,7 +926,7 @@ No emojis (appropriate for technical content):
 - Documented multi-language code block patterns
 - Added comprehensive language identifier reference table
 
-### v1.0.0 (2025-11-09)
+### v1.1.0 (2025-11-09)
 
 - Initial style guide creation
 - Documented emoji usage patterns

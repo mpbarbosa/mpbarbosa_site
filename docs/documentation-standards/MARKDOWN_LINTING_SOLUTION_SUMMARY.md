@@ -186,6 +186,6 @@ Future markdown files will:
 
 ---
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Author**: GitHub Copilot CLI (with human review)
 **Last Updated**: 2025-12-11T03:10:26Z

@@ -859,7 +859,7 @@ The system SHALL support continuation prompts after step completion.
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | 2025-12-11 | Initial functional requirements document | Workflow System |
+| 1.1.0 | 2025-12-11 | Initial functional requirements document | Workflow System |
 
 ---
 

@@ -204,4 +204,4 @@ The Step 12 script (`shell_scripts/workflow/steps/step_12_markdown_lint.sh`) aut
 
 ## Version History
 
-- **1.0.0** (2025-12-11): Initial guide with .mdlrc configuration and AI prompt enhancements
+- **1.1.0** (2025-12-11): Initial guide with .mdlrc configuration and AI prompt enhancements

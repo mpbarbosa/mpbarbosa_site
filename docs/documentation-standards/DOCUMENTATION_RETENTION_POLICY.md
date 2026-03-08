@@ -1,6 +1,6 @@
 # Documentation Consolidation and Retention Policy
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Effective Date:** 2025-11-13
 **Last Updated:** 2025-11-13
 
@@ -261,7 +261,7 @@ If reports are accidentally deleted:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | 2025-11-13 | Initial policy document | MP Barbosa |
+| 1.1.0 | 2025-11-13 | Initial policy document | MP Barbosa |
 
 ## References
 
