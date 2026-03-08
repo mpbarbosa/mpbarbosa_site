@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "fileScores": {
+    "public.deprecated/.backups/backup_20251225_170050/assets/js/breakpoints.min.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-03-08T19:04:13.161Z"
+    },
+    "public.deprecated/.backups/backup_20251225_170050/assets/js/browser.min.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-03-08T19:04:13.161Z"
+    },
+    "public.deprecated/.backups/backup_20251225_170050/assets/js/jquery.min.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-03-08T19:04:13.161Z"
+    },
+    "public.deprecated/.backups/backup_20251225_170050/assets/js/main.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-03-08T19:04:13.161Z"
+    },
+    "public.deprecated/.backups/backup_20251225_170050/assets/js/util.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-03-08T19:04:13.161Z"
+    }
+  }
+}

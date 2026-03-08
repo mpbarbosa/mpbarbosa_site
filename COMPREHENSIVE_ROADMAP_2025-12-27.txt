@@ -1,0 +1,444 @@
+═══════════════════════════════════════════════════════════════════════════════
+MP BARBOSA PERSONAL WEBSITE - COMPREHENSIVE PROJECT ROADMAP
+═══════════════════════════════════════════════════════════════════════════════
+
+DOCUMENT DATE: December 27, 2025
+PREPARED FOR: Project Planning & Development Roadmap
+
+═══════════════════════════════════════════════════════════════════════════════
+1. PROJECT OVERVIEW
+═══════════════════════════════════════════════════════════════════════════════
+
+WHAT IT IS:
+- Professional personal portfolio website with Material Design
+- Four sibling projects integrated (not git submodules)
+- Enterprise-grade JavaScript modules
+- Comprehensive automation & deployment infrastructure
+- Production-ready with B+ code quality (target: A+)
+
+CURRENT STATE (Dec 2025):
+✅ Main site: Production-ready
+✅ Music in Numbers: Modularization complete (85.8% code reduction)
+✅ Guia Turístico: In development
+✅ Monitora Vagas: Production active, modernizing
+✅ Busca Vagas: Production API service
+⚠️ Tests: 89.2% passing (256/287) - Phase 1 fixes planned
+⚠️ Code Quality: B+ (83/100) - ESLint needed
+
+═══════════════════════════════════════════════════════════════════════════════
+2. SIBLING PROJECTS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. MUSIC IN NUMBERS (🎵 Spotify Analytics)
+   Status: ✅ PRODUCTION-READY - Architectural Excellence
+   Achievement: 85.8% code reduction across major pages
+   - index.html: 84.5% reduction (1,581→246 lines, 9 modules)
+   - artist.html: 89.7% reduction (580→60 lines, 3 modules)
+   Architecture: Functional Core + Imperative Shell with DI
+   Class Extraction: Phase 4 complete (11 classes, 100% backward compatibility)
+
+2. GUIA TURÍSTICO (🗺️ Travel Guide)
+   Status: ⚠️ ACTIVE DEVELOPMENT
+   Features: Location-based recommendations, interactive maps, cultural insights
+   Next: Class extraction Phase 4 implementation
+
+3. MONITORA VAGAS (🏨 Hotel Monitoring - AFPESP)
+   Status: ⚠️ PRODUCTION ACTIVE - Modernization in Progress
+   Features: Guest counter, date picker, client-side filtering, caching
+   Architecture: Dual deployment (legacy src/ + modern v2.0.0)
+   Known Gaps: Test coverage for filtering logic (8-12h to complete)
+
+4. BUSCA VAGAS (🔍 Backend API Service)
+   Status: ⚠️ PRODUCTION API
+   Tech: Node.js/Express, Puppeteer scraping, systemd service
+   Serves: /api endpoint for hotel vacancy data
+   Nginx proxy configured for reverse proxy
+   Known Gaps: Scraping resilience, API rate limiting, monitoring
+
+═══════════════════════════════════════════════════════════════════════════════
+3. CURRENT FEATURES (COMPLETE)
+═══════════════════════════════════════════════════════════════════════════════
+
+USER INTERFACE:
+✅ HTML5 UP Dimension responsive template
+✅ Material Design components with Font Awesome icons
+✅ Smooth scrolling navigation with modals
+✅ Responsive breakpoints (XL, L, M, S, XS)
+✅ Contact form with validation
+✅ Background blur effects & parallax
+
+DEVELOPMENT INFRASTRUCTURE:
+✅ Jest testing (287 tests, jsdom environment)
+✅ Prettier code formatting + pre-commit hooks
+✅ Markdown linting (.mdlrc configuration)
+✅ GitHub Actions CI/CD workflows
+✅ 18+ deployment & maintenance shell scripts
+✅ Two-step staging architecture (v3.0.0)
+✅ Dependabot security scanning (weekly)
+
+DOCUMENTATION:
+✅ 150+ markdown files across 19 categories
+✅ Deployment guides (sync_to_public v3.0.0, deploy_to_webserver)
+✅ Testing documentation (30+ test guides)
+✅ Development standards (JSDoc, Git, DI patterns)
+✅ Code quality assessment & remediation plans
+✅ Workflow automation (25 modules, v2.0.0)
+
+═══════════════════════════════════════════════════════════════════════════════
+4. KNOWN GAPS & INCOMPLETE FEATURES
+═══════════════════════════════════════════════════════════════════════════════
+
+🔴 CRITICAL ISSUES (Week 1-2):
+1. 31 test failures (10.8%) - Path changes, hardcoded expectations
+   Fix: 6-10 hours | Impact: CI/CD blocking
+2. No ESLint configuration - Code quality not enforced
+   Fix: 2 hours | Impact: Blocks B+ → A- migration
+3. Puppeteer browser teardown - Resource leaks in accessibility tests
+   Fix: 2-3 hours | Impact: CI/CD reliability
+
+⚠️ HIGH PRIORITY (Week 3-4):
+4. Missing edge cases (30+ patterns) - Security, special chars, compatibility
+   Fix: 18-24 hours | Impact: Robustness
+5. Brittle test assertions - Exact string matching vs flexible patterns
+   Fix: 8-10 hours | Impact: Test stability
+6. Large files (88 files >300 lines, 8 >1,000 lines)
+   Fix: 22 hours | Impact: Maintainability index 68→75+
+
+🟡 MEDIUM PRIORITY:
+7. Test data management - Hardcoded values in 15+ test files
+   Fix: 6-8 hours | Impact: Maintenance reduction
+8. Console statement cleanup - 309 files (94%) with console statements
+   Fix: 1-2 hours | Impact: Production performance
+9. Monitora Vagas test gaps - Guest filtering not fully tested
+   Fix: 8-12 hours | Impact: System reliability
+
+🟢 LOW PRIORITY:
+10. Coverage collection broken - Node.js v25.2.1 incompatibility
+    Status: External issue (awaiting Jest/Node.js update)
+11. Busca Vagas monitoring - Scraping resilience, rate limiting
+    Fix: 15-20 hours | Timeline: Q1 2026
+
+═══════════════════════════════════════════════════════════════════════════════
+5. IMMEDIATE ROADMAP (Next 4 Weeks)
+═══════════════════════════════════════════════════════════════════════════════
+
+WEEK 1: TEST QUALITY - CRITICAL FIXES (6-10 hours)
+├─ Fix Puppeteer browser teardown (2-3h)
+├─ Update path references to current architecture (2-3h)
+├─ Fix documentation file checks (1h)
+├─ Fix project navigation tests (1h)
+├─ Replace exact string matching with regex (1-2h)
+└─ Success: 287/287 tests passing (100%)
+
+WEEK 2: CODE QUALITY - ESLINT IMPLEMENTATION (2-4 hours)
+├─ Create .eslintrc.json configuration (1h)
+├─ Add lint scripts & pre-commit integration (1h)
+├─ Fix critical violations (1-2h)
+└─ Success: npm run lint working, <50 warnings remaining
+
+WEEK 3: TEST IMPROVEMENTS - EDGE CASES (4-6 hours)
+├─ Add security edge case tests (2-3h)
+├─ Create test configuration module (1h)
+├─ Add browser compatibility tests (1-2h)
+└─ Success: 320+ tests total, 95%+ assertion strength
+
+WEEK 4: CODE QUALITY - CONSOLIDATION (3-5 hours)
+├─ Create UMD loader utility (1-2h) - Consolidates 16 patterns
+├─ Consolidate console statements (1-2h)
+├─ Refactor 8 largest files (1-2h)
+└─ Success: Maintainability 68→75+, Grade B+ → A-
+
+TOTAL PHASE 1 EFFORT: 16-24 hours (4 weeks, 4h/week target)
+
+═══════════════════════════════════════════════════════════════════════════════
+6. MID-TERM ROADMAP (Weeks 5-10)
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 2: QUALITY IMPROVEMENTS & SIBLING PROJECTS (34-45 hours)
+
+Goal: Achieve A- grade (88/100) + comprehensive edge case coverage
+
+├─ 2.1 Edge Case Coverage (18-24h)
+│   ├─ Security tests (4-6h)
+│   ├─ Special character tests (3-4h)
+│   ├─ Browser compatibility (4-5h)
+│   ├─ Performance edge cases (3-4h)
+│   └─ API error handling (4-5h)
+│
+├─ 2.2 Replace Brittle Matching (8-10h)
+│   ├─ Implement flexible regex patterns
+│   ├─ Create assertion utilities
+│   └─ Update 12+ test files
+│
+├─ 2.3 Test Data Management (6-8h)
+│   ├─ Centralize test data (config/projects.config.js)
+│   ├─ Remove 50+ hardcoded values
+│   └─ Create factory utilities
+│
+└─ 2.4 Sibling Project Testing (8-12h)
+    ├─ Music in Numbers: Module & analytics tests
+    ├─ Guia Turístico: Map & routing tests
+    ├─ Monitora Vagas: Counter & filtering tests
+    └─ Busca Vagas: API endpoint & scraping tests
+
+═══════════════════════════════════════════════════════════════════════════════
+7. LONG-TERM ROADMAP (Weeks 11-16)
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 3: EXCELLENCE & PRODUCTION HARDENING (14-19+ hours)
+
+Goal: Achieve A+ grade (95/100) + production-ready reliability
+
+├─ 3.1 Best Practices (14-19h)
+│   ├─ AAA pattern enforcement across all tests
+│   ├─ Parameterized testing implementation
+│   ├─ Test utilities library creation
+│   └─ Performance benchmarking
+│
+└─ 3.2 Production Hardening (20-30h+, Weeks 16+)
+    ├─ Performance optimization
+    ├─ Error handling improvements
+    ├─ Security hardening guide
+    ├─ Monitoring & logging setup
+    └─ Disaster recovery procedures
+
+═══════════════════════════════════════════════════════════════════════════════
+8. SHELL SCRIPTS AVAILABLE
+═══════════════════════════════════════════════════════════════════════════════
+
+DEPLOYMENT:
+- sync_to_staging.sh (v3.0.0) - Two-step: src/→staging/→production
+- deploy_to_webserver.sh - Production deployment to nginx /var/www/html
+
+MAINTENANCE:
+- cleanup_old_folders.sh - Remove sessions older than 15 runs
+- validate_external_links.sh - Ensure security attributes on external links
+- pull_all_submodules.sh (DEPRECATED) - Use: cd ../PROJECT && git pull
+- push_all_submodules.sh (DEPRECATED) - Use: cd ../PROJECT && git push
+
+DEVELOPMENT:
+- enhance_prompt.sh - Enhance AI prompts for Copilot
+- copilot_with_enhanced_prompt.sh (v2.0) - Two-stage enhancement & execution
+
+WORKFLOW AUTOMATION:
+- 25+ modular components (12 libraries + 13 steps) in shell_scripts/workflow/
+
+═══════════════════════════════════════════════════════════════════════════════
+9. TESTING INFRASTRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+CURRENT STATUS:
+- 287 total tests across 8 test suites
+- 256 passing / 31 failing (89.2% pass rate)
+- Jest with jsdom environment
+- ES Modules support (--experimental-vm-modules)
+
+TEST BREAKDOWN:
+✅ main.test.js (40 tests)
+✅ project_navigation.test.js (30 tests)
+✅ InitializationUtilities.test.js (35 tests)
+✅ html_functionality.test.js (13 tests)
+✅ shell_integration.test.js (9 tests)
+✅ documentation.test.js (17 tests)
+⚠️ shell_scripts.test.js (85 tests, 13 failing)
+✅ sync_to_public.test.js (40 tests)
+
+COVERAGE STATUS:
+- Estimated: Statements 85%, Branches 75%, Functions 80%, Lines 85%
+- ⚠️ Collection broken on Node.js v25.2.1 (external issue)
+
+TEST COMMANDS:
+npm test              # Run all tests
+npm run test:watch   # Watch mode
+npm run test:coverage # Generate coverage (broken on v25.2.1)
+npm run test:ci       # CI/CD mode
+npm run test:a11y     # Accessibility tests
+npm run test:parallel # Parallel execution
+
+═══════════════════════════════════════════════════════════════════════════════
+10. DEPLOYMENT ARCHITECTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+TWO-STEP DEPLOYMENT (v3.0.0):
+
+STEP 1: STAGING (Git-based)
+├─ Source: mpbarbosa_site/src/ + 4 sibling projects
+├─ Target: ../mpbarbosa.com/ (staging repository)
+├─ Features: Full version control, validation, rollback capability
+└─ Command: ./shell_scripts/sync_to_staging.sh --step1
+
+STEP 2: PRODUCTION (nginx server)
+├─ Source: ../mpbarbosa.com/
+├─ Target: /var/www/html (production server)
+├─ Features: Automatic backups, rollback via git history
+└─ Command: sudo ./shell_scripts/deploy_to_webserver.sh
+
+SIBLING PROJECT PATHS (Clean Architecture - No submodules/):
+├─ Music in Numbers: public/music_in_numbers/ (Client-side)
+├─ Guia Turístico: public/guia_turistico/ (Client-side)
+├─ Monitora Vagas: public/monitora_vagas/ (Client-side)
+└─ Busca Vagas: public/busca_vagas/ (Backend API)
+
+ADVANTAGES:
+✅ No git submodules (independent sibling architecture)
+✅ Full version control in staging repository
+✅ Each project updatable independently
+✅ Scalable for new projects
+✅ Clean deployment paths (legacy submodules/ removed)
+
+═══════════════════════════════════════════════════════════════════════════════
+11. DEVELOPMENT STANDARDS
+═══════════════════════════════════════════════════════════════════════════════
+
+ARCHITECTURE PATTERNS:
+- Functional Core + Imperative Shell (implemented in Music in Numbers)
+- Dependency Injection (documented best practices)
+
+CODE QUALITY STANDARDS:
+- JSDoc for all functions (guide: docs/development-guides/JSDOC_STYLE_GUIDE.md)
+- Conventional commits (feat:, fix:, docs:, etc.)
+- Prettier code formatting (auto in pre-commit)
+- Markdown linting (.mdlrc configuration)
+
+TESTING BEST PRACTICES:
+- AAA pattern (Arrange-Act-Assert)
+- Descriptive test names
+- Focused test cases
+- Comprehensive assertions
+
+SECURITY STANDARDS:
+- External links: rel="noopener noreferrer"
+- Dependabot weekly scanning
+- npm audit resolution (8 vulnerabilities fixed)
+- XSS prevention, input validation, special character handling
+
+═══════════════════════════════════════════════════════════════════════════════
+12. DOCUMENTATION (150+ FILES)
+═══════════════════════════════════════════════════════════════════════════════
+
+CATEGORIES:
+├─ Architecture (module analysis, deployment)
+├─ Testing & QA (30+ test documents)
+├─ Development Guides (JSDoc, Git, DI, functional core)
+├─ Code Quality (assessments, remediation plans)
+├─ Deployment Architecture (sync, staging, production)
+├─ Workflow Automation (25 modules, v2.0.0)
+├─ Implementation Reports (migration, restructuring)
+├─ Documentation Standards (style, markdown, consistency)
+└─ ... (14 other categories)
+
+KEY REFERENCE DOCUMENTS:
+1. .github/copilot-instructions.md (863 lines) - Main project guide
+2. docs/README.md - Documentation index
+3. shell_scripts/README.md - Deployment script guide
+4. docs/testing-qa/README.md - Test status & guides
+5. docs/testing-qa/TEST_IMPROVEMENT_ROADMAP.md - 16-week plan
+
+═══════════════════════════════════════════════════════════════════════════════
+13. METRICS & GRADING
+═══════════════════════════════════════════════════════════════════════════════
+
+CODE QUALITY:
+Current: B+ (83/100)
+Target:  A+ (95/100)
+Path:    Quick wins (7h)→A- | Strategic (22h)→Infrastructure (58h)→A+
+
+TEST QUALITY:
+Current: 89.2% passing (256/287)
+Target:  100% passing, A+ grade
+Timeline: 4 weeks Phase 1 + 6 weeks Phase 2
+
+MAINTAINABILITY:
+Current: Index 68/100 (Moderate)
+Target:  Index 80/100 (Good)
+Issues:  Large files (88), duplication (16 patterns)
+
+CODE COVERAGE:
+Current: ~85% (estimated, collection broken)
+Target:  90%+ (after Node.js v25.2.1 fixed)
+Gaps:    Monitora Vagas filtering, Music in Numbers artist page, API errors
+
+═══════════════════════════════════════════════════════════════════════════════
+14. SUCCESS CRITERIA (END OF 16 WEEKS)
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 1 (Week 4):
+✅ 287/287 tests passing (100%)
+✅ Code quality: B+ → A- (83 → 88)
+✅ ESLint enforcement active
+✅ 30+ edge case tests added
+
+PHASE 2 (Week 10):
+✅ A- quality grade (88/100)
+✅ Comprehensive edge case coverage (300+tests)
+✅ Sibling project testing strategy defined
+✅ Zero brittle string matching in tests
+
+PHASE 3 (Week 16):
+✅ A+ quality grade (95/100)
+✅ Production-hardened system
+✅ Comprehensive documentation
+✅ Scalable architecture proven
+
+═══════════════════════════════════════════════════════════════════════════════
+15. RECOMMENDATIONS FOR NEXT SPRINT
+═══════════════════════════════════════════════════════════════════════════════
+
+PRIORITY 1 (Week 1): Fix Test Failures
+└─ Effort: 6-10 hours | Impact: CI/CD unblocked
+  Action Items:
+  ├─ Fix Puppeteer browser teardown (2-3h)
+  ├─ Update path references (2-3h)
+  └─ Replace string matching with regex (1-2h)
+
+PRIORITY 2 (Week 2): Implement ESLint
+└─ Effort: 2-4 hours | Impact: Code quality enforced
+  Action Items:
+  ├─ Create .eslintrc.json (1h)
+  ├─ Add lint scripts (1h)
+  └─ Fix critical violations (1-2h)
+
+PRIORITY 3 (Week 3): Add Edge Case Tests
+└─ Effort: 4-6 hours | Impact: System robustness
+  Action Items:
+  ├─ Security tests (2-3h)
+  ├─ Compatibility tests (1-2h)
+  └─ Assertion strengthening (1h)
+
+PRIORITY 4 (Week 4): Code Consolidation
+└─ Effort: 3-5 hours | Impact: Maintainability
+  Action Items:
+  ├─ UMD loader utility (1-2h)
+  ├─ Consolidate console statements (1-2h)
+  └─ Refactor large files (1-2h)
+
+═══════════════════════════════════════════════════════════════════════════════
+16. CONCLUSION
+═══════════════════════════════════════════════════════════════════════════════
+
+PROJECT MATURITY:
+The MP Barbosa Personal Website is a mature, production-ready project with
+excellent architecture and comprehensive documentation. The primary focus
+for the next 16 weeks is migrating from B+ (83/100) to A+ (95/100) code
+quality through systematic test improvements, ESLint enforcement, and
+architectural consolidation.
+
+STRATEGIC POSITION:
+- Strong foundation with modular architecture
+- Excellent documentation (150+ files)
+- Production deployment proven and stable
+- Clear roadmap for quality improvements
+- Low technical debt in core modules
+
+NEXT ACTIONS (This Week):
+1. Schedule Phase 1 sprint planning (4 weeks, ~20 hours)
+2. Identify team resources for test fixes
+3. Set up ESLint configuration
+4. Create test improvement tracking board
+5. Schedule Phase 1 completion review (Jan 24, 2026)
+
+═══════════════════════════════════════════════════════════════════════════════
+Document prepared: December 27, 2025
+Next review scheduled: January 10, 2026
+Maintained by: MP Barbosa Development Team
+═══════════════════════════════════════════════════════════════════════════════

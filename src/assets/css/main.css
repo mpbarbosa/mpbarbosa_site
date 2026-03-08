@@ -877,6 +877,62 @@ ul li {
   padding-left: 0.5em;
 }
 
+#projetos .image.main {
+  display: none;
+}
+
+#projetos > p {
+  margin-bottom: 0.75rem;
+}
+
+#projetos ul li {
+  margin-bottom: 0.4em;
+}
+
+#intro .image.main {
+  display: none;
+}
+
+#intro > p {
+  margin-bottom: 0.75rem;
+}
+
+#about .image.main {
+  display: none;
+}
+
+#about > p {
+  margin-bottom: 0.75rem;
+}
+
+.img-tooltip {
+  position: relative;
+  cursor: default;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+}
+
+.img-tooltip .tooltip-img {
+  display: block;
+  position: absolute;
+  bottom: 1.5em;
+  left: 0;
+  width: 420px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.img-tooltip:hover .tooltip-img {
+  opacity: 1;
+}
+
+.img-tooltip .tooltip-img img {
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+
 ul.alt {
   list-style: none;
   padding-left: 0;

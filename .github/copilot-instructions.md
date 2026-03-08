@@ -432,7 +432,7 @@ cd ../busca_vagas && git pull && git push
   "overrides": {
     "braces": "^3.0.3",
     "micromatch": "^4.0.8",
-    "glob": "^11.0.0"
+    "glob": "^11.1.0"
   },
   "jest": {
     "testEnvironment": "<rootDir>/jest-environment-jsdom-no-warnings.cjs",
@@ -467,7 +467,7 @@ The project uses npm overrides to resolve transitive dependency vulnerabilities:
 "overrides": {
   "braces": "^3.0.3",      // Fix: CVE-1098094 (High - ReDoS)
   "micromatch": "^4.0.8",  // Fix: GHSA-952p-6rrq-rcjv (High - ReDoS)
-  "glob": "^11.0.0"        // Fix: GHSA-5j98-mcp5-4vw2 (High - Command Injection)
+  "glob": "^11.1.0"        // Fix: GHSA-5j98-mcp5-4vw2 (High - Command Injection)
 }
 ```
 **Status**: ✅ 0 vulnerabilities (verified December 15, 2025)
@@ -893,7 +893,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Dependency Injection Best Practices](../docs/development-guides/DEPENDENCY_INJECTION_BEST_PRACTICES.md)** - Enterprise patterns for scalable JavaScript architecture
 
 ### Workflow Automation
-- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.0.0 through v2.0.0 (current with output limits enhancement and auto-mode)
+- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Version history v1.1.0 through v2.0.0 (current with output limits enhancement and auto-mode)
 - **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for workflow automation script
 - **[Workflow Automation Phase 2 Completion](../docs/workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v2.0.0 (HISTORICAL)
 - **[Workflow Modularization Phase 1 Completion](../docs/workflow-automation/WORKFLOW_MODULARIZATION_PHASE1_COMPLETION.md)** - Library modules extraction completion
@@ -943,7 +943,7 @@ For comprehensive development guidance, consult these detailed documentation res
 - **[Markdown Linting Guide](../docs/documentation-standards/MARKDOWN_LINTING_GUIDE.md)** - Documentation standards
 
 **Workflow Automation**:
-- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - v1.0.0 through v2.0.0
+- **[Workflow Automation Version Evolution](../docs/workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - v1.1.0 through v2.0.0
 - **[Workflow Modular Architecture](../shell_scripts/workflow/README.md)** - Complete module documentation
 - **[Tests & Docs Workflow Plan](../docs/workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Automation roadmap
 

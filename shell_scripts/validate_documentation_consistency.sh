@@ -2,7 +2,7 @@
 
 # validate_documentation_consistency.sh
 # Automated documentation consistency validation script
-# Version: 1.0.0
+# Version: 1.1.0
 # Date: 2025-11-14
 
 set -euo pipefail
@@ -171,7 +171,7 @@ if [ -f "$PROJECT_ROOT/src/package.json" ]; then
     PKG_VERSION=$(grep '"version"' "$PROJECT_ROOT/src/package.json" | cut -d'"' -f4)
     echo -e "  package.json version: ${GREEN}$PKG_VERSION${NC}"
     
-    if [ "$PKG_VERSION" = "1.0.0" ]; then
+    if [ "$PKG_VERSION" = "1.1.0" ]; then
         echo -e "  ${YELLOW}⚠️  MEDIUM: Consider updating to v2.0.0 given architectural achievements${NC}"
         MEDIUM_ISSUES=$((MEDIUM_ISSUES + 1))
     fi

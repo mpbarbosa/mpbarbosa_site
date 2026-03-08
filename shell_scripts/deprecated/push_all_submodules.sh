@@ -23,7 +23,7 @@
 # Description: Pushes all modified files in proper hierarchical order (bottom-up)
 # Author: MP Barbosa
 # Date: October 27, 2025
-# Version: 1.0.0 (DEPRECATED - December 25, 2025)
+# Version: 1.1.0 (DEPRECATED - December 25, 2025)
 #
 # This script follows the git best practices guide for submodule management:
 # 1. Push deepest nested submodules first (bottom-up approach)
