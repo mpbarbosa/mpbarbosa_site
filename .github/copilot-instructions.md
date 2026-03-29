@@ -92,7 +92,7 @@ The project includes comprehensive development environment configuration:
 - **All four projects are independent repositories managed as sibling projects**
 - Four sibling projects:
   - `../music_in_numbers` → Music in Numbers (Spotify analytics) - Client-side web application
-  - `../guia_turistico` → Guia Turístico (Travel Guide) - Tourism guide application
+  - `../guia_js` → Guia Turístico (Travel Guide) - Tourism guide application
   - `../monitora_vagas` → Monitora Vagas (AFPESP hotel vacancy monitoring) - Vanilla JavaScript SPA with API client
   - `../busca_vagas` → Busca Vagas (backend API service) - Node.js/Express with Puppeteer scraping
 - Each sibling project is managed independently in its own repository
@@ -201,7 +201,7 @@ mpbarbosa_site/
 │       ├── sw.js                    # Service worker for PWA support
 │       └── favicon.ico              # Application favicon
 │   ├── busca_vagas/           # Busca Vagas API backend
-│   ├── guia_turistico/        # Travel guide sibling project
+│   ├── guia_js/        # Travel guide sibling project
 │   ├── monitora_vagas/        # Hotel monitoring sibling project
 │   └── music_in_numbers/      # Spotify analytics sibling project
 ├── src/                        # Main source directory
@@ -225,7 +225,7 @@ mpbarbosa_site/
 │   │   └── projects.html     # Standalone projects page
 │   ├── pages/                 # Redirect pages for projects
 │   │   ├── music-in-numbers.html    # Redirects to mpbarbosa.com/music_in_numbers/
-│   │   ├── guia-turistico.html      # Redirects to mpbarbosa.com/guia_turistico/
+│   │   ├── guia-turistico.html      # Redirects to mpbarbosa.com/guia_js/
 │   │   └── monitora-vagas.html      # Redirects to mpbarbosa.com/monitora_vagas/
 ├── .ai_workflow/              # AI workflow automation (gitignored, 1.3M)
 │   ├── backlog/               # Workflow task backlog with timestamped sessions
@@ -342,7 +342,7 @@ sudo systemctl stop busca_vagas_node_app.service    # Stop service
 cd ../music_in_numbers && git pull && git push
 
 # Guia Turístico (Travel guide)
-cd ../guia_turistico && git pull && git push
+cd ../guia_js && git pull && git push
 
 # Monitora Vagas (Hotel monitoring)
 cd ../monitora_vagas && git pull && git push
@@ -384,7 +384,7 @@ cd ../busca_vagas && git pull && git push
 
 2. **Access Method Testing**: Always test both access patterns:
    - Direct deployment access: `http://127.0.0.1:8080/music_in_numbers/src/`
-   - Direct deployment access: `http://127.0.0.1:8080/guia_turistico/`
+   - Direct deployment access: `http://127.0.0.1:8080/guia_js/`
    - Main site integration: Via redirect pages (`src/pages/*.html`)
 
 3. **Path Strategy Consistency**: Never mix relative and absolute server-root paths within the same HTML file
@@ -449,7 +449,7 @@ cd ../busca_vagas && git pull && git push
     ],
     "collectCoverageFrom": [
       "scripts/**/*.{js,mjs}",
-      "../guia_turistico/src/libs/guia_js/src/**/*.js",
+      "../guia_js/src/libs/guia_js/src/**/*.js",
       "../music_in_numbers/src/**/*.js"
     ]
   }

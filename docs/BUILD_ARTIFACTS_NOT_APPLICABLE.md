@@ -78,7 +78,7 @@ public/           # Deployment staging area
   ├── index.html  # Synchronized from src/
   ├── assets/     # Synchronized from src/
   ├── busca_vagas/        # Sibling project copied here
-  ├── guia_turistico/     # Sibling project copied here
+  ├── guia_js/     # Sibling project copied here
   ├── monitora_vagas/     # Sibling project copied here
   └── music_in_numbers/   # Sibling project copied here
 

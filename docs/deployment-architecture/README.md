@@ -75,7 +75,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 ```
 Sibling Projects              Public Directory              Production Server
 ../music_in_numbers/    →    public/submodules/    →    /var/www/html
-../guia_turistico/
+../guia_js/
 ../monitora_vagas/
 ../busca_vagas/
 
@@ -109,7 +109,7 @@ mpbarbosa_site/
 │   ├── api/                      # Busca Vagas API proxy
 │   └── submodules/               # Sibling project deployment directory
 │       ├── music_in_numbers/     # Spotify analytics
-│       ├── guia_turistico/       # Travel guide
+│       ├── guia_js/       # Travel guide
 │       ├── monitora_vagas/       # Hotel monitoring
 │       └── busca_vagas/          # Backend API
 │
@@ -258,7 +258,7 @@ ls -la public/
 ### Sibling Projects
 
 - **Music in Numbers** (`../music_in_numbers`) - Spotify analytics
-- **Guia Turístico** (`../guia_turistico`) - Travel guide
+- **Guia Turístico** (`../guia_js`) - Travel guide
 - **Monitora Vagas** (`../monitora_vagas`) - Hotel monitoring
 - **Busca Vagas** (`../busca_vagas`) - Backend API
 

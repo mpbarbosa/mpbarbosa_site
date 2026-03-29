@@ -270,7 +270,7 @@ static async initiateAuthWithSessionOptimization(dependencies, options = {}) {
 
 **Naming Convention Issues (100 files):**
 ```
-Naming issue: ./submodules/guia_turistico/src/guia_turistico.html (not kebab-case)
+Naming issue: ./submodules/guia_js/src/guia_js.html (not kebab-case)
 Naming issue: ./submodules/music_in_numbers/src/music_in_numbers.html (not kebab-case)
 Naming issue: ./coverage/lcov-report/scripts/initialization/InitializationUtilities.js.html
 ```
@@ -292,7 +292,7 @@ src/
     main.mjs              # Entry point
   submodules/             # Git submodules
     music_in_numbers/     # Spotify analytics
-    guia_turistico/       # Travel guide
+    guia_js/       # Travel guide
   components/             # Reusable HTML components
   pages/                  # Redirect pages
 ```

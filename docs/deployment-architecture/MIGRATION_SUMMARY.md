@@ -110,7 +110,7 @@ mpbarbosa.com/
 ├── assets/                 # (after sync) Template assets
 ├── images/                 # (after sync) Site images
 ├── music_in_numbers/       # (after sync) Sibling project
-├── guia_turistico/         # (after sync) Sibling project
+├── guia_js/         # (after sync) Sibling project
 ├── monitora_vagas/         # (after sync) Sibling project
 └── busca_vagas/            # (after sync) Sibling project
 ```

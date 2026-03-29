@@ -16,7 +16,7 @@ Successfully resolved naming convention violations in the main project by renami
 | Old Filename (snake_case) | New Filename (kebab-case) | Status |
 |---------------------------|---------------------------|---------|
 | `src/pages/music_in_numbers.html` | `src/pages/music-in-numbers.html` | ✅ Renamed |
-| `src/pages/guia_turistico.html` | `src/pages/guia-turistico.html` | ✅ Renamed |
+| `src/pages/guia_js.html` | `src/pages/guia-turistico.html` | ✅ Renamed |
 | `src/pages/monitora_vagas.html` | `src/pages/monitora-vagas.html` | ✅ Renamed |
 
 ## 📝 References Updated
@@ -58,7 +58,7 @@ Successfully resolved naming convention violations in the main project by renami
 
 ❌ Incorrect (snake_case):
 - music_in_numbers.html
-- guia_turistico.html
+- guia_js.html
 - monitora_vagas.html
 ```
 
@@ -69,7 +69,7 @@ The following categories were excluded from renaming:
 
 #### 1. Git Submodules (Separate Repositories)
 - `src/submodules/music_in_numbers/` - 120+ files
-- `src/submodules/guia_turistico/` - 50+ files
+- `src/submodules/guia_js/` - 50+ files
 - **Reason**: Managed in separate repositories with independent conventions
 - **Status**: To be addressed in respective submodule repositories
 
@@ -143,7 +143,7 @@ All documentation now uses kebab-case file references consistently.
 ### Recommended Follow-ups
 1. **Submodule Consistency** (Optional)
    - Address naming in music_in_numbers submodule
-   - Address naming in guia_turistico submodule
+   - Address naming in guia_js submodule
    - **Priority**: Low (separate repositories)
 
 2. **Documentation Audit** (Recommended)

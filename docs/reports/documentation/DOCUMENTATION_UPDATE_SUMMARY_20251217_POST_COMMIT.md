@@ -20,7 +20,7 @@ This documentation update covers the code changes made in commit 22b839d that we
 **Change**: Added "Guia Turístico" project link to Projects section
 
 ```html
-<li><a href="submodules/guia_turistico/" target="_blank" rel="noopener noreferrer">Guia Turístico</a></li>
+<li><a href="submodules/guia_js/" target="_blank" rel="noopener noreferrer">Guia Turístico</a></li>
 ```
 
 **Impact**: 

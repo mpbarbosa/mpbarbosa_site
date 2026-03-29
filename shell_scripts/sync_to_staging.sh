@@ -368,7 +368,7 @@ FILES TO SYNC:
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
     - music_in_numbers/src/ (Music in Numbers sibling project)
-    - guia_turistico/ (Guia Turistico sibling project)
+    - guia_js/ (Guia JS sibling project)
     - monitora_vagas/src/ (Monitora Vagas legacy implementation)
     - monitora_vagas/public/ (Monitora Vagas modern v2.0.0)
     - busca_vagas/client/public/ (Busca Vagas frontend)
@@ -755,12 +755,12 @@ copy_music_in_numbers_project() {
     return 0
 }
 
-# Copy Guia Turistico sibling project
-copy_guia_turistico_project() {
-    print_step "Copying Guia Turistico project content"
+# Copy Guia JS sibling project
+copy_guia_js_project() {
+    print_step "Copying Guia JS project content"
     
-    # Guia Turistico sibling project deployment
-    # Location: ../guia_turistico
+    # Guia JS sibling project deployment
+    # Location: ../guia_js
     # Strategy: Run Vite production build (npm run build) then copy dist/ folder.
     #           Falls back to src/ with a warning if dist/ is unavailable after build.
 
@@ -769,22 +769,22 @@ copy_guia_turistico_project() {
     local dest_dir
     local copy_source
 
-    source_project="$PROJECT_ROOT/../guia_turistico"
-    dest_dir="$STAGING_DIR/guia_turistico"
+    source_project="$PROJECT_ROOT/../guia_js"
+    dest_dir="$STAGING_DIR/guia_js"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
-        print_warning "Guia Turistico sibling project not found"
+        print_warning "Guia JS sibling project not found"
         print_info "  Expected location: $source_project"
         print_info "  Skipping Guia Turistico deployment"
         return 0
     fi
 
     # --- Resolve copy source: prefer Vite dist/, fall back to src/ ---
-    _resolve_guia_turistico_source() {
+    _resolve_guia_js_source() {
         # Attempt Vite production build if package.json defines a build script
         if [[ -f "$source_project/package.json" ]] && grep -q '"build"' "$source_project/package.json"; then
-            print_info "  Running Vite production build for Guia Turistico..."
+            print_info "  Running Vite production build for Guia JS..."
             if (cd "$source_project" && npm run build --silent 2>&1); then
                 print_success "  Vite build succeeded"
             else
@@ -795,7 +795,7 @@ copy_guia_turistico_project() {
         if [[ -d "$source_project/dist" ]]; then
             copy_source="$source_project/dist"
         elif [[ -d "$source_project/src" ]]; then
-            print_warning "Guia Turistico dist/ not found after build; falling back to src/"
+            print_warning "Guia JS dist/ not found after build; falling back to src/"
             copy_source="$source_project/src"
         else
             copy_source=""
@@ -806,7 +806,7 @@ copy_guia_turistico_project() {
         # Create destination directory
         mkdir -p "$dest_dir"
 
-        _resolve_guia_turistico_source
+        _resolve_guia_js_source
 
         if [[ -n "$copy_source" ]]; then
             # Declaration - SC2155
@@ -1544,7 +1544,7 @@ execute_step_1() {
     copy_webfonts
     copy_images
     copy_music_in_numbers_project
-    copy_guia_turistico_project
+    copy_guia_js_project
     copy_monitora_vagas_project
     copy_busca_vagas_project
     copy_additional_resources

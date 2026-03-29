@@ -190,7 +190,7 @@ $ npm run lint
    cd submodules/music_in_numbers/src
    npx eslint . --ext .js,.mjs --fix
    
-   cd ../guia_turistico/src
+   cd ../guia_js/src
    npx eslint . --ext .js,.mjs --fix
    ```
 

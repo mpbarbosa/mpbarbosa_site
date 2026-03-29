@@ -253,7 +253,7 @@ describe('Project Navigation Integration', () => {
     });
 
     test('should have consistent redirect patterns', () => {
-      const redirectPages = ['music_in_numbers.html', 'guia_turistico.html', 'monitora_vagas.html'];
+      const redirectPages = ['music_in_numbers.html', 'guia_js.html', 'monitora_vagas.html'];
 
       const redirectTargets = [];
 
@@ -289,7 +289,7 @@ describe('Project Navigation Integration', () => {
 
       // Should link to music in numbers project (currently implemented)
       expect(content).toContain('music_in_numbers');
-      // Note: guia_turistico and monitora_vagas may not be linked in the current HTML5 UP template
+      // Note: guia_js and monitora_vagas may not be linked in the current HTML5 UP template
     });
 
     test('should use consistent link patterns', () => {

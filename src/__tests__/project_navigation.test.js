@@ -62,7 +62,7 @@ describe('Project Navigation Integration Tests', () => {
       }
 
       const projectLinks = document.querySelectorAll(
-        'a[href*="music_in_numbers"], a[href*="guia_turistico"], a[href*="monitora_vagas"]',
+        'a[href*="music_in_numbers"], a[href*="guia_js"], a[href*="monitora_vagas"]',
       );
 
       // Test passes if we have at least one project link and it's properly formatted
@@ -80,7 +80,7 @@ describe('Project Navigation Integration Tests', () => {
       }
 
       const musicLink = document.querySelector('a[href*="music_in_numbers"]');
-      const guiaLink = document.querySelector('a[href*="guia_turistico"]');
+      const guiaLink = document.querySelector('a[href*="guia_js"]');
       const monitoraLink = document.querySelector('a[href*="monitora_vagas"]');
 
       if (musicLink) {
@@ -103,7 +103,7 @@ describe('Project Navigation Integration Tests', () => {
   describe('Project Redirect Pages Structure', () => {
     const redirectPages = [
       { file: 'music-in-numbers.html', project: 'music_in_numbers' },
-      { file: 'guia-turistico.html', project: 'guia_turistico' },
+      { file: 'guia-turistico.html', project: 'guia_js' },
       { file: 'monitora-vagas.html', project: 'monitora_vagas' },
     ];
 
@@ -241,7 +241,7 @@ describe('Project Navigation Integration Tests', () => {
 
       const content = fs.readFileSync(indexPath, 'utf8');
       // Projects are deployed as top-level sibling directories
-      const siblingProjects = ['music_in_numbers', 'guia_turistico', 'monitora_vagas'];
+      const siblingProjects = ['music_in_numbers', 'guia_js', 'monitora_vagas'];
       const foundProjects = siblingProjects.filter((p) => content.includes(p));
       expect(foundProjects.length).toBeGreaterThan(0);
     });

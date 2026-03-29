@@ -21,7 +21,7 @@ mpbarbosa_site/src/
 │   └── contact.html       # Contact section component
 ├── pages/                  # Project redirect pages
 │   ├── music_in_numbers.html    # Redirect to music analytics
-│   └── guia_turistico.html      # Redirect to travel guide
+│   └── guia_js.html      # Redirect to travel guide
 └── submodules/            # Personal projects (Git submodules)
     ├── music_in_numbers/  # 🎵 Advanced Spotify analytics platform
     │   ├── src/
@@ -30,7 +30,7 @@ mpbarbosa_site/src/
     │   │   ├── styles/           # Modular CSS architecture
     │   │   └── scripts/          # 12+ JavaScript modules
     │   └── docs/                 # Comprehensive documentation
-    └── guia_turistico/    # 🗺️ Interactive travel guide
+    └── guia_js/    # 🗺️ Interactive travel guide
         └── src/           # Travel guide application
 ```
 

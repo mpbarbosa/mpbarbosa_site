@@ -130,7 +130,7 @@ src/assets/
 Git Submodules (authenticated):
 src/submodules/
 ├── music_in_numbers/   (Spotify analytics)
-└── guia_turistico/     (Travel guide)
+└── guia_js/     (Travel guide)
 
 Sibling Projects (independent repositories):
 ../monitora_vagas/      (AFPESP hotel monitoring)
@@ -270,7 +270,7 @@ docs/
 **snake_case (Legacy/Compatibility)** ✅
 
 - `music_in_numbers/` (submodule - repository name)
-- `guia_turistico/` (submodule - repository name)
+- `guia_js/` (submodule - repository name)
 - `monitora_vagas/` (sibling project - repository name)
 - `busca_vagas/` (sibling project - repository name)
 
@@ -347,7 +347,7 @@ src/
 ```
 
 - Synchronizes src/ to public/
-- Deploys submodules (music_in_numbers, guia_turistico)
+- Deploys submodules (music_in_numbers, guia_js)
 - Deploys sibling projects (monitora_vagas, busca_vagas)
 - Creates timestamped backups
 - Validates file integrity
@@ -420,7 +420,7 @@ docs/
 
 - ✅ `.editorconfig` (cross-editor code formatting)
 - ✅ `.gitignore` (repository exclusions)
-- ✅ `.gitmodules` (2 submodules: music_in_numbers, guia_turistico)
+- ✅ `.gitmodules` (2 submodules: music_in_numbers, guia_js)
 - ✅ `.mdlrc` (markdown linting with AI-friendly rules)
 - ✅ `.node-version` + `.nvmrc` (Node.js v25.2.1)
 

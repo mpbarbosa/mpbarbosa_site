@@ -13,7 +13,7 @@
 **Evidence** (Historical):
 - `.gitmodules` file is empty (submodules deprecated)
 - Documentation stated: "Git submodules are deprecated - all projects use sibling architecture"
-- Directory contained: busca_vagas, guia_turistico, monitora_vagas, music_in_numbers
+- Directory contained: busca_vagas, guia_js, monitora_vagas, music_in_numbers
 
 **Impact**: Low-Medium - Misleading but didn't affect functionality
 
@@ -48,7 +48,7 @@ During the resolution of **Issue #1: Submodule Terminology Conflict**, we:
 public/
 └── submodules/                    ← Legacy naming, misleading
     ├── busca_vagas/
-    ├── guia_turistico/
+    ├── guia_js/
     ├── monitora_vagas/
     └── music_in_numbers/
 ```
@@ -63,7 +63,7 @@ public/
 ```
 public/
 ├── busca_vagas/                   ← Top level, clear
-├── guia_turistico/                ← Top level, clear
+├── guia_js/                ← Top level, clear
 ├── monitora_vagas/                ← Top level, clear
 └── music_in_numbers/              ← Top level, clear
 ```
@@ -112,7 +112,7 @@ public/
 **Old URLs** (No longer valid):
 ```
 /submodules/busca_vagas/
-/submodules/guia_turistico/
+/submodules/guia_js/
 /submodules/monitora_vagas/
 /submodules/music_in_numbers/
 ```
@@ -120,7 +120,7 @@ public/
 **New URLs** (Current):
 ```
 /busca_vagas/
-/guia_turistico/
+/guia_js/
 /monitora_vagas/
 /music_in_numbers/
 ```
@@ -161,7 +161,7 @@ $ ls -la public/ | grep -E "^d"
 drwxrwxr-x 12 mpb mpb  4096 Dec 25 17:28 .
 drwxrwxr-x  6 mpb mpb  4096 Dec 15 23:42 assets
 drwxrwxr-x  4 mpb mpb  4096 Dec 11 01:14 busca_vagas      ✅ Top level
-drwxrwxr-x  2 mpb mpb  4096 Dec 15 23:42 guia_turistico   ✅ Top level
+drwxrwxr-x  2 mpb mpb  4096 Dec 15 23:42 guia_js   ✅ Top level
 drwxrwxr-x  4 mpb mpb  4096 Dec 15 23:42 monitora_vagas   ✅ Top level
 drwxrwxr-x  3 mpb mpb  4096 Dec 15 23:42 music_in_numbers ✅ Top level
 

@@ -210,7 +210,7 @@ git commit -m "docs: Move file.md to .github/"
 git push origin main
 
 # Navigate to another sibling project
-cd ../guia_turistico
+cd ../guia_js
 git mv docs/guide.md docs/updated-guide.md
 git commit -m "docs: Rename guide.md"
 git push origin main
@@ -257,7 +257,7 @@ cd ../mpbarbosa_site
 
 ```bash
 # Update all sibling projects at once
-for project in music_in_numbers guia_turistico monitora_vagas busca_vagas; do
+for project in music_in_numbers guia_js monitora_vagas busca_vagas; do
     echo "Updating $project..."
     cd ../$project && git pull && git push
     cd ../mpbarbosa_site
@@ -269,8 +269,8 @@ git commit -m "Update guia_js submodule with documentation improvements"
 git push origin main
 
 cd ../../../..  # main repository
-git add src/submodules/guia_turistico
-git commit -m "Sync guia_turistico submodule with latest documentation"
+git add src/submodules/guia_js
+git commit -m "Sync guia_js submodule with latest documentation"
 git push origin main
 ```
 

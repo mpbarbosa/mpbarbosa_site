@@ -89,11 +89,11 @@ This document tracks version history and changes for shell scripts in the mpbarb
 **Architecture Migration - Sibling Projects**:
 - ✅ **Complete migration from submodules to sibling projects** (all projects moved to top level of public/)
 - ✅ Busca Vagas moved from `public/submodules/busca_vagas/` to `public/busca_vagas/`
-- ✅ Guia Turístico moved from `public/submodules/guia_turistico/` to `public/guia_turistico/`
+- ✅ Guia Turístico moved from `public/submodules/guia_js/` to `public/guia_js/`
 - ✅ Music in Numbers moved from `public/submodules/music_in_numbers/` to `public/music_in_numbers/`
 - ✅ Monitora Vagas continues at `public/monitora_vagas/` (already migrated)
 - ✅ **Removed `public/submodules/` directory entirely** - Clean architecture achieved
-- ✅ Updated all deployment functions (`copy_busca_vagas_project`, `copy_guia_turistico_project`, `copy_music_in_numbers_project`)
+- ✅ Updated all deployment functions (`copy_busca_vagas_project`, `copy_guia_js_project`, `copy_music_in_numbers_project`)
 - ✅ All projects now deploy to consistent top-level structure
 - ✅ Terminology standardization: "sibling projects" vs deprecated "git submodules"
 
@@ -196,7 +196,7 @@ This script is no longer needed. Sibling projects are now managed independently:
 
 # New way (use standard git commands in each project)
 cd ../music_in_numbers && git pull
-cd ../guia_turistico && git pull
+cd ../guia_js && git pull
 cd ../monitora_vagas && git pull
 cd ../busca_vagas && git pull
 ```
@@ -226,7 +226,7 @@ This script is no longer needed. Sibling projects are now managed independently:
 
 # New way (use standard git commands in each project)
 cd ../music_in_numbers && git push
-cd ../guia_turistico && git push
+cd ../guia_js && git push
 cd ../monitora_vagas && git push
 cd ../busca_vagas && git push
 ```

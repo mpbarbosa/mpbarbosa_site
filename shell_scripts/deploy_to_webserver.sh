@@ -311,8 +311,8 @@ set_permissions() {
     find "$DEST_DIR" -type f -exec chmod 644 {} \;
     
     # Make specific files executable if needed
-    if [[ -f "$DEST_DIR/submodules/guia_turistico/src/andarilho.js" ]]; then
-        chmod 755 "$DEST_DIR/submodules/guia_turistico/src/andarilho.js"
+    if [[ -f "$DEST_DIR/submodules/guia_js/src/andarilho.js" ]]; then
+        chmod 755 "$DEST_DIR/submodules/guia_js/src/andarilho.js"
     fi
     
     print_success "Permissions set successfully"
@@ -350,7 +350,7 @@ validate_deployment() {
         print_success "Music in Numbers submodule deployed"
     fi
     
-    if [[ -d "$DEST_DIR/submodules/guia_turistico" ]]; then
+    if [[ -d "$DEST_DIR/submodules/guia_js" ]]; then
         print_success "Guia Turístico submodule deployed"
     fi
     

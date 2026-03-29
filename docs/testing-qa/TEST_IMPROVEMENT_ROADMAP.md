@@ -68,7 +68,7 @@ describe('Sibling Project Deployment', () => {
     expect(copilotInstructions).toContain('sibling projects');
     // Note: public/submodules/ directory removed in architecture migration
     expect(copilotInstructions).toContain('public/busca_vagas/');
-    expect(copilotInstructions).toContain('public/guia_turistico/');
+    expect(copilotInstructions).toContain('public/guia_js/');
     expect(copilotInstructions).toContain('public/music_in_numbers/');
   });
 });
@@ -305,10 +305,10 @@ export const SIBLING_PROJECTS = [
   },
   {
     name: 'Guia Turístico',
-    slug: 'guia_turistico',
-    repository: '../guia_turistico',
+    slug: 'guia_js',
+    repository: '../guia_js',
     redirectPage: 'guia-turistico.html',
-    deployPath: 'submodules/guia_turistico',
+    deployPath: 'submodules/guia_js',
     description: 'Travel guide application'
   },
   {

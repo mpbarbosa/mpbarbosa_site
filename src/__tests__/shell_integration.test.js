@@ -103,12 +103,7 @@ describe('sync_to_staging.sh - Integration Tests', () => {
     });
 
     test('should handle sibling projects deployment', () => {
-      const siblingProjects = [
-        'music_in_numbers',
-        'guia_turistico',
-        'monitora_vagas',
-        'busca_vagas',
-      ];
+      const siblingProjects = ['music_in_numbers', 'guia_js', 'monitora_vagas', 'busca_vagas'];
 
       siblingProjects.forEach((project) => {
         const projectPath = path.join(PROJECT_ROOT, 'public', project);

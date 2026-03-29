@@ -25,7 +25,7 @@ Current tests hardcode data that duplicates production configuration, creating m
 // project_navigation.test.js
 const redirectPages = [
   { file: 'music-in-numbers.html', project: 'music_in_numbers' },
-  { file: 'guia-turistico.html', project: 'guia_turistico' },
+  { file: 'guia-turistico.html', project: 'guia_js' },
   { file: 'monitora-vagas.html', project: 'monitora_vagas' }
 ];
 
@@ -100,10 +100,10 @@ export const SIBLING_PROJECTS = [
   },
   {
     name: 'Guia Turístico',
-    slug: 'guia_turistico',
+    slug: 'guia_js',
     redirectPage: 'guia-turistico.html',
-    deployPath: 'public/submodules/guia_turistico',
-    repository: '../guia_turistico'
+    deployPath: 'public/submodules/guia_js',
+    repository: '../guia_js'
   },
   {
     name: 'Monitora Vagas',
@@ -197,7 +197,7 @@ export function getProjectFixtures() {
 describe('Redirect Pages', () => {
   const redirectPages = [
     { file: 'music-in-numbers.html', project: 'music_in_numbers' },
-    { file: 'guia-turistico.html', project: 'guia_turistico' },
+    { file: 'guia-turistico.html', project: 'guia_js' },
     { file: 'monitora-vagas.html', project: 'monitora_vagas' }
   ];
   

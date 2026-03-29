@@ -17,7 +17,7 @@ All scripts in this directory have been deprecated due to the project's migratio
 ```bash
 # Pull each sibling project independently
 cd ../music_in_numbers && git pull
-cd ../guia_turistico && git pull
+cd ../guia_js && git pull
 cd ../monitora_vagas && git pull
 cd ../busca_vagas && git pull
 
@@ -32,7 +32,7 @@ cd mpbarbosa_site && git pull
 ```bash
 # Push each sibling project independently
 cd ../music_in_numbers && git add . && git commit -m "message" && git push
-cd ../guia_turistico && git add . && git commit -m "message" && git push
+cd ../guia_js && git add . && git commit -m "message" && git push
 cd ../monitora_vagas && git add . && git commit -m "message" && git push
 cd ../busca_vagas && git add . && git commit -m "message" && git push
 
@@ -55,7 +55,7 @@ These scripts are retained for:
 
 **Current Architecture**: Four sibling projects managed independently:
 - `../music_in_numbers` - Music in Numbers (Spotify analytics)
-- `../guia_turistico` - Guia Turístico (Travel guide)
+- `../guia_js` - Guia Turístico (Travel guide)
 - `../monitora_vagas` - Monitora Vagas (Hotel monitoring)
 - `../busca_vagas` - Busca Vagas (Backend API)
 

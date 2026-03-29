@@ -51,7 +51,7 @@
 ```
 public/submodules/
 ├── busca_vagas/
-├── guia_turistico/
+├── guia_js/
 └── music_in_numbers/
 ```
 
@@ -59,7 +59,7 @@ public/submodules/
 ```
 public/
 ├── busca_vagas/         # Backend API
-├── guia_turistico/      # Travel guide
+├── guia_js/      # Travel guide
 ├── monitora_vagas/      # Hotel monitoring
 └── music_in_numbers/    # Spotify analytics
 ```
@@ -91,7 +91,7 @@ expect(copilotInstructions).toContain('public/submodules/');
 
 // NEW
 expect(copilotInstructions).toContain('public/busca_vagas/');
-expect(copilotInstructions).toContain('public/guia_turistico/');
+expect(copilotInstructions).toContain('public/guia_js/');
 expect(copilotInstructions).toContain('public/music_in_numbers/');
 expect(copilotInstructions).toContain('public/monitora_vagas/');
 ```
@@ -103,7 +103,7 @@ const publicSubmodulesPath = path.join(PROJECT_ROOT, 'public/submodules');
 expect(fs.existsSync(publicSubmodulesPath)).toBe(true);
 
 // NEW
-const projects = ['busca_vagas', 'guia_turistico', 'music_in_numbers', 'monitora_vagas'];
+const projects = ['busca_vagas', 'guia_js', 'music_in_numbers', 'monitora_vagas'];
 projects.forEach(project => {
   const projectPath = path.join(PROJECT_ROOT, 'public', project);
   expect(fs.existsSync(projectPath)).toBe(true);
@@ -140,7 +140,7 @@ grep -r "submodules/" docs/ --include="*.md" | grep -v "ARCHIVE_REMOVAL" | grep 
 grep -r "sibling project" docs/ --include="*.md" | wc -l
 
 # Should reference new directories
-grep -r "public/busca_vagas\|public/guia_turistico\|public/music_in_numbers" \
+grep -r "public/busca_vagas\|public/guia_js\|public/music_in_numbers" \
   docs/ --include="*.md" | wc -l
 ```
 

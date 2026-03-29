@@ -30,10 +30,10 @@ mpbarbosa_site/
 │   │   │       └── scripts/    # Subproject scripts
 │   │   │           ├── utils.js
 │   │   │           └── spotify-api/
-│   │   └── guia_turistico/     # Travel Guide subproject
+│   │   └── guia_js/     # Travel Guide subproject
 │   └── pages/                  # Redirect pages
 │       ├── music-in-numbers.html  (renamed from music_in_numbers.html)
-│       └── guia-turistico.html   (renamed from guia_turistico.html)
+│       └── guia-turistico.html   (renamed from guia_js.html)
 ```
 
 ## 🌐 Server Configuration
@@ -66,7 +66,7 @@ Entry Point: http://127.0.0.1:8080/index.html (or just http://127.0.0.1:8080)
 ```text
 Music in Numbers: http://127.0.0.1:8080/submodules/music_in_numbers/src/
 Artist Page:      http://127.0.0.1:8080/submodules/music_in_numbers/src/artist.html
-Guia Turístico:   http://127.0.0.1:8080/submodules/guia_turistico/src/
+Guia Turístico:   http://127.0.0.1:8080/submodules/guia_js/src/
 ```
 
 #### Method 2: Via Redirect Pages

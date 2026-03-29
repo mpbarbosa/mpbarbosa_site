@@ -19,7 +19,7 @@
 ```
 public/submodules/
 ├── busca_vagas/
-├── guia_turistico/
+├── guia_js/
 └── music_in_numbers/
 ```
 
@@ -27,7 +27,7 @@ public/submodules/
 ```
 public/
 ├── busca_vagas/         # Backend API
-├── guia_turistico/      # Travel guide
+├── guia_js/      # Travel guide
 ├── monitora_vagas/      # Hotel monitoring
 └── music_in_numbers/    # Spotify analytics
 ```
@@ -188,8 +188,8 @@ location ~ ^/submodules/(.*)$ {
 location /submodules/music_in_numbers {
     return 301 /music_in_numbers$request_uri;
 }
-location /submodules/guia_turistico {
-    return 301 /guia_turistico$request_uri;
+location /submodules/guia_js {
+    return 301 /guia_js$request_uri;
 }
 location /submodules/busca_vagas {
     return 301 /busca_vagas$request_uri;
@@ -203,7 +203,7 @@ After this final migration:
 ```
 public/
 ├── busca_vagas/              # Backend API ✅
-├── guia_turistico/           # Travel guide ✅
+├── guia_js/           # Travel guide ✅
 ├── monitora_vagas/           # Hotel monitoring ✅
 └── music_in_numbers/         # Spotify analytics ✅
 
@@ -222,7 +222,7 @@ No more public/submodules/ directory! 🎉
 
 **Migration Timeline**:
 1. **2025-12-25 (Phase 1)**: Moved Busca Vagas to `public/busca_vagas/`
-2. **2025-12-25 (Phase 2)**: Moved Guia Turístico to `public/guia_turistico/`
+2. **2025-12-25 (Phase 2)**: Moved Guia Turístico to `public/guia_js/`
 3. **2025-12-25 (Phase 3)**: Moved Music in Numbers to `public/music_in_numbers/` + removed `public/submodules/` ✅
 
 **Architecture Evolution**:

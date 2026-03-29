@@ -57,7 +57,7 @@ export default {
     '/submodules/music_in_numbers/tests/advanced-error-handling.test.js',
     '/submodules/music_in_numbers/tests/data-export.test.js',
     '/submodules/music_in_numbers/tests/artist-functions.test.js',
-    '/submodules/guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.integration.test.js',
+    '/submodules/guia_js/src/libs/guia_js/tests/WebGeocodingManager.integration.test.js',
   ],
 
   // ============================================================================

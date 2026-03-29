@@ -81,8 +81,8 @@ global.AbortController = class AbortController { /* ... */ };
 **Solution:** Fixed test assertions to match implementation design
 
 **Files Modified:**
-1. `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
-2. `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
+1. `submodules/guia_js/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
+2. `submodules/guia_js/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
 
 **Changes:**
 ```javascript
@@ -212,7 +212,7 @@ const shortQueue = new SpeechQueue(100, 1000, true);
 3. `submodules/music_in_numbers/tests/advanced-error-handling.test.js`
 4. `submodules/music_in_numbers/tests/data-export.test.js`
 5. `submodules/music_in_numbers/tests/artist-functions.test.js`
-6. `submodules/guia_turistico/src/libs/guia_js/tests/WebGeocodingManager.integration.test.js`
+6. `submodules/guia_js/src/libs/guia_js/tests/WebGeocodingManager.integration.test.js`
 
 **Results:**
 - ✅ 6 test suite failures eliminated
@@ -256,10 +256,10 @@ const shortQueue = new SpeechQueue(100, 1000, true);
    - **NEW v2.0.0**: npm overrides for security (braces, micromatch, glob)
    - **NEW v2.0.0**: Console warning suppression in test scripts
 
-2. ✅ `src/submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
+2. ✅ `src/submodules/guia_js/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
    - Fixed 4 test cases (validation, immutability, logging)
 
-3. ✅ `src/submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
+3. ✅ `src/submodules/guia_js/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
    - Fixed 2 test cases (timestamp, immutability)
 
 4. ✅ `src/COMPREHENSIVE_CODE_QUALITY_ASSESMENT_REPORT.md`

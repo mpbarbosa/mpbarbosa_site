@@ -34,7 +34,7 @@ GitHub/
     ├── assets/
     ├── images/
     ├── music_in_numbers/
-    ├── guia_turistico/
+    ├── guia_js/
     ├── monitora_vagas/
     └── busca_vagas/
 ```
@@ -85,7 +85,7 @@ cd /home/mpb/Documents/GitHub/mpbarbosa_site
 
 This command:
 1. Copies files from `src/` to `../mpbarbosa.com/`
-2. Syncs all sibling projects (music_in_numbers, guia_turistico, etc.)
+2. Syncs all sibling projects (music_in_numbers, guia_js, etc.)
 3. Stages changes in mpbarbosa.com repository
 4. Optionally commits with timestamp message
 

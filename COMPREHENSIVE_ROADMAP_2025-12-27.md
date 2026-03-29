@@ -89,8 +89,8 @@ Four external projects deployed as siblings (not git submodules):
 ### 2.2 Guia Turístico (🗺️ Interactive Travel Guide)
 
 **Current State**: ⚠️ ACTIVE DEVELOPMENT  
-**Repository**: `../guia_turistico`  
-**Deployed Path**: `public/guia_turistico/`  
+**Repository**: `../guia_js`  
+**Deployed Path**: `public/guia_js/`  
 
 **Features**:
 - Location-based travel recommendations
@@ -99,7 +99,7 @@ Four external projects deployed as siblings (not git submodules):
 - Responsive design for mobile travelers
 
 **Architecture Status**:
-- Top-level deployment (migrated from submodules/guia_turistico)
+- Top-level deployment (migrated from submodules/guia_js)
 - Class extraction initiative in progress (Phase 4 analysis completed)
 - UI modernization planned (Material Design 3)
 
@@ -768,7 +768,7 @@ mpbarbosa_site/src/ → ../mpbarbosa.com/ (staging repo)
 | Project | Source | Deployed Path | Type |
 |---------|--------|---------------|------|
 | Music in Numbers | `../music_in_numbers/` | `public/music_in_numbers/` | Client-side |
-| Guia Turístico | `../guia_turistico/` | `public/guia_turistico/` | Client-side |
+| Guia Turístico | `../guia_js/` | `public/guia_js/` | Client-side |
 | Monitora Vagas | `../monitora_vagas/` | `public/monitora_vagas/` | Client-side |
 | Busca Vagas | `../busca_vagas/` | `public/busca_vagas/` | Backend API |
 

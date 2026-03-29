@@ -998,13 +998,13 @@ mpbarbosa_site/ (main repository)
 │   ├── deploy_to_webserver.sh  # Legacy production deployment (v2.0.0)
 │   └── README.md               # This documentation
 ├── public/submodules/          # Deployed submodules (via sync_to_staging.sh)
-│   ├── guia_turistico/        # Travel guide project (from sibling)
+│   ├── guia_js/        # Travel guide project (from sibling)
 │   ├── music_in_numbers/      # Spotify analytics project (from sibling)
 │   ├── monitora_vagas/        # Job monitoring project (from sibling)
 │   └── busca_vagas/           # Job search platform (from sibling)
 ├── docs/                      # Documentation including git best practices
 └── ../                        # Sibling projects (not git submodules)
-    ├── guia_turistico/        # Travel guide project
+    ├── guia_js/        # Travel guide project
     ├── music_in_numbers/      # Spotify analytics project
     ├── monitora_vagas/        # Job monitoring project
     └── busca_vagas/           # Job search platform
@@ -1077,7 +1077,7 @@ git status
 
 # Check sibling project status (if needed)
 cd ../music_in_numbers && git status
-cd ../guia_turistico && git status
+cd ../guia_js && git status
 cd ../monitora_vagas && git status
 cd ../busca_vagas && git status
 ```

@@ -736,7 +736,7 @@ src/
 │   └── images/
 └── submodules/            # Git submodules
     ├── music_in_numbers/
-    └── guia_turistico/
+    └── guia_js/
 ```
 
 **Implementation:** Requires careful planning and incremental migration. See separate architecture refactoring document.

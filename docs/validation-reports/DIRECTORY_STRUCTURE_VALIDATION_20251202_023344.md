@@ -600,7 +600,7 @@ mpbarbosa_site/
 │       │   ├── client/
 │       │   ├── prompts/
 │       │   └── src/
-│       ├── guia_turistico/              [Travel guide deployment]
+│       ├── guia_js/              [Travel guide deployment]
 │       ├── monitora_vagas/              [Hotel monitoring deployment]
 │       │   └── src/
 │       └── music_in_numbers/            [Music analytics deployment]
@@ -629,7 +629,7 @@ mpbarbosa_site/
     │   └── initialization/              [Initialization modules]
     ├── styles/                          [DEPRECATED - Legacy styles]
     ├── submodules/                      [Git submodules]
-    │   ├── guia_turistico/              [Travel guide submodule]
+    │   ├── guia_js/              [Travel guide submodule]
     │   │   ├── .github/
     │   │   ├── .idea/
     │   │   ├── docs/

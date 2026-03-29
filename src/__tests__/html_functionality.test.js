@@ -204,7 +204,7 @@ describe('HTML5 UP Dimension Template', () => {
       const html = fs.readFileSync(INDEX_PATH, 'utf8');
 
       // Check for project references
-      const expectedProjects = ['music_in_numbers', 'guia_turistico', 'monitora_vagas'];
+      const expectedProjects = ['music_in_numbers', 'guia_js', 'monitora_vagas'];
 
       expectedProjects.forEach((project) => {
         // Links should point to redirect pages or direct paths

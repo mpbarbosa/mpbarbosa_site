@@ -676,7 +676,7 @@ $ ./shell_scripts/pull_all_submodules.sh
 [SUCCESS] Main repository updated
 [STEP] Updating all submodules...
 [SUCCESS] music_in_numbers updated
-[SUCCESS] guia_turistico updated
+[SUCCESS] guia_js updated
 [SUCCESS] Pull operations completed successfully
 ```
 ```

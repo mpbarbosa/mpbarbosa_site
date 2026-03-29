@@ -9,7 +9,7 @@ Standardize terminology across all documentation to eliminate confusion between 
 1. **Git Submodules**: DEPRECATED (`.gitmodules` is empty)
 2. **Current Architecture**: Sibling projects in parent directory
    - `../music_in_numbers/` → Music in Numbers
-   - `../guia_turistico/` → Guia Turístico
+   - `../guia_js/` → Guia Turístico
    - `../monitora_vagas/` → Monitora Vagas
    - `../busca_vagas/` → Busca Vagas (Backend API)
 
@@ -146,7 +146,7 @@ Use these standardized phrases consistently:
 This project uses a **sibling project architecture** where four external repositories are maintained independently:
 
 1. **Music in Numbers** (`../music_in_numbers/`)
-2. **Guia Turístico** (`../guia_turistico/`)
+2. **Guia Turístico** (`../guia_js/`)
 3. **Monitora Vagas** (`../monitora_vagas/`)
 4. **Busca Vagas** (`../busca_vagas/`)
 
@@ -157,7 +157,7 @@ This project uses a **sibling project architecture** where four external reposit
 **Management**: Each sibling project is managed independently:
 ```bash
 cd ../music_in_numbers && git pull && git push
-cd ../guia_turistico && git pull && git push
+cd ../guia_js && git pull && git push
 cd ../monitora_vagas && git pull && git push
 cd ../busca_vagas && git pull && git push
 ```
