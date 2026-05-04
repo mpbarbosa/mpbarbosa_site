@@ -204,6 +204,6 @@ describe('InitializationUtilities', () => {
 
 ---
 
-**Document Version**: 1.1.0
+**Document Version**: 1.1.1
 **Created**: December 25, 2025
 **Next Review**: After conversion (if approved)

@@ -547,7 +547,7 @@ module.exports = CustomJSDOMEnvironment;
   "overrides": {
     "braces": "^3.0.3",      // Fix: CVE-1098094 (High - ReDoS)
     "micromatch": "^4.0.8",  // Fix: GHSA-952p-6rrq-rcjv (High - ReDoS)
-    "glob": "^11.1.0"        // Fix: GHSA-5j98-mcp5-4vw2 (High - Command Injection)
+    "glob": "^11.1.1"        // Fix: GHSA-5j98-mcp5-4vw2 (High - Command Injection)
   }
 }
 ```

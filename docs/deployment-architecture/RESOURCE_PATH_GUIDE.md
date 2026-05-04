@@ -1,6 +1,6 @@
 # 🗺️ Resource Path Guide
 
-**Version:** 1.1.0
+**Version:** 1.1.1
 **Last Updated:** October 22, 2025
 **Scope:** Complete guide to resource paths and URL structure for the MP Barbosa Personal Website project
 

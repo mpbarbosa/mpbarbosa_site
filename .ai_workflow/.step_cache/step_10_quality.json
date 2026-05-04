@@ -25,6 +25,26 @@
       "score": 100,
       "issueCount": 0,
       "lastAnalyzed": "2026-03-08T19:04:13.161Z"
+    },
+    "src/eslint.config.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:31:49.528Z"
+    },
+    "src/jest-environment-jsdom-no-warnings.cjs": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:31:49.528Z"
+    },
+    "src/jest.config.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:31:49.528Z"
+    },
+    "src/jest.setup.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:31:49.528Z"
     }
   }
 }

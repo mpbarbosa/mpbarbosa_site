@@ -705,7 +705,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1.1.0
+        uses: appleboy/ssh-action@v1.1.1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -891,6 +891,6 @@ This mitigation strategy provides a clear, actionable roadmap to elevate code qu
 
 ---
 
-**Document Version:** 1.1.0  
+**Document Version:** 1.1.1  
 **Last Updated:** December 25, 2025  
 **Maintained By:** MP Barbosa Development Team

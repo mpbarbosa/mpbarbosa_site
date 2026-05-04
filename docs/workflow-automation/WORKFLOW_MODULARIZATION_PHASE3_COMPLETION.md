@@ -512,7 +512,7 @@ step11_git_finalization
 
 ---
 
-**Document Version:** 1.1.0
+**Document Version:** 1.1.1
 **Created:** November 13, 2025
 **Author:** MP Barbosa Development Team
 **Status:** Final
