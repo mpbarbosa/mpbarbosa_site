@@ -45,6 +45,21 @@
       "score": 100,
       "issueCount": 0,
       "lastAnalyzed": "2026-05-04T03:31:49.528Z"
+    },
+    "src/scripts/initialization/InitializationUtilities.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:57:40.851Z"
+    },
+    "src/scripts/main.mjs": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:57:40.851Z"
+    },
+    "src/scripts/test-accessibility.mjs": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-04T03:57:40.851Z"
     }
   }
 }

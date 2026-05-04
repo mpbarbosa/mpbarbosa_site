@@ -456,4 +456,4 @@ Always remember: **Use `git mv` for moves, `git rm` for deletions, and write cle
 
 **Last Updated**: October 20, 2025
 **Author**: MP Barbosa
-**Version**: 1.1.1
+**Version**: 1.1.2

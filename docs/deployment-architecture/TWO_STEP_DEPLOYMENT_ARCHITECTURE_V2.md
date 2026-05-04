@@ -476,7 +476,7 @@ All modes support safety parameters:
 - ✅ **Improved**: Deployment summary with step execution indicators
 - ✅ **Improved**: Help documentation with two-step workflow examples
 
-### v1.1.1 (November 4, 2025)
+### v1.1.2 (November 4, 2025)
 - Initial release with single-step /src to /public synchronization
 - Basic asset management (HTML, CSS, JS, SASS, images, webfonts)
 - Music in Numbers submodule support
