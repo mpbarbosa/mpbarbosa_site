@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # manage_reports.sh - Automated report file management with timestamp-based naming
-# Version: 1.1.1
+# Version: 1.1.2
 # Author: MP Barbosa
 # Description: Manages consistency validation reports with automatic archiving and cleanup
 

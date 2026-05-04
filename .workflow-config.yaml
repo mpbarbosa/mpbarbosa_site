@@ -7,7 +7,7 @@ project:
   type: "static-site"
   description: "MP Barbosa personal portfolio website — HTML5 UP Dimension template with sibling project integration"
   kind: "client_spa"
-  version: "1.1.1"
+  version: "1.1.2"
 
 tech_stack:
   primary_language: "javascript"

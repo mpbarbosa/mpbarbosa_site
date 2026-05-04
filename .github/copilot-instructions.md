@@ -2,14 +2,12 @@
 
 This file provides durable, high-signal guidance for Copilot-assisted development in this repository.
 
-**Purpose:** Guide Copilot and AI tools to make correct, context-aware edits by clarifying project boundaries, validation commands, and architectural rules.  
-**Audience:** Copilot and AI-assisted tools.
+**Purpose:** Guide Copilot and AI tools to make correct, context-aware edits by clarifying project boundaries, validation commands, and architectural rules.
 
 ## Project Boundaries
 
-- The primary source directory is `src/`, with stable submodules including `assets`, `components`, `coverage`, `images`, `node_modules`, `pages`, `scripts`, and `styles`.
+- The primary source directory is `src/`, with stable submodules: `assets`, `components`, `coverage`, `images`, `node_modules`, `pages`, `scripts`, and `styles`.
 - Do not make changes outside these layers unless explicitly required.
-- Avoid introducing dependencies or changes that cross repository boundaries.
 
 ## Validation and Testing
 
