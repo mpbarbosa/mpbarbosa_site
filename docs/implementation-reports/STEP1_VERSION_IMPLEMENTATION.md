@@ -72,7 +72,7 @@ step1_get_version --format=json
 
 ### Version Comparison
 ```bash
-# Check if major version is stable (≥1.1.2)
+# Check if major version is stable (≥1.1.3)
 if [[ "$STEP1_VERSION_MAJOR" -ge 1 ]]; then
     echo "Using stable version $STEP1_VERSION"
 fi
