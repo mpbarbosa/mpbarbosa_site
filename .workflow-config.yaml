@@ -35,6 +35,54 @@ structure:
     - src/assets
     - src/images
 
+# ============================================================================
+# AI PERSONAS
+# ============================================================================
+# Personas selected for this project (Static HTML5/CSS portfolio website —
+# HTML5 UP Dimension template, npm scripts, jest tests).
+#
+# ENABLED — matched to this project's stack and characteristics:
+#   ux_analyst             — portfolio UX and visual design review; step_15
+#   accessibility_expert   — HTML5 semantics, ARIA, WCAG 2.1; step_22
+#   documentation_expert   — project docs analysis and updates; steps 01, 02, 02_5
+#   technical_writer       — markdown quality and formatting; step_13
+#   test_engineer          — jest test review and generation; steps 06, 07, 08
+#   code_quality_analyst   — JavaScript linting and code quality; step_10
+#   git_specialist         — conventional commits, git finalization; step_12
+#   devops_engineer        — npm scripts and CI/CD configuration; step_04
+#   dependency_analyst     — npm dependency audit and updates; step_09
+#
+# DISABLED — not applicable:
+#   typescript_reviewer        — JavaScript only, no TypeScript in this project
+#   aws_serverless_engineer    — no AWS infrastructure
+#   api_designer               — no REST API layer; static site only
+#   prompt_engineer            — not an AI/prompt project
+#   async_performance_engineer — no async-heavy code patterns to profile
+#   performance_engineer       — static portfolio; no benchmarking targets
+#   security_expert            — static site; no auth or secrets management
+#   architecture_reviewer      — simple single-page portfolio; no system design
+
+ai_personas:
+  enabled:
+    - ux_analyst
+    - accessibility_expert
+    - documentation_expert
+    - technical_writer
+    - test_engineer
+    - code_quality_analyst
+    - git_specialist
+    - devops_engineer
+    - dependency_analyst
+  disabled:
+    - typescript_reviewer
+    - aws_serverless_engineer
+    - api_designer
+    - prompt_engineer
+    - async_performance_engineer
+    - performance_engineer
+    - security_expert
+    - architecture_reviewer
+
 # Workflow Step Configuration
 workflow:
   smart_execution: true
@@ -78,8 +126,16 @@ workflow:
       description: "AI-powered documentation analysis and updates"
       phase: "analysis"
       can_parallelize: true
-      dependencies: ["00"]
+      dependencies: ["0b"]
       ai_persona: "documentation_expert"
+
+    - id: "01_5"
+      name: "Copilot Instructions Validation"
+      file: "step_01_5_copilot_instructions.js"
+      description: "Audit and refresh .github/copilot-instructions.md against live repo facts"
+      phase: "analysis"
+      can_parallelize: false
+      dependencies: ["01"]
 
     - id: "02"
       name: "Consistency Check"
@@ -87,7 +143,7 @@ workflow:
       description: "Check documentation consistency"
       phase: "analysis"
       can_parallelize: true
-      dependencies: ["01"]
+      dependencies: ["01_5"]
       ai_persona: "code_quality_analyst"
 
     - id: "02_5"
@@ -97,6 +153,14 @@ workflow:
       phase: "analysis"
       can_parallelize: true
       dependencies: ["02"]
+
+    - id: "21"
+      name: "Doc Consolidation"
+      file: "step_21_doc_consolidation.js"
+      description: "Find similar markdown docs and AI-merge them into canonical documents"
+      phase: "analysis"
+      can_parallelize: false
+      dependencies: ["02_5"]
 
     - id: "03"
       name: "Script References"
@@ -170,24 +234,23 @@ workflow:
       dependencies: ["09"]
       ai_persona: "architecture_reviewer"
 
-    # Context & Analysis Phase (11)
-    - id: "11"
-      name: "Context Analysis"
-      file: "step_11_context.js"
-      description: "Analyze project context and relationships"
-      phase: "quality"
-      can_parallelize: false
-      dependencies: ["10"]
-
-    # Finalization Phase (13-17)
+    # Canonical order: step_10 → step_13 → step_11
     - id: "13"
       name: "Markdown Linting"
       file: "step_13_markdown_lint.js"
       description: "Lint and fix markdown documentation"
       phase: "finalization"
       can_parallelize: true
-      dependencies: ["11"]
+      dependencies: ["10"]
       ai_persona: "technical_writer"
+
+    - id: "11"
+      name: "Context Analysis"
+      file: "step_11_context.js"
+      description: "Analyze project context and relationships"
+      phase: "quality"
+      can_parallelize: false
+      dependencies: ["13"]
 
     - id: "14"
       name: "Prompt Engineering"
@@ -216,13 +279,57 @@ workflow:
       dependencies: ["15"]
       ai_persona: "devops_engineer"
 
+    # Steps disabled for this project — no AWS infra, no TypeScript, no async-heavy code.
+    # Declared here so the orchestrator knows to exclude them from step_17's fan-in.
+    - id: "11_5"
+      name: "AWS LBS Validation"
+      enabled: false
+      reason: "No AWS infrastructure in this project"
+
+    - id: "11_6"
+      name: "AWS Serverless AI Review"
+      enabled: false
+      reason: "No AWS infrastructure in this project"
+
+    - id: "19"
+      name: "TypeScript Review"
+      enabled: false
+      reason: "JavaScript-only project — no TypeScript files"
+
+    - id: "20"
+      name: "Async Performance Review"
+      enabled: false
+      reason: "Static portfolio site — no async-heavy code patterns to profile"
+
     - id: "17"
       name: "Workflow Summary"
       file: "step_17_summary.js"
       description: "Generate workflow summary report"
       phase: "finalization"
       can_parallelize: false
-      dependencies: ["16"]
+      dependencies: ["03", "22"]
+      dependency_comment: "Reduced fan-in for this static portfolio: step_11_6 (AWS Serverless), step_20 (async perf), and step_23 (perf review) are all disabled. Active branch terminals are step_03 (script references) and step_22 (accessibility review, which runs after doc consolidation in step_21)."
+
+    # Accessibility & Performance Review
+    - id: "22"
+      name: "Accessibility Review"
+      file: "step_22.js"
+      description: "WCAG 2.1 AA/AAA review: HTML5 portfolio structure, CSS custom properties, skip links, semantic heading hierarchy, alt text on project images"
+      phase: "finalization"
+      enabled: true
+      can_parallelize: true
+      dependencies: ["21"]
+      ai_persona: "accessibility_expert"
+
+    - id: "23"
+      name: "Performance Review"
+      file: "step_23.js"
+      description: "JavaScript performance profiling and algorithmic complexity analysis"
+      phase: "finalization"
+      enabled: false
+      reason: "Static HTML portfolio — minimal JavaScript; no algorithmic complexity or benchmarking concerns"
+      can_parallelize: true
+      ai_persona: "performance_engineer"
 
     - id: "0f"
       name: "Commit Artifacts"
@@ -407,6 +514,7 @@ change_detection:
         type: "style"
       - regex: "^(perf|optimize|speed)\\s"
         type: "perf"
+
 version:
   config_files:
     - package.json
@@ -415,4 +523,3 @@ version:
 deploy:
   command: './shell_scripts/sync_to_staging.sh --both-steps'
   description: 'Deploy the main site and sibling project assets with the two-step staging workflow'
-
