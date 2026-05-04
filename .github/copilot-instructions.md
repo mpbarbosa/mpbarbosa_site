@@ -1,9 +1,10 @@
 # Copilot Guidance: mpbarbosa-site-root
 
-This file provides durable, high-signal guidance for Copilot-assisted development in this repository.  
-**Purpose:** Guide Copilot and AI tools to make correct, context-aware edits by clarifying project boundaries, validation commands, and architectural rules.  
-**Audience:** Copilot and AI-assisted tools.  
-**Do not include implementation status, inventories, or workflow walkthroughs here.**
+This file provides durable, high-signal guidance for Copilot-assisted development in this repository.
+**Purpose:** Guide Copilot and AI tools to make correct, context-aware edits by clarifying project boundaries, validation commands, and architectural rules.
+**Audience:** Copilot and AI-assisted tools.
+
+Do not include implementation status, inventories, or workflow walkthroughs here.
 
 ---
 
@@ -19,18 +20,8 @@ This file provides durable, high-signal guidance for Copilot-assisted developmen
   - `src/pages/`  
   - `src/scripts/`  
   - `src/styles/`
-- **Sibling projects:**  
-  - This repository is the main site.  
-  - Sibling projects may exist as independent repositories in the parent directory; do not treat them as submodules or assume direct integration.
 - **Do not introduce cross-repo dependencies or submodule logic.**
-
----
-
-## Copilot File Purpose
-
-- This file is for Copilot and AI tools only.
-- Keep content focused on durable, project-specific guidance.
-- When detailed reference is needed, point to authoritative docs if available, rather than duplicating content.
+- Sibling projects may exist as independent repositories in the parent directory; do not treat them as submodules or assume direct integration.
 
 ---
 
@@ -38,15 +29,16 @@ This file provides durable, high-signal guidance for Copilot-assisted developmen
 
 - **Test command:**  
   - Run all tests with: `npm test`
-- **Do not add or change test commands unless explicitly required.**
-- **Do not assume a build step exists unless present in `package.json`.**
+- Do not add or change test commands unless explicitly required.
 
 ---
 
 ## Documentation and Reference
 
-- **Authoritative reference docs:** Not available.
-- For implementation details, refer to surfaced documentation in the `/docs/` directory or other project documentation if present.
+- For implementation details, refer to authoritative docs:
+  - `README.md`
+  - `CHANGELOG.md`
+  - `docs/ARCHITECTURE.md`
 - Do not duplicate file trees, dependency lists, or command walkthroughs here.
 
 ---
