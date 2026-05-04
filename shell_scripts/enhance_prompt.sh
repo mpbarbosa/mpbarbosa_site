@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # enhance_prompt.sh - Enhance prompts using GitHub Copilot CLI
-# Version: 1.1.2
+# Version: 1.1.3
 # Created: 2025-11-09
 # Last Modified: 2025-11-09
 # Usage: ./enhance_prompt.sh "your prompt here"
@@ -9,7 +9,7 @@
 set -euo pipefail
 
 # Script version
-VERSION="1.1.2"
+VERSION="1.1.3"
 
 # Color codes for output
 RED='\033[0;31m'
