@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "partitionIndex": 1,
+  "partitionIndex": 2,
   "totalPartitions": 4,
   "filesHash": "c1e7604e",
   "partitionLabels": [
@@ -9,5 +9,5 @@
     "test/assets",
     "test"
   ],
-  "updatedAt": "2026-05-04T01:40:46.404Z"
+  "updatedAt": "2026-05-04T02:05:07.108Z"
 }
