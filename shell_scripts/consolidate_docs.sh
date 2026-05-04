@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # consolidate_docs.sh - Documentation consolidation and cleanup automation
-# Version: 1.1.0
+# Version: 1.1.1
 # Author: MP Barbosa
 # Description: Implements documentation retention policy and consolidation strategy
 

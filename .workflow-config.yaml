@@ -7,7 +7,7 @@ project:
   type: "static-site"
   description: "MP Barbosa personal portfolio website — HTML5 UP Dimension template with sibling project integration"
   kind: "client_spa"
-  version: "1.1.0"
+  version: "1.1.1"
 
 tech_stack:
   primary_language: "javascript"
@@ -277,6 +277,7 @@ workflow:
       phase: "finalization"
       can_parallelize: false
       dependencies: ["15"]
+      dependency_comment: "Chained after step_15 (UX Analysis) to keep the finalization pass sequential on this portfolio; step_03 is still an ancestor via step_13 → step_14 → step_15."
       ai_persona: "devops_engineer"
 
     # Steps disabled for this project — no AWS infra, no TypeScript, no async-heavy code.
@@ -296,6 +297,11 @@ workflow:
       enabled: false
       reason: "JavaScript-only project — no TypeScript files"
 
+    - id: "18"
+      name: "Debugging Analysis"
+      enabled: false
+      reason: "Static portfolio site — no complex debugging, async, or data-structure analysis needed"
+
     - id: "20"
       name: "Async Performance Review"
       enabled: false
@@ -307,8 +313,8 @@ workflow:
       description: "Generate workflow summary report"
       phase: "finalization"
       can_parallelize: false
-      dependencies: ["03", "22"]
-      dependency_comment: "Reduced fan-in for this static portfolio: step_11_6 (AWS Serverless), step_20 (async perf), and step_23 (perf review) are all disabled. Active branch terminals are step_03 (script references) and step_22 (accessibility review, which runs after doc consolidation in step_21)."
+      dependencies: ["03", "22", "11"]
+      dependency_comment: "Reduced fan-in for this static portfolio: step_11_6 (AWS Serverless), step_20 (async perf), and step_23 (perf review) are all disabled. Active branch terminals are step_03 (script references), step_22 (accessibility review, which runs after doc consolidation in step_21), and step_11 (context analysis) so its findings appear in the summary and committed artifacts."
 
     # Accessibility & Performance Review
     - id: "22"
@@ -337,7 +343,8 @@ workflow:
       description: "Commit workflow artifacts generated during the run"
       phase: "finalization"
       can_parallelize: false
-      dependencies: ["17"]
+      dependencies: ["17", "16"]
+      dependency_comment: "step_16 added to fan-in so the version bump completes before artifacts are committed; step_18 is disabled in this project so step_16 is a terminal leaf that would otherwise be orphaned from git finalization."
 
     # Git Completion — MUST BE LAST STEP
     - id: "12"

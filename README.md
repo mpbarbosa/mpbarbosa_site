@@ -1,15 +1,43 @@
 # MP Barbosa Portfolio Website
 
-Welcome to the MP Barbosa personal portfolio website, built using the HTML5 UP Dimension template. This site showcases projects, skills, and integrates with sibling projects. 
+Welcome to the MP Barbosa personal portfolio website! This site is built using the HTML5 UP Dimension template and serves as a showcase for projects, skills, and professional background. It also integrates with sibling projects for a comprehensive portfolio experience.
 
 ## Features
-- Responsive design
+- Responsive, mobile-friendly design
 - Project and skills showcase
-- Integration with related projects
+- Integration with related/sibling projects
+- Easy local development and deployment
 
-## Quick Start
-1. Clone the repository
-2. Run `npm install`
-3. Run `npm start` to launch locally
+## Technology Stack
+- HTML5, CSS3, JavaScript
+- Node.js & npm (for development tooling)
+- HTML5 UP Dimension template
 
-For more, see docs/GETTING_STARTED.md.
+## Installation & Setup
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mpbarbosa/mpbarbosa_site.git
+   cd mpbarbosa_site
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Start the development server:**
+   ```bash
+   npm start
+   ```
+4. Open your browser to `http://localhost:3000` (or the port shown in your terminal).
+
+For more detailed setup, see [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
+
+## Usage
+- Edit content in the `src/` directory to update portfolio sections.
+- Add or update projects and skills as needed.
+- For deployment instructions, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) if available.
+
+## Contributing
+Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines on submitting issues and pull requests.
+
+## License
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
