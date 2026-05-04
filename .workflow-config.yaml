@@ -18,6 +18,7 @@ tech_stack:
   build_system: "npm"
   test_framework: "jest"
   test_command: "npm test"
+  lint_command: "npm run lint"
   lint_commands:
     javascript: "npm run lint"
     markdown: "npm run lint:md"
@@ -42,6 +43,13 @@ workflow:
   auto_commit: false
   multi_stage_pipeline: false
   ml_optimize: false
+  settings:
+    auto_mode: false
+    parallel_execution: true
+    smart_execution: true
+    ml_optimize: false
+    multi_stage: false
+    auto_commit: false
 
   steps:
     # Pre-Analysis
@@ -399,4 +407,12 @@ change_detection:
         type: "style"
       - regex: "^(perf|optimize|speed)\\s"
         type: "perf"
+version:
+  config_files:
+    - package.json
+    - src/package.json
+
+deploy:
+  command: './shell_scripts/sync_to_staging.sh --both-steps'
+  description: 'Deploy the main site and sibling project assets with the two-step staging workflow'
 
