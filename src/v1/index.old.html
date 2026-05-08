@@ -1,0 +1,135 @@
+<!DOCTYPE html public "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- HTML5 doctype declaration -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marcelo Pereira Barbosa</title>
+    <!-- Material 3 Roboto Font & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Material 3 baseline CSS (Expressive) -->
+    <link rel="stylesheet" href="https://unpkg.com/material-web@latest/all.css" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+
+  <body>
+    <div
+      id="page-version"
+      class="versioning-numbering"
+      style="
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        background: #fff;
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        font-weight: bold;
+        z-index: 1000;
+        text-align: left;
+        font-size: 0.8rem;
+        border: 1px solid #ddd;
+      "
+    >
+      <!-- Version will be rendered here -->
+    </div>
+    <div class="mdc-layout-grid expressive-bg">
+      <header class="mdc-top-app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <span class="material-icons">music_note</span>
+            <span class="mdc-top-app-bar__title">mpbarbosa.com (mpb)</span>
+          </section>
+          <nav class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <a class="mdc-button" href="#about">About</a>
+            <a class="mdc-button" href="#projects">Projects</a>
+            <a class="mdc-button" href="#contact">Contact</a>
+          </nav>
+        </div>
+      </header>
+      <main class="mdc-layout-grid__inner">
+        <section id="about" class="mdc-card mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+          <h2 class="mdc-typography--headline4">About Me</h2>
+          <p class="mdc-typography--body1">Breve descrição sobre você pode ser colocada aqui.</p>
+        </section>
+        <section id="projects" class="mdc-card mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+          <h2 class="mdc-typography--headline4">Personal Projects</h2>
+          <ul class="mdc-list">
+            <li class="mdc-list-item">
+              <a class="mdc-button" href="pages/music-in-numbers.html">Music in Numbers</a>
+              <span class="mdc-typography--body2"
+                >- A web app that generates music based on numerical input.</span
+              >
+            </li>
+            <li class="mdc-list-item">
+              <a class="mdc-button" href="pages/guia-turistico.html">Guia Turístico</a>
+              <span class="mdc-typography--body2">- A travel guide application.</span>
+            </li>
+            <li class="mdc-list-item">
+              <a class="mdc-button" href="pages/monitora-vagas.html">Monitora Vagas</a>
+              <span class="mdc-typography--body2">- Job monitoring and tracking application.</span>
+            </li>
+          </ul>
+        </section>
+        <aside class="mdc-card mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+          <h2 class="mdc-typography--headline5">Curriculum</h2>
+          <p class="mdc-typography--body1">
+            Adicione seu currículo ou informações profissionais aqui.
+          </p>
+        </aside>
+      </main>
+      <footer id="contact" class="mdc-card mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+        <h2 class="mdc-typography--headline5">Contact</h2>
+        <form id="contact-form" class="mdc-form-field">
+          <input
+            class="mdc-text-field__input"
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            required
+          />
+          <input
+            class="mdc-text-field__input"
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            required
+          />
+          <textarea
+            class="mdc-text-field__input"
+            name="message"
+            placeholder="Your Message"
+            required
+          ></textarea>
+          <button class="mdc-button m3-expressive-primary" type="submit">Send</button>
+        </form>
+        <p class="mdc-typography--caption">&copy; 2025 mpbarbosa. All rights reserved.</p>
+      </footer>
+    </div>
+    <!-- Load the modular JavaScript as an ES6 module -->
+    <script type="module" src="scripts/main.mjs"></script>
+    <!-- Keep the legacy main.js for backward compatibility if needed -->
+    <script nomodule src="scripts/main.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        // HTML page version object
+        const pageVersion = {
+          major: 0,
+          minor: 5,
+          patch: 1,
+          prerelease: 'alpha',
+          status: 'unstable, pre-release',
+          toString: function () {
+            return `v${this.major}.${this.minor}.${this.patch}-${this.prerelease} (${this.status})`;
+          },
+        };
+        document.getElementById('page-version').textContent = `HTML page ${pageVersion.toString()}`;
+      });
+    </script>
+  </body>
+</html>

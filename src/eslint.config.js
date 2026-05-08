@@ -44,6 +44,7 @@ export default [
       '**/*.min.js',
       'jest-environment-jsdom-no-warnings.cjs',
       'submodules/**',
+      'v1/**',
     ],
   },
 ];
