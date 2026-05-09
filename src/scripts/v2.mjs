@@ -30,7 +30,6 @@ function setRandomBackground() {
     return;
   }
 
-  // Filter to only existing images by probing with Image
   const img = new Image();
   const candidates = [...BG_IMAGES];
   let tried = 0;
@@ -50,6 +49,33 @@ function setRandomBackground() {
   }
 
   tryNext();
+}
+
+// ── Staggered entrance animations ────────────────────────────────────────
+function initEntranceAnimations() {
+  const cards = document.querySelectorAll('.section-card');
+  if (!cards.length) {
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry, i) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+        // Stagger each card by 80ms
+        const delay = i * 80;
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, delay);
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.1 },
+  );
+
+  cards.forEach((card) => observer.observe(card));
 }
 
 // ── Active nav highlight ──────────────────────────────────────────────────
@@ -94,6 +120,7 @@ function initContactForm() {
 // ── Boot ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setRandomBackground();
+  initEntranceAnimations();
   initNavHighlight();
   initContactForm();
 });
