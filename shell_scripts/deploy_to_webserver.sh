@@ -333,8 +333,8 @@ validate_deployment() {
     # Check if main files exist
     local required_files=(
         "$DEST_DIR/index.html"
-        "$DEST_DIR/assets/css/main.css"
-        "$DEST_DIR/assets/js/main.js"
+        "$DEST_DIR/styles/v2.css"
+        "$DEST_DIR/scripts/v2.mjs"
     )
     
     for file in "${required_files[@]}"; do

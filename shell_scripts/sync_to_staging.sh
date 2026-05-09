@@ -362,6 +362,9 @@ FILES TO SYNC:
     - index.html (main landing page)
     - robots.txt (search engine crawler instructions)
     - humans.txt (team and technology credits)
+    - styles/ (v2 CSS: v2.css)
+    - scripts/ (v2 JS modules: v2.mjs)
+    - favicon.svg
     - assets/css/ (CSS stylesheets and FontAwesome)
     - assets/js/ (JavaScript libraries and utilities)
     - assets/sass/ (SASS source files and partials)
@@ -474,6 +477,24 @@ copy_css_assets() {
 copy_js_assets() {
     print_step "Copying JavaScript assets"
     copy_directory "$SOURCE_DIR/assets/js" "$STAGING_DIR/assets/js" "JavaScript assets directory" "*.js" "false"
+}
+
+# Copy v2 styles folder (v2.css and any other stylesheets)
+copy_styles() {
+    print_step "Copying styles folder"
+    copy_directory "$SOURCE_DIR/styles" "$STAGING_DIR/styles" "Styles directory (v2)" "*.css" "true"
+}
+
+# Copy v2 scripts folder (v2.mjs and any other ES modules)
+copy_scripts() {
+    print_step "Copying scripts folder"
+    copy_directory "$SOURCE_DIR/scripts" "$STAGING_DIR/scripts" "Scripts directory (v2)" "*.mjs" "true"
+}
+
+# Copy favicon.svg
+copy_favicon() {
+    print_step "Copying favicon.svg"
+    copy_single_file "$SOURCE_DIR/favicon.svg" "$STAGING_DIR/favicon.svg" "favicon.svg" "false"
 }
 
 # Copy SASS assets folder (with enhanced verbose output for SASS structure)
@@ -1540,6 +1561,9 @@ execute_step_1() {
     copy_humans_txt
     copy_css_assets
     copy_js_assets
+    copy_styles
+    copy_scripts
+    copy_favicon
     copy_sass_assets
     copy_webfonts
     copy_images
