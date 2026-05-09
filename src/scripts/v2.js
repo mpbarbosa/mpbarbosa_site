@@ -1,5 +1,5 @@
 /**
- * v2.mjs — mpbarbosa.com v2 main script
+ * v2.js — mpbarbosa.com v2 main script
  * No jQuery. Vanilla ES modules.
  */
 

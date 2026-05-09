@@ -334,7 +334,7 @@ validate_deployment() {
     local required_files=(
         "$DEST_DIR/index.html"
         "$DEST_DIR/styles/v2.css"
-        "$DEST_DIR/scripts/v2.mjs"
+        "$DEST_DIR/scripts/v2.js"
     )
     
     for file in "${required_files[@]}"; do

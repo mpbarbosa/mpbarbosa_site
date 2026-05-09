@@ -363,7 +363,7 @@ FILES TO SYNC:
     - robots.txt (search engine crawler instructions)
     - humans.txt (team and technology credits)
     - styles/ (v2 CSS: v2.css)
-    - scripts/ (v2 JS modules: v2.mjs)
+    - scripts/ (v2 JS modules: v2.js)
     - favicon.svg
     - assets/css/ (CSS stylesheets and FontAwesome)
     - assets/js/ (JavaScript libraries and utilities)
@@ -485,7 +485,7 @@ copy_styles() {
     copy_directory "$SOURCE_DIR/styles" "$STAGING_DIR/styles" "Styles directory (v2)" "*.css" "true"
 }
 
-# Copy v2 scripts folder (v2.mjs and any other ES modules)
+# Copy v2 scripts folder (v2.js and any other ES modules)
 copy_scripts() {
     print_step "Copying scripts folder"
     copy_directory "$SOURCE_DIR/scripts" "$STAGING_DIR/scripts" "Scripts directory (v2)" "*.mjs" "true"
