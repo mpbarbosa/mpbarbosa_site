@@ -3,11 +3,11 @@
 # External Links Validation Script
 # Validates that all external links follow the policy of opening in new tabs
 # with proper security attributes (target="_blank" rel="noopener noreferrer")
-# Version: 1.1.3
+# Version: 1.1.5
 
 set -euo pipefail
 
-VERSION="1.1.3"
+VERSION="1.1.5"
 
 # Color codes for output
 RED='\033[0;31m'

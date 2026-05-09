@@ -186,7 +186,7 @@ Includes **8 comprehensive example categories**:
 - [x] Added to docs/README.md
 - [x] Cross-referenced with related guides
 - [x] Follows project documentation standards
-- [x] Properly versioned (v1.1.3)
+- [x] Properly versioned (v1.1.5)
 - [x] Marked as canonical reference
 
 ### Quality Checks

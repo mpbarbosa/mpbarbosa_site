@@ -4,6 +4,7 @@
 public.deprecated/
 
 # Node.js dependencies
+node_modules
 node_modules/
 package-lock.json
 npm-debug.log*

@@ -23,7 +23,7 @@
 # Description: Pulls the main repository and all submodules in proper hierarchical order
 # Author: MP Barbosa
 # Date: October 27, 2025
-# Version: 1.1.3 (DEPRECATED - December 25, 2025)
+# Version: 1.1.5 (DEPRECATED - December 25, 2025)
 #
 # This script follows the git best practices guide for submodule management:
 # 1. Main repository first (detects current branch dynamically)

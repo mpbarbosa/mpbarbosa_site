@@ -375,7 +375,7 @@ The following documents contain valuable historical analysis but may not reflect
 
 ### Workflow Automation
 
-- **[Workflow Automation Version Evolution](../workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.1.3 through v2.0.0
+- **[Workflow Automation Version Evolution](../workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.1.5 through v2.0.0
 - **[Tests & Documentation Workflow Plan](../workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive automation development plan
 
 ### Shell Scripts & Deployment
@@ -389,6 +389,6 @@ The following documents contain valuable historical analysis but may not reflect
 
 ---
 
-**Version:** 1.1.3  
+**Version:** 1.1.5  
 **Status:** Active  
 **Maintained By:** MP Barbosa Development Team

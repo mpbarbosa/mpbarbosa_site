@@ -377,7 +377,7 @@ describe('InitializationUtilities - Environment Detection', () => {
 
     test('should NOT detect public IP addresses', () => {
       expect(InitializationUtilities.isLocalhost('8.8.8.8')).toBe(false);
-      expect(InitializationUtilities.isLocalhost('1.1.3.1')).toBe(false);
+      expect(InitializationUtilities.isLocalhost('1.1.5.1')).toBe(false);
       expect(InitializationUtilities.isLocalhost('93.184.216.34')).toBe(false);
     });
 
@@ -657,7 +657,7 @@ describe('InitializationUtilities - Dependency Injection Factory', () => {
       const container = InitializationUtilities.createProductionDIContainer();
 
       expect(container.containerType).toBe('production');
-      expect(container.version).toBe('1.1.3');
+      expect(container.version).toBe('1.1.5');
       expect(container.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     });
 
@@ -911,7 +911,7 @@ describe('InitializationUtilities - Utility Helper Methods', () => {
     test('should have correct version', () => {
       const info = InitializationUtilities.getModuleInfo();
 
-      expect(info.version).toBe('1.1.3');
+      expect(info.version).toBe('1.1.5');
     });
 
     test('should list all dependencies', () => {
