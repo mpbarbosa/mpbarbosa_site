@@ -1,7 +1,7 @@
 # Workflow Migration Guide
 
 **Script:** `migrate_workflow_to_ai_workflow.sh`  
-**Version:** 1.1.3  
+**Version:** 1.1.4  
 **Date:** December 18, 2025  
 **Purpose:** Migrate workflow automation to dedicated ai_workflow repository
 
@@ -383,7 +383,7 @@ The script creates a detailed log file:
 **Example log entries:**
 
 ```
-[2025-12-18 04:47:20] Migration started (v1.1.3)
+[2025-12-18 04:47:20] Migration started (v1.1.4)
 [2025-12-18 04:47:20] Dry run: false
 [2025-12-18 04:47:21] Source project validated: /home/mpb/Documents/GitHub/mpbarbosa_site
 [2025-12-18 04:47:21] Target is git repository: /home/mpb/Documents/GitHub/ai_workflow
@@ -508,6 +508,6 @@ Migration is successful when:
 
 ---
 
-**Script Version:** 1.1.3  
+**Script Version:** 1.1.4  
 **Created:** December 18, 2025  
 **Status:** Ready for execution ✅

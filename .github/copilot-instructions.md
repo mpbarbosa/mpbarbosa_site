@@ -4,7 +4,7 @@ This file provides durable, high-signal guidance for Copilot-assisted developmen
 
 ## Project Boundaries
 
-- The primary source directory is `src/`, with stable submodules: `assets`, `components`, `coverage`, `images`, `node_modules`, `pages`, `scripts`, and `styles`.
+- The primary source directory is `src/`, with stable submodules: `assets/`, `components/`, `coverage/`, `images/`, `pages/`, `scripts/`, `styles/`, and `v1/`.
 - Do not make changes outside these layers unless explicitly required.
 
 ## Validation

@@ -3,7 +3,7 @@
 # Script: cleanup_old_folders.sh
 # Description: Clean up backlog, logs, and summaries folders, keeping only
 #              the last 15 subfolders (sorted by modification time).
-# Version: 1.1.3
+# Version: 1.1.4
 # Author: MP Barbosa
 # Created: 2025-11-11
 ################################################################################

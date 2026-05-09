@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # copilot_with_enhanced_prompt.sh - Execute Copilot with an enhanced prompt
-# Version: 1.1.3
+# Version: 1.1.4
 # Created: 2025-11-09
 # Last Modified: 2025-11-09
 # Usage: ./copilot_with_enhanced_prompt.sh "your prompt here"
@@ -9,7 +9,7 @@
 set -euo pipefail
 
 # Script version
-VERSION="1.1.3"
+VERSION="1.1.4"
 
 # Color codes for output
 RED='\033[0;31m'
