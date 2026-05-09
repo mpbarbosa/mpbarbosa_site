@@ -7,7 +7,7 @@ project:
   type: "static-site"
   description: "MP Barbosa personal portfolio website — HTML5 UP Dimension template with sibling project integration"
   kind: "client_spa"
-  version: "1.1.5"
+  version: "1.1.6"
 
 tech_stack:
   primary_language: "javascript"
@@ -232,7 +232,7 @@ workflow:
       phase: "quality"
       can_parallelize: true
       dependencies: ["09"]
-      ai_persona: "architecture_reviewer"
+      ai_persona: "code_quality_analyst"
 
     # Canonical order: step_10 → step_13 → step_11
     - id: "13"
@@ -259,7 +259,7 @@ workflow:
       phase: "finalization"
       can_parallelize: true
       dependencies: ["13"]
-      ai_persona: "prompt_engineer"
+      ai_persona: "technical_writer"
 
     - id: "15"
       name: "UX Analysis"
@@ -360,7 +360,7 @@ workflow:
   phases:
     analysis:
       description: "Documentation analysis, validation, and optimization"
-      steps: ["00", "0b", "01", "02", "02_5", "03"]
+      steps: ["00", "0b", "01", "01_5", "02", "02_5", "21", "03"]
 
     validation:
       description: "Project structure and configuration validation"
@@ -376,7 +376,7 @@ workflow:
 
     finalization:
       description: "Linting, prompt optimization, UX, versioning, and git — ALWAYS RUNS LAST"
-      steps: ["13", "14", "15", "16", "17", "0f", "12"]
+      steps: ["13", "14", "15", "16", "22", "17", "0f", "12"]
 
 # Conditional Step Execution Configuration
 conditionals:
