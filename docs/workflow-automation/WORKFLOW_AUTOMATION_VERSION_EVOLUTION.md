@@ -3,7 +3,7 @@
 **Document Purpose**: Complete version history and feature evolution timeline for `execute_tests_docs_workflow.sh`
 
 **Current Version**: v2.0.0 (December 15, 2025)
-**Initial Release**: v1.1.3 (November 6, 2025)
+**Initial Release**: v1.1.4 (November 6, 2025)
 
 ---
 
@@ -16,8 +16,8 @@
 | **v1.4.0** | Nov 6, 2025 | Summaries Directory | ✅ Stable | Not documented |
 | **v1.3.0** | Nov 5, 2025 | Backlog Directory | ✅ Stable | Not documented |
 | **v1.2.0** | Nov 4, 2025 | AI-Powered Workflow | ✅ Stable | Not documented |
-| **v1.1.3** | Nov 6, 2025 | Enhanced CLI | ✅ Deprecated | Not documented |
-| **v1.1.3** | Nov 6, 2025 | Initial Implementation | ✅ Historical | [Phase 2 Completion](WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md) |
+| **v1.1.4** | Nov 6, 2025 | Enhanced CLI | ✅ Deprecated | Not documented |
+| **v1.1.4** | Nov 6, 2025 | Initial Implementation | ✅ Historical | [Phase 2 Completion](WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md) |
 
 ---
 
@@ -236,14 +236,14 @@
 - Created `/docs/STEP11_GIT_FINALIZATION_ENHANCEMENT.md`
 - Updated `.github/copilot-instructions.md`
 
-**Migration from v1.1.3**:
+**Migration from v1.1.4**:
 - No breaking changes
 - GitHub Copilot CLI is optional (graceful fallback)
 - Existing command-line options preserved
 
 ---
 
-### Version 1.1.3 - November 6, 2025
+### Version 1.1.4 - November 6, 2025
 
 **Theme**: Enhanced Command-Line Interface
 
@@ -263,13 +263,13 @@
 - Enhanced `shell_scripts/README.md`
 - Added usage examples
 
-**Migration from v1.1.3**:
+**Migration from v1.1.4**:
 - Backward compatible
 - Default behavior unchanged
 
 ---
 
-### Version 1.1.3 - November 6, 2025
+### Version 1.1.4 - November 6, 2025
 
 **Theme**: Initial Implementation (Phase 1 & 2)
 
@@ -312,7 +312,7 @@
 
 ## 📈 Feature Evolution Matrix
 
-| Feature | v1.1.3 | v1.2.0 | v1.3.0 | v1.4.0 | v1.5.0 |
+| Feature | v1.1.4 | v1.2.0 | v1.3.0 | v1.4.0 | v1.5.0 |
 |---------|--------|--------|--------|--------|--------|
 | **13-Step Workflow** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Command-Line Interface** | Basic | Enhanced | Enhanced | Enhanced | Enhanced |
@@ -332,7 +332,7 @@
 
 ### Timeline
 
-**v1.1.3 - v1.2.0**: No dedicated output directories
+**v1.1.4 - v1.2.0**: No dedicated output directories
 - Output displayed in terminal only
 - No persistent tracking
 
@@ -412,7 +412,7 @@ mpbarbosa_site/
 
 **Action Required**: None (automatic)
 
-### From v1.1.3 to v1.2.0
+### From v1.1.4 to v1.2.0
 
 **Breaking Changes**: None
 
@@ -479,7 +479,7 @@ mpbarbosa_site/
 - **Summaries Directory**: `/summaries/README.md`
 
 ### Historical Documentation
-- **v1.1.3 Completion Report**: `/docs/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md`
+- **v1.1.4 Completion Report**: `/docs/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md`
 - **Workflow Plan**: `/docs/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md`
 - **Step 11 Enhancement**: `/docs/STEP11_GIT_FINALIZATION_ENHANCEMENT.md`
 
@@ -494,7 +494,7 @@ mpbarbosa_site/
 
 ### Quick Reference
 
-**Use v1.1.3 documentation for**:
+**Use v1.1.4 documentation for**:
 - Understanding initial implementation
 - Historical context
 - Original design decisions
@@ -523,7 +523,7 @@ mpbarbosa_site/
 ---
 
 **Last Updated**: November 9, 2025
-**Document Version**: 1.1.3
+**Document Version**: 1.1.4
 **Maintained By**: MP Barbosa
 **Status**: Current and actively maintained
 

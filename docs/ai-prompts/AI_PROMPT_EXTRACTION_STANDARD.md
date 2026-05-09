@@ -1,6 +1,6 @@
 # AI Prompt Extraction Standard
 
-**Version**: 1.1.3
+**Version**: 1.1.4
 **Date**: 2025-01-13
 **Status**: Active Project Standard
 
@@ -225,4 +225,4 @@ All workflow steps using AI prompts MUST comply with this standard. Non-complian
 
 | Version | Date       | Changes                                    |
 |---------|------------|--------------------------------------------|
-| 1.1.3   | 2025-01-13 | Initial standard based on Step 2 extraction |
+| 1.1.4   | 2025-01-13 | Initial standard based on Step 2 extraction |

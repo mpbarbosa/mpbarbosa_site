@@ -60,6 +60,26 @@
       "score": 100,
       "issueCount": 0,
       "lastAnalyzed": "2026-05-04T03:57:40.851Z"
+    },
+    "src/scripts/v2.mjs": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-09T00:31:39.928Z"
+    },
+    "src/v1/scripts/initialization/InitializationUtilities.js": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-09T00:31:39.928Z"
+    },
+    "src/v1/scripts/main.mjs": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-09T00:31:39.928Z"
+    },
+    "src/v1/scripts/test-accessibility.mjs": {
+      "score": 100,
+      "issueCount": 0,
+      "lastAnalyzed": "2026-05-09T00:31:39.928Z"
     }
   }
 }
