@@ -89,7 +89,7 @@ Comprehensive documentation covering:
 #### `docs/README.md` (Documentation Index)
 
 **Updates**:
-- Updated version range: "v1.1.4 through v1.5.0" → "v1.1.4 through v2.0.0"
+- Updated version range: "v1.1.5 through v1.5.0" → "v1.1.5 through v2.0.0"
 - Reflects current workflow automation version
 
 **Impact**: Documentation index references up-to-date version information

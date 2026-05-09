@@ -1,6 +1,6 @@
 # 📋 Tests & Documentation Update Automation Script - Comprehensive Development Plan
 
-**Document Version**: 1.1.4
+**Document Version**: 1.1.5
 **Date Created**: 2025-11-06
 **Related Workflow**: `/prompts/tests_documentation_update_enhanced.txt`
 **Target Script**: `/shell_scripts/workflow/execute_tests_docs_workflow.sh`
@@ -29,7 +29,7 @@
 ```bash
 #!/bin/bash
 # Script metadata
-SCRIPT_VERSION="1.1.4"
+SCRIPT_VERSION="1.1.5"
 SCRIPT_NAME="Tests & Documentation Workflow Automation"
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -556,7 +556,7 @@ This script automates the following workflow steps from `/prompts/tests_document
 
 | **Version** | **Date** | **Changes** | **Author** |
 |-------------|----------|-------------|------------|
-| 1.1.4 | 2025-11-06 | Initial plan creation | MP Barbosa |
+| 1.1.5 | 2025-11-06 | Initial plan creation | MP Barbosa |
 
 ---
 

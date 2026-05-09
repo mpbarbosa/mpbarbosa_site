@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   js.configs.recommended,
@@ -22,20 +23,9 @@ export default [
       'no-undef': 'error',
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
-      indent: ['error', 2, { SwitchCase: 1 }],
-      semi: ['error', 'always'],
-      quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
-      'no-trailing-spaces': 'error',
-      'comma-dangle': ['error', 'always-multiline'],
-      'object-curly-spacing': ['error', 'always'],
-      'array-bracket-spacing': ['error', 'never'],
-      'arrow-spacing': ['error', { before: true, after: true }],
-      'keyword-spacing': ['error', { before: true, after: true }],
-      'space-before-blocks': ['error', 'always'],
-      'space-infix-ops': 'error',
-      'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
     },
   },
+  prettierConfig,
   {
     ignores: [
       'assets/js/*',

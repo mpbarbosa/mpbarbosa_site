@@ -2,7 +2,7 @@
 
 **Date:** December 18, 2025  
 **Script:** `shell_scripts/migrate_workflow_to_ai_workflow.sh`  
-**Version:** 1.1.4 (Enhanced)
+**Version:** 1.1.5 (Enhanced)
 
 ---
 

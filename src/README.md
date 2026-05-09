@@ -210,4 +210,9 @@ Contributions are welcome! If you have suggestions for improvements or new featu
 
 ## License
 
+<<<<<<< HEAD
 This project is licensed under the M
+=======
+This project is licensed under the M
+
+> > > > > > > agents/fix-prettier-eslint-errors

@@ -130,7 +130,7 @@ gh api repos/:owner/:repo/dependabot/alerts
 - [Configuring Dependabot Security Updates](https://docs.github.com/en/code-security/dependabot/dependabot-security-updates)
 
 ## Version History
-- **v1.1.4** (2025-12-11): Initial Dependabot configuration
+- **v1.1.5** (2025-12-11): Initial Dependabot configuration
   - NPM dependencies monitoring for `/src/package.json`
   - GitHub Actions monitoring
   - Weekly scheduled updates

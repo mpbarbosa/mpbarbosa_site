@@ -36,5 +36,5 @@ export const navigatorConfigs = {
  */
 export const ipAddressTestCases = {
   valid: ['192.168.1.1', '10.0.0.1', '172.16.0.1'],
-  invalid: ['8.8.8.8', '1.1.4.1'],
+  invalid: ['8.8.8.8', '1.1.5.1'],
 };

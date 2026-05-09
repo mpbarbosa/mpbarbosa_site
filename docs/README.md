@@ -27,11 +27,11 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Workflow Automation
 
-- **[Workflow Automation Version Evolution](workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.1.4 through v2.0.0 with migration guide
+- **[Workflow Automation Version Evolution](workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.1.5 through v2.0.0 with migration guide
 - **[Tests & Documentation Workflow Plan](workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for automated workflow script (13 steps)
 - **[Workflow Modularization Phase 3 Completion](workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All 25 modules extracted (12 libraries + 13 steps) ⭐ **NEW**
 - **[Workflow Modular Architecture](../shell_scripts/workflow/README.md)** - Complete module documentation (v2.0.0)
-- **[Workflow Automation Phase 2 Completion](workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.1.4 (HISTORICAL)
+- **[Workflow Automation Phase 2 Completion](workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.1.5 (HISTORICAL)
 - **[Workflow Performance Optimization](workflow-automation/WORKFLOW_PERFORMANCE_OPTIMIZATION.md)** - Performance analysis and optimization strategy (v1.4.0 → v1.5.0)
 - **[Workflow Performance Implementation](workflow-automation/WORKFLOW_PERFORMANCE_OPTIMIZATION_IMPLEMENTATION.md)** - Completed git caching implementation (v1.5.0)
 - **[Step 11 Git Finalization Enhancement](workflow-automation/STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation best practices
@@ -49,7 +49,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### AI Integration & Prompt Engineering
 
-- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library (v1.1.4) ⭐ **NEW**
+- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library (v1.1.5) ⭐ **NEW**
 - **[Copilot Prompt Scoping Guide](ai-prompts/COPILOT_PROMPT_SCOPING_GUIDE.md)** - Best practices for GitHub Copilot prompt design and context management ⭐ **NEW**
 - **[Prompt Extraction Refactoring](ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - Refactoring patterns for AI prompt centralization and reusability ⭐ **NEW**
 

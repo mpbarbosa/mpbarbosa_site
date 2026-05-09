@@ -1,7 +1,7 @@
 # Documentation Update Summary - November 6, 2025
 
 **Date**: November 6, 2025
-**Version**: Documentation Update v1.1.4
+**Version**: Documentation Update v1.1.5
 **Scope**: Workflow automation and AI-powered features
 
 ---

@@ -2,7 +2,7 @@
 ################################################################################
 # Workflow Migration Script
 # Purpose: Migrate workflow automation files to ai_workflow repository
-# Version: 1.1.4
+# Version: 1.1.5
 # Created: December 18, 2025
 #
 # Migrates:
@@ -32,7 +32,7 @@ GRAY='\033[0;90m'
 NC='\033[0m' # No Color
 
 # Script version
-SCRIPT_VERSION="1.1.4"
+SCRIPT_VERSION="1.1.5"
 
 # Project directories
 SOURCE_PROJECT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -1257,7 +1257,7 @@ Expected output: 37 tests, 100% pass rate ✅
    - 37 automated tests documentation
 
 3. **WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md**
-   - Complete version history (v1.1.4 to v2.1.0)
+   - Complete version history (v1.1.5 to v2.1.0)
    - Feature evolution timeline
    - Migration guides
 

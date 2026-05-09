@@ -124,7 +124,7 @@ print_info "BEST PRACTICE: Using 'copilot -p' for specialized git commit experti
 ### Code Quality Metrics
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
-| Version | 1.1.4 | 1.2.0 | Version bump |
+| Version | 1.1.5 | 1.2.0 | Version bump |
 | Enhanced Steps | 3 | 11 | +8 steps |
 | AI Integration Quality | Basic | Professional | Workflow-aware |
 | Auto-mode Support | Partial | Complete | Full automation |
