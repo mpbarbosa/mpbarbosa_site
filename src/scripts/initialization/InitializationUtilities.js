@@ -691,7 +691,7 @@
             // Metadata
             containerType: 'production',
             createdAt: new Date().toISOString(),
-            version: '1.1.7',
+            version: '1.1.8',
           };
 
           // Create Core instance with dependencies
@@ -752,7 +752,7 @@
             // Metadata
             containerType: 'development',
             createdAt: new Date().toISOString(),
-            version: '1.1.7',
+            version: '1.1.8',
           };
 
           // Create Core instance with dependencies
@@ -812,7 +812,7 @@
             // Metadata
             containerType: 'test',
             createdAt: new Date().toISOString(),
-            version: '1.1.7',
+            version: '1.1.8',
           };
 
           // Create Core instance with dependencies
@@ -856,7 +856,7 @@
           // Metadata
           containerType: 'fallback',
           createdAt: new Date().toISOString(),
-          version: '1.1.7',
+          version: '1.1.8',
           fallback: true,
         };
       }
@@ -955,14 +955,14 @@
       static getModuleInfo() {
         return {
           name: 'InitializationUtilities',
-          version: '1.1.7',
+          version: '1.1.8',
           extractionPhase: 'API Class Extraction',
           architecture: 'Functional Core, Imperative Shell',
           dependencies: {
-            InitializationValidators: '1.1.7',
-            InitializationProcessors: '1.1.7',
-            InitializationUIBuilders: '1.1.7',
-            InitializationCore: '1.1.7',
+            InitializationValidators: '1.1.8',
+            InitializationProcessors: '1.1.8',
+            InitializationUIBuilders: '1.1.8',
+            InitializationCore: '1.1.8',
           },
           capabilities: [
             'Environment Detection',

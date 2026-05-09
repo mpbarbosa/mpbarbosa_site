@@ -342,7 +342,7 @@ ls -l shell_scripts/*.sh
 ./shell_scripts/cleanup_old_folders.sh --help    # Show help
 ```
 
-**Version**: 1.1.7
+**Version**: 1.1.8
 
 ---
 
@@ -362,7 +362,7 @@ ls -l shell_scripts/*.sh
 ./shell_scripts/consolidate_docs.sh --help       # Show help
 ```
 
-**Version**: 1.1.7
+**Version**: 1.1.8
 
 ---
 
@@ -382,7 +382,7 @@ ls -l shell_scripts/*.sh
 ./shell_scripts/manage_reports.sh --help         # Show help
 ```
 
-**Version**: 1.1.7
+**Version**: 1.1.8
 
 ---
 
@@ -881,7 +881,7 @@ git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: 
 - **External Links Policy**: `/docs/EXTERNAL_LINKS_POLICY.md` - Complete security and UX standards
 - **Comprehensive UX Guide**: `/docs/COMPREHENSIVE_UX_DOCUMENTATION.md` - Accessibility and interaction patterns
 
-**Script Version**: 1.1.7
+**Script Version**: 1.1.8
 **Last Updated**: November 9, 2025
 
 ---
@@ -889,7 +889,7 @@ git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: 
 ### 🤖 `enhance_prompt.sh`
 **Purpose**: Enhances user prompts using GitHub Copilot CLI for improved clarity and technical language
 
-**Script Version**: 1.1.7
+**Script Version**: 1.1.8
 **Last Updated**: November 9, 2025
 
 **Features**:
@@ -917,7 +917,7 @@ git add . && ./shell_scripts/validate_external_links.sh && git commit -m "feat: 
 ### 🚀 `copilot_with_enhanced_prompt.sh`
 **Purpose**: Executes GitHub Copilot CLI with automatically enhanced prompts for better results
 
-**Script Version**: 1.1.7
+**Script Version**: 1.1.8
 **Last Updated**: November 9, 2025
 
 **Features**:
@@ -1205,7 +1205,7 @@ When contributing to these scripts:
   - **Markdown Linting**: Comprehensive `.mdlrc` configuration for AI-generated documentation
   - **Node.js Version Lock**: v25.2.1 with nvm and fnm compatibility
   - **Documentation Expansion**: 7 new guides (Dependabot, Markdown Linting, Selenium E2E, Test Environment, Naming Conventions)
-- **v1.1.7** (October 27, 2025): Initial release with full hierarchical submodule support
+- **v1.1.8** (October 27, 2025): Initial release with full hierarchical submodule support
   - **Features**: Pull/push scripts with proper order, stash handling, comprehensive logging
 
 ---
