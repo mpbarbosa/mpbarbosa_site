@@ -1,6 +1,6 @@
 # JSDoc Style Guide
 
-**Version**: 1.1.7  
+**Version**: 1.1.8  
 **Date**: 2025-12-25  
 **Status**: Canonical Reference for MP Barbosa Projects
 
@@ -732,5 +732,5 @@ function createUser({ name, age }) { }
 ---
 
 **Last Updated**: 2025-12-25  
-**Version**: 1.1.7  
+**Version**: 1.1.8  
 **Maintained By**: MP Barbosa Projects Team

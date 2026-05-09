@@ -233,11 +233,11 @@ ls -la public/
 | Version | Date | Key Changes |
 |---------|------|-------------|
 | v2.0.0 | 2025-12 | Two-step deployment architecture |
-| v1.1.7 | 2025-11 | Initial deployment scripts |
+| v1.1.8 | 2025-11 | Initial deployment scripts |
 
 ### Migration Path
 
-**From v1.1.7 to v2.0.0**:
+**From v1.1.8 to v2.0.0**:
 - Introduced staging directory (`public/`)
 - Parametrized step control
 - Enhanced backup system
@@ -291,7 +291,7 @@ ls -la public/
 
 ---
 
-**Version:** 1.1.7  
+**Version:** 1.1.8  
 **Last Updated:** 2025-12-25  
 **Architecture:** v2.0.0 Two-Step Deployment  
 **Maintained By:** MP Barbosa Development Team

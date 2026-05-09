@@ -431,4 +431,4 @@ This script represents a **mature, production-ready tool** that effectively brid
 
 **Last Updated**: November 4, 2025
 **Documentation Status**: Complete
-**Script Version**: 1.1.7
+**Script Version**: 1.1.8
