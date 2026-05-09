@@ -204,12 +204,12 @@ Format: Use appropriate units (h/m/s), be concise.
 Always use ISO 8601 extended format in version history:
 
 ```markdown
-### v1.1.6 (2025-11-09)
+### v1.1.7 (2025-11-09)
 
 - Enhanced code block guidelines
 - Language identifier best practices
 
-### v1.1.6 (2025-11-09)
+### v1.1.7 (2025-11-09)
 
 - Initial style guide creation
 ```
@@ -242,7 +242,7 @@ logs/workflow_execution_20251107_093045.log    ✅
 
 **Metadata**:
 ```markdown
-**Version**: 1.1.6
+**Version**: 1.1.7
 **Date**: 2025-11-09  ✅
 **Last Updated**: 2025-11-07  ✅
 ```
@@ -373,7 +373,7 @@ Use this consistent set of emojis across all documents:
 > **📋 Document Type: [Type]**
 > Brief description or metadata
 
-**Version**: 1.1.6
+**Version**: 1.1.7
 **Date**: 2025-11-09
 ```
 
@@ -546,7 +546,7 @@ Place the table of contents after metadata and before main content:
 
 > **📋 Document Type: Technical Guide**
 
-**Version**: 1.1.6
+**Version**: 1.1.7
 **Date**: 2025-11-09
 **Status**: Active
 
@@ -694,14 +694,14 @@ function example() {
   return "Hello World";
 }
 
-const data = { version: "1.1.6" };
+const data = { version: "1.1.7" };
 ```
 
 #### JSON
 
 ```json
 {
-  "version": "1.1.6",
+  "version": "1.1.7",
   "scripts": {
     "test": "jest"
   }
@@ -742,7 +742,7 @@ When showing markdown syntax in documentation, use `markdown`:
 def example():
     return "Hello World"
 
-data = {"version": "1.1.6"}
+data = {"version": "1.1.7"}
 ```
 
 ### Language Identifier Best Practices
@@ -766,7 +766,7 @@ Show both command and expected output:
 ```bash
 $ npm test
 
-> mpbarbosa-landing-page@1.1.6 test
+> mpbarbosa-landing-page@1.1.7 test
 > jest
 
 PASS  __tests__/main.test.js
@@ -918,7 +918,7 @@ No emojis (appropriate for technical content):
 - Documented time formatting conventions
 - Added version history and changelog date standards
 
-### v1.1.6 (2025-11-09)
+### v1.1.7 (2025-11-09)
 
 - **Enhanced code block guidelines** (Issue #23)
 - Added language identifier best practices
@@ -926,7 +926,7 @@ No emojis (appropriate for technical content):
 - Documented multi-language code block patterns
 - Added comprehensive language identifier reference table
 
-### v1.1.6 (2025-11-09)
+### v1.1.7 (2025-11-09)
 
 - Initial style guide creation
 - Documented emoji usage patterns

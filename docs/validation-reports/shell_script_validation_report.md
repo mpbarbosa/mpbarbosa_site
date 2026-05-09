@@ -124,11 +124,11 @@ All major automation scripts are properly documented:
 - ✅ sync_to_public.sh v2.0.0 (documented and code match)
 - ✅ deploy_to_webserver.sh v2.0.0 (documented and code match)
 - ✅ execute_tests_docs_workflow.sh v2.0.0 (documented and code match)
-- ✅ cleanup_old_folders.sh v1.1.6 (documented)
-- ✅ consolidate_docs.sh v1.1.6 (documented)
-- ✅ enhance_prompt.sh v1.1.6 (documented)
-- ✅ copilot_with_enhanced_prompt.sh v1.1.6 (documented)
-- ✅ validate_external_links.sh v1.1.6 (documented)
+- ✅ cleanup_old_folders.sh v1.1.7 (documented)
+- ✅ consolidate_docs.sh v1.1.7 (documented)
+- ✅ enhance_prompt.sh v1.1.7 (documented)
+- ✅ copilot_with_enhanced_prompt.sh v1.1.7 (documented)
+- ✅ validate_external_links.sh v1.1.7 (documented)
 - ✅ metrics_validation.sh v2.0.0 (verified in code, not documented)
 
 ### 2.3 Cross-References ✅ EXCELLENT

@@ -692,4 +692,4 @@ For consistency across documentation:
 
 **Last Updated**: November 2025
 **Maintained By**: MP Barbosa
-**Version**: 1.1.6
+**Version**: 1.1.7

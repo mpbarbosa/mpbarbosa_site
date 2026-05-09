@@ -416,5 +416,5 @@ After split completion:
 ---
 
 **Generated:** 2025-11-12
-**Plan Version:** 1.1.6
+**Plan Version:** 1.1.7
 **Status:** Ready for Execution
