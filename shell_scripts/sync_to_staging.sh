@@ -510,6 +510,37 @@ copy_llms_files() {
     copy_single_file "$SOURCE_DIR/llms-full.txt" "$STAGING_DIR/llms-full.txt" "llms-full.txt" "false"
 }
 
+# Copy v1/ legacy archived site
+copy_v1_folder() {
+    print_step "Copying v1/ legacy archive"
+
+    local source_dir="$SOURCE_DIR/v1"
+    local dest_dir="$STAGING_DIR/v1"
+
+    if [[ ! -d "$source_dir" ]]; then
+        print_warning "v1/ directory not found in source"
+        print_info "  Expected: $source_dir"
+        return 0
+    fi
+
+    local file_count
+    file_count=$(find "$source_dir" -type f | wc -l)
+
+    if [[ "$DRY_RUN" == "false" ]]; then
+        mkdir -p "$dest_dir"
+        cp -r "$source_dir"/. "$dest_dir/"
+        print_success "Copied: v1/ legacy archive ($file_count files)"
+
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $source_dir"
+            print_info "  Destination: $dest_dir"
+            print_info "  Files copied: $file_count"
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir ($file_count files)"
+    fi
+}
+
 # Copy SASS assets folder (with enhanced verbose output for SASS structure)
 copy_sass_assets() {
     print_step "Copying SASS assets"
@@ -1579,6 +1610,7 @@ execute_step_1() {
     copy_favicon
     copy_en_page
     copy_llms_files
+    copy_v1_folder
     copy_sass_assets
     copy_webfonts
     copy_images
