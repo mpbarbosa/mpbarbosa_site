@@ -497,6 +497,19 @@ copy_favicon() {
     copy_single_file "$SOURCE_DIR/favicon.svg" "$STAGING_DIR/favicon.svg" "favicon.svg" "false"
 }
 
+# Copy English portfolio page (en/ directory)
+copy_en_page() {
+    print_step "Copying English portfolio (en/)"
+    copy_directory "$SOURCE_DIR/en" "$STAGING_DIR/en" "English portfolio directory (en/)" "*.html" "false"
+}
+
+# Copy LLM-readable files (llms.txt and llms-full.txt)
+copy_llms_files() {
+    print_step "Copying LLM-readable files"
+    copy_single_file "$SOURCE_DIR/llms.txt" "$STAGING_DIR/llms.txt" "llms.txt" "false"
+    copy_single_file "$SOURCE_DIR/llms-full.txt" "$STAGING_DIR/llms-full.txt" "llms-full.txt" "false"
+}
+
 # Copy SASS assets folder (with enhanced verbose output for SASS structure)
 copy_sass_assets() {
     print_step "Copying SASS assets"
@@ -1564,6 +1577,8 @@ execute_step_1() {
     copy_styles
     copy_scripts
     copy_favicon
+    copy_en_page
+    copy_llms_files
     copy_sass_assets
     copy_webfonts
     copy_images

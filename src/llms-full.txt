@@ -61,7 +61,7 @@ ai_workflow is a 23-step automated pipeline that validates and enhances code qua
 ai_workflow is seeking public investment on Singularity (https://singularity.diy) to fund ongoing developer time.
 Fund requests are voted on by token holders — 4 of 6 top investors must approve each request.
 Investors receive tradable mission tokens; no equity is issued.
-All fund requests and votes are publicly visible on-chain.
+All fund requests and votes are publicly visible on-chain (Solana/USDC).
 
 ---
 
@@ -145,3 +145,4 @@ Library of reusable programming patterns in TypeScript.
 - GitHub: https://github.com/mpbarbosa
 - LinkedIn: https://www.linkedin.com/in/mpbarbosa/
 - X / Twitter: https://x.com/mpb_sp
+- English investor page: https://mpbarbosa.com/en/

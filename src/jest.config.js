@@ -85,7 +85,11 @@ export default {
     },
     {
       displayName: 'shell-scripts',
-      testMatch: ['**/__tests__/shell_scripts.test.js', '**/__tests__/sync_to_public.test.js'],
+      testMatch: [
+        '**/__tests__/shell_scripts.test.js',
+        '**/__tests__/sync_to_public.test.js',
+        '**/__tests__/staging_content.test.js',
+      ],
       testEnvironment: 'node',
     },
     {
