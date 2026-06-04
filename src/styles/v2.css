@@ -500,6 +500,19 @@ body {
   color: var(--color-primary);
 }
 
+/* ── Formspree feedback ───────────────────────────────────── */
+.form-error {
+  font-size: 0.75rem;
+  color: #ff6b6b;
+  letter-spacing: 0.02em;
+  min-height: 1em;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ── Social icons ─────────────────────────────────────────── */
 .social-icons {
   list-style: none;

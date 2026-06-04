@@ -103,24 +103,9 @@ function initNavHighlight() {
   sections.forEach((s) => observer.observe(s));
 }
 
-// ── Contact form (no backend — shows a thank-you message) ─────────────────
-function initContactForm() {
-  const form = document.getElementById('contact-form');
-  if (!form) {
-    return;
-  }
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    form.innerHTML =
-      '<p style="text-align:center;font-weight:500;padding:2rem 0">Obrigado pela mensagem! Entrarei em contato em breve.</p>';
-  });
-}
-
 // ── Boot ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setRandomBackground();
   initEntranceAnimations();
   initNavHighlight();
-  initContactForm();
 });
