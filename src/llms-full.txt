@@ -1,0 +1,147 @@
+# mpbarbosa.com — Full LLM Context
+
+## Owner
+
+**Name**: Marcelo Pereira Barbosa
+**Handle**: mpbarbosa / mpb
+**Location**: São Paulo, Brazil
+**Experience**: 25+ years in software development
+**Languages**: Portuguese (native), English (professional)
+**GitHub**: https://github.com/mpbarbosa
+**LinkedIn**: https://www.linkedin.com/in/mpbarbosa/
+**X / Twitter**: https://x.com/mpb_sp
+**Instagram**: https://www.instagram.com/mpbarbosa1971/
+**Facebook**: https://www.facebook.com/mpbarbosa
+
+## Focus areas
+
+- AI-assisted development tooling (primary focus)
+- JavaScript / TypeScript libraries and automation
+- Geolocation and mapping applications
+- Shell scripting and Linux automation
+- Music technology (Strudel live coding)
+
+---
+
+## Flagship mission: ai_workflow
+
+**Mission statement**: ai_workflow is building the automation layer that makes AI-assisted development reliable — so teams can trust what any AI coding tool generates before it ships.
+
+**Repository**: https://github.com/mpbarbosa/ai_workflow
+**Version**: v4.3.0
+**License**: MIT
+**Languages**: Bash (orchestration), Node.js (tooling), Python (utilities)
+
+### What it does
+
+ai_workflow is a 23-step automated pipeline that validates and enhances code quality, documentation, and test coverage across software projects. It integrates with all major AI coding tools through a modular AI personas system, making AI-generated output trustworthy before it ships.
+
+### Key metrics
+
+- 111 total modules: 81 libraries + 22 steps + 4 orchestrators + 4 configs
+- 17 AI personas for specialised validation tasks
+- 23-step pipeline with checkpoint resume
+- 37+ automated tests, 100% test coverage
+- B+ (87/100) code quality score
+- 40–85% faster execution via smart change detection
+- 33% additional speedup via parallel execution
+- 60–80% token reduction via AI response caching
+- Supports: GitHub Copilot, Cursor, Claude, Codeium, Tabnine, and all major AI coding tools
+
+### Requirements
+
+- Bash 4.0+
+- Git
+- Node.js v18+
+- yq (YAML processor)
+- Optional: any compatible AI coding tool CLI (Copilot, Claude, Cursor, etc.)
+
+### Funding
+
+ai_workflow is seeking public investment on Singularity (https://singularity.diy) to fund ongoing developer time.
+Fund requests are voted on by token holders — 4 of 6 top investors must approve each request.
+Investors receive tradable mission tokens; no equity is issued.
+All fund requests and votes are publicly visible on-chain.
+
+---
+
+## Other projects
+
+### Onde Estou?
+
+**URL**: https://mpbarbosa.com/guia_js/
+Real-time geolocation app. Displays user position on a map using the browser Geolocation API. Built with vanilla JavaScript via AI-assisted development.
+
+### Music in Numbers
+
+**URL**: https://mpbarbosa.com/music_in_numbers/src/music_in_numbers.html
+Spotify listening data analysis tool. Visualises personal music statistics.
+
+### Monitora Vagas
+
+**URL**: https://mpbarbosa.com/monitora_vagas/public/
+**Repo**: https://github.com/mpbarbosa/monitora_vagas
+Hotel vacancy monitoring web app for AFPESP union members.
+
+### MapaSP
+
+**URL**: https://mpbarbosa.com/mapasp/
+Interactive map of São Paulo built with AI-assisted development.
+
+### mpb_scripts
+
+**Repo**: https://github.com/mpbarbosa/mpb_scripts
+Collection of Linux shell utility scripts for automation tasks.
+
+### ibira.js
+
+**Repo**: https://github.com/mpbarbosa/ibira.js
+Public JavaScript library for basic API fetch operations.
+
+### olinda libraries (TypeScript)
+
+- **olinda_utils.js** (https://github.com/mpbarbosa/olinda_utils.js): General utility functions
+- **olinda_shell_interface.js** (https://github.com/mpbarbosa/olinda_shell_interface.js): Linux shell command interface library
+- **olinda_orchestrator** (https://github.com/mpbarbosa/olinda_orchestrator): Generic TypeScript orchestrator
+- **olinda_copilot_sdk.ts** (https://github.com/mpbarbosa/olinda_copilot_sdk.ts): GitHub Copilot SDK wrapper
+
+### paraty_geocore.js
+
+**Repo**: https://github.com/mpbarbosa/paraty_geocore.js
+JavaScript core classes for geolocation applications.
+
+### pajussara_tui_comp
+
+**Repo**: https://github.com/mpbarbosa/pajussara_tui_comp
+Ink TUI component library in TypeScript.
+
+### gitx
+
+**Repo**: https://github.com/mpbarbosa/gitx
+TypeScript Ink TUI app for git commands with MCP integration.
+
+### bessa_patterns.ts
+
+**Repo**: https://github.com/mpbarbosa/bessa_patterns.ts
+Library of reusable programming patterns in TypeScript.
+
+---
+
+## Site structure
+
+| Path | Description |
+|---|---|
+| `/` | Portuguese portfolio (primary, pt-BR) |
+| `/en/` | English portfolio (investor-facing, includes Singularity section) |
+| `/llms.txt` | Concise LLM-readable site summary (this domain's llmstxt.org entry) |
+| `/llms-full.txt` | Complete structured context for AI agents |
+| `/v1/` | Archived previous site version (HTML5 UP Dimension template) |
+| `/pages/` | HTML redirect stubs to sibling project directories |
+
+---
+
+## Contact
+
+- GitHub: https://github.com/mpbarbosa
+- LinkedIn: https://www.linkedin.com/in/mpbarbosa/
+- X / Twitter: https://x.com/mpb_sp

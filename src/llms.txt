@@ -1,0 +1,29 @@
+# mpbarbosa.com
+
+> Personal portfolio and developer hub for Marcelo Pereira Barbosa (mpb) — software developer with 25+ years of experience, focused on AI-assisted development, automation, and JavaScript/TypeScript tooling. Based in São Paulo, Brazil.
+
+## Active mission: ai_workflow
+
+- [ai_workflow](https://github.com/mpbarbosa/ai_workflow): Automation layer that makes AI-assisted development reliable — so teams can trust what any AI coding tool generates before it ships. v4.3.0 · 111 modules · 23-step pipeline · 100% test coverage · supports Copilot, Cursor, Claude, and all major AI coding tools.
+- [Back this mission on Singularity](https://singularity.diy): Public blockchain fundraising — investors back the mission through tradable tokens, no equity required.
+
+## Projects
+
+- [Onde Estou?](https://mpbarbosa.com/guia_js/): Real-time geolocation app built with AI-assisted development
+- [Music in Numbers](https://mpbarbosa.com/music_in_numbers/src/music_in_numbers.html): Spotify data analysis
+- [Monitora Vagas](https://mpbarbosa.com/monitora_vagas/public/): Hotel vacancy monitoring
+- [MapaSP](https://mpbarbosa.com/mapasp/): Interactive map of São Paulo
+- [mpb_scripts](https://github.com/mpbarbosa/mpb_scripts): Linux shell utility scripts
+
+## About
+
+Marcelo Pereira Barbosa · São Paulo, Brazil · 25+ years in software development · focus: AI tooling, JavaScript/TypeScript, automation, geolocation.
+
+- GitHub: https://github.com/mpbarbosa
+- LinkedIn: https://www.linkedin.com/in/mpbarbosa/
+- X / Twitter: https://x.com/mpb_sp
+
+## Optional
+
+- [English version](https://mpbarbosa.com/en/): Investor-facing English landing with Singularity section
+- [Full LLM context](https://mpbarbosa.com/llms-full.txt): Complete structured context for AI agents

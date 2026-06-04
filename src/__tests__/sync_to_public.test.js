@@ -41,6 +41,19 @@ const runScriptWithTimeout = (scriptPath, args = [], timeout = 30000) => {
 
     let stdout = '';
     let stderr = '';
+    let settled = false;
+
+    const timeoutId = setTimeout(() => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      child.kill();
+      reject(new Error(`Script execution timed out after ${timeout}ms`));
+    }, timeout);
+
+    timeoutId.unref?.();
 
     child.stdout.on('data', (data) => {
       stdout += data.toString();
@@ -51,18 +64,24 @@ const runScriptWithTimeout = (scriptPath, args = [], timeout = 30000) => {
     });
 
     child.on('close', (code) => {
+      clearTimeout(timeoutId);
+      if (settled) {
+        return;
+      }
+
+      settled = true;
       resolve({ code, stdout, stderr });
     });
 
     child.on('error', (error) => {
+      clearTimeout(timeoutId);
+      if (settled) {
+        return;
+      }
+
+      settled = true;
       reject(error);
     });
-
-    // Set timeout
-    setTimeout(() => {
-      child.kill();
-      reject(new Error(`Script execution timed out after ${timeout}ms`));
-    }, timeout);
   });
 };
 

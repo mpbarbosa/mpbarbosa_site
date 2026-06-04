@@ -130,6 +130,7 @@ describe('Shell Scripts Functionality', () => {
 
       let stdout = '';
       let stderr = '';
+      let settled = false;
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -139,7 +140,26 @@ describe('Shell Scripts Functionality', () => {
         stderr += data.toString();
       });
 
+      const timeoutId = setTimeout(() => {
+        if (settled) {
+          return;
+        }
+
+        settled = true;
+        child.kill();
+        done();
+      }, 10000);
+
+      timeoutId.unref?.();
+
       child.on('close', (code) => {
+        clearTimeout(timeoutId);
+        if (settled) {
+          return;
+        }
+
+        settled = true;
+
         // Dry-run should complete without errors or with controlled exit
         expect(code === 0 || code === 1).toBe(true); // 1 is acceptable for dry-run validation
 
@@ -149,12 +169,6 @@ describe('Shell Scripts Functionality', () => {
 
         done();
       });
-
-      // Set timeout for the test
-      setTimeout(() => {
-        child.kill();
-        done();
-      }, 10000);
     }, 15000);
   });
 

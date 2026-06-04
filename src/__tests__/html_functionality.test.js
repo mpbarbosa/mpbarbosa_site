@@ -1,12 +1,11 @@
 /**
  * HTML Functionality Tests
  *
- * Comprehensive testing for HTML template functionality including:
- * - HTML5 UP Dimension template features
- * - Font Awesome icon loading
- * - Responsive design breakpoints
- * - JavaScript integration
- * - Accessibility features
+ * Comprehensive testing for the current portfolio HTML including:
+ * - document structure
+ * - asset references
+ * - JavaScript entrypoint
+ * - accessibility features
  *
  * @group functional
  */
@@ -25,17 +24,17 @@ const INDEX_PATH = path.join(SRC_DIR, 'index.html');
 let dom;
 let document;
 
-describe('HTML5 UP Dimension Template', () => {
-  beforeAll(() => {
-    const html = fs.readFileSync(INDEX_PATH, 'utf8');
-    dom = new JSDOM(html, {
-      url: 'http://localhost:8080',
-      runScripts: 'outside-only',
-      resources: 'usable',
-    });
-    document = dom.window.document;
-  });
+beforeAll(() => {
+  const html = fs.readFileSync(INDEX_PATH, 'utf8');
+  dom = new JSDOM(html);
+  document = dom.window.document;
+});
 
+afterAll(() => {
+  dom.window.close();
+});
+
+describe('HTML5 UP Dimension Template', () => {
   describe('Core Template Structure', () => {
     test('should have proper HTML5 doctype', () => {
       const html = fs.readFileSync(INDEX_PATH, 'utf8');
@@ -253,8 +252,8 @@ describe('Responsive Design', () => {
   });
 
   test('should load responsive CSS', () => {
-    const html = fs.readFileSync(INDEX_PATH, 'utf8');
-    expect(html).toContain('assets/css/main.css');
+    const stylesheet = document.querySelector('link[rel="stylesheet"][href="styles/v2.css"]');
+    expect(stylesheet).toBeTruthy();
   });
 
   test('should have noscript fallback CSS', () => {
@@ -268,28 +267,24 @@ describe('Responsive Design', () => {
 });
 
 describe('JavaScript Integration', () => {
-  test('should load jQuery', () => {
+  test('should load the v2 JavaScript entrypoint', () => {
     const scripts = Array.from(document.querySelectorAll('script[src]'));
-    const jqueryScript = scripts.find((s) => s.src.includes('jquery'));
-    expect(jqueryScript).toBeTruthy();
+    const entrypointScript = scripts.find(
+      (script) => script.getAttribute('src') === 'scripts/v2.js',
+    );
+
+    expect(entrypointScript).toBeTruthy();
+    expect(entrypointScript.getAttribute('type')).toBe('module');
   });
 
-  test('should load template JavaScript utilities', () => {
+  test('should not require legacy template scripts', () => {
     const scripts = Array.from(document.querySelectorAll('script[src]'));
     const scriptPaths = scripts.map((s) => s.src);
 
-    // Check for template JS files
-    const expectedScripts = ['main.js', 'util.js'];
-    expectedScripts.forEach((script) => {
-      const hasScript = scriptPaths.some((path) => path.includes(script));
-      expect(hasScript).toBe(true);
-    });
-  });
-
-  test('should load breakpoints script for responsive behavior', () => {
-    const scripts = Array.from(document.querySelectorAll('script[src]'));
-    const breakpointsScript = scripts.find((s) => s.src.includes('breakpoints'));
-    expect(breakpointsScript).toBeTruthy();
+    expect(scriptPaths.some((path) => path.includes('jquery'))).toBe(false);
+    expect(scriptPaths.some((path) => path.includes('util.js'))).toBe(false);
+    expect(scriptPaths.some((path) => path.includes('main.js'))).toBe(false);
+    expect(scriptPaths.some((path) => path.includes('breakpoints'))).toBe(false);
   });
 });
 

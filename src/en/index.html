@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>mpbarbosa.com — Marcelo Pereira Barbosa</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Personal portfolio of Marcelo Pereira Barbosa (mpb) — software developer with 25+ years of experience, exploring AI-assisted development, automation, and JavaScript/TypeScript projects."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mpbarbosa.com/en/" />
+    <meta property="og:title" content="mpbarbosa.com — Marcelo Pereira Barbosa" />
+    <meta
+      property="og:description"
+      content="Software developer with 25+ years of experience. Exploring AI-assisted development, automation, and JavaScript/TypeScript projects."
+    />
+    <meta property="og:image" content="https://mpbarbosa.com/images/bg.jpg" />
+    <link rel="canonical" href="https://mpbarbosa.com/en/" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+
+    <!-- Google Fonts: Inter + Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome (social icons) -->
+    <link rel="stylesheet" href="../assets/css/fontawesome-all.min.css" />
+
+    <!-- v2 styles -->
+    <link rel="stylesheet" href="../styles/v2.css" />
+
+    <style>
+      .singularity-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .metric-item {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        text-align: center;
+      }
+      .metric-value {
+        display: block;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--accent, #7ecfff);
+      }
+      .metric-label {
+        display: block;
+        font-size: 0.78rem;
+        opacity: 0.7;
+        margin-top: 0.25rem;
+      }
+      .btn-singularity {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.85rem 2rem;
+        background: linear-gradient(135deg, #7ecfff 0%, #a78bfa 100%);
+        color: #0a0a0f;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .btn-singularity:hover {
+        opacity: 0.88;
+      }
+      .singularity-note {
+        margin-top: 1rem;
+        font-size: 0.82rem;
+        opacity: 0.6;
+      }
+      .lang-toggle {
+        font-size: 0.85rem;
+        opacity: 0.75;
+      }
+      .lang-toggle:hover {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background -->
+    <div id="bg" role="presentation" aria-hidden="true"></div>
+
+    <div id="wrapper">
+      <!-- Top App Bar -->
+      <header id="top-bar" role="banner">
+        <span class="logo brand">
+          <svg class="diamond-emblem" viewBox="0 0 20 20" aria-hidden="true">
+            <polygon points="10,1 19,10 10,19 1,10" />
+          </svg>
+          mpb
+        </span>
+        <nav role="navigation" aria-label="Main navigation">
+          <a href="#intro">Intro</a>
+          <a href="#projects">Projects</a>
+          <a href="#singularity">Invest</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+          <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <a href="../" class="lang-toggle" aria-label="Switch to Portuguese version">🇧🇷 PT</a>
+        </nav>
+      </header>
+
+      <!-- Main -->
+      <main id="main" role="main">
+        <!-- Intro -->
+        <article class="section-card" id="intro" aria-labelledby="intro-heading">
+          <h2 id="intro-heading">Intro</h2>
+          <img
+            src="../images/pic01.jpg"
+            alt="Technology and software development illustration"
+            class="section-img"
+          />
+          <p>
+            After 25 years of experience in software development, I created this site to share my
+            projects and interests.
+          </p>
+          <p>
+            Right now I am exploring AI-assisted development — discovering the utilities and
+            possibilities of this technology. From developing in environments I know well to writing
+            prompts in technologies I am unfamiliar with, I am challenging myself to learn more and
+            adapt to new tools.
+          </p>
+          <p>
+            In fact, this text was written with the help of AI coding tools like GitHub Copilot,
+            Claude Code, Cursor and Google Stitch — something I never imagined doing before I
+            started, since I have always enjoyed writing my own content.
+          </p>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <!-- Projects -->
+        <article class="section-card" id="projects" aria-labelledby="projects-heading">
+          <h2 id="projects-heading">Projects (AI)</h2>
+          <svg class="card-decoration" viewBox="0 0 300 60" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="30" r="2" opacity="0.3" />
+            <circle cx="55" cy="15" r="1.5" opacity="0.25" />
+            <circle cx="90" cy="40" r="2.5" opacity="0.2" />
+            <circle cx="130" cy="22" r="1.5" opacity="0.3" />
+            <circle cx="160" cy="45" r="2" opacity="0.2" />
+            <circle cx="200" cy="18" r="3" opacity="0.15" />
+            <circle cx="240" cy="35" r="1.5" opacity="0.25" />
+            <circle cx="275" cy="20" r="2" opacity="0.2" />
+            <line
+              x1="20"
+              y1="30"
+              x2="55"
+              y2="15"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="55"
+              y1="15"
+              x2="90"
+              y2="40"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="90"
+              y1="40"
+              x2="130"
+              y2="22"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.1"
+            />
+            <line
+              x1="130"
+              y1="22"
+              x2="160"
+              y2="45"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="160"
+              y1="45"
+              x2="200"
+              y2="18"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.1"
+            />
+            <line
+              x1="200"
+              y1="18"
+              x2="240"
+              y2="35"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="240"
+              y1="35"
+              x2="275"
+              y2="20"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.1"
+            />
+          </svg>
+          <img
+            src="../images/pic02.jpg"
+            alt="Showcase of projects developed with AI"
+            class="section-img"
+          />
+          <p>Projects developed through AI-assisted development.</p>
+          <ul class="project-list" role="list">
+            <li>
+              <a href="../guia_js/" target="_blank" rel="noopener noreferrer">Onde Estou?</a>
+              — Real-time geolocation
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/ai_workflow"
+                target="_blank"
+                rel="noopener noreferrer"
+                >AI_WORKFLOW</a
+              >
+              — AI prompt workflow automation for code quality analysis, documentation generation,
+              and test validation. Supports all major AI coding tools.
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/mpb_scripts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Automation scripts</a
+              >
+              — Utility scripts on GitHub
+            </li>
+            <li>
+              <a
+                href="../music_in_numbers/src/music_in_numbers.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Music in Numbers</a
+              >
+              — Spotify data analysis
+            </li>
+            <li>
+              <a href="../monitora_vagas/public/" target="_blank" rel="noopener noreferrer"
+                >Monitora Vagas</a
+              >
+              — Hotel vacancy monitoring
+            </li>
+            <li>
+              <a href="../mapasp/" target="_blank" rel="noopener noreferrer">MapaSP</a>
+              — Interactive map of São Paulo
+            </li>
+          </ul>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <!-- Singularity -->
+        <article class="section-card" id="singularity" aria-labelledby="singularity-heading">
+          <h2 id="singularity-heading">Back this mission</h2>
+          <p>
+            <strong>ai_workflow</strong> is building the automation layer that makes AI-assisted
+            development reliable — so teams can trust what any AI coding tool generates before it
+            ships.
+          </p>
+          <p>
+            The mission is funded through
+            <a href="https://singularity.diy" target="_blank" rel="noopener noreferrer"
+              >Singularity</a
+            >
+            — a public blockchain platform where investors back missions through tradable tokens.
+            Fund requests pay for developer time and are voted on transparently by token holders. No
+            equity required.
+          </p>
+
+          <div class="singularity-metrics" aria-label="Project metrics">
+            <div class="metric-item">
+              <span class="metric-value">v4.3.0</span>
+              <span class="metric-label">production-ready</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">111</span>
+              <span class="metric-label">modules</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">23</span>
+              <span class="metric-label">pipeline steps</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">100%</span>
+              <span class="metric-label">test coverage</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">90%</span>
+              <span class="metric-label">perf. improvement</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value">MIT</span>
+              <span class="metric-label">open source</span>
+            </div>
+          </div>
+
+          <a
+            href="https://singularity.diy"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-singularity"
+            aria-label="Back ai_workflow on Singularity"
+          >
+            Back this mission on Singularity &rarr;
+          </a>
+
+          <p class="singularity-note">
+            Singularity uses Solana smart contracts and USDC. Investors trade tokens freely — no
+            lock-up, no equity. Every fund request and vote is publicly visible on-chain.
+          </p>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <!-- About -->
+        <article class="section-card" id="about" aria-labelledby="about-heading">
+          <h2 id="about-heading">About</h2>
+          <img src="../images/pic03.jpg" alt="MP Barbosa profile" class="section-img" />
+          <p>
+            Software developer for over 25 years, passionate about technology and always seeking new
+            challenges. Currently exploring AI-assisted development — automating workflows, building
+            JavaScript/TypeScript libraries, and experimenting with geolocation, web scraping, and
+            cloud service integration.
+          </p>
+          <p>
+            Outside of code, I am interested in music — I have a project to compose using Strudel —
+            and I am always working on my English to communicate better with the global developer
+            community.
+          </p>
+          <p>
+            I believe curiosity is the best fuel for continuing to learn, whether discovering a new
+            language, automating a repetitive task, or simply solving an everyday problem with a
+            script.
+          </p>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <!-- Contact -->
+        <article class="section-card" id="contact" aria-labelledby="contact-heading">
+          <h2 id="contact-heading">Contact</h2>
+          <form id="contact-form" class="contact-form" method="post" action="#" novalidate>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="contact-name">Name</label>
+                <input type="text" id="contact-name" name="name" autocomplete="name" required />
+              </div>
+              <div class="form-field">
+                <label for="contact-email">E-mail</label>
+                <input type="email" id="contact-email" name="email" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="contact-message">Message</label>
+              <textarea id="contact-message" name="message" rows="5" required></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Send message</button>
+              <button type="reset" class="btn btn-outlined">Clear</button>
+            </div>
+          </form>
+
+          <ul class="social-icons" aria-label="Social media">
+            <li>
+              <a
+                href="https://x.com/mpb_sp"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X / Twitter profile"
+                ><i class="fab fa-twitter" aria-hidden="true"></i
+              ></a>
+            </li>
+            <li>
+              <a
+                href="https://www.facebook.com/mpbarbosa"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook profile"
+                ><i class="fab fa-facebook-f" aria-hidden="true"></i
+              ></a>
+            </li>
+            <li>
+              <a
+                href="https://www.instagram.com/mpbarbosa1971/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram profile"
+                ><i class="fab fa-instagram" aria-hidden="true"></i
+              ></a>
+            </li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/mpbarbosa/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+                ><i class="fab fa-linkedin" aria-hidden="true"></i
+              ></a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                ><i class="fab fa-github" aria-hidden="true"></i
+              ></a>
+            </li>
+          </ul>
+        </article>
+      </main>
+
+      <!-- Footer -->
+      <footer id="footer" role="contentinfo">
+        <p>
+          &copy; Marcelo Pereira Barbosa &mdash;
+          <a href="../v1/" rel="nofollow">Previous version (v1)</a>
+          &mdash;
+          <a href="../">🇧🇷 Versão em Português</a>
+        </p>
+      </footer>
+    </div>
+
+    <!-- v2 script (no jQuery) -->
+    <script type="module" src="../scripts/v2.js"></script>
+  </body>
+</html>

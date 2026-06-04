@@ -17,6 +17,7 @@ This file provides durable, high-signal guidance for Copilot-assisted developmen
   - `README.md`
   - `CHANGELOG.md`
   - `docs/ARCHITECTURE.md`
+- Deployment helpers are documented in `shell_scripts/README.md`; the staging sync entrypoint is `shell_scripts/sync_to_staging.sh`.
 - Do not duplicate file trees, dependency lists, or command walkthroughs here; link to the above documents as needed.
 
 ## Design Principles

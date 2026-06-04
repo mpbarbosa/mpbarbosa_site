@@ -1,13 +1,5 @@
 /**
- * @jest-environment jsdom
- *
- * NOTE: This test file modifies window.location which triggers jsdom navigation
- * warnings ("Error: Not implemented: navigation"). These are expected and benign.
- * The warnings don't cause test failures - all 97 tests pass successfully.
- *
- * The warnings occur because jsdom doesn't support full navigation, but our tests
- * only need to read location properties, not actually navigate. The warnings can
- * be safely ignored.
+ * @jest-environment node
  */
 
 import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
@@ -20,48 +12,59 @@ const __dirname = dirname(__filename);
 
 // Load and execute the UMD module
 let InitializationUtilities;
-let originalWindow;
-let originalNavigator;
-let originalLocalStorage;
-let originalSessionStorage;
-let originalIndexedDB;
-let originalPerformance;
-let originalConsole;
-let originalFetch;
+let originalGlobals;
+
+const getGlobalDescriptor = (name) => Object.getOwnPropertyDescriptor(globalThis, name);
+
+const setGlobalProperty = (name, value) => {
+  Object.defineProperty(globalThis, name, {
+    configurable: true,
+    writable: true,
+    value,
+  });
+};
+
+const restoreGlobalProperty = (name, descriptor) => {
+  if (descriptor) {
+    Object.defineProperty(globalThis, name, descriptor);
+    return;
+  }
+
+  delete globalThis[name];
+};
+
+const setBrowserLocation = ({ hostname = 'localhost', search = '' } = {}) => {
+  global.window.location = { hostname, search };
+};
 
 beforeEach(() => {
-  // Save originals
-  originalWindow = global.window;
-  originalNavigator = global.navigator;
-  originalLocalStorage = global.localStorage;
-  originalSessionStorage = global.sessionStorage;
-  originalIndexedDB = global.indexedDB;
-  originalPerformance = global.performance;
-  originalConsole = global.console;
-  originalFetch = global.fetch;
+  originalGlobals = {
+    window: getGlobalDescriptor('window'),
+    navigator: getGlobalDescriptor('navigator'),
+    localStorage: getGlobalDescriptor('localStorage'),
+    sessionStorage: getGlobalDescriptor('sessionStorage'),
+    indexedDB: getGlobalDescriptor('indexedDB'),
+    performance: getGlobalDescriptor('performance'),
+    console: getGlobalDescriptor('console'),
+    fetch: getGlobalDescriptor('fetch'),
+  };
 
   // Clear any previous global state
   delete global.InitializationUtilities;
 
   // Set up browser-like environment
-  global.window = global.window || {};
-
-  // Use delete + reassign to avoid jsdom navigation warnings
-  delete global.window.location;
-  global.window.location = {
-    hostname: 'localhost',
-    search: '',
-  };
+  setGlobalProperty('window', {});
+  setBrowserLocation();
 
   global.window.navigator = {
     userAgent: 'Mozilla/5.0 (Test)',
     platform: 'Linux',
   };
   global.window.chrome = {};
-  global.navigator = global.window.navigator;
-  global.localStorage = {};
-  global.sessionStorage = {};
-  global.indexedDB = {};
+  setGlobalProperty('navigator', global.window.navigator);
+  setGlobalProperty('localStorage', {});
+  setGlobalProperty('sessionStorage', {});
+  setGlobalProperty('indexedDB', {});
 
   // Load the UMD module by executing it
   const modulePath = join(__dirname, '../scripts/initialization/InitializationUtilities.js');
@@ -85,21 +88,20 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // Restore originals
-  global.window = originalWindow;
-  global.navigator = originalNavigator;
-  global.localStorage = originalLocalStorage;
-  global.sessionStorage = originalSessionStorage;
-  global.indexedDB = originalIndexedDB;
-  global.performance = originalPerformance;
-  global.console = originalConsole;
-  global.fetch = originalFetch;
-
   // Clear global state
   delete global.InitializationUtilities;
   if (global.window) {
     delete global.window.InitializationUtilities;
   }
+
+  restoreGlobalProperty('window', originalGlobals.window);
+  restoreGlobalProperty('navigator', originalGlobals.navigator);
+  restoreGlobalProperty('localStorage', originalGlobals.localStorage);
+  restoreGlobalProperty('sessionStorage', originalGlobals.sessionStorage);
+  restoreGlobalProperty('indexedDB', originalGlobals.indexedDB);
+  restoreGlobalProperty('performance', originalGlobals.performance);
+  restoreGlobalProperty('console', originalGlobals.console);
+  restoreGlobalProperty('fetch', originalGlobals.fetch);
 
   // Clear all mocks
   jest.clearAllMocks();
@@ -173,9 +175,7 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect 127.0.0.1 as localhost', () => {
-      // Mock location object for jsdom compatibility
-      delete global.window.location;
-      global.window.location = { hostname: '127.0.0.1', search: '' };
+      setBrowserLocation({ hostname: '127.0.0.1' });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 
@@ -184,9 +184,7 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect 192.168.x.x as local network', () => {
-      // Mock location object for jsdom compatibility
-      delete global.window.location;
-      global.window.location = { hostname: '192.168.1.100', search: '' };
+      setBrowserLocation({ hostname: '192.168.1.100' });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 
@@ -195,11 +193,10 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect debug URL parameters', () => {
-      delete global.window.location;
-      global.window.location = {
+      setBrowserLocation({
         hostname: 'localhost',
         search: '?debug=true',
-      };
+      });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 
@@ -208,11 +205,10 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect dev URL parameter', () => {
-      delete global.window.location;
-      global.window.location = {
+      setBrowserLocation({
         hostname: 'localhost',
         search: '?dev=1',
-      };
+      });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 
@@ -221,11 +217,10 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect development URL parameter', () => {
-      delete global.window.location;
-      global.window.location = {
+      setBrowserLocation({
         hostname: 'localhost',
         search: '?development=true',
-      };
+      });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 
@@ -234,11 +229,9 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect test hostname', () => {
-      delete global.window.location;
-      global.window.location = {
+      setBrowserLocation({
         hostname: 'test.example.com',
-        search: '',
-      };
+      });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 
@@ -247,11 +240,9 @@ describe('InitializationUtilities - Environment Detection', () => {
     });
 
     test('should detect dev hostname', () => {
-      delete global.window.location;
-      global.window.location = {
+      setBrowserLocation({
         hostname: 'dev.example.com',
-        search: '',
-      };
+      });
 
       const devEnv = InitializationUtilities.detectDevelopmentEnvironment();
 

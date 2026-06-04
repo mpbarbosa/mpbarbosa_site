@@ -34,7 +34,8 @@ For more detailed setup, see [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
 ## Usage
 - Edit content in the `src/` directory to update portfolio sections.
 - Add or update projects and skills as needed.
-- For deployment instructions, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) if available.
+- Use `shell_scripts/sync_to_staging.sh` when you need the repository's staging sync helper.
+- For the deployment workflow and related helper scripts, see [shell_scripts/README.md](shell_scripts/README.md).
 
 ## Contributing
 Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines on submitting issues and pull requests.
