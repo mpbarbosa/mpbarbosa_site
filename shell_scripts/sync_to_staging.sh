@@ -510,6 +510,12 @@ copy_llms_files() {
     copy_single_file "$SOURCE_DIR/llms-full.txt" "$STAGING_DIR/llms-full.txt" "llms-full.txt" "false"
 }
 
+# Copy pages/ redirect stubs (music-in-numbers.html, guia-turistico.html, monitora-vagas.html)
+copy_pages_folder() {
+    print_step "Copying pages/ redirect stubs"
+    copy_directory "$SOURCE_DIR/pages" "$STAGING_DIR/pages" "Pages redirect stubs" "*.html" "false"
+}
+
 # Copy v1/ legacy archived site
 copy_v1_folder() {
     print_step "Copying v1/ legacy archive"
@@ -1610,6 +1616,7 @@ execute_step_1() {
     copy_favicon
     copy_en_page
     copy_llms_files
+    copy_pages_folder
     copy_v1_folder
     copy_sass_assets
     copy_webfonts
