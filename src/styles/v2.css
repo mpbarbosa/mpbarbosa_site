@@ -34,6 +34,19 @@
   --grid-color: rgba(255, 255, 255, 0.03);
 }
 
+/* ── Accessibility ────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── Reset ────────────────────────────────────────────────── */
 *,
 *::before,
@@ -56,12 +69,12 @@ html {
 }
 @media (max-width: 736px) {
   html {
-    font-size: 11px;
+    font-size: 13px;
   }
 }
 @media (max-width: 360px) {
   html {
-    font-size: 10px;
+    font-size: 13px;
   }
 }
 
@@ -361,6 +374,13 @@ body {
   text-underline-offset: 3px;
 }
 
+.project-desc {
+  margin-top: var(--space-xs);
+  font-size: 0.85rem;
+  color: rgba(196, 199, 200, 0.65);
+  line-height: 1.5;
+}
+
 /* ── Tooltip image ────────────────────────────────────────── */
 .img-tooltip {
   position: relative;
@@ -548,7 +568,7 @@ body {
 /* ── Footer ───────────────────────────────────────────────── */
 #footer {
   text-align: center;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.75rem;
   padding: var(--space-lg) var(--space-xl);
   letter-spacing: 0.08em;
@@ -557,7 +577,7 @@ body {
 }
 
 #footer a {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.55);
   text-decoration: none;
 }
 

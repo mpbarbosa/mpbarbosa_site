@@ -49,8 +49,8 @@
         <nav role="navigation" aria-label="Navegação principal">
           <a href="#intro">Intro</a>
           <a href="#projetos">Projetos</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+          <a href="#about">Sobre</a>
+          <a href="#contact">Contato</a>
           <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
             >GitHub</a
           >
@@ -65,14 +65,11 @@
 
       <!-- Main -->
       <main id="main" role="main">
+        <h1 class="sr-only">Marcelo Pereira Barbosa — Desenvolvedor de Software</h1>
         <!-- Intro -->
         <article class="section-card" id="intro" aria-labelledby="intro-heading">
           <h2 id="intro-heading">Intro</h2>
-          <img
-            src="images/pic01.jpg"
-            alt="Ilustração de tecnologia e desenvolvimento de software"
-            class="section-img"
-          />
+          <img src="images/pic01.jpg" alt="" role="presentation" class="section-img" />
           <p>
             Depois de 25 anos de experiência em desenvolvimento de software, decidi criar este site
             para compartilhar meus projetos e interesses.
@@ -80,9 +77,9 @@
           <p>
             Nesse momento, estou explorando o desenvolvimento assistido por IA com GitHub Copilot,
             Claude Code, Cursor e Google Stitch, descobrindo utilidades e possibilidades dessa
-            tecnologia. Desde desenvolver em ambientes que domino a me arriscar a escrever prompts
-            em tecnologias que não conheço, estou me desafiando a aprender mais e a me adaptar a
-            novas ferramentas.
+            tecnologia. Desenvolvo em ambientes que já domino, mas também me arrisco a escrever
+            prompts em tecnologias que não conheço. É um desafio constante de aprendizado e
+            adaptação.
           </p>
           <p>
             Aliás, este texto foi escrito com a ajuda do GitHub Copilot. Algo que, antes de começar
@@ -170,16 +167,16 @@
               opacity="0.1"
             />
           </svg>
-          <img
-            src="images/pic02.jpg"
-            alt="Vitrine de projetos desenvolvidos com IA"
-            class="section-img"
-          />
+          <img src="images/pic02.jpg" alt="" role="presentation" class="section-img" />
           <p>Projetos desenvolvidos através de prompts de IA (GitHub Copilot).</p>
           <ul class="project-list" role="list">
             <li>
               <a href="guia_js/" target="_blank" rel="noopener noreferrer">Onde Estou?</a>
               — Geolocalização em tempo real
+              <p class="project-desc">
+                Mostra sua posição atual no mapa usando a API de Geolocalização do navegador, sem
+                instalação.
+              </p>
             </li>
             <li>
               <span class="img-tooltip" tabindex="0"
@@ -191,8 +188,11 @@
                   />
                 </span>
               </span>
-              — Automação de fluxo de prompts de IA para análise de qualidade de código, geração de
-              documentação e testes
+              — Automação de prompts de IA
+              <p class="project-desc">
+                Orquestra sequências de prompts de IA para automatizar revisão de código, geração de
+                documentação e criação de testes.
+              </p>
             </li>
             <li>
               <a
@@ -202,6 +202,10 @@
                 >Scripts de automação</a
               >
               — Scripts utilitários no GitHub
+              <p class="project-desc">
+                Coleção de scripts utilitários para tarefas do dia a dia de desenvolvimento,
+                disponíveis no GitHub.
+              </p>
             </li>
             <li>
               <a
@@ -211,16 +215,27 @@
                 >Music in Numbers</a
               >
               — Análise de dados Spotify
+              <p class="project-desc">
+                Visualiza e analisa seu histórico de streaming do Spotify com gráficos e
+                estatísticas.
+              </p>
             </li>
             <li>
               <a href="monitora_vagas/public/" target="_blank" rel="noopener noreferrer"
                 >Monitora Vagas</a
               >
               — Monitoramento de vagas hoteleiras
+              <p class="project-desc">
+                Monitora a disponibilidade de vagas hoteleiras e notifica quando surgem aberturas.
+              </p>
             </li>
             <li>
               <a href="mapasp/" target="_blank" rel="noopener noreferrer">MapaSP</a>
               — Mapa interativo de São Paulo
+              <p class="project-desc">
+                Mapa interativo da cidade de São Paulo com pontos de interesse e navegação por
+                bairros.
+              </p>
             </li>
           </ul>
         </article>
@@ -229,8 +244,8 @@
 
         <!-- About -->
         <article class="section-card" id="about" aria-labelledby="about-heading">
-          <h2 id="about-heading">About</h2>
-          <img src="images/pic03.jpg" alt="Perfil e background de MP Barbosa" class="section-img" />
+          <h2 id="about-heading">Sobre</h2>
+          <img src="images/pic03.jpg" alt="Foto de Marcelo Pereira Barbosa" class="section-img" />
           <p>
             Desenvolvedor de software há mais de 25 anos, apaixonado por tecnologia e sempre em
             busca de novos desafios. Atualmente exploro o desenvolvimento assistido por IA —
@@ -253,7 +268,7 @@
 
         <!-- Contact -->
         <article class="section-card" id="contact" aria-labelledby="contact-heading">
-          <h2 id="contact-heading">Contact</h2>
+          <h2 id="contact-heading">Contato</h2>
           <div data-fs-success>
             <p style="text-align: center; font-weight: 500; padding: 2rem 0">
               Obrigado pela mensagem! Entrarei em contato em breve.
@@ -367,6 +382,7 @@
         <p>
           &copy; Marcelo Pereira Barbosa &mdash;
           <a href="v1/" rel="nofollow">Versão anterior (v1)</a>
+          &mdash; v1.1.15
         </p>
       </footer>
     </div>
