@@ -325,6 +325,28 @@ body {
   overflow: visible;
 }
 
+/* ── Photo strip (horizontal row of profile images) ──────── */
+.photo-strip {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.photo-strip .section-img {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  margin-bottom: 0;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
+
+@media (max-width: 480px) {
+  .photo-strip {
+    gap: var(--space-xs);
+  }
+}
+
 /* ── Body text ────────────────────────────────────────────── */
 .section-card p {
   color: var(--color-surface-var);
