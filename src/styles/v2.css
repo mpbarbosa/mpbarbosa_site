@@ -332,6 +332,14 @@ body {
   margin-bottom: var(--space-lg);
 }
 
+.photo-strip > .section-img {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
+
 .photo-figure {
   flex: 1;
   min-width: 0;
@@ -347,13 +355,13 @@ body {
   aspect-ratio: 3 / 4;
 }
 
-.photo-figure figcaption:empty {
-  display: none;
-}
-
 .photo-figure figcaption {
-  text-align: center;
   margin-top: var(--space-xs);
+  font-size: 0.75rem;
+  color: rgba(196, 199, 200, 0.55);
+  line-height: 1.4;
+  text-align: center;
+  font-style: italic;
 }
 
 @media (max-width: 480px) {
