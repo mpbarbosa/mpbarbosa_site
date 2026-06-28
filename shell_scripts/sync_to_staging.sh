@@ -461,6 +461,12 @@ copy_robots_txt() {
     copy_single_file "$SOURCE_DIR/robots.txt" "$STAGING_DIR/robots.txt" "robots.txt" "false"
 }
 
+# Copy ads.txt file (Google AdSense authorized-sellers declaration)
+copy_ads_txt() {
+    print_step "Copying ads.txt"
+    copy_single_file "$SOURCE_DIR/ads.txt" "$STAGING_DIR/ads.txt" "ads.txt" "false"
+}
+
 # Copy humans.txt file
 copy_humans_txt() {
     print_step "Copying humans.txt"
@@ -1608,6 +1614,7 @@ execute_step_1() {
     create_backup
     copy_index_html
     copy_robots_txt
+    copy_ads_txt
     copy_humans_txt
     copy_css_assets
     copy_js_assets

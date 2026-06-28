@@ -84,6 +84,17 @@ describe('Staging content — production readiness', () => {
       expect(fs.existsSync(stagingPath('robots.txt'))).toBe(true);
     });
 
+    test('ads.txt should be present', () => {
+      if (!stagingExists) return;
+      expect(fs.existsSync(stagingPath('ads.txt'))).toBe(true);
+    });
+
+    test('ads.txt should declare the AdSense publisher', () => {
+      if (!stagingExists) return;
+      const content = readStaging('ads.txt');
+      expect(content).toContain('google.com, pub-9509229216258895, DIRECT, f08c47fec0942fa0');
+    });
+
     test('favicon.svg should be present', () => {
       if (!stagingExists) return;
       expect(fs.existsSync(stagingPath('favicon.svg'))).toBe(true);
