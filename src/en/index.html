@@ -106,51 +106,6 @@
     <link rel="stylesheet" href="../styles/v2.css" />
 
     <style>
-      .singularity-metrics {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 1rem;
-        margin: 1.5rem 0;
-      }
-      .metric-item {
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        text-align: center;
-      }
-      .metric-value {
-        display: block;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--accent, #7ecfff);
-      }
-      .metric-label {
-        display: block;
-        font-size: 0.78rem;
-        opacity: 0.7;
-        margin-top: 0.25rem;
-      }
-      .btn-singularity {
-        display: inline-block;
-        margin-top: 1.5rem;
-        padding: 0.85rem 2rem;
-        background: linear-gradient(135deg, #7ecfff 0%, #a78bfa 100%);
-        color: #0a0a0f;
-        font-weight: 700;
-        font-size: 1rem;
-        border-radius: 6px;
-        text-decoration: none;
-        transition: opacity 0.2s;
-      }
-      .btn-singularity:hover {
-        opacity: 0.88;
-      }
-      .singularity-note {
-        margin-top: 1rem;
-        font-size: 0.82rem;
-        opacity: 0.6;
-      }
       .lang-toggle {
         font-size: 0.85rem;
         opacity: 0.75;
@@ -177,7 +132,6 @@
           <a href="#intro">Intro</a>
           <a href="#experience">Experience</a>
           <a href="#projects">Projects</a>
-          <a href="#singularity">Invest</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
           <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
@@ -552,69 +506,6 @@
 
         <div class="connector" aria-hidden="true"></div>
 
-        <!-- Singularity -->
-        <article class="section-card" id="singularity" aria-labelledby="singularity-heading">
-          <h2 id="singularity-heading">Back this mission</h2>
-          <p>
-            <strong>ai_workflow</strong> is building the automation layer that makes AI-assisted
-            development reliable — so teams can trust what any AI coding tool generates before it
-            ships.
-          </p>
-          <p>
-            The mission is funded through
-            <a href="https://singularity.diy" target="_blank" rel="noopener noreferrer"
-              >Singularity</a
-            >
-            — a public blockchain platform where investors back missions through tradable tokens.
-            Fund requests pay for developer time and are voted on transparently by token holders. No
-            equity required.
-          </p>
-
-          <div class="singularity-metrics" aria-label="Project metrics">
-            <div class="metric-item">
-              <span class="metric-value">v4.3.0</span>
-              <span class="metric-label">production-ready</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-value">111</span>
-              <span class="metric-label">modules</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-value">23</span>
-              <span class="metric-label">pipeline steps</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-value">100%</span>
-              <span class="metric-label">test coverage</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-value">90%</span>
-              <span class="metric-label">perf. improvement</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-value">MIT</span>
-              <span class="metric-label">open source</span>
-            </div>
-          </div>
-
-          <a
-            href="https://singularity.diy"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-singularity"
-            aria-label="Back ai_workflow on Singularity"
-          >
-            Back this mission on Singularity &rarr;
-          </a>
-
-          <p class="singularity-note">
-            Singularity uses Solana smart contracts and USDC. Investors trade tokens freely — no
-            lock-up, no equity. Every fund request and vote is publicly visible on-chain.
-          </p>
-        </article>
-
-        <div class="connector" aria-hidden="true"></div>
-
         <!-- About -->
         <article class="section-card" id="about" aria-labelledby="about-heading">
           <h2 id="about-heading">About</h2>
@@ -777,6 +668,8 @@
         <p>
           &copy; Marcelo Pereira Barbosa &mdash;
           <a href="../v1/" rel="nofollow">Previous version (v1)</a>
+          &mdash;
+          <a href="singularity/">Back ai_workflow on Singularity</a>
           &mdash;
           <a href="../">🇧🇷 Versão em Português</a>
           &mdash; v1.1.18
