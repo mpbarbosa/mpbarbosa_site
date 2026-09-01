@@ -248,6 +248,111 @@ body {
   bottom: -2px;
 }
 
+/* ── Hero (positioning block) ─────────────────────────────── */
+.hero {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-border-hover);
+  border-radius: var(--round-sm);
+  padding: var(--space-xxl);
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-primary);
+}
+
+.hero-role {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-surface-var);
+  margin-top: var(--space-xs);
+}
+
+.hero-pitch {
+  margin-top: var(--space-lg);
+  max-width: 62ch;
+}
+
+.hero-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-lg);
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-border-hover);
+  border-radius: var(--round-xs);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.hero-availability::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6ee7a0;
+  flex-shrink: 0;
+}
+
+.hero-shipped {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.hero-shipped li {
+  border: 1px solid var(--color-border);
+  border-radius: var(--round-xs);
+  padding: var(--space-md);
+}
+
+.hero-shipped a {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-border-hover);
+}
+
+.hero-shipped a:hover,
+.hero-shipped a:focus-visible {
+  border-bottom-color: var(--color-primary);
+}
+
+.hero-shipped span {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-surface-var);
+  margin-top: var(--space-xs);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .hero-name {
+    font-size: 1.6rem;
+  }
+}
+
 /* ── Section cards ────────────────────────────────────────── */
 .section-card {
   background: var(--color-surface);
