@@ -261,7 +261,7 @@
 
         <!-- Projetos -->
         <article class="section-card" id="projetos" aria-labelledby="projetos-heading">
-          <h2 id="projetos-heading">Projetos (IA)</h2>
+          <h2 id="projetos-heading">Projetos</h2>
           <svg class="card-decoration" viewBox="0 0 300 60" aria-hidden="true" focusable="false">
             <!-- Latent space / kernel map abstract visualization -->
             <circle cx="20" cy="30" r="2" opacity="0.3" />
@@ -337,8 +337,87 @@
             />
           </svg>
           <img src="images/pic02.jpg" alt="" role="presentation" class="section-img" />
-          <p>Projetos desenvolvidos através de prompts de IA (GitHub Copilot).</p>
+          <p>
+            Software construído dirigindo agentes de código — Claude Code, GitHub Copilot e Cursor.
+            A arquitetura, os critérios de aceite e a verificação antes da produção são meus.
+          </p>
+
+          <h3 class="project-group-title">Em produção</h3>
           <ul class="project-list" role="list">
+            <li>
+              <a href="https://brasileirao.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Portal Brasileirão</a
+              >
+              — Companion do Campeonato Brasileiro Série A
+              <p class="project-desc">
+                Acompanhamento de tabela, jogos e estatísticas da Série A. Login OAuth, tokens
+                Material Design 3 e endpoint <code>/api/health</code> no ar. Sete workflows de
+                GitHub Actions, incluindo rollback, com um drill de flip-back documentado, e deploy
+                keyless via OIDC. Quando não há token da API disponível, o app cai para um snapshot
+                congelado em vez de quebrar.
+                <span class="project-meta"
+                  >React 19 · TypeScript · Express 5 · Tailwind 4 · AWS · 45 testes unitários e 30
+                  specs Playwright ponta a ponta · 742 commits em nove dias (23–31 de agosto de
+                  2026)</span
+                >
+              </p>
+            </li>
+            <li>
+              <a href="https://copa2026.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Agora na Copa 2026</a
+              >
+              — Companion da Copa do Mundo FIFA 2026
+              <p class="project-desc">
+                Simulador de Monte Carlo das chances de classificação, com modelo Dixon-Coles e os
+                critérios de desempate do Art. 13 do regulamento da FIFA implementados na ordem
+                correta. Integrações externas (FIFA API, Open-Meteo, Google Trends) têm fallback
+                próprio. Servido por nginx e systemd.
+                <span class="project-meta"
+                  >React 19 · TypeScript · Express · AWS · 34 testes unitários e 37 specs Playwright
+                  ponta a ponta · 1.279 commits</span
+                >
+              </p>
+            </li>
+          </ul>
+
+          <h3 class="project-group-title">Experimentos e ferramentas</h3>
+          <ul class="project-list" role="list">
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/ai_workflow"
+                target="_blank"
+                rel="noopener noreferrer"
+                >ai_workflow</a
+              >
+              — Pipeline de verificação para desenvolvimento assistido por IA
+              <p class="project-desc">
+                Automatiza a etapa que costuma ficar de fora: tornar verificável o que um agente de
+                código gerou, antes de ir para produção — revisão, documentação e testes.
+              </p>
+            </li>
+            <li>
+              <a href="https://github.com/mpbarbosa/gitx" target="_blank" rel="noopener noreferrer"
+                >gitx</a
+              >
+              — TUI de Git integrada via MCP
+              <p class="project-desc">
+                Interface de terminal para comandos Git, integrada a assistentes por Model Context
+                Protocol (MCP).
+              </p>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/olinda_copilot_sdk.ts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >olinda_copilot_sdk.ts</a
+              >
+              — Wrapper TypeScript do GitHub Copilot SDK
+              <p class="project-desc">
+                Camada em TypeScript sobre o SDK do GitHub Copilot para uso programático em
+                ferramentas próprias.
+              </p>
+            </li>
             <li>
               <a href="guia_js/" target="_blank" rel="noopener noreferrer">Onde Estou?</a>
               — Geolocalização em tempo real
@@ -348,32 +427,11 @@
               </p>
             </li>
             <li>
-              <span class="img-tooltip" tabindex="0"
-                >AI_WORKFLOW.JS
-                <span class="tooltip-img" role="tooltip">
-                  <img
-                    src="images/Screenshot From 2026-03-07 16-55-20.png"
-                    alt="Captura de tela do AI Workflow"
-                  />
-                </span>
-              </span>
-              — Automação de prompts de IA
+              <a href="mapasp/" target="_blank" rel="noopener noreferrer">MapaSP</a>
+              — Mapa interativo de São Paulo
               <p class="project-desc">
-                Orquestra sequências de prompts de IA para automatizar revisão de código, geração de
-                documentação e criação de testes.
-              </p>
-            </li>
-            <li>
-              <a
-                href="https://github.com/mpbarbosa/mpb_scripts"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Scripts de automação</a
-              >
-              — Scripts utilitários no GitHub
-              <p class="project-desc">
-                Coleção de scripts utilitários para tarefas do dia a dia de desenvolvimento,
-                disponíveis no GitHub.
+                Mapa interativo da cidade de São Paulo com pontos de interesse e navegação por
+                bairros.
               </p>
             </li>
             <li>
@@ -399,24 +457,52 @@
               </p>
             </li>
             <li>
-              <a href="mapasp/" target="_blank" rel="noopener noreferrer">MapaSP</a>
-              — Mapa interativo de São Paulo
+              Bibliotecas publicadas no npm —
+              <a
+                href="https://github.com/mpbarbosa/bessa_patterns.ts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >bessa_patterns.ts</a
+              >,
+              <a
+                href="https://github.com/mpbarbosa/ibira.js"
+                target="_blank"
+                rel="noopener noreferrer"
+                >ibira.js</a
+              >
+              e
+              <a
+                href="https://github.com/mpbarbosa/paraty_geocore.js"
+                target="_blank"
+                rel="noopener noreferrer"
+                >paraty_geocore.js</a
+              >
               <p class="project-desc">
-                Mapa interativo da cidade de São Paulo com pontos de interesse e navegação por
-                bairros.
+                Três pacotes publicados no registro do npm, ainda em versões iniciais.
               </p>
             </li>
             <li>
-              <a href="https://copa2026.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
-                >Agora na Copa 2026</a
+              <a
+                href="https://github.com/mpbarbosa/mpb_scripts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Scripts de automação</a
               >
-              — Acompanhamento da Copa do Mundo 2026
+              — Scripts utilitários no GitHub
               <p class="project-desc">
-                Previsões e análises de partidas da Copa do Mundo 2026 geradas por IA, com chat
-                tático interativo.
+                Coleção de scripts utilitários para tarefas do dia a dia de desenvolvimento,
+                disponíveis no GitHub.
               </p>
             </li>
           </ul>
+
+          <p>
+            O
+            <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
+              >portfólio público no GitHub</a
+            >
+            reúne mais de 50 repositórios não-fork.
+          </p>
         </article>
 
         <div class="connector" aria-hidden="true"></div>
