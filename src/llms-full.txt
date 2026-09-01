@@ -4,78 +4,149 @@
 
 **Name**: Marcelo Pereira Barbosa
 **Handle**: mpbarbosa / mpb
+**Role**: Solutions Consultant and Engineer
 **Location**: São Paulo, Brazil
-**Experience**: 25+ years in software development
-**Languages**: Portuguese (native), English (professional)
+**Experience**: 26 years — 15 as Senior Developer, around 10 as Consultant
+**Education**: Universidade Presbiteriana Mackenzie
+**Languages**: Portuguese (native), English
 **GitHub**: https://github.com/mpbarbosa
 **LinkedIn**: https://www.linkedin.com/in/mpbarbosa/
 **X / Twitter**: https://x.com/mpb_sp
 **Instagram**: https://www.instagram.com/mpbarbosa1971/
 **Facebook**: https://www.facebook.com/mpbarbosa
 
-## Focus areas
+## Availability
 
-- AI-assisted development tooling (primary focus)
-- JavaScript / TypeScript libraries and automation
-- Geolocation and mapping applications
-- Shell scripting and Linux automation
-- Music technology (Strudel live coding)
+**Open to senior positions.** Software engineering, data engineering, billing and revenue
+assurance. Based in São Paulo, Brazil — on-site, hybrid or remote.
+
+- Contact form: https://mpbarbosa.com/#contact
+- Resume (PDF): https://mpbarbosa.com/cv/
+- LinkedIn: https://www.linkedin.com/in/mpbarbosa/
+
+## Positioning
+
+Two skill sets that rarely appear in the same person:
+
+1. **Domain depth in billing and reconciliation.** 26 years on telecom billing systems, where
+   correctness is the product — an error is an incorrect charge or an incorrect tax filing, not
+   a cosmetic defect.
+2. **Current delivery capability.** Two products shipped to production over the past year,
+   built by directing AI coding agents, with unit tests, end-to-end Playwright specs and deploy
+   pipelines that include a rehearsed rollback.
+
+## Areas of expertise
+
+- Telecom billing and invoicing
+- Tax, accounting and financial reconciliation
+- Revenue assurance
+- Payments and card acquiring
+- Regulated industries (telecom, healthcare)
+- Oracle, PL/SQL, SQL
+- Data warehousing and data migration
+- BigQuery
+- Java, Smalltalk
+- AI-assisted development and AI coding agents (Claude Code, GitHub Copilot, Cursor)
+- Model Context Protocol (MCP)
+- React, TypeScript, Node.js
 
 ---
 
-## Flagship mission: ai_workflow
+## Career
 
-**Mission statement**: ai_workflow is building the automation layer that makes AI-assisted development reliable — so teams can trust what any AI coding tool generates before it ships.
+### Objective Solutions — March 1999 to December 2023
 
-**Repository**: https://github.com/mpbarbosa/ai_workflow
-**Version**: v4.3.0
+26 years: 15 as Senior Developer (Smalltalk, Java, PL/SQL on Oracle) and around 10 as Consultant.
+
+- **Telecom billing**: development and maintenance of the Diginet product and its successor,
+  Objective NG.
+- **Data warehouses**: built the Billing and Tax data warehouses in PL/SQL.
+- **Reconciliation consulting**: tax, accounting and financial reconciliation, including
+  credit-card reconciliation for Adiq, a card acquirer.
+- **Healthcare**: focal point for medical claims at PreventSenior.
+- **Data migrations**: four end-to-end migrations — Oi Cabo (100,000 subscribers), Compuserve
+  (35,000), On (10,000), Netserv (10,000).
+- **Sky**: when Sky moved off Diginet, the client's own migration team asked for him to produce
+  the reports covering their 1 million subscriber base.
+- **Named clients**: Sky, Telefônica/Vivo, HughesNet, Netserv, PreventSenior.
+
+### Eleflow — 2024 to 2025
+
+Senior Data Analyst. Oracle to BigQuery data migration.
+
+---
+
+## Products in production
+
+### Portal Brasileirão
+
+**URL**: https://brasileirao.mpbarbosa.com
+**Repo**: https://github.com/mpbarbosa/portal_brasileirao
+Companion app for the Brazilian Série A championship.
+
+- Stack: React 19, TypeScript, Express 5, Tailwind 4, AWS
+- 45 unit tests, 30 end-to-end Playwright specs
+- 742 commits over nine days (23–31 August 2026)
+- 7 GitHub Actions workflows including rollback, with a documented flip-back drill
+- Keyless deploys over OIDC; OAuth login; Material Design 3 tokens
+- Live `/api/health` endpoint
+- Falls back to a frozen snapshot when no API token is available
+
+### Agora na Copa 2026
+
+**URL**: https://copa2026.mpbarbosa.com
+**Repo**: https://github.com/mpbarbosa/agora_na_copa_2026
+Companion app for the FIFA World Cup 2026.
+
+- Stack: React 19, TypeScript, Express, AWS
+- 34 unit tests, 37 end-to-end Playwright specs
+- 1,279 commits
+- Monte Carlo qualification simulator using a Dixon-Coles model, applying the Article 13 FIFA
+  tie-breaking criteria in the correct order
+- External integrations with per-integration fallbacks: FIFA API, Open-Meteo, Google Trends
+- Served by nginx and systemd
+
+---
+
+## Projects and tooling
+
+### ai_workflow
+
+**Repo**: https://github.com/mpbarbosa/ai_workflow
 **License**: MIT
 **Languages**: Bash (orchestration), Node.js (tooling), Python (utilities)
 
-### What it does
+Automation pipeline that makes AI-assisted development verifiable — validating code quality,
+documentation and test coverage so teams can trust what any AI coding tool generates before it
+ships. Supports GitHub Copilot, Cursor, Claude and other AI coding tools.
 
-ai_workflow is a 23-step automated pipeline that validates and enhances code quality, documentation, and test coverage across software projects. It integrates with all major AI coding tools through a modular AI personas system, making AI-generated output trustworthy before it ships.
+The mission is separately seeking public investment on Singularity; that content lives at
+https://mpbarbosa.com/en/singularity/ and is deliberately kept off the hiring pages.
 
-### Key metrics
+### gitx
 
-- 111 total modules: 81 libraries + 22 steps + 4 orchestrators + 4 configs
-- 17 AI personas for specialised validation tasks
-- 23-step pipeline with checkpoint resume
-- 37+ automated tests, 100% test coverage
-- B+ (87/100) code quality score
-- 40–85% faster execution via smart change detection
-- 33% additional speedup via parallel execution
-- 60–80% token reduction via AI response caching
-- Supports: GitHub Copilot, Cursor, Claude, Codeium, Tabnine, and all major AI coding tools
+**Repo**: https://github.com/mpbarbosa/gitx
+TypeScript Ink TUI for git commands, integrated with assistants over the Model Context Protocol.
 
-### Requirements
+### olinda_copilot_sdk.ts
 
-- Bash 4.0+
-- Git
-- Node.js v18+
-- yq (YAML processor)
-- Optional: any compatible AI coding tool CLI (Copilot, Claude, Cursor, etc.)
-
-### Funding
-
-ai_workflow is seeking public investment on Singularity (https://singularity.diy) to fund ongoing developer time.
-Fund requests are voted on by token holders — 4 of 6 top investors must approve each request.
-Investors receive tradable mission tokens; no equity is issued.
-All fund requests and votes are publicly visible on-chain (Solana/USDC).
-
----
-
-## Other projects
+**Repo**: https://github.com/mpbarbosa/olinda_copilot_sdk.ts
+TypeScript wrapper for the GitHub Copilot SDK.
 
 ### Onde Estou?
 
 **URL**: https://mpbarbosa.com/guia_js/
-Real-time geolocation app. Displays user position on a map using the browser Geolocation API. Built with vanilla JavaScript via AI-assisted development.
+Real-time geolocation app. Displays user position on a map using the browser Geolocation API.
+
+### MapaSP
+
+**URL**: https://mpbarbosa.com/mapasp/
+Interactive map of São Paulo.
 
 ### Music in Numbers
 
 **URL**: https://mpbarbosa.com/music_in_numbers/src/music_in_numbers.html
-Spotify listening data analysis tool. Visualises personal music statistics.
+Spotify listening data analysis tool.
 
 ### Monitora Vagas
 
@@ -83,47 +154,25 @@ Spotify listening data analysis tool. Visualises personal music statistics.
 **Repo**: https://github.com/mpbarbosa/monitora_vagas
 Hotel vacancy monitoring web app for AFPESP union members.
 
-### MapaSP
-
-**URL**: https://mpbarbosa.com/mapasp/
-Interactive map of São Paulo built with AI-assisted development.
-
 ### mpb_scripts
 
 **Repo**: https://github.com/mpbarbosa/mpb_scripts
 Collection of Linux shell utility scripts for automation tasks.
 
-### ibira.js
+### Published npm packages
 
-**Repo**: https://github.com/mpbarbosa/ibira.js
-Public JavaScript library for basic API fetch operations.
+Published to the npm registry, at early versions:
 
-### olinda libraries (TypeScript)
+- **bessa_patterns.ts** (https://github.com/mpbarbosa/bessa_patterns.ts): Reusable programming
+  patterns in TypeScript
+- **ibira.js** (https://github.com/mpbarbosa/ibira.js): Basic API fetch operations
+- **paraty_geocore.js** (https://github.com/mpbarbosa/paraty_geocore.js): Core classes for
+  geolocation applications
 
-- **olinda_utils.js** (https://github.com/mpbarbosa/olinda_utils.js): General utility functions
-- **olinda_shell_interface.js** (https://github.com/mpbarbosa/olinda_shell_interface.js): Linux shell command interface library
-- **olinda_orchestrator** (https://github.com/mpbarbosa/olinda_orchestrator): Generic TypeScript orchestrator
-- **olinda_copilot_sdk.ts** (https://github.com/mpbarbosa/olinda_copilot_sdk.ts): GitHub Copilot SDK wrapper
+### Other public repositories
 
-### paraty_geocore.js
-
-**Repo**: https://github.com/mpbarbosa/paraty_geocore.js
-JavaScript core classes for geolocation applications.
-
-### pajussara_tui_comp
-
-**Repo**: https://github.com/mpbarbosa/pajussara_tui_comp
-Ink TUI component library in TypeScript.
-
-### gitx
-
-**Repo**: https://github.com/mpbarbosa/gitx
-TypeScript Ink TUI app for git commands with MCP integration.
-
-### bessa_patterns.ts
-
-**Repo**: https://github.com/mpbarbosa/bessa_patterns.ts
-Library of reusable programming patterns in TypeScript.
+More than 50 non-fork repositories at https://github.com/mpbarbosa, including
+olinda_utils.js, olinda_shell_interface.js, olinda_orchestrator and pajussara_tui_comp.
 
 ---
 
@@ -132,7 +181,9 @@ Library of reusable programming patterns in TypeScript.
 | Path | Description |
 |---|---|
 | `/` | Portuguese portfolio (primary, pt-BR) |
-| `/en/` | English portfolio (investor-facing, includes Singularity section) |
+| `/en/` | English portfolio, mirrors the Portuguese one |
+| `/en/singularity/` | ai_workflow fundraising page (Singularity mission) |
+| `/cv/` | Resume PDF at a stable URL |
 | `/llms.txt` | Concise LLM-readable site summary (this domain's llmstxt.org entry) |
 | `/llms-full.txt` | Complete structured context for AI agents |
 | `/v1/` | Archived previous site version (HTML5 UP Dimension template) |
@@ -142,7 +193,8 @@ Library of reusable programming patterns in TypeScript.
 
 ## Contact
 
+- Contact form: https://mpbarbosa.com/#contact
 - GitHub: https://github.com/mpbarbosa
 - LinkedIn: https://www.linkedin.com/in/mpbarbosa/
 - X / Twitter: https://x.com/mpb_sp
-- English investor page: https://mpbarbosa.com/en/
+- English portfolio: https://mpbarbosa.com/en/
