@@ -262,8 +262,11 @@ describe('Responsive Design', () => {
     const noscript = document.querySelector('noscript');
 
     if (noscript) {
+      // v2 loads Font Awesome non-blocking (media="print" + onload swap), so the
+      // noscript block is what restores it when JS/onload never runs.
       const content = noscript.textContent || noscript.innerHTML;
-      expect(content).toContain('noscript.css');
+      expect(content).toMatch(/<link[^>]+rel="stylesheet"/i);
+      expect(content).toContain('fontawesome-all.min.css');
     }
   });
 });

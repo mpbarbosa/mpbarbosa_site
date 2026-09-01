@@ -4,24 +4,29 @@
  */
 
 // ── Background image rotation ─────────────────────────────────────────────
+// Root-absolute so the list also resolves from /en/ and /en/singularity/,
+// which load this module as ../scripts/v2.js.
+// Pre-processed for the way #bg actually renders them: grayscale, 6% opacity,
+// 40% brightness. Downscaled grayscale WebP is indistinguishable at that
+// treatment and ~6x lighter than the original phone JPEGs.
 const BG_IMAGES = [
-  'images/bg.jpg',
-  'images/IMG_20241013_153839.jpg',
-  'images/IMG_20241013_161000.jpg',
-  'images/IMG_20241208_191404.jpg',
-  'images/IMG_20250222_182439.jpg',
-  'images/IMG_20250222_182628.jpg',
-  'images/IMG_20250301_190856~2.jpg',
-  'images/IMG_20250303_165100.jpg',
-  'images/IMG_20250421_145915.jpg',
-  'images/IMG_20250709_114400.jpg',
-  'images/IMG_20250709_165455.jpg',
-  'images/IMG_20250709_165515.jpg',
-  'images/IMG_20250709_165645.jpg',
-  'images/IMG_20250709_165903.jpg',
-  'images/pic01.jpg',
-  'images/pic02.jpg',
-  'images/pic03.jpg',
+  '/images/bg/bg.webp',
+  '/images/bg/IMG_20241013_153839.webp',
+  '/images/bg/IMG_20241013_161000.webp',
+  '/images/bg/IMG_20241208_191404.webp',
+  '/images/bg/IMG_20250222_182439.webp',
+  '/images/bg/IMG_20250222_182628.webp',
+  '/images/bg/IMG_20250301_190856~2.webp',
+  '/images/bg/IMG_20250303_165100.webp',
+  '/images/bg/IMG_20250421_145915.webp',
+  '/images/bg/IMG_20250709_114400.webp',
+  '/images/bg/IMG_20250709_165455.webp',
+  '/images/bg/IMG_20250709_165515.webp',
+  '/images/bg/IMG_20250709_165645.webp',
+  '/images/bg/IMG_20250709_165903.webp',
+  '/images/bg/pic01.webp',
+  '/images/bg/pic02.webp',
+  '/images/bg/pic03.webp',
 ];
 
 function setRandomBackground() {

@@ -3,3 +3,12 @@
 # Allow crawling of all content
 User-agent: *
 Disallow:
+
+# Build/report output that must never be indexed if it ever reaches the server.
+# (Pages that are meant to stay out of the index carry <meta name="robots"
+# content="noindex"> instead, so crawlers can still see and honour the tag.)
+Disallow: /coverage/
+Disallow: /node_modules/
+Disallow: /__tests__/
+
+Sitemap: https://mpbarbosa.com/sitemap.xml

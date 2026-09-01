@@ -471,6 +471,10 @@ body {
 /* ── Section image ────────────────────────────────────────── */
 .section-img {
   width: 100%;
+  /* The intrinsic width/height attributes on these <img> tags reserve layout
+     space (no CLS) but are only a presentational hint; height:auto hands sizing
+     back to CSS so the aspect-ratio rules below keep driving the box. */
+  height: auto;
   border-radius: var(--round-xs);
   margin-bottom: var(--space-lg);
   display: block;
