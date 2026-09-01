@@ -14,7 +14,7 @@ npm run test:unit         # unit project: main.test.js, InitializationUtilities.
 npm run test:integration  # integration project: html_functionality, project_navigation, shell_integration
 npm run test:shell        # shell-scripts project: shell_scripts, sync_to_public, staging_content
 npm run test:docs         # documentation project
-npm run test:a11y         # accessibility project (jsdom + axe-core, accessibility.test.mjs)
+npm run test:a11y         # accessibility project (real Chrome via puppeteer + axe-core) — needs `npm start` on :8080
 npm run test:pa11y        # pa11y audit via headless browser — needs `npm start` running on :8080 first
 npm run test:coverage     # with coverage report
 npm run test:watch        # watch mode
@@ -140,6 +140,6 @@ does nothing on its own — someone has to run the installer.
 | `sync_to_public.test.js` | shell-scripts | staging sync script |
 | `staging_content.test.js` | shell-scripts | staged content correctness |
 | `documentation.test.js` | documentation | docs file checks |
-| `accessibility.test.mjs` | accessibility | axe-core a11y checks (jsdom) |
+| `accessibility.test.mjs` | accessibility | axe-core a11y checks (puppeteer-driven Chrome) |
 
-The five Jest projects (`unit`, `integration`, `shell-scripts`, `documentation`, `accessibility`) are defined in `src/jest.config.js`; `npm test` runs them all. Tests are ES Modules. The `unit` and `accessibility` projects use a custom jsdom environment (`jest-environment-jsdom-no-warnings.cjs`); `integration`, `shell-scripts`, and `documentation` run in the `node` environment.
+The five Jest projects (`unit`, `integration`, `shell-scripts`, `documentation`, `accessibility`) are defined in `src/jest.config.js`; `npm test` runs them all. Tests are ES Modules. The `unit` project uses a custom jsdom environment (`jest-environment-jsdom-no-warnings.cjs`); `integration`, `shell-scripts`, `documentation`, and `accessibility` run in the `node` environment. `accessibility` must be `node`: it drives a real Chrome through puppeteer, whose `ws` transport refuses to run when jsdom makes the environment look like a browser.
