@@ -1,5 +1,9 @@
 .ai_workflow/
 
+# Local Claude Code config: settings.local.json holds a per-machine
+# permission allowlist, launch.json a local dev-server definition.
+.claude/
+
 # Deprecated directories (migration artifacts)
 public.deprecated/
 
