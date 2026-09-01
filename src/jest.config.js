@@ -100,7 +100,12 @@ export default {
     {
       displayName: 'accessibility',
       testMatch: ['**/__tests__/accessibility.test.mjs'],
-      testEnvironment: '<rootDir>/jest-environment-jsdom-no-warnings.cjs',
+      // Node, not jsdom: this suite drives a real Chrome through puppeteer.
+      // Under jsdom, puppeteer's `ws` dependency sees a browser-like global and
+      // refuses to open the DevTools socket ("ws does not work in the browser"),
+      // so every launch threw and all 8 tests silently no-opped via the
+      // browserAvailable guard.
+      testEnvironment: 'node',
     },
   ],
 

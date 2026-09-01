@@ -56,7 +56,10 @@ jobs:
       
       - name: Run shell script tests
         working-directory: ./src
-        run: npm test -- __tests__/shell_scripts.test.js __tests__/shell_integration.test.js __tests__/sync_to_public.test.js
+        # Invoke jest directly rather than via `npm test`: that script pipes
+        # jest through `grep -v`, so `npm test -- <files>` appends the paths to
+        # grep instead of jest, and the step exits with grep's status (always 0).
+        run: node --experimental-vm-modules node_modules/jest/bin/jest.js __tests__/shell_scripts.test.js __tests__/shell_integration.test.js __tests__/sync_to_public.test.js
         env:
           CI: true
       

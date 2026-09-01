@@ -77,9 +77,24 @@ describe('Accessibility Tests', () => {
     }
     await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
 
+    // An empty alt is correct -- and required -- for decorative images, so long
+    // as they are also hidden from assistive tech via role="presentation"/"none"
+    // or aria-hidden. Only count images that are meant to convey something and
+    // fail to describe it.
     const imagesWithoutAlt = await page.$$eval(
       'img',
-      (imgs) => imgs.filter((img) => !img.alt || img.alt.trim() === '').length,
+      (imgs) =>
+        imgs.filter((img) => {
+          const role = img.getAttribute('role');
+          const decorative =
+            role === 'presentation' ||
+            role === 'none' ||
+            img.getAttribute('aria-hidden') === 'true';
+          if (decorative) {
+            return false;
+          }
+          return !img.alt || img.alt.trim() === '';
+        }).length,
     );
 
     expect(imagesWithoutAlt).toBe(0);
@@ -93,7 +108,8 @@ describe('Accessibility Tests', () => {
 
     // Click contact link to open form
     await page.click('a[href="#contact"]');
-    await page.waitForTimeout(500);
+    // page.waitForTimeout() was removed in puppeteer 22.
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const inputs = await page.$$eval('#contact input[type="text"], #contact textarea', (elements) =>
       elements.map((el) => ({

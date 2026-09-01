@@ -10,7 +10,14 @@ public.deprecated/
 # Node.js dependencies
 node_modules
 node_modules/
-package-lock.json
+
+# Lockfiles are committed: CI runs `npm ci` and actions/setup-node hashes
+# src/package-lock.json for its npm cache, so both need the file in git.
+# The root package.json is a thin `cd src && ...` wrapper with no dependencies;
+# its lockfile is an empty 93-byte stub, so that one stays ignored. The leading
+# slash anchors this to the repo root -- a bare pattern would match at any depth
+# and re-ignore src/package-lock.json.
+/package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
