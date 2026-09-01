@@ -361,6 +361,7 @@ DIRECTORIES:
 FILES TO SYNC:
     - index.html (main landing page)
     - robots.txt (search engine crawler instructions)
+    - sitemap.xml (URL index referenced from robots.txt)
     - humans.txt (team and technology credits)
     - styles/ (v2 CSS: v2.css)
     - scripts/ (v2 JS modules: v2.js)
@@ -460,6 +461,12 @@ copy_index_html() {
 copy_robots_txt() {
     print_step "Copying robots.txt"
     copy_single_file "$SOURCE_DIR/robots.txt" "$STAGING_DIR/robots.txt" "robots.txt" "false"
+}
+
+# Copy sitemap.xml (referenced by the Sitemap: directive in robots.txt)
+copy_sitemap_xml() {
+    print_step "Copying sitemap.xml"
+    copy_single_file "$SOURCE_DIR/sitemap.xml" "$STAGING_DIR/sitemap.xml" "sitemap.xml" "false"
 }
 
 # Copy ads.txt file (Google AdSense authorized-sellers declaration)
@@ -1142,6 +1149,7 @@ validate_sync() {
     local validations=(
         "$STAGING_DIR/index.html|index.html||true"
         "$STAGING_DIR/robots.txt|robots.txt||false"
+        "$STAGING_DIR/sitemap.xml|sitemap.xml||false"
         "$STAGING_DIR/humans.txt|humans.txt||false"
         "$STAGING_DIR/assets/css|CSS assets directory|*.css|false"
         "$STAGING_DIR/assets/js|JavaScript assets directory|*.js|false"
@@ -1621,6 +1629,7 @@ execute_step_1() {
     create_backup
     copy_index_html
     copy_robots_txt
+    copy_sitemap_xml
     copy_ads_txt
     copy_humans_txt
     copy_css_assets
