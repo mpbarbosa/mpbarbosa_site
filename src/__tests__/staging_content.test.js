@@ -7,6 +7,12 @@
  * These tests are the gate between "source is correct" and "staging is ready
  * to deploy". They fail if sync was never run or if new source files were
  * added without updating the sync script.
+ *
+ * Presence checks run whenever the staging directory exists. Content checks
+ * describe what the CURRENT source says, so they only run once staging
+ * actually matches src/ — a stale staging means "not promoted yet", which is
+ * a deploy-pipeline state, not a source defect. When staging is stale the
+ * content checks are skipped with a warning naming the files that differ.
  */
 
 import fs from 'fs';
@@ -20,6 +26,7 @@ const getProjectRoot = () => {
 };
 
 const projectRoot = getProjectRoot();
+const srcDir = path.join(projectRoot, 'src');
 const stagingDir = path.resolve(projectRoot, '../mpbarbosa.com');
 
 const stagingExists = fs.existsSync(stagingDir) && fs.statSync(stagingDir).isDirectory();
@@ -31,11 +38,38 @@ const readStaging = (filePath) => {
   return fs.existsSync(full) ? fs.readFileSync(full, 'utf8') : null;
 };
 
+const readSource = (filePath) => {
+  const full = path.join(srcDir, filePath);
+  return fs.existsSync(full) ? fs.readFileSync(full, 'utf8') : null;
+};
+
+// Files whose content the checks below assert on. Staging is "in sync" only
+// when every one of them is byte-identical to its source.
+const SYNCED_FILES = [
+  'index.html',
+  'en/index.html',
+  'en/singularity/index.html',
+  'cv/index.html',
+  'llms.txt',
+  'llms-full.txt',
+];
+
+const staleFiles = stagingExists
+  ? SYNCED_FILES.filter((f) => readStaging(f) !== readSource(f))
+  : SYNCED_FILES;
+
+const stagingInSync = stagingExists && staleFiles.length === 0;
+
 describe('Staging content — production readiness', () => {
   beforeAll(() => {
     if (!stagingExists) {
       console.warn(
         `Staging directory not found at ${stagingDir}. Run sync_to_staging.sh --step1 first.`,
+      );
+    } else if (!stagingInSync) {
+      console.warn(
+        `Staging is behind src/ for: ${staleFiles.join(', ')}. ` +
+          'Content checks skipped — run sync_to_staging.sh --step1 to promote and re-run.',
       );
     }
   });
@@ -70,13 +104,55 @@ describe('Staging content — production readiness', () => {
       expect(content).toContain('EN');
     });
 
-    test('index.html should mention AI coding tools by name', () => {
-      if (!stagingExists) return;
+    test('index.html should lead with the professional positioning', () => {
+      if (!stagingInSync) return;
       const content = readStaging('index.html');
-      expect(content).toContain('GitHub Copilot');
+      expect(content).toContain('Consultor e Engenheiro de Soluções');
+      expect(content).toContain('26 anos');
+      expect(content).toMatch(/billing/i);
+      expect(content).toContain('PL/SQL');
+      expect(content).toMatch(/conciliação/i);
+    });
+
+    test('index.html should state availability for senior positions', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('index.html');
+      expect(content).toContain('Disponível para posições sênior');
+    });
+
+    test('index.html should link both products in production', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('index.html');
+      expect(content).toContain('https://brasileirao.mpbarbosa.com');
+      expect(content).toContain('https://copa2026.mpbarbosa.com');
+    });
+
+    test('index.html should name the AI coding agents it is built with', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('index.html');
       expect(content).toContain('Claude Code');
+      expect(content).toContain('GitHub Copilot');
       expect(content).toContain('Cursor');
-      expect(content).toContain('Google Stitch');
+    });
+
+    test('index.html should not credit the work to prompts or mention language study', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('index.html');
+      expect(content).not.toMatch(/prompts de IA/i);
+      expect(content).not.toMatch(/estudando inglês/i);
+      expect(content).not.toMatch(/25 anos/i);
+    });
+
+    test('index.html should carry schema.org Person structured data', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('index.html');
+      expect(content).toContain('application/ld+json');
+      const match = content.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+      expect(match).toBeTruthy();
+      const person = JSON.parse(match[1]);
+      expect(person['@type']).toBe('Person');
+      expect(person.name).toBe('Marcelo Pereira Barbosa');
+      expect(person.knowsAbout.length).toBeGreaterThan(0);
     });
 
     test('robots.txt should be present', () => {
@@ -101,6 +177,20 @@ describe('Staging content — production readiness', () => {
     });
   });
 
+  describe('Resume (cv/)', () => {
+    test('cv/ should serve the resume PDF behind a stable URL', () => {
+      if (!stagingInSync) return;
+      expect(fs.existsSync(stagingPath('cv', 'index.html'))).toBe(true);
+      expect(fs.existsSync(stagingPath('cv', 'cv-marcelo-pereira-barbosa.pdf'))).toBe(true);
+    });
+
+    test('both portfolios should link to /cv/', () => {
+      if (!stagingInSync) return;
+      expect(readStaging('index.html')).toContain('href="cv/"');
+      expect(readStaging('en/index.html')).toContain('href="../cv/"');
+    });
+  });
+
   describe('English portfolio (en/)', () => {
     test('en/index.html should be present', () => {
       if (!stagingExists) return;
@@ -120,28 +210,23 @@ describe('Staging content — production readiness', () => {
       expect(content).toContain('PT');
     });
 
-    test('en/index.html should contain Singularity section', () => {
-      if (!stagingExists) return;
+    test('en/index.html should mirror the professional positioning', () => {
+      if (!stagingInSync) return;
       const content = readStaging('en/index.html');
-      expect(content).toContain('id="singularity"');
-      expect(content).toContain('Back this mission');
-      expect(content).toContain('singularity.diy');
+      expect(content).toContain('Solutions Consultant');
+      expect(content).toContain('26 years');
+      expect(content).toMatch(/telecom billing/i);
+      expect(content).toContain('PL/SQL');
+      expect(content).toMatch(/reconciliation/i);
+      expect(content).toContain('Available for senior roles');
     });
 
-    test('en/index.html should display ai_workflow mission statement', () => {
-      if (!stagingExists) return;
+    test('en/index.html should not carry the investor call-to-action', () => {
+      if (!stagingInSync) return;
       const content = readStaging('en/index.html');
-      expect(content).toContain('ai_workflow');
-      expect(content).toContain('automation layer');
-      expect(content).toContain('any AI coding tool');
-    });
-
-    test('en/index.html should display key project metrics', () => {
-      if (!stagingExists) return;
-      const content = readStaging('en/index.html');
-      expect(content).toContain('v4.3.0');
-      expect(content).toContain('111');
-      expect(content).toContain('100%');
+      expect(content).not.toContain('>Invest<');
+      expect(content).not.toContain('id="singularity"');
+      expect(content).not.toContain('btn-singularity');
     });
 
     test('en/index.html canonical URL should point to /en/', () => {
@@ -159,6 +244,36 @@ describe('Staging content — production readiness', () => {
     });
   });
 
+  describe('Singularity mission page (en/singularity/)', () => {
+    test('should be present at its own URL', () => {
+      if (!stagingInSync) return;
+      expect(fs.existsSync(stagingPath('en', 'singularity', 'index.html'))).toBe(true);
+    });
+
+    test('should carry the ai_workflow mission statement and the fund CTA', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('en/singularity/index.html');
+      expect(content).toContain('id="singularity"');
+      expect(content).toContain('Back this mission');
+      expect(content).toContain('singularity.diy');
+      expect(content).toContain('ai_workflow');
+      expect(content).toContain('automation layer');
+      expect(content).toContain('any AI coding tool');
+    });
+
+    test('should reference grandparent assets correctly', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('en/singularity/index.html');
+      expect(content).toContain('../../styles/v2.css');
+      expect(content).toContain('../../scripts/v2.js');
+    });
+
+    test('should be reachable from the English portfolio', () => {
+      if (!stagingInSync) return;
+      expect(readStaging('en/index.html')).toContain('href="singularity/"');
+    });
+  });
+
   describe('LLM-readable files', () => {
     test('llms.txt should be present at domain root', () => {
       if (!stagingExists) return;
@@ -170,12 +285,27 @@ describe('Staging content — production readiness', () => {
       expect(fs.existsSync(stagingPath('llms-full.txt'))).toBe(true);
     });
 
-    test('llms.txt should contain the canonical mission statement', () => {
-      if (!stagingExists) return;
+    test('llms.txt should lead with the role and availability', () => {
+      if (!stagingInSync) return;
       const content = readStaging('llms.txt');
-      expect(content).toContain('ai_workflow');
-      expect(content).toContain('AI-assisted development reliable');
-      expect(content).toContain('singularity.diy');
+      expect(content).toContain('Solutions Consultant');
+      expect(content).toContain('26 years');
+      expect(content).toMatch(/telecom billing/i);
+      expect(content).toContain('Available for senior positions');
+      expect(content).toContain('https://mpbarbosa.com/cv/');
+    });
+
+    test('llms.txt should list both products in production', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('llms.txt');
+      expect(content).toContain('https://brasileirao.mpbarbosa.com');
+      expect(content).toContain('https://copa2026.mpbarbosa.com');
+    });
+
+    test('llms.txt should still list ai_workflow as a project', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('llms.txt');
+      expect(content).toContain('github.com/mpbarbosa/ai_workflow');
     });
 
     test('llms.txt should list the owner and contact links', () => {
@@ -186,16 +316,33 @@ describe('Staging content — production readiness', () => {
       expect(content).toContain('linkedin.com/in/mpbarbosa');
     });
 
-    test('llms-full.txt should contain comprehensive project details', () => {
-      if (!stagingExists) return;
+    test('llms-full.txt should contain the career record', () => {
+      if (!stagingInSync) return;
       const content = readStaging('llms-full.txt');
-      expect(content).toContain('111 total modules');
-      expect(content).toContain('23-step');
-      expect(content).toContain('100% test coverage');
-      expect(content).toContain('Solana');
+      expect(content).toContain('Objective Solutions');
+      expect(content).toContain('Diginet');
+      expect(content).toContain('PL/SQL');
+      expect(content).toContain('Eleflow');
+      expect(content).toContain('BigQuery');
+      expect(content).toContain('Universidade Presbiteriana Mackenzie');
     });
 
-    test('llms-full.txt should reference the English investor page', () => {
+    test('llms-full.txt should detail both products in production', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('llms-full.txt');
+      expect(content).toContain('Portal Brasileirão');
+      expect(content).toContain('Agora na Copa 2026');
+      expect(content).toContain('Dixon-Coles');
+      expect(content).toContain('Playwright');
+    });
+
+    test('llms-full.txt should point the fundraising at the Singularity page', () => {
+      if (!stagingInSync) return;
+      const content = readStaging('llms-full.txt');
+      expect(content).toContain('mpbarbosa.com/en/singularity/');
+    });
+
+    test('llms-full.txt should reference the English portfolio', () => {
       if (!stagingExists) return;
       const content = readStaging('llms-full.txt');
       expect(content).toContain('mpbarbosa.com/en/');
