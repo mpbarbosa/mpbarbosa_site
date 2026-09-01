@@ -38,7 +38,16 @@ SCRIPT_VERSION="3.0.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/src"
-STAGING_DIR="$(cd "$PROJECT_ROOT/../mpbarbosa.com" && pwd)"  # v3.0.0: Git staging repository
+# v3.0.0: Git staging repository. Resolve to an absolute path when the staging
+# repo is present, but fall back to the unresolved path when it is not: with
+# `set -e`, a bare `cd` here aborted the script before argument parsing, so even
+# --help and --dry-run died on machines without the sibling checkout (CI, fresh
+# clones). setup_staging_directory() already creates the directory when missing.
+if [[ -d "$PROJECT_ROOT/../mpbarbosa.com" ]]; then
+    STAGING_DIR="$(cd "$PROJECT_ROOT/../mpbarbosa.com" && pwd)"
+else
+    STAGING_DIR="$PROJECT_ROOT/../mpbarbosa.com"
+fi
 PRODUCTION_DIR="/var/www/html"  # v3.0.0: Default production directory (override with --production-dir)
 
 # Execution steps control (v3.0.0: Two-step deployment with git staging)
