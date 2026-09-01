@@ -7,6 +7,7 @@
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1220" />
     <meta
       name="description"
       content="Consultor e Engenheiro de Soluções com 26 anos em billing de telecom: conciliação fiscal, contábil e financeira, revenue assurance, Oracle e PL/SQL. No último ano, dois produtos em produção construídos dirigindo agentes de código. Disponível para posições sênior em São Paulo."
@@ -25,11 +26,21 @@
       property="og:description"
       content="26 anos em billing de telecom: conciliação fiscal, contábil e financeira, Oracle e PL/SQL. Dois produtos em produção no último ano, construídos dirigindo agentes de código. Disponível para posições sênior."
     />
-    <meta property="og:image" content="https://mpbarbosa.com/images/bg.jpg" />
+    <meta property="og:image" content="https://mpbarbosa.com/images/og-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Marcelo Pereira Barbosa — Consultor e Engenheiro de Soluções"
+    />
+    <meta property="og:site_name" content="mpbarbosa.com" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://mpbarbosa.com/" />
     <link rel="alternate" hreflang="pt-BR" href="https://mpbarbosa.com/" />
     <link rel="alternate" hreflang="en" href="https://mpbarbosa.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://mpbarbosa.com/" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
     <!-- schema.org Person -->
@@ -101,7 +112,16 @@
     />
 
     <!-- Font Awesome (social icons) -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/css/fontawesome-all.min.css"
+      media="print"
+      onload="
+        this.media = 'all';
+        this.onload = null;
+      "
+    />
+    <noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css" /></noscript>
 
     <!-- v2 styles -->
     <link rel="stylesheet" href="styles/v2.css" />
@@ -181,7 +201,16 @@
         <!-- Intro -->
         <article class="section-card" id="intro" aria-labelledby="intro-heading">
           <h2 id="intro-heading">Intro</h2>
-          <img src="images/pic01.jpg" alt="" role="presentation" class="section-img" />
+          <img
+            src="images/pic01.webp"
+            width="960"
+            height="320"
+            loading="lazy"
+            decoding="async"
+            alt=""
+            role="presentation"
+            class="section-img"
+          />
           <p>
             Passei 26 anos construindo e sustentando sistemas de billing de telecom — faturamento,
             conciliação fiscal, contábil e financeira, e migração de bases de assinantes. É um
@@ -336,7 +365,16 @@
               opacity="0.1"
             />
           </svg>
-          <img src="images/pic02.jpg" alt="" role="presentation" class="section-img" />
+          <img
+            src="images/pic02.webp"
+            width="960"
+            height="320"
+            loading="lazy"
+            decoding="async"
+            alt=""
+            role="presentation"
+            class="section-img"
+          />
           <p>
             Software construído dirigindo agentes de código — Claude Code, GitHub Copilot e Cursor.
             A arquitetura, os critérios de aceite e a verificação antes da produção são meus.
@@ -513,7 +551,11 @@
           <div class="photo-strip">
             <figure class="photo-figure">
               <img
-                src="images/pic03.jpg"
+                src="images/pic03.webp"
+                width="640"
+                height="853"
+                loading="lazy"
+                decoding="async"
                 alt="Foto de Marcelo Pereira Barbosa"
                 class="section-img"
               />
@@ -521,7 +563,11 @@
             </figure>
             <figure class="photo-figure">
               <img
-                src="images/pic04.jpeg"
+                src="images/pic04.webp"
+                width="640"
+                height="656"
+                loading="lazy"
+                decoding="async"
                 alt="Foto de Marcelo Pereira Barbosa"
                 class="section-img"
               />
@@ -529,7 +575,11 @@
             </figure>
             <figure class="photo-figure">
               <img
-                src="images/pic05.jpeg"
+                src="images/pic05.webp"
+                width="384"
+                height="512"
+                loading="lazy"
+                decoding="async"
                 alt="Foto de Marcelo Pereira Barbosa"
                 class="section-img"
               />
@@ -671,7 +721,7 @@
         <p>
           &copy; Marcelo Pereira Barbosa &mdash;
           <a href="v1/" rel="nofollow">Versão anterior (v1)</a>
-          &mdash; v1.1.18
+          &mdash; v1.1.20
         </p>
       </footer>
     </div>
