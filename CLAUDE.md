@@ -73,6 +73,59 @@ Two-step pipeline managed by `shell_scripts/`:
 
 Legacy submodule helper scripts (`pull_all_submodules.sh`, `push_all_submodules.sh`) are in `shell_scripts/deprecated/`.
 
+### Reaching the prod host (SSH does not work — use SSM)
+
+The production host is EC2 instance `i-0ca13c62d0d9d0d00` ("WebServer", Ubuntu
+24.04, sa-east-1, `18.229.20.196`). Deploys run **on that host**, so anything in
+this section assumes you are logged into it.
+
+**SSH is not a usable path.** The instance has **no EC2 key pair attached**
+(`KeyName: null`), so `authorized_keys` was populated by hand and there is no
+`.pem` to fall back on. `ssh mpbarbosa.com` also picks up your local username;
+the only account on the box is `ubuntu`. Both `mpb@` and `ubuntu@` currently
+fail with `Permission denied (publickey)`.
+
+Use SSM instead — it needs no key and no inbound port 22, because the agent
+dials out:
+
+```bash
+AWS_PROFILE=mpb aws ssm start-session --target i-0ca13c62d0d9d0d00
+```
+
+SSM sessions run as **root**, so scripts invoked this way must not expect
+`sudo`. To run a local script on the host non-interactively:
+
+```bash
+AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh <local-script> [args...]
+```
+
+That base64-encodes the script, ships it in one SSM command, and prints the
+remote stdout/stderr and exit code back to your terminal.
+
+Two failure modes look alike from the terminal and have different fixes:
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| SSH **times out** | security group's port-22 rule points at a stale IP | `AWS_PROFILE=mpb ./shell_scripts/aws_allow_my_ip.sh` |
+| SSH **rejects auth** (`publickey`) | no key pair on the instance | use SSM; `aws_allow_my_ip.sh` will not help |
+
+### nginx / canonical host
+
+`mpbarbosa.com` (bare apex) is the canonical host; `www` 301-redirects to it,
+preserving path and query. The nginx configs live in `shell_scripts/nginx/` and
+are **not** deployed by `sync_to_staging.sh` — they are installed separately by:
+
+- `setup_www_redirect.sh` — installs the redirect vhost. **Refuses to run** while
+  another enabled vhost still claims `www`, and tells you to edit that file.
+- `fix_www_vhost_conflict.sh` — does that prerequisite edit (drops `www` from the
+  main vhost's `server_name`) *and* installs the redirect in a single
+  `nginx -t` + reload, with automatic rollback. Use this one; the two-step manual
+  sequence leaves a window where `www` matches no vhost and falls through to
+  `default_server`.
+
+Both run on the prod host. Shipping a config change to `shell_scripts/nginx/`
+does nothing on its own — someone has to run the installer.
+
 ### Test suite layout (`src/__tests__/`)
 
 | File | Jest project | What it covers |

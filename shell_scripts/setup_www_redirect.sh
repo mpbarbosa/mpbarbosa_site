@@ -91,7 +91,7 @@ done
 # --- Refuse to create an ambiguous server_name match --------------------------
 # Any OTHER enabled vhost that still claims WWW_HOST would compete with the
 # redirect block; nginx would pick by load order, not intent.
-conflicts="$(sudo grep -rlE "^[[:space:]]*server_name[^;]*(^|[[:space:]])${WWW_HOST//./\\.}([[:space:]]|;)" \
+conflicts="$(sudo grep -RlE "^[[:space:]]*server_name[^;]*(^|[[:space:]])${WWW_HOST//./\\.}([[:space:]]|;)" \
     /etc/nginx/sites-enabled/ 2>/dev/null \
     | grep -v "/${WWW_HOST}\$" || true)"
 if [[ -n "${conflicts}" ]]; then
