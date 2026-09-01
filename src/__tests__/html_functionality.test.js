@@ -78,12 +78,14 @@ describe('HTML5 UP Dimension Template', () => {
       const navLinks = document.querySelectorAll('nav a');
       expect(navLinks.length).toBeGreaterThan(0);
 
-      const navTexts = Array.from(navLinks).map((link) => link.textContent);
+      const navTexts = Array.from(navLinks).map((link) => link.textContent.trim());
 
-      // Key navigation items
+      // Key navigation items. index.html is the pt-BR page, so the labels are
+      // Portuguese; accept the English equivalents too so this stays valid if
+      // the file is ever swapped for the /en/ one.
       expect(navTexts).toContain('Intro');
-      expect(navTexts).toContain('About');
-      expect(navTexts).toContain('Contact');
+      expect(navTexts.some((t) => t === 'Sobre' || t === 'About')).toBe(true);
+      expect(navTexts.some((t) => t === 'Contato' || t === 'Contact')).toBe(true);
     });
 
     test('should have data-article attributes or hash navigation for internal links', () => {
