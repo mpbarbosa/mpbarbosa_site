@@ -370,6 +370,7 @@ FILES TO SYNC:
     - assets/sass/ (SASS source files and partials)
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
+    - cv/ (resume PDF served at the stable /cv/ URL)
     - music_in_numbers/src/ (Music in Numbers sibling project)
     - guia_js/ (Guia JS sibling project)
     - monitora_vagas/src/ (Monitora Vagas legacy implementation)
@@ -520,6 +521,12 @@ copy_llms_files() {
 copy_pages_folder() {
     print_step "Copying pages/ redirect stubs"
     copy_directory "$SOURCE_DIR/pages" "$STAGING_DIR/pages" "Pages redirect stubs" "*.html" "false"
+}
+
+# Copy cv/ (stable /cv/ URL serving the resume PDF)
+copy_cv_folder() {
+    print_step "Copying cv/ folder"
+    copy_directory "$SOURCE_DIR/cv" "$STAGING_DIR/cv" "CV directory (cv/)" "*" "false"
 }
 
 # Copy v1/ legacy archived site
@@ -1624,6 +1631,7 @@ execute_step_1() {
     copy_en_page
     copy_llms_files
     copy_pages_folder
+    copy_cv_folder
     copy_v1_folder
     copy_sass_assets
     copy_webfonts
