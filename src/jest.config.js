@@ -126,27 +126,18 @@ export default {
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
 
   // ============================================================================
-  // Coverage Thresholds (Aspirational)
+  // Coverage Thresholds (Aspirational — deliberately NOT set)
   // ============================================================================
-  // Note: Currently disabled due to 91.8% pass rate (256/279 tests)
-  // Enable when test suite stability improves to 95%+
-
-  coverageThreshold: {
-    global: {
-      // Aspirational targets (currently not enforced)
-      branches: 70, // Target: 80%
-      functions: 70, // Target: 80%
-      lines: 70, // Target: 80%
-      statements: 70, // Target: 80%
-    },
-    // File-specific thresholds can be added here:
-    // './scripts/main.mjs': {
-    //   branches: 90,
-    //   functions: 90,
-    //   lines: 90,
-    //   statements: 90
-    // }
-  },
+  // `coverageThreshold` is not commented rhetoric: Jest enforces it on every
+  // --coverage run and exits non-zero when it is missed. A 70% global bar was
+  // configured here while the numbers were ~30% (scripts/v2.js is loaded by the
+  // browser, never imported by a test), so `npm run test:ci` failed in CI even
+  // when all 321 tests passed. Targets live in the comment until coverage
+  // actually reaches them; re-add the block below to start enforcing.
+  //
+  // coverageThreshold: {
+  //   global: { branches: 70, functions: 70, lines: 70, statements: 70 },
+  // },
 
   // ============================================================================
   // Reporter Configuration

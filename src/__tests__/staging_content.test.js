@@ -6,7 +6,9 @@
  *
  * These tests are the gate between "source is correct" and "staging is ready
  * to deploy". They fail if sync was never run or if new source files were
- * added without updating the sync script.
+ * added without updating the sync script. That gate only makes sense where a
+ * staging clone can exist: under CI, where it never does, the suite skips
+ * itself rather than failing every run.
  *
  * Presence checks run whenever the staging directory exists. Content checks
  * describe what the CURRENT source says, so they only run once staging
@@ -60,7 +62,14 @@ const staleFiles = stagingExists
 
 const stagingInSync = stagingExists && staleFiles.length === 0;
 
-describe('Staging content — production readiness', () => {
+// ../mpbarbosa.com only exists on a machine that has a staging clone, i.e. a
+// developer box. There, a missing staging dir means "sync was never run" and
+// should fail loudly. On a CI runner it is simply never there, so the whole
+// suite is skipped instead of reporting a defect that has nothing to do with
+// the commit under test.
+const describeStaging = !stagingExists && process.env.CI ? describe.skip : describe;
+
+describeStaging('Staging content — production readiness', () => {
   beforeAll(() => {
     if (!stagingExists) {
       console.warn(
