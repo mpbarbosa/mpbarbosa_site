@@ -74,6 +74,10 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+# Jest writes its lcov + HTML report into src/coverage/ on every --coverage
+# run. It was tracked for a while, so any local run showed up as a diff of
+# generated files; now ignored wherever it appears.
+coverage/
 
 # Translations
 *.mo
