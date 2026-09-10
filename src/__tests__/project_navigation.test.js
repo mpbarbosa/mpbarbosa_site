@@ -285,4 +285,37 @@ describe('Project Navigation Integration Tests', () => {
       });
     });
   });
+
+  describe('Resume page (/cv/)', () => {
+    const cvPath = () => path.join(srcDir, 'cv', 'index.html');
+
+    test('should be a real HTML page, not a redirect stub', () => {
+      const content = loadHTMLFile(cvPath());
+      expect(content).not.toBeNull();
+      // A meta-refresh or location.replace here would make /cv/ a soft 404
+      // for crawlers, which is what it used to be.
+      expect(content).not.toMatch(/http-equiv="refresh"/i);
+      expect(content).not.toMatch(/location\.replace/);
+      expect(content).toMatch(/<h1[^>]*>\s*Marcelo Pereira Barbosa/);
+    });
+
+    test('should be indexable by search engines', () => {
+      const content = loadHTMLFile(cvPath());
+      expect(content).not.toBeNull();
+      expect(content).not.toMatch(/name="robots"[^>]*noindex/i);
+      expect(content).toContain('<link rel="canonical" href="https://mpbarbosa.com/cv/" />');
+    });
+
+    test('should still offer the PDF for download', () => {
+      const content = loadHTMLFile(cvPath());
+      expect(content).toContain('cv-marcelo-pereira-barbosa.pdf');
+      expect(fs.existsSync(path.join(srcDir, 'cv', 'cv-marcelo-pereira-barbosa.pdf'))).toBe(true);
+    });
+
+    test('should be listed in sitemap.xml so Google can discover it', () => {
+      const sitemap = loadHTMLFile(path.join(srcDir, 'sitemap.xml'));
+      expect(sitemap).not.toBeNull();
+      expect(sitemap).toContain('<loc>https://mpbarbosa.com/cv/</loc>');
+    });
+  });
 });
