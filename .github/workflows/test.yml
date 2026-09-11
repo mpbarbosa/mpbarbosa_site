@@ -61,9 +61,7 @@ jobs:
       
       - name: Generate coverage report
         working-directory: ./src
-        # Jest invoked directly, not via `npm run test:coverage`: that script
-        # pipes jest through `grep -v`, so extra flags would land on grep.
-        run: node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --ignoreProjects accessibility || echo "Coverage generation temporarily disabled (Node.js 25 compatibility)"
+        run: npm run test:coverage -- --ignoreProjects accessibility || echo "Coverage generation temporarily disabled (Node.js 25 compatibility)"
         continue-on-error: true  # Don't fail workflow if coverage is disabled
       
       - name: Upload coverage to artifacts
