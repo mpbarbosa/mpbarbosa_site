@@ -370,12 +370,16 @@ done
 
 [[ ${failed} -eq 0 ]] || rollback
 
+# The bare-IP default server can be a different vhost that answers 200 for every
+# path (on prod it is copa2026's Express app returning its SPA shell), so only a
+# body that really is a git HEAD counts as a leak.
 if [[ -n "${DEFAULT_SERVER_URL}" ]]; then
-    code="$(http_code -k "${DEFAULT_SERVER_URL}/.git/HEAD")"
-    echo "    ${DEFAULT_SERVER_URL}/.git/HEAD (bare-IP default server) -> ${code}"
-    if [[ "${code}" == "200" ]]; then
-        echo "WARNING: requests by IP still get dot-paths: the default server is not one of" >&2
-        echo "  the blocks edited above. Add '${INCLUDE_LINE}' to it by hand." >&2
+    head_body="$(curl -sk --path-as-is --max-time 15 "${DEFAULT_SERVER_URL}/.git/HEAD" 2>/dev/null | head -c 45)"
+    if [[ "${head_body}" =~ ^(ref:\ |[0-9a-f]{40}) ]]; then
+        echo "WARNING: ${DEFAULT_SERVER_URL}/.git/HEAD still returns a git HEAD: the bare-IP" >&2
+        echo "  default server is not one of the blocks edited above. Add '${INCLUDE_LINE}' to it by hand." >&2
+    else
+        echo "    ${DEFAULT_SERVER_URL}/.git/HEAD (bare-IP default server) -> not a git HEAD"
     fi
 fi
 
