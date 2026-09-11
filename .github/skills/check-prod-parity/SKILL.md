@@ -85,7 +85,13 @@ staging, etc.).
 Ordered list of the commands needed to close the gaps, e.g.:
 1. Run `sync_to_staging.sh --step1` to sync source to staging
 2. Commit and push staging repo
-3. Run `prod_deploy.sh` to deploy staging to production
+3. Wait up to 10 minutes for the prod host's cron to pull and deploy it, then
+   confirm with
+   `AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/check_prod_deploy.sh`
+
+If staging is already pushed but production is still behind, the check script's
+output says why (not pulled yet, dirty staging clone, failed copy). Do not
+suggest `prod_deploy.sh` (retired) or running `--step2` on the host by hand.
 
 If production is fully in sync, say so and stop — no action items needed.
 
@@ -96,15 +102,18 @@ If production is fully in sync, say so and stop — no action items needed.
 ## Deployment pipeline
 
 ```
-src/  →  (sync_to_staging.sh --step1)  →  ../mpbarbosa.com/  →  (prod_deploy.sh)  →  /var/www/mpbarbosa.com
+src/  →  (sync_to_staging.sh --step1)  →  ../mpbarbosa.com/  →  git push
+      →  (prod host cron: git_sync.sh pulls, then sync_to_staging.sh --step2 as ubuntu)  →  /var/www/mpbarbosa.com
 ```
 
 - **Staging repo**: `/home/mpb/Documents/GitHub/mpbarbosa.com/`
 - **Production dir**: `/var/www/mpbarbosa.com`
 - **Production URL**: `https://www.mpbarbosa.com`
-- `prod_deploy.sh` does `git pull` on the staging repo then runs `--step2`
+- Pushing the staging repo is the deploy: every 10 minutes ubuntu's cron on
+  the prod host pulls it and copies it into the production dir
 - Step1 copies files but does NOT auto-commit; changes must be committed and
-  pushed to the staging remote before `prod_deploy.sh` can pull them on the server
+  pushed to the staging remote before the cron can pull them
+- See "Deployment model" in `CLAUDE.md`
 
 ## Key files and their production URLs
 

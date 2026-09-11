@@ -204,6 +204,87 @@ describe('Shell Scripts Functionality', () => {
       }
     });
   });
+
+  describe('Production Deploy Scripts', () => {
+    // Production deploys itself from a cron on the prod host (see CLAUDE.md,
+    // "Deployment model"); these scripts must not become a second, root-run path.
+    const prodDeployScript = path.join(shellScriptsDir, 'prod_deploy.sh');
+    const checkScript = path.join(shellScriptsDir, 'check_prod_deploy.sh');
+
+    const runScript = (scriptPath, args = [], env = {}) =>
+      new Promise((resolve) => {
+        const child = spawn('bash', [scriptPath, ...args], {
+          cwd: projectRoot,
+          env: { ...process.env, ...env },
+          stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        let output = '';
+        child.stdout.on('data', (data) => (output += data.toString()));
+        child.stderr.on('data', (data) => (output += data.toString()));
+        child.on('close', (code) => resolve({ code, output }));
+      });
+
+    // Lines that execute: no comments, blank lines or heredoc bodies.
+    const codeLines = (content) => {
+      const lines = [];
+      let heredocEnd = null;
+      for (const line of content.split('\n')) {
+        if (heredocEnd) {
+          if (line.trim() === heredocEnd) heredocEnd = null;
+          continue;
+        }
+        if (/^\s*(#|$)/.test(line)) continue;
+        const heredoc = line.match(/<<-?\s*'?(\w+)'?/);
+        if (heredoc) heredocEnd = heredoc[1];
+        lines.push(line);
+      }
+      return lines.join('\n');
+    };
+
+    test('prod_deploy.sh is retired: it refuses and points at the cron deploy', async () => {
+      expect(checkScriptExecutable(prodDeployScript)).toBe(true);
+
+      const { code, output } = await runScript(prodDeployScript);
+      expect(code).toBe(1);
+      expect(output).toContain('retired');
+      expect(output).toContain('check_prod_deploy.sh');
+    });
+
+    test('prod_deploy.sh no longer pulls or runs sync_to_staging.sh', () => {
+      const code = codeLines(fs.readFileSync(prodDeployScript, 'utf8'));
+      expect(code).not.toMatch(/\bcd\b|\bgit\b|rsync|sync_to_staging/);
+    });
+
+    test('check_prod_deploy.sh documents how to run it through SSM', async () => {
+      expect(checkScriptExecutable(checkScript)).toBe(true);
+
+      const { code, output } = await runScript(checkScript, ['--help']);
+      expect(code).toBe(0);
+      expect(output).toContain('run_on_prod_via_ssm.sh shell_scripts/check_prod_deploy.sh');
+    });
+
+    test('check_prod_deploy.sh refuses to run off the prod host', async () => {
+      const missing = path.join(projectRoot, 'no-such-prod-dir');
+      const { code, output } = await runScript(checkScript, [], {
+        PROD_GITHUB_DIR: missing,
+        PROD_WEB_DIR: missing,
+      });
+      expect(code).toBe(2);
+      expect(output).toContain('run_on_prod_via_ssm.sh');
+    });
+
+    test('check_prod_deploy.sh is read-only and runs git as the checkout owner', () => {
+      const code = codeLines(fs.readFileSync(checkScript, 'utf8'));
+      expect(code).not.toMatch(/\b(rsync|chown|chmod|systemctl|rm|mv|cp|tee|mkdir)\b/);
+      expect(code).not.toMatch(/>\s*[^&\s/]/); // no redirect into a file
+      expect(code).not.toMatch(
+        /(git -C|git_in) \S+ (pull|fetch|reset|checkout|commit|push|add|stash|gc|update-index)\b/,
+      );
+      expect(code).not.toContain('--step2 --production-dir');
+      expect(code).toContain('sudo -n -u "${OWNER}"');
+    });
+  });
+
   describe('Shell Scripts Documentation', () => {
     const readmePath = path.join(shellScriptsDir, 'README.md');
 

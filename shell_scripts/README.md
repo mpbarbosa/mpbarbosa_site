@@ -1029,8 +1029,8 @@ mpbarbosa_site/ (main repository)
 # Validate external links policy compliance
 ./shell_scripts/validate_external_links.sh
 
-# Deploy to production when ready
-./shell_scripts/sync_to_staging.sh --step2
+# Deploy to production when ready: commit and push the staging repo
+cd ../mpbarbosa.com && git add -A && git commit -m "deploy: ..." && git push && cd -
 
 # End of day: push all changes
 ./shell_scripts/push_all_submodules.sh
@@ -1040,6 +1040,20 @@ mpbarbosa_site/ (main repository)
 ```
 
 ### Production Deployment Workflow (Two-Step Process)
+
+> **mpbarbosa.com production deploys itself.** Push `../mpbarbosa.com` after
+> `--step1`; within ~10 minutes ubuntu's cron on the prod host pulls it and runs
+> `--step2` into `/var/www/mpbarbosa.com`. Do **not** run `--step2` there
+> yourself, and never as root (SSM sessions are root). `prod_deploy.sh` is
+> retired. To see whether a push is live:
+>
+> ```bash
+> AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/check_prod_deploy.sh
+> ```
+>
+> See "Deployment model" in the repo's `CLAUDE.md`. The generic `--step2`
+> examples below describe the script, not how that host is deployed.
+
 ```bash
 # Option 1: Two-step process (recommended for staging validation)
 ./shell_scripts/sync_to_staging.sh --step1 --verbose        # Stage files in public folder
