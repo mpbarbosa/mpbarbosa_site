@@ -64,20 +64,66 @@ The projects linked from the landing page (`guia_js/`, `music_in_numbers/`, `mon
 
 ### Deployment model
 
-Two-step pipeline managed by `shell_scripts/`:
+**Pushing the staging repo is the deploy.** Nothing you run pushes files to
+production; the prod host pulls them on a cron:
 
-1. `shell_scripts/sync_to_staging.sh` — copies `src/` into `../mpbarbosa.com/` (a separate git repo used as versioned staging); `--step2` mode promotes staging to a production dir
-2. `shell_scripts/deploy_to_webserver.sh` — copies staging to the production web server directory; supports `--dry-run`
+1. On your workstation, `shell_scripts/sync_to_staging.sh --step1` copies `src/`
+   into `../mpbarbosa.com/`, a separate git repo
+   (`git@github.com:mpbarbosa/mpbarbosa.com.git`) used as versioned staging. It
+   copies an explicit allow-list, so a new top-level file needs a `copy_*`
+   function there.
+2. Commit and push `../mpbarbosa.com`.
+3. Within ~10 minutes the prod host picks it up. ubuntu's crontab runs
+   `*/10 * * * * /home/ubuntu/Documents/GitHub/devops/scripts/git_sync.sh`,
+   which pulls every repo under `/home/ubuntu/Documents/GitHub` that is behind.
+   When the `mpbarbosa.com` pull succeeds it runs `devops/copa_2026/prod_deploy.sh`
+   (in the separate `devops` repo), and that runs **this repo's**
+   `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`, as
+   ubuntu, from the host's own `mpbarbosa_site` checkout.
 
-`shell_scripts/prod_deploy.sh` is the convenience wrapper for a full production deploy: it pulls `../mpbarbosa.com`, then runs `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`.
+To confirm it landed (read-only; compares GitHub main, the staging clone and the
+web root, and shows the relevant git_sync log lines):
+
+```bash
+AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/check_prod_deploy.sh
+```
+
+Things that follow from that design:
+
+- `--step2` is `rsync -a --delete` of the whole staging checkout, `.git`
+  included, into `/var/www/mpbarbosa.com` (nginx's `root`). The web root's git
+  history is a **copy**, not a clone that pulls: its HEAD is the staging commit
+  last copied.
+- The host's `mpbarbosa_site` checkout is pulled by the same cron, so merging a
+  change to `sync_to_staging.sh` into `main` changes the live deploy code.
+  git_sync walks repos alphabetically and `mpbarbosa.com` sorts before
+  `mpbarbosa_site`, so a staging push and a script change that land in the same
+  10-minute window deploy with the *old* script.
+- git_sync skips any repo whose tracked files have local changes, so a dirty
+  staging clone on the host silently stops deploys.
+- Its log is `/home/ubuntu/.local/log/git_sync.log`, rotated at 500 KB with one
+  old copy kept, so it only reaches back about a day.
+
+**Never run `sync_to_staging.sh --step2` on the prod host as root** (every SSM
+session is root). The cron already runs it as ubuntu. As root it also restarts
+nginx and the unrelated `busca_vagas_node_app` service, and any git run as root
+in these ubuntu-owned checkouts can leave root-owned files in `.git`; a
+`git pull` as root creates object directories that ubuntu's pulls can no longer
+write into.
+
+`shell_scripts/prod_deploy.sh` is **retired**: it prints the steps above and
+exits 1. It used to `git pull` staging and run `--step2`, which failed at once
+under SSM (`~` is `/root`) and would have done the damage above had it got
+further. `shell_scripts/deploy_to_webserver.sh` is the older pre-staging deploy
+and is not part of the production path either.
 
 Legacy submodule helper scripts (`pull_all_submodules.sh`, `push_all_submodules.sh`) are in `shell_scripts/deprecated/`.
 
 ### Reaching the prod host (SSH does not work — use SSM)
 
 The production host is EC2 instance `i-0ca13c62d0d9d0d00` ("WebServer", Ubuntu
-24.04, sa-east-1, `18.229.20.196`). Deploys run **on that host**, so anything in
-this section assumes you are logged into it.
+24.04, sa-east-1, `18.229.20.196`). A normal deploy never needs it (see above);
+you go there to diagnose, or to install the nginx configs below.
 
 **SSH is not a usable path.** The instance has **no EC2 key pair attached**
 (`KeyName: null`), so `authorized_keys` was populated by hand and there is no

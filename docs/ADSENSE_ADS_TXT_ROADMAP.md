@@ -20,7 +20,7 @@ nginx. (A shortcut alternative is in the appendix.)
 | `www.mpbarbosa.com` DNS | Resolves → `18.229.20.196` (personal/professional site) | `dig +short www.mpbarbosa.com` |
 | `www.mpbarbosa.com/ads.txt` | **404** (file not deployed yet) | `curl -I https://www.mpbarbosa.com/ads.txt` |
 | `copa2026.mpbarbosa.com/ads.txt` | **200** (different app — Agora na Copa — already fine) | `curl https://copa2026.mpbarbosa.com/ads.txt` |
-| Deploy chain (this repo) | `src/` → staging repo `../mpbarbosa.com` → rsync to `/var/www/mpbarbosa.com` | `shell_scripts/prod_deploy.sh`, `deploy_to_webserver.sh` |
+| Deploy chain (this repo) | `src/` → staging repo `../mpbarbosa.com` → push → prod host cron rsyncs to `/var/www/mpbarbosa.com` | CLAUDE.md "Deployment model" (`prod_deploy.sh` since retired) |
 | Root-file sync | **Explicit per-file allow-list** in `sync_to_staging.sh` (not a wholesale `src/` copy) | code read |
 | AWS user `mpb` | **No Route 53 permissions** (`route53:ListHostedZones` denied) | `aws route53 list-hosted-zones` |
 
@@ -57,9 +57,11 @@ These are already written in the working tree:
       git add src/ads.txt shell_scripts/sync_to_staging.sh src/__tests__/staging_content.test.js
       git commit -m "feat: serve ads.txt for Google AdSense"
       ```
-- [ ] Deploy (runs on the prod host, per this repo's flow)
+- [ ] Deploy: sync to staging and push it; the prod host's cron pulls and
+      deploys within ~10 minutes (`prod_deploy.sh` is retired, see CLAUDE.md)
       ```bash
-      ./shell_scripts/prod_deploy.sh
+      ./shell_scripts/sync_to_staging.sh --step1
+      cd ../mpbarbosa.com && git add ads.txt && git commit -m "deploy: ads.txt" && git push
       ```
 - [ ] **Verify** `ads.txt` is live at `www`:
       ```bash
