@@ -1405,30 +1405,51 @@ validate_production_environment() {
 }
 
 # Create backup of existing production files
+#
+# Backups live inside the production directory because the deploy user (ubuntu,
+# from cron) cannot create siblings under /var/www. They survive the rsync in
+# copy_public_to_production only because it excludes /.backups, and nginx does
+# not serve them because it refuses dot-paths
+# (shell_scripts/nginx/mpbarbosa-deny-dotfiles.conf).
+#
+# .git is left out: it was 243 MB of the 379 MB web root on 2026-09-11, and the
+# staging clone it is rsynced from already holds that history.
 create_production_backup() {
     if [[ "$CREATE_BACKUP" == "false" ]]; then
         return 0
     fi
-    
+
     print_step "Creating backup of existing production files"
-    
+
+    local keep=3
+    local min_free_kb=1048576  # never let a backup leave less than 1 GiB free
     local backup_timestamp=$(date +"%Y%m%d_%H%M%S")
     local backup_path="$PRODUCTION_DIR/.backups/backup_$backup_timestamp"
-    
+
     if [[ -d "$PRODUCTION_DIR" ]] && [[ "$(ls -A "$PRODUCTION_DIR" 2>/dev/null)" ]]; then
         if [[ "$DRY_RUN" == "false" ]]; then
+            # Step 2 runs unattended from cron: a backup that fills the disk would
+            # break the very deploy it protects. Skip it loudly and deploy anyway.
+            local needed_kb free_kb
+            needed_kb=$(du -sk --exclude=.git --exclude=.backups "$PRODUCTION_DIR" 2>/dev/null | cut -f1)
+            free_kb=$(df -Pk "$PRODUCTION_DIR" 2>/dev/null | awk 'NR == 2 { print $4 }')
+            if [[ -n "$needed_kb" && -n "$free_kb" ]] && (( free_kb - needed_kb < min_free_kb )); then
+                print_warning "Skipping production backup: it needs ${needed_kb} KB and would leave less than ${min_free_kb} KB free (${free_kb} KB available)"
+                return 0
+            fi
+
             mkdir -p "$backup_path"
-            
-            # Copy existing production files to backup (excluding .backups directory)
-            find "$PRODUCTION_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" -exec cp -r {} "$backup_path/" \;
-            
+
+            # Copy existing production files to backup (excluding .backups and .git)
+            find "$PRODUCTION_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" ! -name ".git" -exec cp -a {} "$backup_path/" \;
+
             print_success "Production backup created: $backup_path"
-            
-            # Clean up old backups (keep only last 7)
+
+            # Clean up old backups (keep only the last $keep)
             local backup_count=$(find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
-            if [[ $backup_count -gt 7 ]]; then
-                find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - 7)) | xargs rm -rf
-                print_info "Cleaned up old production backups (keeping last 7)"
+            if [[ $backup_count -gt $keep ]]; then
+                find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - keep)) | xargs rm -rf
+                print_info "Cleaned up old production backups (keeping last $keep)"
             fi
         else
             print_info "[DRY RUN] Would create production backup: $backup_path"
@@ -1441,11 +1462,15 @@ create_production_backup() {
 # Copy files from public to production directory
 copy_public_to_production() {
     print_step "Copying files from public to production directory"
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         # Use rsync for efficient synchronization if available, otherwise use cp
         if command -v rsync >/dev/null 2>&1; then
-            local rsync_options="-av --delete"
+            # --exclude=/.backups protects create_production_backup's output: the
+            # staging checkout has no .backups, so --delete used to remove each
+            # backup moments after it was made. It also keeps a workstation
+            # staging dir's own .backups out of production.
+            local rsync_options="-av --delete --exclude=/.backups"
             if [[ "$VERBOSE" == "false" ]]; then
                 rsync_options+=" --quiet"
             fi
