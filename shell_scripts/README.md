@@ -715,6 +715,40 @@ validate_all_documentation_metrics
 
 ---
 
+### 🔒 `setup_deny_dotfiles.sh`
+**Purpose**: Make nginx refuse dot-paths (`/.git/`, `/.gitignore`, `/.claude/`,
+`/.backups/`, `/.env`, ...) from the production web root, while keeping
+`/.well-known/` reachable for certbot.
+
+**Why it is needed**: `sync_to_staging.sh --step2` rsyncs the whole staging
+checkout, `.git` included, into `/var/www/mpbarbosa.com`, and
+`check_prod_deploy.sh` reads that `.git` to tell whether a deploy landed. So the
+files stay on disk; nginx refuses to serve them.
+
+**Runs on the prod host, as root**. Like every nginx config in this repo it is not
+deployed by `sync_to_staging.sh`: merging changes nothing until someone runs it.
+
+```bash
+# See the vhost diff first; changes nothing
+AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/setup_deny_dotfiles.sh --dry-run
+
+# Install: backs up, edits, one nginx -t + reload, verifies live, rolls back on any failure
+AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/setup_deny_dotfiles.sh
+```
+
+**What it does**:
+1. Installs `nginx/mpbarbosa-deny-dotfiles.conf` to `/etc/nginx/snippets/` (the
+   installer embeds a copy, because SSM ships the script alone; a test keeps the
+   two identical).
+2. Adds its `include` as the first line of every server block with
+   `root /var/www/mpbarbosa.com;`.
+3. Verifies `/.git/HEAD` and friends answer 403, `/.well-known/` does not, and
+   `/` and `/en/` still answer 200. Idempotent: a second run does nothing.
+
+The snippet explains why it pairs a server-level `if` with a `location` rule.
+
+---
+
 ### 🌐 `deploy_to_webserver.sh` (Legacy Deployment v2.0.0)
 **Purpose**: Deploys the website to nginx web server directory for production hosting
 
