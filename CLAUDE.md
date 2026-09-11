@@ -122,8 +122,14 @@ are **not** deployed by `sync_to_staging.sh` — they are installed separately b
   `nginx -t` + reload, with automatic rollback. Use this one; the two-step manual
   sequence leaves a window where `www` matches no vhost and falls through to
   `default_server`.
+- `setup_deny_dotfiles.sh` — installs `nginx/mpbarbosa-deny-dotfiles.conf` into
+  every server block serving `/var/www/mpbarbosa.com`, so dot-paths (`/.git/`,
+  `/.gitignore`, `/.claude/`, ...) answer 403 and `/.well-known/` stays
+  reachable. Needed because step2 rsyncs the staging checkout, `.git` included,
+  into the web root, and `check_prod_deploy.sh` depends on that `.git` being
+  there. `--dry-run` prints the vhost diff.
 
-Both run on the prod host. Shipping a config change to `shell_scripts/nginx/`
+All three run on the prod host. Shipping a config change to `shell_scripts/nginx/`
 does nothing on its own — someone has to run the installer.
 
 ### Test suite layout (`src/__tests__/`)
