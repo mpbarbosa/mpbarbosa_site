@@ -69,7 +69,15 @@ Two-step pipeline managed by `shell_scripts/`:
 1. `shell_scripts/sync_to_staging.sh` — copies `src/` into `../mpbarbosa.com/` (a separate git repo used as versioned staging); `--step2` mode promotes staging to a production dir
 2. `shell_scripts/deploy_to_webserver.sh` — copies staging to the production web server directory; supports `--dry-run`
 
-`shell_scripts/prod_deploy.sh` is the convenience wrapper for a full production deploy: it pulls `../mpbarbosa.com`, then runs `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`.
+`shell_scripts/prod_deploy.sh` is the full production deploy, and you **run it on your workstation**: it ships itself to the prod host through `run_on_prod_via_ssm.sh` and carries on running there, so there is nothing to run by hand on the box.
+
+```bash
+AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh --inspect   # read-only: layout + what the webroot serves
+AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh --dry-run
+AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh
+```
+
+On the host it **finds both checkouts** (searching `/home`, `/root`, `/srv`, `/opt`), pulls the `mpbarbosa.com` staging checkout, then runs that host's `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`. The discovery is the point: SSM runs as root, so `~` is `/root` while the checkouts live in a user home — the old hardcoded `~/Documents/GitHub/mpbarbosa_site` failed as root with "No such file or directory". Git's ownership guard is neutralised for the run via `GIT_CONFIG_*`, since root is reading another user's checkout.
 
 Legacy submodule helper scripts (`pull_all_submodules.sh`, `push_all_submodules.sh`) are in `shell_scripts/deprecated/`.
 
