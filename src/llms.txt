@@ -16,8 +16,8 @@
 
 ## Experience
 
-- **Objective Solutions** (Mar 1999 – Dec 2023), 15 years as Senior Developer and around 10 as Consultant. Telecom billing: the Diginet product and its successor Objective NG, in Smalltalk, Java and PL/SQL on Oracle. Built the Billing and Tax data warehouses in PL/SQL. Consulting on tax, accounting and financial reconciliation, including credit-card reconciliation for the acquirer Adiq; focal point for medical claims at PreventSenior. Four end-to-end data migrations: Oi Cabo (100k subscribers), Compuserve (35k), On (10k), Netserv (10k). Clients: Sky, Telefônica/Vivo, HughesNet, Netserv, PreventSenior.
-- **Eleflow** (2024 – 2025), Senior Data Analyst. Oracle to BigQuery data migration.
+- **Objective Solutions** (Mar 1999 – Dec 2023), 15 years as Senior Developer and around 10 as Consultant. Telecom billing: the Diginet product and its successor Objective NG, in Smalltalk, Java and PL/SQL on Oracle. Built the Billing and Tax data warehouses in PL/SQL. Consulting on tax, accounting and financial reconciliation, including the functional specification of the credit-card reconciliation system for the acquirer Adiq, in a Scrum team (Feb 2019 – Mar 2020); consulting presentations at Netserv, On and HughesNet; focal point for medical claims at PreventSenior. Four end-to-end data migrations: Oi Cabo (100k subscribers), Compuserve (35k), On (10k), Netserv (10k). Clients: Sky, Telefônica/Vivo, HughesNet, Netserv, PreventSenior.
+- **Eleflow** (2024 – 2025), Senior Data Analyst. Oracle to BigQuery data migration, in a Scrum team.
 - Education: Universidade Presbiteriana Mackenzie.
 
 ## Projects and tooling

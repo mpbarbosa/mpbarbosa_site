@@ -63,6 +63,11 @@ Two skill sets that rarely appear in the same person:
 - **Data warehouses**: built the Billing and Tax data warehouses in PL/SQL.
 - **Reconciliation consulting**: tax, accounting and financial reconciliation, including
   credit-card reconciliation for Adiq, a card acquirer.
+- **Functional analysis in Scrum**: at Adiq (Feb 2019 – Mar 2020), owned the functional
+  specification of the reconciliation system — user stories and acceptance criteria per feature,
+  every sprint, with the solution designed together with the architect.
+- **Consulting presentations**: at Netserv, On and HughesNet, on billing, collections, tax,
+  accounting and reconciliation.
 - **Healthcare**: focal point for medical claims at PreventSenior.
 - **Data migrations**: four end-to-end migrations — Oi Cabo (100,000 subscribers), Compuserve
   (35,000), On (10,000), Netserv (10,000).
@@ -72,7 +77,7 @@ Two skill sets that rarely appear in the same person:
 
 ### Eleflow — 2024 to 2025
 
-Senior Data Analyst. Oracle to BigQuery data migration.
+Senior Data Analyst. Oracle to BigQuery data migration, in a Scrum team.
 
 ---
 
