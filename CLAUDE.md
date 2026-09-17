@@ -77,6 +77,16 @@ AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh --dry-run
 AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh
 ```
 
+**But publishing does not actually depend on it.** `/var/www/mpbarbosa.com` is itself a git checkout of the `mpbarbosa.com` repo, and a cron job owned by `ubuntu` pulls it **every 10 minutes**:
+
+```
+*/10 * * * * /home/ubuntu/Documents/GitHub/devops/scripts/git_sync.sh
+```
+
+So **`git push` on the `mpbarbosa.com` staging repo is the deploy** — the site follows within ten minutes, with no SSM and no rsync. Verified 2026-09-17: a push at 19:31 UTC was live at 19:40:14 UTC (the webroot's own reflog records `pull: Fast-forward`, and the two previous deploys landed the same way). Discovered only by inspecting the host; nothing in this repo mentioned it.
+
+Consequence: `prod_deploy.sh` is now a **second, heavier path to the same place** — its step 2 rsyncs `--delete` from the `/home/ubuntu` staging checkout over the webroot. Reach for it to force a deploy immediately or to recover a webroot that drifted, not as the routine. `--inspect` is the useful part day to day: it reports both checkouts, the webroot's git HEAD and reflog, and who pulls it.
+
 On the host it **finds both checkouts** (searching `/home`, `/root`, `/srv`, `/opt`), pulls the `mpbarbosa.com` staging checkout, then runs that host's `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`. The discovery is the point: SSM runs as root, so `~` is `/root` while the checkouts live in a user home — the old hardcoded `~/Documents/GitHub/mpbarbosa_site` failed as root with "No such file or directory". Git's ownership guard is neutralised for the run via `GIT_CONFIG_*`, since root is reading another user's checkout.
 
 Legacy submodule helper scripts (`pull_all_submodules.sh`, `push_all_submodules.sh`) are in `shell_scripts/deprecated/`.

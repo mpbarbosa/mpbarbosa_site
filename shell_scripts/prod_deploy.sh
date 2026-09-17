@@ -100,8 +100,36 @@ if [ "$INSPECT" = true ]; then
     ls -ld "$PRODUCTION_DIR" 2>/dev/null
     ls -l "$PRODUCTION_DIR/cv/" 2>/dev/null | head
     echo
+    echo "=== is the webroot its own copy, or the checkout itself? ==="
+    echo "realpath:  $(readlink -f "$PRODUCTION_DIR")"
+    echo -n "same inode as staging checkout: "
+    if [ "$(stat -c '%d:%i' "$PRODUCTION_DIR" 2>/dev/null)" = "$(stat -c '%d:%i' "$PUB_DIR" 2>/dev/null)" ]; then
+        echo "YES — the webroot IS the checkout (symlink or bind mount)"
+    else
+        echo "no — separate directories"
+    fi
+    findmnt -no SOURCE,TARGET --target "$PRODUCTION_DIR" 2>/dev/null
+    echo -n ".git inside webroot: "; [ -e "$PRODUCTION_DIR/.git" ] && echo yes || echo no
+    echo "backups present:"
+    ls -1 "$PRODUCTION_DIR/.backups" 2>/dev/null | tail -3
+    if [ -e "$PRODUCTION_DIR/.git" ]; then
+        echo "webroot git HEAD:   $(git -C "$PRODUCTION_DIR" log --oneline -1 2>/dev/null)"
+        echo "webroot remote:     $(git -C "$PRODUCTION_DIR" remote -v 2>/dev/null | head -1)"
+        echo "webroot reflog:"; git -C "$PRODUCTION_DIR" reflog -3 --date=iso 2>/dev/null | sed 's/^/    /'
+        echo "webroot dirty files: $(git -C "$PRODUCTION_DIR" status --porcelain 2>/dev/null | wc -l)"
+    fi
+    echo "hooks in staging checkout:"
+    ls -1 "$PUB_DIR/.git/hooks" 2>/dev/null | grep -v '\.sample$' | sed 's/^/    /'
+    echo "who pulls the webroot? (crontabs mentioning git/pull/deploy)"
+    for u in root ubuntu; do
+        crontab -u "$u" -l 2>/dev/null | grep -v '^#' | grep -n . | sed "s/^/    [$u] /"
+    done
+    grep -rl "mpbarbosa\|git pull" /etc/cron.d /etc/cron.hourly /etc/cron.daily 2>/dev/null | sed 's/^/    file: /'
+    systemctl list-timers --all --no-pager 2>/dev/null | grep -iv "^NEXT\|apt\|man-db\|logrotate\|fstrim\|motd\|e2scrub\|dpkg\|sysstat\|systemd-tmpfiles" | sed 's/^/    timer: /' | head
+
+    echo
     echo "=== nginx roots in use ==="
-    grep -rhn "root " /etc/nginx/sites-enabled/ 2>/dev/null | head
+    grep -rhn "root " /etc/nginx/sites-enabled/ /etc/nginx/conf.d/ /etc/nginx/nginx.conf 2>/dev/null | head
     exit 0
 fi
 
@@ -111,8 +139,32 @@ if [ -z "$PUB_DIR" ]; then
     exit 1
 fi
 
-echo "==> Pulling staging in $PUB_DIR"
-git -C "$PUB_DIR" pull || { echo "ERROR: git pull failed in $PUB_DIR" >&2; exit 1; }
+# Pull as the checkout's owner: root has no SSH key for the `git@github.com`
+# remote, and a root pull would also litter the checkout with root-owned
+# objects. If that fails (no login shell, key with a passphrase), fall back to
+# an anonymous HTTPS fetch — both repos are public.
+PUB_OWNER="$(stat -c '%U' "$PUB_DIR" 2>/dev/null || echo root)"
+echo "==> Pulling staging in $PUB_DIR (owner: $PUB_OWNER)"
+
+pull_ok=false
+if [ "$PUB_OWNER" != "root" ] && id "$PUB_OWNER" >/dev/null 2>&1; then
+    if sudo -u "$PUB_OWNER" -H git -C "$PUB_DIR" pull; then
+        pull_ok=true
+    else
+        echo "    pull as $PUB_OWNER failed; retrying anonymously over HTTPS" >&2
+    fi
+fi
+
+if [ "$pull_ok" = false ]; then
+    sudo -u "$PUB_OWNER" -H git -C "$PUB_DIR" \
+        -c url."https://github.com/".insteadOf="git@github.com:" pull \
+        && pull_ok=true
+fi
+
+if [ "$pull_ok" = false ]; then
+    echo "ERROR: git pull failed in $PUB_DIR" >&2
+    exit 1
+fi
 echo "    now at: $(git -C "$PUB_DIR" log --oneline -1)"
 
 if [ -z "$SITE_DIR" ]; then
