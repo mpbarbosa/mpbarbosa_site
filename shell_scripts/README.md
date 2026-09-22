@@ -696,7 +696,7 @@ validate_all_documentation_metrics
 
 **Step 2 (Public → Production)**:
 1. Production environment validation and permission checks
-2. Production backup creation with 7-day retention
+2. Production backup into `<production-dir>/.backups/` (last 3 kept, `.git` left out, skipped with a warning if it would leave under 1 GiB free); the rsync excludes `/.backups`, and nginx refuses dot-paths, so backups persist without being served
 3. Efficient file synchronization using rsync/cp
 4. Production deployment validation
 5. Web server ready file structure (755/644 permissions)

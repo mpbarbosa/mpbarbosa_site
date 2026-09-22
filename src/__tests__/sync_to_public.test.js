@@ -2,8 +2,9 @@
  * @jest-environment node
  */
 
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -507,6 +508,94 @@ describe('sync_to_staging.sh - Comprehensive Test Suite', () => {
       expect(scriptContent).toContain('--no-backup');
       expect(scriptContent).toContain('CREATE_BACKUP=false');
     });
+  });
+
+  // Runs --step2 for real against scratch directories. STAGING_DIR is derived from
+  // the script's own location, so the script is copied into a scratch project
+  // tree; as a non-root user the systemd and service-restart steps return early.
+  describe('Step 2 production backups (runs the script)', () => {
+    let scratch;
+    let stagingDir;
+    let productionDir;
+    let scriptCopy;
+
+    const deploy = (version, env = {}) => {
+      fs.writeFileSync(path.join(stagingDir, 'index.html'), `${version}\n`);
+      spawnSync('sleep', ['1.1']); // backup names have one-second resolution
+      const result = spawnSync('bash', [scriptCopy, '--step2', '--production-dir', productionDir], {
+        encoding: 'utf8',
+        env: { ...process.env, ...env },
+      });
+      return { ...result, output: `${result.stdout}${result.stderr}` };
+    };
+
+    const read = (...parts) => fs.readFileSync(path.join(...parts), 'utf8').trim();
+
+    const backups = () => {
+      const dir = path.join(productionDir, '.backups');
+      return fs.existsSync(dir)
+        ? fs
+            .readdirSync(dir)
+            .filter((name) => name.startsWith('backup_'))
+            .sort()
+        : [];
+    };
+
+    beforeEach(() => {
+      scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'step2-backups-'));
+      stagingDir = path.join(scratch, 'mpbarbosa.com');
+      productionDir = path.join(scratch, 'prod');
+      scriptCopy = path.join(scratch, 'site', 'shell_scripts', 'sync_to_staging.sh');
+      fs.mkdirSync(path.dirname(scriptCopy), { recursive: true });
+      fs.copyFileSync(syncScript, scriptCopy);
+      fs.mkdirSync(path.join(stagingDir, '.git'), { recursive: true });
+      fs.writeFileSync(path.join(stagingDir, '.git', 'HEAD'), 'ref: refs/heads/main\n');
+      fs.mkdirSync(productionDir);
+    });
+
+    afterEach(() => {
+      fs.rmSync(scratch, { recursive: true, force: true });
+    });
+
+    test('backups survive the rsync, leave out .git, and only the last 3 are kept', () => {
+      ['v1', 'v2', 'v3', 'v4', 'v5'].forEach((version) => {
+        const result = deploy(version);
+        expect({ version, status: result.status }).toEqual({ version, status: 0 });
+      });
+
+      const kept = backups();
+      expect(kept).toHaveLength(3);
+      // Each deploy backs up what production held before it: v2, v3, v4 survive.
+      expect(kept.map((name) => read(productionDir, '.backups', name, 'index.html'))).toEqual([
+        'v2',
+        'v3',
+        'v4',
+      ]);
+      kept.forEach((name) => {
+        expect(fs.existsSync(path.join(productionDir, '.backups', name, '.git'))).toBe(false);
+      });
+      expect(read(productionDir, 'index.html')).toBe('v5');
+      // check_prod_deploy.sh reads the web root's .git, so the rsync must still bring it.
+      expect(read(productionDir, '.git', 'HEAD')).toBe('ref: refs/heads/main');
+    }, 60000);
+
+    test('skips the backup, and still deploys, when it would leave under 1 GiB free', () => {
+      expect(deploy('v1').status).toBe(0);
+
+      const bin = path.join(scratch, 'bin');
+      fs.mkdirSync(bin);
+      fs.writeFileSync(
+        path.join(bin, 'df'),
+        '#!/bin/sh\necho "Filesystem 1024-blocks Used Available Capacity Mounted on"\necho "/dev/root 24299968 24000000 900000 99% /"\n',
+        { mode: 0o755 },
+      );
+      const result = deploy('v2', { PATH: `${bin}:${process.env.PATH}` });
+
+      expect(result.status).toBe(0);
+      expect(result.output).toContain('Skipping production backup');
+      expect(backups()).toEqual([]);
+      expect(read(productionDir, 'index.html')).toBe('v2');
+    }, 60000);
   });
 
   describe('Music in Numbers Integration', () => {
