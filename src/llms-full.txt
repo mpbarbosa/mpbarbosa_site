@@ -90,8 +90,8 @@ Senior Data Analyst. Oracle to BigQuery data migration, in a Scrum team.
 Companion app for the Brazilian Série A championship.
 
 - Stack: React 19, TypeScript, Express 5, Tailwind 4, AWS
-- 45 unit tests, 30 end-to-end Playwright specs
-- 742 commits over nine days (23–31 August 2026)
+- 84 unit tests, 46 end-to-end Playwright specs
+- 1,568 commits in under a month (23 August–18 September 2026)
 - 7 GitHub Actions workflows including rollback, with a documented flip-back drill
 - Keyless deploys over OIDC; OAuth login; Material Design 3 tokens
 - Live `/api/health` endpoint
