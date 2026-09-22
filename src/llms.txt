@@ -11,7 +11,7 @@
 
 ## Products in production
 
-- [Portal Brasileirão](https://brasileirao.mpbarbosa.com): Companion app for the Brazilian Série A championship. React 19, TypeScript, Express 5, Tailwind 4, AWS. 45 unit tests, 30 end-to-end Playwright specs, 7 GitHub Actions workflows including rollback with a documented flip-back drill, keyless deploys over OIDC, OAuth login, frozen-snapshot fallback when no API token is available.
+- [Portal Brasileirão](https://brasileirao.mpbarbosa.com): Companion app for the Brazilian Série A championship. React 19, TypeScript, Express 5, Tailwind 4, AWS. 84 unit tests, 46 end-to-end Playwright specs, 1,568 commits in under a month, 7 GitHub Actions workflows including rollback with a documented flip-back drill, keyless deploys over OIDC, OAuth login, frozen-snapshot fallback when no API token is available.
 - [Agora na Copa 2026](https://copa2026.mpbarbosa.com): Companion app for the FIFA World Cup 2026. React 19, TypeScript, Express, AWS. Monte Carlo qualification simulator using a Dixon-Coles model with the Article 13 FIFA tie-breaking criteria; per-integration fallbacks (FIFA API, Open-Meteo, Google Trends); nginx and systemd.
 
 ## Experience
