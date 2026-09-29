@@ -91,6 +91,19 @@ So **`git push` on the `mpbarbosa.com` staging repo is the deploy** — the site
 
 Consequence: step 2 is load-bearing for **every** deploy, not an optional heavier alternative to a pull. If `devops/copa_2026/prod_deploy.sh` stops running, or `sync_to_staging.sh --step2` starts failing, pushes keep succeeding and the site quietly stops updating — so a deploy that "did not land" is a step 2 question first.
 
+To ask whether one landed (read-only; compares GitHub main, the staging clone and the web root, summarises the cron's log, and lists files the cron would not be able to write):
+
+```bash
+AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/check_prod_deploy.sh
+```
+
+Four properties of that cron matter when a deploy misbehaves:
+
+- **It walks the checkouts alphabetically**, and `mpbarbosa.com` sorts before `mpbarbosa_site`. A staging push and a change to `sync_to_staging.sh` landing in the same 10-minute window therefore deploy with the **old** script; the new one takes effect a run later.
+- **It skips any repo whose tracked files have local changes.** A dirty staging clone on the host stops deploys with nothing failing loudly; `check_prod_deploy.sh` reports it.
+- **Its log, `~ubuntu/.local/log/git_sync.log`, rotates at 500 KB** keeping one old copy, so it reaches back about a day — diagnose while it is fresh.
+- **Never run `sync_to_staging.sh --step2` on the host as root**, and every SSM session is root. The cron runs it as ubuntu; as root it also restarts nginx and the unrelated `busca_vagas_node_app`, and git as root in these ubuntu-owned checkouts leaves root-owned files in `.git` that ubuntu's own pulls can no longer write.
+
 `shell_scripts/prod_deploy.sh` reaches that same step 2 by hand from your workstation: use it to publish immediately instead of waiting for the cron, or to recover a web root that drifted. `--inspect` is the useful part day to day — it reports both checkouts and the web root's git HEAD and reflog.
 
 On the host it **finds both checkouts** (searching `/home`, `/root`, `/srv`, `/opt`), pulls the `mpbarbosa.com` staging checkout, then runs that host's `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`. The discovery is the point: SSM runs as root, so `~` is `/root` while the checkouts live in a user home — the old hardcoded `~/Documents/GitHub/mpbarbosa_site` failed as root with "No such file or directory". Git's ownership guard is neutralised for the run via `GIT_CONFIG_*`, since root is reading another user's checkout.

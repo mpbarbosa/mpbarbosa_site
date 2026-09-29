@@ -398,6 +398,69 @@ describe('Shell Scripts Functionality', () => {
     });
   });
 
+  describe('check_prod_deploy.sh', () => {
+    const checkPath = path.join(shellScriptsDir, 'check_prod_deploy.sh');
+
+    const runScript = (args = [], env = {}) =>
+      spawnSync('bash', [checkPath, ...args], {
+        cwd: projectRoot,
+        encoding: 'utf8',
+        env: { ...process.env, ...env },
+      });
+
+    // Lines that execute: no comments, blank lines or heredoc bodies.
+    const codeLines = (content) => {
+      const lines = [];
+      let heredocEnd = null;
+      for (const line of content.split('\n')) {
+        if (heredocEnd) {
+          if (line.trim() === heredocEnd) heredocEnd = null;
+          continue;
+        }
+        if (/^\s*(#|$)/.test(line)) continue;
+        const heredoc = line.match(/<<-?\s*'?(\w+)'?/);
+        if (heredoc) heredocEnd = heredoc[1];
+        lines.push(line);
+      }
+      return lines.join('\n');
+    };
+
+    test('documents how to run it through SSM', () => {
+      expect(checkScriptExecutable(checkPath)).toBe(true);
+
+      const { status, stdout } = runScript(['--help']);
+
+      expect(status).toBe(0);
+      expect(stdout).toContain('run_on_prod_via_ssm.sh shell_scripts/check_prod_deploy.sh');
+    });
+
+    test('refuses to run off the prod host', () => {
+      const missing = path.join(projectRoot, 'no-such-prod-dir');
+
+      const { status, stderr } = runScript([], {
+        PROD_GITHUB_DIR: missing,
+        PROD_WEB_DIR: missing,
+      });
+
+      expect(status).toBe(2);
+      expect(stderr).toContain('run_on_prod_via_ssm.sh');
+    });
+
+    test('is read-only and runs git as the checkout owner', () => {
+      // It is sent to prod through SSM, which runs as root: a write here would
+      // land root-owned files in ubuntu's checkouts and break the cron's pulls.
+      const code = codeLines(fs.readFileSync(checkPath, 'utf8'));
+
+      expect(code).not.toMatch(/\b(rsync|chown|chmod|systemctl|rm|mv|cp|tee|mkdir)\b/);
+      expect(code).not.toMatch(/>\s*[^&\s/]/); // no redirect into a file
+      expect(code).not.toMatch(
+        /(git -C|git_in) \S+ (pull|fetch|reset|checkout|commit|push|add|stash|gc|update-index)\b/,
+      );
+      expect(code).not.toContain('--step2 --production-dir');
+      expect(code).toContain('sudo -n -u "${OWNER}"');
+    });
+  });
+
   describe('run_on_prod_via_ssm.sh against a stub aws', () => {
     const runnerPath = path.join(shellScriptsDir, 'run_on_prod_via_ssm.sh');
     let scratch;
