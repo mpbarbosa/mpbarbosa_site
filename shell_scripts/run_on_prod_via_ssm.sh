@@ -28,7 +28,7 @@
 # What it does:
 #   1. base64-encodes the local script (so quoting/newlines survive the trip).
 #   2. Sends one SSM command that decodes it to a temp file and runs it.
-#   3. Polls until the invocation finishes.
+#   3. Polls until the invocation finishes, or gives up after 180s.
 #   4. Prints the remote stdout and stderr, and exits with the remote exit code.
 #
 # Exit codes:
@@ -81,10 +81,21 @@ TMP_JSON="$(mktemp)"
 trap 'rm -f "${TMP_JSON}"' EXIT
 printf '%s' "${PAYLOAD}" > "${TMP_JSON}"
 
+TMP_ERR="$(mktemp)"
+trap 'rm -f "${TMP_JSON}" "${TMP_ERR}"' EXIT
+
+# Trust aws's exit status and the shape of the id, not the text of the failure:
+# an expired SSO session prints "aws: [ERROR]: Your session has expired" — which
+# a lowercase substring test misses — after a leading newline, so the id looked
+# non-empty and the poll below then waited out its full deadline on nothing.
 CMD_ID="$(aws ssm send-command --cli-input-json "file://${TMP_JSON}" \
-    --query 'Command.CommandId' --output text 2>&1)"
-if [[ -z "${CMD_ID}" || "${CMD_ID}" == *"error"* || "${CMD_ID}" == "None" ]]; then
-    echo "ERROR: send-command failed: ${CMD_ID}" >&2
+    --query 'Command.CommandId' --output text 2>"${TMP_ERR}")"
+SEND_RC=$?
+if [[ ${SEND_RC} -ne 0 ]] || [[ ! "${CMD_ID}" =~ ^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$ ]]; then
+    echo "ERROR: send-command failed (aws exited ${SEND_RC})." >&2
+    [[ -s "${TMP_ERR}" ]] && sed 's/^/    /' "${TMP_ERR}" >&2
+    [[ -n "${CMD_ID}" ]] && echo "    unexpected CommandId: ${CMD_ID}" >&2
+    echo "    If the SSO session expired, renew it: aws login --profile \"\${AWS_PROFILE:-default}\"" >&2
     exit 1
 fi
 echo "    CommandId: ${CMD_ID}"
@@ -99,6 +110,16 @@ for _ in $(seq 1 60); do
         Success|Failed|Cancelled|TimedOut) break ;;
     esac
 done
+
+case "${STATUS}" in
+    Success|Failed|Cancelled|TimedOut) ;;
+    *)
+        echo "ERROR: ${CMD_ID} is still ${STATUS} after 180s — giving up waiting." >&2
+        echo "    It may still be running. Check with:" >&2
+        echo "    aws ssm get-command-invocation --command-id ${CMD_ID} --instance-id ${INSTANCE_ID}" >&2
+        exit 1
+        ;;
+esac
 
 OUT="$(aws ssm get-command-invocation --command-id "${CMD_ID}" \
     --instance-id "${INSTANCE_ID}" --query 'StandardOutputContent' --output text 2>/dev/null)"
