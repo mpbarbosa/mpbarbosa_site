@@ -397,6 +397,97 @@ describe('Shell Scripts Functionality', () => {
       });
     });
   });
+
+  describe('run_on_prod_via_ssm.sh against a stub aws', () => {
+    const runnerPath = path.join(shellScriptsDir, 'run_on_prod_via_ssm.sh');
+    let scratch;
+
+    // Dispatches on the aws sub-command and --query, so one stub serves the
+    // send and all four get-command-invocation reads.
+    const stubAws = (sendBody) =>
+      fs.writeFileSync(
+        path.join(scratch, 'bin', 'aws'),
+        [
+          '#!/bin/sh',
+          'case "$*" in',
+          '  *send-command*)',
+          sendBody,
+          '    ;;',
+          '  *StandardOutputContent*) echo "hello from prod" ;;',
+          '  *StandardErrorContent*) echo None ;;',
+          '  *ResponseCode*) echo 0 ;;',
+          '  *Status*) echo Success ;;',
+          'esac',
+          '',
+        ].join('\n'),
+        { mode: 0o755 },
+      );
+
+    const run = () => {
+      const started = Date.now();
+      const result = spawnSync('bash', [runnerPath, path.join(scratch, 'payload.sh')], {
+        encoding: 'utf8',
+        env: { ...process.env, PATH: `${path.join(scratch, 'bin')}:${process.env.PATH}` },
+      });
+      return { ...result, elapsedMs: Date.now() - started };
+    };
+
+    beforeEach(() => {
+      scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'ssm-runner-'));
+      fs.mkdirSync(path.join(scratch, 'bin'));
+      fs.writeFileSync(path.join(scratch, 'payload.sh'), '#!/bin/bash\necho hi\n', { mode: 0o755 });
+    });
+
+    afterEach(() => {
+      fs.rmSync(scratch, { recursive: true, force: true });
+    });
+
+    test('is executable and parses', () => {
+      expect(checkScriptExecutable(runnerPath)).toBe(true);
+      expect(spawnSync('bash', ['-n', runnerPath]).status).toBe(0);
+    });
+
+    test('gives up at once when the SSO session has expired', () => {
+      // Verbatim shape of a real failure: empty stdout, a leading newline before
+      // an uppercase [ERROR] on stderr, exit 255.
+      stubAws(
+        [
+          '    printf "\\naws: [ERROR]: Your session has expired. Please reauthenticate using \'aws login\'." >&2',
+          '    exit 255',
+        ].join('\n'),
+      );
+
+      const result = run();
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain('send-command failed (aws exited 255)');
+      expect(result.stderr).toContain('Your session has expired');
+      expect(result.stderr).toContain('aws login --profile');
+      // The bug this guards: the poll ran its full 180s deadline on no command id.
+      expect(result.stdout).not.toContain('Waiting for completion');
+      expect(result.elapsedMs).toBeLessThan(30000);
+    });
+
+    test('gives up when send-command succeeds but returns no usable command id', () => {
+      stubAws('    echo None');
+
+      const result = run();
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain('unexpected CommandId: None');
+    });
+
+    test('polls and reports the remote output when the command id is real', () => {
+      stubAws('    echo 90157e21-c4e9-4abb-ac60-377b760c9147');
+
+      const result = run();
+
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('CommandId: 90157e21-c4e9-4abb-ac60-377b760c9147');
+      expect(result.stdout).toContain('hello from prod');
+      expect(result.stdout).toContain('Status: Success  (exit code 0)');
+    });
+  });
 });
 
 describe('Project Navigation Integration', () => {
