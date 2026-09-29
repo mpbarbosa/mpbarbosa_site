@@ -93,9 +93,9 @@ CMD_ID="$(aws ssm send-command --cli-input-json "file://${TMP_JSON}" \
 SEND_RC=$?
 if [[ ${SEND_RC} -ne 0 ]] || [[ ! "${CMD_ID}" =~ ^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$ ]]; then
     echo "ERROR: send-command failed (aws exited ${SEND_RC})." >&2
-    [[ -s "${TMP_ERR}" ]] && sed 's/^/    /' "${TMP_ERR}" >&2
+    awk 'NF {print "    " $0}' "${TMP_ERR}" >&2
     [[ -n "${CMD_ID}" ]] && echo "    unexpected CommandId: ${CMD_ID}" >&2
-    echo "    If the SSO session expired, renew it: aws login --profile \"\${AWS_PROFILE:-default}\"" >&2
+    echo "    If the SSO session expired, renew it: aws login --profile ${AWS_PROFILE:-default}" >&2
     exit 1
 fi
 echo "    CommandId: ${CMD_ID}"
