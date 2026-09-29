@@ -77,15 +77,21 @@ AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh --dry-run
 AWS_PROFILE=mpb ./shell_scripts/prod_deploy.sh
 ```
 
-**But publishing does not actually depend on it.** `/var/www/mpbarbosa.com` is itself a git checkout of the `mpbarbosa.com` repo, and a cron job owned by `ubuntu` pulls it **every 10 minutes**:
+**You rarely have to run it, though**, because a cron job owned by `ubuntu` publishes every 10 minutes:
 
 ```
 */10 * * * * /home/ubuntu/Documents/GitHub/devops/scripts/git_sync.sh
 ```
 
-So **`git push` on the `mpbarbosa.com` staging repo is the deploy** — the site follows within ten minutes, with no SSM and no rsync. Verified 2026-09-17: a push at 19:31 UTC was live at 19:40:14 UTC (the webroot's own reflog records `pull: Fast-forward`, and the two previous deploys landed the same way). Discovered only by inspecting the host; nothing in this repo mentioned it.
+So **`git push` on the `mpbarbosa.com` staging repo is the deploy** — the site follows within ten minutes, with nothing to run by hand. Verified 2026-09-17: a push at 19:31 UTC was live at 19:40:14 UTC.
 
-Consequence: `prod_deploy.sh` is now a **second, heavier path to the same place** — its step 2 rsyncs `--delete` from the `/home/ubuntu` staging checkout over the webroot. Reach for it to force a deploy immediately or to recover a webroot that drifted, not as the routine. `--inspect` is the useful part day to day: it reports both checkouts, the webroot's git HEAD and reflog, and who pulls it.
+**What that cron does is not what it looks like.** `git_sync.sh` only walks `~ubuntu/Documents/GitHub/*/`; it never touches `/var/www`, and ubuntu's crontab has no other entry. When its pull advances the `mpbarbosa.com` staging checkout, it runs `devops/copa_2026/prod_deploy.sh`, which runs that host's `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`. **That step 2 rsync is the only thing that ever writes the web root.**
+
+`/var/www/mpbarbosa.com` reads like a checkout that pulls itself — `git reflog` there is all `pull: Fast-forward`, and this file claimed exactly that until 2026-09-29. It does not pull. The step 2 rsync excludes only `/.backups`, so staging's `.git` is copied over the web root's wholesale, reflog included. Evidence, 2026-09-29: staging and web root `.git/logs/HEAD` share an md5, and the web root's `FETCH_HEAD` is frozen at the moment of the last rsync while staging's advances every ten minutes. Read that reflog as staging's history, never as proof the web root fetched anything.
+
+Consequence: step 2 is load-bearing for **every** deploy, not an optional heavier alternative to a pull. If `devops/copa_2026/prod_deploy.sh` stops running, or `sync_to_staging.sh --step2` starts failing, pushes keep succeeding and the site quietly stops updating — so a deploy that "did not land" is a step 2 question first.
+
+`shell_scripts/prod_deploy.sh` reaches that same step 2 by hand from your workstation: use it to publish immediately instead of waiting for the cron, or to recover a web root that drifted. `--inspect` is the useful part day to day — it reports both checkouts and the web root's git HEAD and reflog.
 
 On the host it **finds both checkouts** (searching `/home`, `/root`, `/srv`, `/opt`), pulls the `mpbarbosa.com` staging checkout, then runs that host's `sync_to_staging.sh --step2 --production-dir /var/www/mpbarbosa.com`. The discovery is the point: SSM runs as root, so `~` is `/root` while the checkouts live in a user home — the old hardcoded `~/Documents/GitHub/mpbarbosa_site` failed as root with "No such file or directory". Git's ownership guard is neutralised for the run via `GIT_CONFIG_*`, since root is reading another user's checkout.
 
