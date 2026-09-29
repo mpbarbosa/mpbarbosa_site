@@ -115,12 +115,27 @@ if [ "$INSPECT" = true ]; then
     if [ -e "$PRODUCTION_DIR/.git" ]; then
         echo "webroot git HEAD:   $(git -C "$PRODUCTION_DIR" log --oneline -1 2>/dev/null)"
         echo "webroot remote:     $(git -C "$PRODUCTION_DIR" remote -v 2>/dev/null | head -1)"
+        # Step 2's rsync excludes only /.backups, so it copies staging's .git
+        # wholesale and the webroot inherits its reflog. Decide with the logs
+        # themselves; `pull: Fast-forward` here is not evidence of a fetch.
+        webroot_log="$PRODUCTION_DIR/.git/logs/HEAD"
+        staging_log="$PUB_DIR/.git/logs/HEAD"
+        echo -n "webroot .git is a byte copy of staging's: "
+        if [ -f "$webroot_log" ] && [ -f "$staging_log" ] &&
+            [ "$(md5sum <"$webroot_log")" = "$(md5sum <"$staging_log")" ]; then
+            echo "YES — the reflog below is staging's history, not the webroot's own pulls"
+        else
+            echo "no — the two logs/HEAD differ, so the webroot has history of its own"
+        fi
+        for f in "$PRODUCTION_DIR/.git/FETCH_HEAD" "$PUB_DIR/.git/FETCH_HEAD"; do
+            [ -f "$f" ] && echo "last fetch:         $(stat -c '%y' "$f" | cut -d. -f1)  $f"
+        done
         echo "webroot reflog:"; git -C "$PRODUCTION_DIR" reflog -3 --date=iso 2>/dev/null | sed 's/^/    /'
         echo "webroot dirty files: $(git -C "$PRODUCTION_DIR" status --porcelain 2>/dev/null | wc -l)"
     fi
     echo "hooks in staging checkout:"
     ls -1 "$PUB_DIR/.git/hooks" 2>/dev/null | grep -v '\.sample$' | sed 's/^/    /'
-    echo "who pulls the webroot? (crontabs mentioning git/pull/deploy)"
+    echo "what is scheduled? (the webroot is written by step 2's rsync, not by a pull of its own)"
     for u in root ubuntu; do
         crontab -u "$u" -l 2>/dev/null | grep -v '^#' | grep -n . | sed "s/^/    [$u] /"
     done
