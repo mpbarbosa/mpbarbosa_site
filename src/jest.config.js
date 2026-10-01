@@ -103,8 +103,10 @@ export default {
       // Node, not jsdom: this suite drives a real Chrome through puppeteer.
       // Under jsdom, puppeteer's `ws` dependency sees a browser-like global and
       // refuses to open the DevTools socket ("ws does not work in the browser"),
-      // so every launch threw and all 8 tests silently no-opped via the
-      // browserAvailable guard.
+      // so every launch threw. That used to report as a full green run, because
+      // the suite guarded each test with a bare `return` on launch failure and
+      // Jest counts a returning test as passed. It now reports as skipped
+      // instead, so the same misconfiguration is visible in the summary.
       testEnvironment: 'node',
     },
   ],

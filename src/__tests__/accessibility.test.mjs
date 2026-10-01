@@ -3,7 +3,9 @@
  * Tests WCAG 2.1 Level AA compliance using axe-core
  *
  * Requirements: a running dev server at http://127.0.0.1:8080 and Chrome/Chromium available.
- * The suite is skipped automatically when those conditions are not met (e.g. in CI without a browser).
+ * Without Chrome the suite reports as SKIPPED (an environment limit, e.g. CI without a
+ * browser). Without the server it FAILS, because this repo controls that side —
+ * shell_scripts/test_with_server.sh starts one, runs the suite and tears it down.
  *
  * Every page the site actually serves is covered by the shared checks below.
  * Adding a page to PAGES is all it takes to hold it to the same bar; the
@@ -27,22 +29,51 @@ const PAGES = [
   { name: 'Singularity (/en/singularity/)', path: '/en/singularity/', lang: 'en' },
 ];
 
-describe('Accessibility Tests', () => {
-  let browser;
+// Probed before the suite is defined, so the result can choose between running,
+// skipping and failing. Guarding inside each test with a bare `return` — what
+// this file did before — reports it as PASSED without having tested anything,
+// which is the one outcome a capability check must never produce.
+let browser = null;
+let launchError = null;
+try {
+  browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+} catch (err) {
+  launchError = err;
+}
+
+if (!browser) {
+  const reason = String(launchError?.message ?? launchError).split('\n')[0];
+  // process.stderr, not console.warn: Jest captures a test file's console and
+  // prints it with that file's results, so a skipped suite's console output is
+  // never shown \u2014 leaving "26 skipped" on screen with no reason attached.
+  process.stderr.write(
+    `\nAccessibility suite SKIPPED \u2014 Chrome could not be launched.\n  ${reason}\n` +
+      '  Install Chrome/Chromium, or point PUPPETEER_EXECUTABLE_PATH at an existing binary.\n\n',
+  );
+}
+
+// describe.skip reports as "skipped" in Jest's summary, which is visible.
+// A passing test that did nothing is not.
+const describeIfBrowser = browser ? describe : describe.skip;
+
+describeIfBrowser('Accessibility Tests', () => {
   let page;
-  let browserAvailable = false;
 
   beforeAll(async () => {
-    try {
-      browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      });
-      page = await browser.newPage();
-      browserAvailable = true;
-    } catch {
-      // Chrome not available or server not running — tests will be skipped
+    // One clear failure beats 26 ERR_CONNECTION_REFUSED stack traces.
+    const res = await fetch(BASE_URL, { signal: AbortSignal.timeout(5000) }).catch((err) => {
+      throw new Error(
+        `No dev server is answering ${BASE_URL} (${err.message}). ` +
+          'Start one, or run ./shell_scripts/test_with_server.sh which does it for you.',
+      );
+    });
+    if (!res.ok) {
+      throw new Error(`${BASE_URL} answered ${res.status}; the suite needs a 2xx.`);
     }
+    page = await browser.newPage();
   });
 
   afterAll(async () => {
@@ -55,9 +86,6 @@ describe('Accessibility Tests', () => {
 
   describe.each(PAGES)('$name', ({ path, lang }) => {
     it('should pass axe accessibility tests', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open(path);
 
       const results = await new AxePuppeteer(page).withTags(WCAG_TAGS).analyze();
@@ -66,9 +94,6 @@ describe('Accessibility Tests', () => {
     }, 30000);
 
     it('should have proper semantic HTML structure', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open(path);
 
       expect(await page.$('main')).toBeTruthy();
@@ -77,27 +102,18 @@ describe('Accessibility Tests', () => {
     }, 30000);
 
     it(`should declare lang="${lang}" on the html element`, async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open(path);
 
       expect(await page.$eval('html', (el) => el.getAttribute('lang'))).toBe(lang);
     }, 30000);
 
     it('should have exactly one h1', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open(path);
 
       expect(await page.$$eval('h1', (els) => els.length)).toBe(1);
     }, 30000);
 
     it('should have alt text on all images', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open(path);
 
       // An empty alt is correct -- and required -- for decorative images, so long
@@ -124,9 +140,6 @@ describe('Accessibility Tests', () => {
     }, 30000);
 
     it('should be keyboard navigable', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open(path);
 
       await page.keyboard.press('Tab');
@@ -147,9 +160,6 @@ describe('Accessibility Tests', () => {
   // Font Awesome social icon links.
   describe('homepage (/) — contact form and icon links', () => {
     it('should have proper form labels', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open('/');
 
       // Click contact link to open form
@@ -172,9 +182,6 @@ describe('Accessibility Tests', () => {
     }, 30000);
 
     it('should have aria-labels on icon links', async () => {
-      if (!browserAvailable) {
-        return;
-      }
       await open('/');
 
       const iconLinksWithoutAriaLabel = await page.$$eval(
