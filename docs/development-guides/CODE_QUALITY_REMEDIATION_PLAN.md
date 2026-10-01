@@ -1,6 +1,6 @@
 # Code Quality Remediation Plan
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.1.8  
 **Date:** December 24, 2025  
 **Status:** 🟡 ACTIVE - Awaiting Implementation  
 **Assessment Source:** Workflow Step 9 (workflow_20251224_203055)
@@ -736,7 +736,7 @@ src/
 │   └── images/
 └── submodules/            # Git submodules
     ├── music_in_numbers/
-    └── guia_turistico/
+    └── guia_js/
 ```
 
 **Implementation:** Requires careful planning and incremental migration. See separate architecture refactoring document.

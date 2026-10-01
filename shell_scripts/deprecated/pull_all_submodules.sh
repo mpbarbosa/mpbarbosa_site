@@ -7,14 +7,14 @@
 # This script is DEPRECATED as of December 2025.
 # 
 # REASON: The project has migrated from git submodules to sibling projects.
-# All four projects (music_in_numbers, guia_turistico, monitora_vagas, 
+# All four projects (music_in_numbers, guia_js, monitora_vagas, 
 # busca_vagas) are now managed as independent sibling repositories.
 #
 # RECOMMENDED WORKFLOW:
 # Instead of using this script, manage each sibling project directly:
 #
 #   cd ../music_in_numbers && git pull
-#   cd ../guia_turistico && git pull
+#   cd ../guia_js && git pull
 #   cd ../monitora_vagas && git pull
 #   cd ../busca_vagas && git pull
 #
@@ -23,7 +23,7 @@
 # Description: Pulls the main repository and all submodules in proper hierarchical order
 # Author: MP Barbosa
 # Date: October 27, 2025
-# Version: 1.0.0 (DEPRECATED - December 25, 2025)
+# Version: 1.1.8 (DEPRECATED - December 25, 2025)
 #
 # This script follows the git best practices guide for submodule management:
 # 1. Main repository first (detects current branch dynamically)
@@ -53,7 +53,7 @@ echo -e "${RED}║ REASON: Project migrated from git submodules to sibling proje
 echo -e "${RED}║                                                                    ║${NC}"
 echo -e "${RED}║ RECOMMENDED: Use direct git commands in each project:             ║${NC}"
 echo -e "${YELLOW}║   cd ../music_in_numbers && git pull                              ║${NC}"
-echo -e "${YELLOW}║   cd ../guia_turistico && git pull                                ║${NC}"
+echo -e "${YELLOW}║   cd ../guia_js && git pull                                ║${NC}"
 echo -e "${YELLOW}║   cd ../monitora_vagas && git pull                                ║${NC}"
 echo -e "${YELLOW}║   cd ../busca_vagas && git pull                                   ║${NC}"
 echo -e "${RED}║                                                                    ║${NC}"

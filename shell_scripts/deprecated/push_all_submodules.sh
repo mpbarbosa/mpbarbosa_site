@@ -7,14 +7,14 @@
 # This script is DEPRECATED as of December 2025.
 # 
 # REASON: The project has migrated from git submodules to sibling projects.
-# All four projects (music_in_numbers, guia_turistico, monitora_vagas, 
+# All four projects (music_in_numbers, guia_js, monitora_vagas, 
 # busca_vagas) are now managed as independent sibling repositories.
 #
 # RECOMMENDED WORKFLOW:
 # Instead of using this script, manage each sibling project directly:
 #
 #   cd ../music_in_numbers && git add . && git commit && git push
-#   cd ../guia_turistico && git add . && git commit && git push
+#   cd ../guia_js && git add . && git commit && git push
 #   cd ../monitora_vagas && git add . && git commit && git push
 #   cd ../busca_vagas && git add . && git commit && git push
 #
@@ -23,7 +23,7 @@
 # Description: Pushes all modified files in proper hierarchical order (bottom-up)
 # Author: MP Barbosa
 # Date: October 27, 2025
-# Version: 1.0.0 (DEPRECATED - December 25, 2025)
+# Version: 1.1.8 (DEPRECATED - December 25, 2025)
 #
 # This script follows the git best practices guide for submodule management:
 # 1. Push deepest nested submodules first (bottom-up approach)
@@ -54,7 +54,7 @@ echo -e "${RED}║ REASON: Project migrated from git submodules to sibling proje
 echo -e "${RED}║                                                                    ║${NC}"
 echo -e "${RED}║ RECOMMENDED: Use direct git commands in each project:             ║${NC}"
 echo -e "${YELLOW}║   cd ../music_in_numbers && git push                              ║${NC}"
-echo -e "${YELLOW}║   cd ../guia_turistico && git push                                ║${NC}"
+echo -e "${YELLOW}║   cd ../guia_js && git push                                ║${NC}"
 echo -e "${YELLOW}║   cd ../monitora_vagas && git push                                ║${NC}"
 echo -e "${YELLOW}║   cd ../busca_vagas && git push                                   ║${NC}"
 echo -e "${RED}║                                                                    ║${NC}"

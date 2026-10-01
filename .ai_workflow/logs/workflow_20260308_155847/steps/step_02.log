@@ -1,0 +1,59 @@
+[2026-03-08T18:59:24.035Z] 
+→ Starting: Consistency Analysis
+[2026-03-08T18:59:24.036Z] ════════════════════════════════════════════════════════════
+[2026-03-08T18:59:24.036Z] 🔷  Step 2: Documentation Consistency Analysis
+[2026-03-08T18:59:24.036Z] ════════════════════════════════════════════════════════════
+[2026-03-08T18:59:29.522Z] Found 199 documentation files
+[2026-03-08T18:59:29.522Z] Expected version: 1.0.0
+[2026-03-08T18:59:29.606Z] Version check: 316 issue(s) found
+[2026-03-08T18:59:31.288Z] Link check: 167 broken link(s) found
+[2026-03-08T18:59:33.827Z] ✓ GitHub Copilot SDK initialized successfully
+[2026-03-08T18:59:33.827Z] Available Copilot models (13): claude-sonnet-4.5, claude-haiku-4.5, claude-opus-4.5, claude-sonnet-4, gemini-3-pro-preview, gpt-5.2-codex, gpt-5.2, gpt-5.1-codex-max, gpt-5.1-codex, gpt-5.1, gpt-5.1-codex-mini, gpt-5-mini, gpt-4.1
+[2026-03-08T18:59:33.833Z] [DEBUG] AI cache initialized: .ai_workflow/.ai_cache
+[2026-03-08T18:59:33.990Z] [step_02] Running AI analysis in 4 partition(s) of ≤50 files
+[2026-03-08T18:59:34.017Z] [DEBUG] [ai_cache] step_02_part0of4: file hash changed, calling AI
+[2026-03-08T18:59:34.017Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"documentation_expert","cache":true}
+[2026-03-08T18:59:34.017Z] [DEBUG] Persona: documentation_expert
+[2026-03-08T18:59:34.017Z] [DEBUG] Model: gpt-4.1
+[2026-03-08T18:59:34.017Z] [AI] SDK call starting — persona: documentation_expert, model: gpt-4.1, prompt_chars: 13200
+[2026-03-08T18:59:34.017Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-03-08T18:59:38.984Z] [AI] SDK call completed — persona: documentation_expert, model: gpt-4.1, response_chars: 96, latency: 4966ms
+[2026-03-08T18:59:38.984Z] ✓ AI request completed successfully
+[2026-03-08T18:59:38.986Z] [DEBUG] Prompt logged to: 2026-03-08T18-59-38-985Z_0001_documentation_expert.md
+[2026-03-08T18:59:38.990Z] ⚠ [step_02] Partition 1: AI response quality low (reason=too_short, coverage=0%). Consider re-running this partition.
+[2026-03-08T18:59:39.003Z] [DEBUG] [ai_cache] step_02_part1of4: file hash changed, calling AI
+[2026-03-08T18:59:39.004Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"documentation_expert","cache":true}
+[2026-03-08T18:59:39.004Z] [DEBUG] Persona: documentation_expert
+[2026-03-08T18:59:39.004Z] [DEBUG] Model: gpt-4.1
+[2026-03-08T18:59:39.004Z] [AI] SDK call starting — persona: documentation_expert, model: gpt-4.1, prompt_chars: 14323
+[2026-03-08T18:59:39.004Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-03-08T18:59:42.256Z] [AI] SDK call completed — persona: documentation_expert, model: gpt-4.1, response_chars: 96, latency: 3252ms
+[2026-03-08T18:59:42.256Z] ✓ AI request completed successfully
+[2026-03-08T18:59:42.258Z] [DEBUG] Prompt logged to: 2026-03-08T18-59-42-257Z_0002_documentation_expert.md
+[2026-03-08T18:59:42.261Z] ⚠ [step_02] Partition 2: AI response quality low (reason=too_short, coverage=0%). Consider re-running this partition.
+[2026-03-08T18:59:42.277Z] [DEBUG] [ai_cache] step_02_part2of4: file hash changed, calling AI
+[2026-03-08T18:59:42.278Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"documentation_expert","cache":true}
+[2026-03-08T18:59:42.278Z] [DEBUG] Persona: documentation_expert
+[2026-03-08T18:59:42.278Z] [DEBUG] Model: gpt-4.1
+[2026-03-08T18:59:42.278Z] [AI] SDK call starting — persona: documentation_expert, model: gpt-4.1, prompt_chars: 13492
+[2026-03-08T18:59:42.278Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-03-08T18:59:45.840Z] [AI] SDK call completed — persona: documentation_expert, model: gpt-4.1, response_chars: 96, latency: 3562ms
+[2026-03-08T18:59:45.841Z] ✓ AI request completed successfully
+[2026-03-08T18:59:45.842Z] [DEBUG] Prompt logged to: 2026-03-08T18-59-45-841Z_0003_documentation_expert.md
+[2026-03-08T18:59:45.846Z] ⚠ [step_02] Partition 3: AI response quality low (reason=too_short, coverage=0%). Consider re-running this partition.
+[2026-03-08T18:59:45.854Z] [DEBUG] [ai_cache] step_02_part3of4: file hash changed, calling AI
+[2026-03-08T18:59:45.855Z] [DEBUG] Request Options: {"model":"gpt-4.1","temperature":0.7,"maxTokens":4000,"stream":false,"persona":"documentation_expert","cache":true}
+[2026-03-08T18:59:45.855Z] [DEBUG] Persona: documentation_expert
+[2026-03-08T18:59:45.855Z] [DEBUG] Model: gpt-4.1
+[2026-03-08T18:59:45.855Z] [AI] SDK call starting — persona: documentation_expert, model: gpt-4.1, prompt_chars: 13758
+[2026-03-08T18:59:45.855Z] [DEBUG] Executing AI request (attempt 1/3)
+[2026-03-08T18:59:48.914Z] [AI] SDK call completed — persona: documentation_expert, model: gpt-4.1, response_chars: 96, latency: 3059ms
+[2026-03-08T18:59:48.914Z] ✓ AI request completed successfully
+[2026-03-08T18:59:48.916Z] [DEBUG] Prompt logged to: 2026-03-08T18-59-48-915Z_0004_documentation_expert.md
+[2026-03-08T18:59:48.919Z] ⚠ [step_02] Partition 4: AI response quality low (reason=too_short, coverage=0%). Consider re-running this partition.
+[2026-03-08T18:59:48.920Z] ⚠ Step 2 completed - 483 issue(s) found
+[2026-03-08T18:59:48.920Z] ✓ Step step_02 completed in 24886ms
+[2026-03-08T18:59:48.921Z] [DEBUG] [Performance] step_02: 24.9s
+[2026-03-08T18:59:48.921Z] ⚠ [WARNING] Operation 'step_02' took 24.9s (memory: 48.75MB)
+[2026-03-08T18:59:48.921Z] [DEBUG] Recorded outcome for step_02: success
+[2026-03-08T18:59:48.921Z] ✓ Completed: Consistency Analysis (25s)

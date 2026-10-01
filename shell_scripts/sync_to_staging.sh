@@ -38,7 +38,16 @@ SCRIPT_VERSION="3.0.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/src"
-STAGING_DIR="$(cd "$PROJECT_ROOT/../mpbarbosa.com" && pwd)"  # v3.0.0: Git staging repository
+# v3.0.0: Git staging repository. Resolve to an absolute path when the staging
+# repo is present, but fall back to the unresolved path when it is not: with
+# `set -e`, a bare `cd` here aborted the script before argument parsing, so even
+# --help and --dry-run died on machines without the sibling checkout (CI, fresh
+# clones). setup_staging_directory() already creates the directory when missing.
+if [[ -d "$PROJECT_ROOT/../mpbarbosa.com" ]]; then
+    STAGING_DIR="$(cd "$PROJECT_ROOT/../mpbarbosa.com" && pwd)"
+else
+    STAGING_DIR="$PROJECT_ROOT/../mpbarbosa.com"
+fi
 PRODUCTION_DIR="/var/www/html"  # v3.0.0: Default production directory (override with --production-dir)
 
 # Execution steps control (v3.0.0: Two-step deployment with git staging)
@@ -337,6 +346,7 @@ STEP OPTIONS (at least one required):
     --production-dir    Set custom production directory (default: /var/www/html)
 
 GENERAL OPTIONS:
+    --source <dir>      Source folder to deploy: dist or src (default: src)
     --dry-run           Preview operations without making changes
     --verbose           Show detailed output
     --no-backup         Skip creating backup of existing files
@@ -347,6 +357,7 @@ EXAMPLES:
     $0 --step1                              # Copy source to public only
     $0 --step2                              # Copy public to production only
     $0 --both-steps                         # Execute both steps
+    $0 --step1 --source dist               # Deploy from dist/ instead of src/
     $0 --step1 --dry-run --verbose          # Preview step 1 with details
     $0 --step2 --production-dir /var/www/mpbarbosa  # Custom production directory
     $0 --both-steps --no-backup --verbose   # Both steps without backup
@@ -359,14 +370,20 @@ DIRECTORIES:
 FILES TO SYNC:
     - index.html (main landing page)
     - robots.txt (search engine crawler instructions)
+    - sitemap.xml (URL index referenced from robots.txt)
     - humans.txt (team and technology credits)
+    - styles/ (v2 CSS: v2.css)
+    - scripts/ (v2 JS modules: v2.js)
+    - favicon.svg
     - assets/css/ (CSS stylesheets and FontAwesome)
     - assets/js/ (JavaScript libraries and utilities)
     - assets/sass/ (SASS source files and partials)
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
+    - cv/ (resume PDF served at the stable /cv/ URL)
+    - experiencia/ and projetos/ (pt-BR topic pages; the en/ ones ride with en/)
     - music_in_numbers/src/ (Music in Numbers sibling project)
-    - guia_turistico/ (Guia Turistico sibling project)
+    - guia_js/ (Guia JS sibling project)
     - monitora_vagas/src/ (Monitora Vagas legacy implementation)
     - monitora_vagas/public/ (Monitora Vagas modern v2.0.0)
     - busca_vagas/client/public/ (Busca Vagas frontend)
@@ -424,8 +441,10 @@ create_backup() {
             
             print_success "Backup created: $backup_path"
             
+            # Declaration
+            local backup_count
             # Clean up old backups (keep only last 5)
-            local backup_count=$(find "$STAGING_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
+            backup_count=$(find "$STAGING_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
             if [[ $backup_count -gt 5 ]]; then
                 find "$STAGING_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - 5)) | xargs rm -rf
                 print_info "Cleaned up old backups (keeping last 5)"
@@ -454,6 +473,18 @@ copy_robots_txt() {
     copy_single_file "$SOURCE_DIR/robots.txt" "$STAGING_DIR/robots.txt" "robots.txt" "false"
 }
 
+# Copy sitemap.xml (referenced by the Sitemap: directive in robots.txt)
+copy_sitemap_xml() {
+    print_step "Copying sitemap.xml"
+    copy_single_file "$SOURCE_DIR/sitemap.xml" "$STAGING_DIR/sitemap.xml" "sitemap.xml" "false"
+}
+
+# Copy ads.txt file (Google AdSense authorized-sellers declaration)
+copy_ads_txt() {
+    print_step "Copying ads.txt"
+    copy_single_file "$SOURCE_DIR/ads.txt" "$STAGING_DIR/ads.txt" "ads.txt" "false"
+}
+
 # Copy humans.txt file
 copy_humans_txt() {
     print_step "Copying humans.txt"
@@ -470,6 +501,88 @@ copy_css_assets() {
 copy_js_assets() {
     print_step "Copying JavaScript assets"
     copy_directory "$SOURCE_DIR/assets/js" "$STAGING_DIR/assets/js" "JavaScript assets directory" "*.js" "false"
+}
+
+# Copy v2 styles folder (v2.css and any other stylesheets)
+copy_styles() {
+    print_step "Copying styles folder"
+    copy_directory "$SOURCE_DIR/styles" "$STAGING_DIR/styles" "Styles directory (v2)" "*.css" "true"
+}
+
+# Copy v2 scripts folder (v2.js and any other ES modules)
+copy_scripts() {
+    print_step "Copying scripts folder"
+    copy_directory "$SOURCE_DIR/scripts" "$STAGING_DIR/scripts" "Scripts directory (v2)" "*.mjs" "true"
+}
+
+# Copy favicon.svg
+copy_favicon() {
+    print_step "Copying favicon.svg"
+    copy_single_file "$SOURCE_DIR/favicon.svg" "$STAGING_DIR/favicon.svg" "favicon.svg" "false"
+}
+
+# Copy English portfolio page (en/ directory)
+copy_en_page() {
+    print_step "Copying English portfolio (en/)"
+    copy_directory "$SOURCE_DIR/en" "$STAGING_DIR/en" "English portfolio directory (en/)" "*.html" "false"
+}
+
+# Copy LLM-readable files (llms.txt and llms-full.txt)
+copy_llms_files() {
+    print_step "Copying LLM-readable files"
+    copy_single_file "$SOURCE_DIR/llms.txt" "$STAGING_DIR/llms.txt" "llms.txt" "false"
+    copy_single_file "$SOURCE_DIR/llms-full.txt" "$STAGING_DIR/llms-full.txt" "llms-full.txt" "false"
+}
+
+# Copy pages/ redirect stubs (music-in-numbers.html, guia-turistico.html, monitora-vagas.html)
+copy_pages_folder() {
+    print_step "Copying pages/ redirect stubs"
+    copy_directory "$SOURCE_DIR/pages" "$STAGING_DIR/pages" "Pages redirect stubs" "*.html" "false"
+}
+
+# Copy experiencia/ and projetos/ (the pt-BR topic pages; their English
+# counterparts live under en/ and ride along with copy_en_page's recursive copy)
+copy_topic_pages() {
+    print_step "Copying topic pages (experiencia/, projetos/)"
+    copy_directory "$SOURCE_DIR/experiencia" "$STAGING_DIR/experiencia" "Experiencia page" "*.html" "false"
+    copy_directory "$SOURCE_DIR/projetos" "$STAGING_DIR/projetos" "Projetos page" "*.html" "false"
+}
+
+# Copy cv/ (stable /cv/ URL serving the resume PDF)
+copy_cv_folder() {
+    print_step "Copying cv/ folder"
+    copy_directory "$SOURCE_DIR/cv" "$STAGING_DIR/cv" "CV directory (cv/)" "*" "false"
+}
+
+# Copy v1/ legacy archived site
+copy_v1_folder() {
+    print_step "Copying v1/ legacy archive"
+
+    local source_dir="$SOURCE_DIR/v1"
+    local dest_dir="$STAGING_DIR/v1"
+
+    if [[ ! -d "$source_dir" ]]; then
+        print_warning "v1/ directory not found in source"
+        print_info "  Expected: $source_dir"
+        return 0
+    fi
+
+    local file_count
+    file_count=$(find "$source_dir" -type f | wc -l)
+
+    if [[ "$DRY_RUN" == "false" ]]; then
+        mkdir -p "$dest_dir"
+        cp -r "$source_dir"/. "$dest_dir/"
+        print_success "Copied: v1/ legacy archive ($file_count files)"
+
+        if [[ "$VERBOSE" == "true" ]]; then
+            print_info "  Source: $source_dir"
+            print_info "  Destination: $dest_dir"
+            print_info "  Files copied: $file_count"
+        fi
+    else
+        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir ($file_count files)"
+    fi
 }
 
 # Copy SASS assets folder (with enhanced verbose output for SASS structure)
@@ -599,9 +712,11 @@ copy_images() {
         print_info "  Expected: $source_dir"
         return 0
     fi
-    
+
+    # Declaration - SC2155
+    local image_count
     # Count all image files using proper find syntax
-    local image_count=$(find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
+    image_count=$(find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | wc -l)
     
     if [[ "$DRY_RUN" == "false" ]]; then
         # Create destination directory if it doesn't exist
@@ -619,14 +734,23 @@ copy_images() {
             # Show first few image files if not too many
             if [[ $image_count -gt 0 && $image_count -le 10 ]]; then
                 find "$dest_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -10 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+
+                   # Declaration - SC2155
+                    local filename
+                    local filesize
+
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
             elif [[ $image_count -gt 10 ]]; then
                 find "$dest_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -5 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+                    # Declaration - SC2155
+                    local filename
+                    local filesize
+
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
                 print_info "    ... and $((image_count - 5)) more image files"
@@ -640,14 +764,22 @@ copy_images() {
             
             if [[ $image_count -gt 0 && $image_count -le 5 ]]; then
                 find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -5 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+                    # Declaration - SC2155
+                    local filename
+                    local filesize
+                    
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
             elif [[ $image_count -gt 5 ]]; then
                 find "$source_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.bmp" -o -name "*.ico" \) | head -3 | while read file; do
-                    local filename=$(basename "$file")
-                    local filesize=$(du -h "$file" | cut -f1)
+                    # Declaration - SC2155
+                    local filename
+                    local filesize
+
+                    filename=$(basename "$file")
+                    filesize=$(du -h "$file" | cut -f1)
                     print_info "    - $filename ($filesize)"
                 done
                 print_info "    ... and $((image_count - 3)) more image files"
@@ -683,9 +815,14 @@ copy_music_in_numbers_project() {
         
         # Copy src folder (module architecture with HTML, scripts, styles)
         if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css
+            
+            src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
             
             # Copy complete src directory structure
             cp -r "$source_project/src" "$dest_dir/"
@@ -705,9 +842,14 @@ copy_music_in_numbers_project() {
         print_info "[DRY RUN] Would copy Music in Numbers project"
         
         if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css        
+        
+            src_html=$(find "$source_project/src" -maxdepth 1 -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$source_project/src/scripts" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$source_project/src/styles" -type f -name "*.css" 2>/dev/null | wc -l)
             
             print_info "  Source: $source_project/src"
             print_info "  Destination: $dest_dir/src"
@@ -722,42 +864,77 @@ copy_music_in_numbers_project() {
     return 0
 }
 
-# Copy Guia Turistico sibling project
-copy_guia_turistico_project() {
-    print_step "Copying Guia Turistico project content"
+# Copy Guia JS sibling project
+copy_guia_js_project() {
+    print_step "Copying Guia JS project content"
     
-    # Guia Turistico sibling project deployment
-    # Location: ../guia_turistico
-    # Strategy: Copy src/ folder with complete project structure
-    
-    local source_project="$PROJECT_ROOT/../guia_turistico"
-    local dest_dir="$STAGING_DIR/guia_turistico"
+    # Guia JS sibling project deployment
+    # Location: ../guia_js
+    # Strategy: Run Vite production build (npm run build) then copy dist/ folder.
+    #           Falls back to src/ with a warning if dist/ is unavailable after build.
+
+    # Declaration - SC2155
+    local source_project
+    local dest_dir
+    local copy_source
+
+    source_project="$PROJECT_ROOT/../guia_js"
+    dest_dir="$STAGING_DIR/guia_js"
     
     # Check if sibling project exists
     if [[ ! -d "$source_project" ]]; then
-        print_warning "Guia Turistico sibling project not found"
+        print_warning "Guia JS sibling project not found"
         print_info "  Expected location: $source_project"
         print_info "  Skipping Guia Turistico deployment"
         return 0
     fi
-    
+
+    # --- Resolve copy source: prefer Vite dist/, fall back to src/ ---
+    _resolve_guia_js_source() {
+        # Attempt Vite production build if package.json defines a build script
+        if [[ -f "$source_project/package.json" ]] && grep -q '"build"' "$source_project/package.json"; then
+            print_info "  Running Vite production build for Guia JS..."
+            if (cd "$source_project" && npm run build --silent 2>&1); then
+                print_success "  Vite build succeeded"
+            else
+                print_warning "  Vite build failed; will attempt fallback"
+            fi
+        fi
+
+        if [[ -d "$source_project/dist" ]]; then
+            copy_source="$source_project/dist"
+        elif [[ -d "$source_project/src" ]]; then
+            print_warning "Guia JS dist/ not found after build; falling back to src/"
+            copy_source="$source_project/src"
+        else
+            copy_source=""
+        fi
+    }
+
     if [[ "$DRY_RUN" == "false" ]]; then
         # Create destination directory
         mkdir -p "$dest_dir"
-        
-        # Copy src folder (complete project structure)
-        if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
-            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+
+        _resolve_guia_js_source
+
+        if [[ -n "$copy_source" ]]; then
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css
+            local src_dirs
+
+            src_html=$(find "$copy_source" -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$copy_source" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$copy_source" -type f -name "*.css" 2>/dev/null | wc -l)
+            src_dirs=$(find "$copy_source" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
-            # Copy complete src directory structure
-            cp -r "$source_project/src"/* "$dest_dir/"
-            print_success "Copied: Guia Turistico src/ folder ($src_html HTML, $src_js JS, $src_css CSS files, $src_dirs subdirectories)"
+            # Copy production build output
+            cp -r "$copy_source"/. "$dest_dir/"
+            print_success "Copied: Guia Turistico $(basename "$copy_source")/ ($src_html HTML, $src_js JS, $src_css CSS files, $src_dirs subdirectories)"
             
             if [[ "$VERBOSE" == "true" ]]; then
-                print_info "  Source: $source_project/src"
+                print_info "  Source: $copy_source"
                 print_info "  Destination: $dest_dir"
                 print_info "  HTML files: $src_html"
                 print_info "  JavaScript files: $src_js"
@@ -765,25 +942,41 @@ copy_guia_turistico_project() {
                 print_info "  Subdirectories: $src_dirs"
             fi
         else
-            print_warning "Guia Turistico src/ folder not found"
+            print_warning "Guia Turistico: no dist/ or src/ folder found; skipping"
         fi
     else
-        print_info "[DRY RUN] Would copy Guia Turistico project"
+        print_info "[DRY RUN] Would build and copy Guia Turistico project"
+
+        # Resolve without actually building in dry-run
+        if [[ -d "$source_project/dist" ]]; then
+            copy_source="$source_project/dist"
+        elif [[ -d "$source_project/src" ]]; then
+            copy_source="$source_project/src"
+            print_warning "  [DRY RUN] dist/ not found; would fall back to src/"
+        else
+            copy_source=""
+        fi
+
+        if [[ -n "$copy_source" ]]; then
+            # Declaration - SC2155
+            local src_html
+            local src_js
+            local src_css
+            local src_dirs
         
-        if [[ -d "$source_project/src" ]]; then
-            local src_html=$(find "$source_project/src" -type f -name "*.html" 2>/dev/null | wc -l)
-            local src_js=$(find "$source_project/src" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
-            local src_css=$(find "$source_project/src" -type f -name "*.css" 2>/dev/null | wc -l)
-            local src_dirs=$(find "$source_project/src" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+            src_html=$(find "$copy_source" -type f -name "*.html" 2>/dev/null | wc -l)
+            src_js=$(find "$copy_source" -type f \( -name "*.js" -o -name "*.mjs" \) 2>/dev/null | wc -l)
+            src_css=$(find "$copy_source" -type f -name "*.css" 2>/dev/null | wc -l)
+            src_dirs=$(find "$copy_source" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
             
-            print_info "  Source: $source_project/src"
+            print_info "  Source (would use): $copy_source"
             print_info "  Destination: $dest_dir"
             print_info "  HTML files to copy: $src_html"
             print_info "  JavaScript files to copy: $src_js"
             print_info "  CSS files to copy: $src_css"
             print_info "  Subdirectories to copy: $src_dirs"
         else
-            print_warning "  Guia Turistico src/ folder not found at $source_project/src"
+            print_warning "  [DRY RUN] No dist/ or src/ folder found"
         fi
     fi
     
@@ -974,6 +1167,9 @@ validate_sync() {
     local validations=(
         "$STAGING_DIR/index.html|index.html||true"
         "$STAGING_DIR/robots.txt|robots.txt||false"
+        "$STAGING_DIR/sitemap.xml|sitemap.xml||false"
+        "$STAGING_DIR/experiencia|Experiencia page|*.html|false"
+        "$STAGING_DIR/projetos|Projetos page|*.html|false"
         "$STAGING_DIR/humans.txt|humans.txt||false"
         "$STAGING_DIR/assets/css|CSS assets directory|*.css|false"
         "$STAGING_DIR/assets/js|JavaScript assets directory|*.js|false"
@@ -1220,30 +1416,51 @@ validate_production_environment() {
 }
 
 # Create backup of existing production files
+#
+# Backups live inside the production directory because the deploy user (ubuntu,
+# from cron) cannot create siblings under /var/www. They survive the rsync in
+# copy_public_to_production only because it excludes /.backups, and nginx does
+# not serve them because it refuses dot-paths
+# (shell_scripts/nginx/mpbarbosa-deny-dotfiles.conf).
+#
+# .git is left out: it was 243 MB of the 379 MB web root on 2026-09-11, and the
+# staging clone it is rsynced from already holds that history.
 create_production_backup() {
     if [[ "$CREATE_BACKUP" == "false" ]]; then
         return 0
     fi
-    
+
     print_step "Creating backup of existing production files"
-    
+
+    local keep=3
+    local min_free_kb=1048576  # never let a backup leave less than 1 GiB free
     local backup_timestamp=$(date +"%Y%m%d_%H%M%S")
     local backup_path="$PRODUCTION_DIR/.backups/backup_$backup_timestamp"
-    
+
     if [[ -d "$PRODUCTION_DIR" ]] && [[ "$(ls -A "$PRODUCTION_DIR" 2>/dev/null)" ]]; then
         if [[ "$DRY_RUN" == "false" ]]; then
+            # Step 2 runs unattended from cron: a backup that fills the disk would
+            # break the very deploy it protects. Skip it loudly and deploy anyway.
+            local needed_kb free_kb
+            needed_kb=$(du -sk --exclude=.git --exclude=.backups "$PRODUCTION_DIR" 2>/dev/null | cut -f1)
+            free_kb=$(df -Pk "$PRODUCTION_DIR" 2>/dev/null | awk 'NR == 2 { print $4 }')
+            if [[ -n "$needed_kb" && -n "$free_kb" ]] && (( free_kb - needed_kb < min_free_kb )); then
+                print_warning "Skipping production backup: it needs ${needed_kb} KB and would leave less than ${min_free_kb} KB free (${free_kb} KB available)"
+                return 0
+            fi
+
             mkdir -p "$backup_path"
-            
-            # Copy existing production files to backup (excluding .backups directory)
-            find "$PRODUCTION_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" -exec cp -r {} "$backup_path/" \;
-            
+
+            # Copy existing production files to backup (excluding .backups and .git)
+            find "$PRODUCTION_DIR" -mindepth 1 -maxdepth 1 ! -name ".backups" ! -name ".git" -exec cp -a {} "$backup_path/" \;
+
             print_success "Production backup created: $backup_path"
-            
-            # Clean up old backups (keep only last 7)
+
+            # Clean up old backups (keep only the last $keep)
             local backup_count=$(find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | wc -l)
-            if [[ $backup_count -gt 7 ]]; then
-                find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - 7)) | xargs rm -rf
-                print_info "Cleaned up old production backups (keeping last 7)"
+            if [[ $backup_count -gt $keep ]]; then
+                find "$PRODUCTION_DIR/.backups" -maxdepth 1 -type d -name "backup_*" | sort | head -n $((backup_count - keep)) | xargs rm -rf
+                print_info "Cleaned up old production backups (keeping last $keep)"
             fi
         else
             print_info "[DRY RUN] Would create production backup: $backup_path"
@@ -1256,11 +1473,15 @@ create_production_backup() {
 # Copy files from public to production directory
 copy_public_to_production() {
     print_step "Copying files from public to production directory"
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         # Use rsync for efficient synchronization if available, otherwise use cp
         if command -v rsync >/dev/null 2>&1; then
-            local rsync_options="-av --delete"
+            # --exclude=/.backups protects create_production_backup's output: the
+            # staging checkout has no .backups, so --delete used to remove each
+            # backup moments after it was made. It also keeps a workstation
+            # staging dir's own .backups out of production.
+            local rsync_options="-av --delete --exclude=/.backups"
             if [[ "$VERBOSE" == "false" ]]; then
                 rsync_options+=" --quiet"
             fi
@@ -1339,7 +1560,7 @@ copy_systemd_service() {
     fi
 }
 
-# Restart and enable system services (nginx)
+# Restart and enable system services (nginx, Node.js apps)
 # Executed at the end of Step 2 to activate deployed changes
 restart_system_services() {
     print_step "Restarting and enabling system services"
@@ -1352,6 +1573,7 @@ restart_system_services() {
             print_info "  Manually run the following commands:"
             echo ""
             print_info "    sudo systemctl daemon-reload"
+            print_info "    sudo systemctl restart busca_vagas_node_app"
             print_info "    sudo systemctl restart nginx"
             echo ""
             return 0
@@ -1363,6 +1585,14 @@ restart_system_services() {
             print_success "Systemd daemon reloaded"
         else
             print_warning "Failed to reload systemd daemon"
+        fi
+        
+        # Restart Busca Vagas Node.js API service
+        print_info "Restarting Busca Vagas Node.js API service..."
+        if systemctl restart busca_vagas_node_app 2>/dev/null; then
+            print_success "Busca Vagas API service restarted successfully"
+        else
+            print_warning "Failed to restart Busca Vagas API service (may not be installed or running)"
         fi
         
         # Restart nginx web server
@@ -1377,6 +1607,7 @@ restart_system_services() {
     else
         print_info "[DRY RUN] Would execute service restart commands:"
         print_info "  sudo systemctl daemon-reload"
+        print_info "  sudo systemctl restart busca_vagas_node_app"
         print_info "  sudo systemctl restart nginx"
     fi
 }
@@ -1443,14 +1674,25 @@ execute_step_1() {
     create_backup
     copy_index_html
     copy_robots_txt
+    copy_sitemap_xml
+    copy_ads_txt
     copy_humans_txt
     copy_css_assets
     copy_js_assets
+    copy_styles
+    copy_scripts
+    copy_favicon
+    copy_en_page
+    copy_topic_pages
+    copy_llms_files
+    copy_pages_folder
+    copy_cv_folder
+    copy_v1_folder
     copy_sass_assets
     copy_webfonts
     copy_images
     copy_music_in_numbers_project
-    copy_guia_turistico_project
+    copy_guia_js_project
     copy_monitora_vagas_project
     copy_busca_vagas_project
     copy_additional_resources
@@ -1502,6 +1744,20 @@ main() {
                 STEP_SOURCE_TO_STAGING=true
                 STEP_STAGING_TO_PRODUCTION=true
                 shift
+                ;;
+            --source)
+                if [[ -n "${2:-}" ]]; then
+                    if [[ "$2" == "dist" || "$2" == "src" ]]; then
+                        SOURCE_DIR="$PROJECT_ROOT/$2"
+                        shift 2
+                    else
+                        print_error "--source requires 'dist' or 'src'"
+                        exit 1
+                    fi
+                else
+                    print_error "--source requires a value: dist or src"
+                    exit 1
+                fi
                 ;;
             --production-dir)
                 if [[ -n "${2:-}" ]]; then

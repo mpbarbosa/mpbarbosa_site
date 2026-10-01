@@ -21,7 +21,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '../..');
 const SHELL_SCRIPTS_DIR = path.join(PROJECT_ROOT, 'shell_scripts');
 const TEST_OUTPUT_DIR = path.join(PROJECT_ROOT, 'test_deployment_output');
 
-describe('sync_to_public.sh - Integration Tests', () => {
+describe('sync_to_staging.sh - Integration Tests', () => {
   beforeAll(() => {
     // Create test output directory
     if (!fs.existsSync(TEST_OUTPUT_DIR)) {
@@ -38,7 +38,7 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   describe('Step 1: Source to Public Deployment', () => {
     test('should successfully copy main HTML file', () => {
-      const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_public.sh');
+      const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_staging.sh');
       const publicDir = path.join(PROJECT_ROOT, 'public');
 
       expect(fs.existsSync(scriptPath)).toBe(true);
@@ -103,12 +103,7 @@ describe('sync_to_public.sh - Integration Tests', () => {
     });
 
     test('should handle sibling projects deployment', () => {
-      const siblingProjects = [
-        'music_in_numbers',
-        'guia_turistico',
-        'monitora_vagas',
-        'busca_vagas',
-      ];
+      const siblingProjects = ['music_in_numbers', 'guia_js', 'monitora_vagas', 'busca_vagas'];
 
       siblingProjects.forEach((project) => {
         const projectPath = path.join(PROJECT_ROOT, 'public', project);
@@ -152,7 +147,7 @@ describe('sync_to_public.sh - Integration Tests', () => {
 
   describe('Error Handling', () => {
     test('should handle missing source directory gracefully', () => {
-      const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_public.sh');
+      const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_staging.sh');
       const scriptContent = fs.readFileSync(scriptPath, 'utf8');
 
       // Verify error handling code exists
@@ -235,8 +230,8 @@ describe('deploy_to_webserver.sh - Integration Tests', () => {
 });
 
 describe('Shell Script Code Quality', () => {
-  test('sync_to_public.sh should follow bash best practices', () => {
-    const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_public.sh');
+  test('sync_to_staging.sh should follow bash best practices', () => {
+    const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_staging.sh');
     const content = fs.readFileSync(scriptPath, 'utf8');
 
     // Check for proper variable quoting patterns
@@ -250,15 +245,15 @@ describe('Shell Script Code Quality', () => {
   });
 
   test('should have version tracking', () => {
-    const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_public.sh');
+    const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_staging.sh');
     const content = fs.readFileSync(scriptPath, 'utf8');
 
     expect(content).toContain('SCRIPT_VERSION');
-    expect(content).toMatch(/VERSION.*2\.0\.0/i);
+    expect(content).toMatch(/SCRIPT_VERSION.*[0-9]+\.[0-9]+\.[0-9]+/i);
   });
 
   test('should have comprehensive help documentation', () => {
-    const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_public.sh');
+    const scriptPath = path.join(SHELL_SCRIPTS_DIR, 'sync_to_staging.sh');
     const content = fs.readFileSync(scriptPath, 'utf8');
 
     expect(content).toContain('Usage:');

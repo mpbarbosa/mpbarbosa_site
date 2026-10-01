@@ -105,7 +105,7 @@ Received an instance of Object
 - **Recommendation**: Sibling project should maintain own test suite
 - **Reason**: Independent repository, separate responsibility
 
-**Guia Turístico** (`../guia_turistico/`):
+**Guia Turístico** (`../guia_js/`):
 - **JavaScript Files**: src/libs/guia_js/ library
 - **Test Status**: ❌ **NO TESTS IN MAIN PROJECT**
 - **Recommendation**: Sibling project should maintain own test suite
