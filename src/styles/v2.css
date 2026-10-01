@@ -725,6 +725,13 @@ code {
   display: block;
 }
 
+/* ── Direct contact line (phone / e-mail above the form) ──── */
+.contact-direct a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── Contact form ─────────────────────────────────────────── */
 .contact-form {
   display: flex;
