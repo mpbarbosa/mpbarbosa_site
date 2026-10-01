@@ -25,7 +25,7 @@
 **Key Changes Documented**:
 ```
 - Busca Vagas: public/submodules/busca_vagas/ → public/busca_vagas/
-- Guia Turístico: public/submodules/guia_turistico/ → public/guia_turistico/
+- Guia Turístico: public/submodules/guia_js/ → public/guia_js/
 - Music in Numbers: public/submodules/music_in_numbers/ → public/music_in_numbers/
 - Monitora Vagas: Already at public/monitora_vagas/
 - Removed public/submodules/ directory entirely

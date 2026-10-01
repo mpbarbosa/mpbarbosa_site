@@ -1,0 +1,399 @@
+/* Minimalista preto e branco */
+body {
+  background: #fff !important;
+  color: #111 !important;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+header,
+main,
+aside,
+footer,
+.mdc-card {
+  background: #fff !important;
+  color: #111 !important;
+  border-radius: 8px;
+  box-shadow: none !important;
+  border: 1px solid #eee;
+}
+.mdc-top-app-bar {
+  background: #111 !important;
+  color: #fff !important;
+}
+.mdc-top-app-bar__title,
+.material-icons {
+  color: #fff !important;
+}
+nav a,
+.mdc-button {
+  background: none !important;
+  color: #111 !important;
+  border: none;
+  font-weight: 500;
+}
+nav a:hover,
+.mdc-button:hover {
+  color: #000 !important;
+  text-decoration: underline;
+}
+input,
+textarea {
+  background: #fff !important;
+  color: #111 !important;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+button[type='submit'] {
+  background: #111 !important;
+  color: #fff !important;
+  border-radius: 4px;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+button[type='submit']:hover {
+  background: #000 !important;
+}
+.versioning-numbering {
+  background: #fff !important;
+  color: #111 !important;
+  border: 1px solid #eee;
+}
+/* Material 3 Expressive Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+.expressive-bg {
+  font-family: 'Roboto', Arial, sans-serif;
+  background: #ffffff;
+  color: #222;
+  /* Minimalistic black and white color palette */
+  :root {
+    --m3-primary: #000000;
+    --m3-on-primary: #ffffff;
+    --m3-secondary: #666666;
+    --m3-on-secondary: #ffffff;
+    --m3-surface: #ffffff;
+    --m3-surface-variant: #f5f5f5;
+    --m3-outline: #cccccc;
+    --m3-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    --m3-accent: #333333;
+    --m3-success: #333333;
+    --m3-danger: #666666;
+  }
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Material 3 Expressive Colors - Black and White Theme */
+:root {
+  letter-spacing: 0.01em;
+  --m3-primary: #000000;
+  --m3-on-primary: #ffffff;
+  --m3-secondary: #666666;
+  --m3-on-secondary: #ffffff;
+  --m3-surface: #ffffff;
+  --m3-surface-variant: #f8f8f8;
+  --m3-outline: #dddddd;
+  --m3-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+/* Cards de projetos com destaque */
+.mdc-card,
+.m3-expressive-surface {
+  background: var(--m3-surface);
+  border-radius: 18px;
+  box-shadow: var(--m3-shadow);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition:
+    box-shadow 0.25s,
+    transform 0.18s;
+  border: 1.5px solid var(--m3-outline);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grid layout for desktop */
+/* Layout grid for Material 3 Expressive */
+.mdc-card:hover,
+.m3-expressive-surface:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--m3-primary);
+}
+.mdc-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--m3-primary), var(--m3-accent));
+  opacity: 0.12;
+}
+.mdc-layout-grid__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Tipografia marcante para títulos */
+  .mdc-typography--headline4 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: var(--m3-primary);
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  padding: 2rem;
+}
+
+.mdc-layout-grid__cell {
+  flex: 1 1 300px;
+  min-width: 300px;
+  .mdc-typography--headline5 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--m3-primary);
+    margin-bottom: 1rem;
+    letter-spacing: -0.3px;
+  }
+}
+
+/* Cards and surfaces */
+.mdc-card,
+.m3-expressive-surface {
+  background: var(--m3-surface);
+  border-radius: 16px;
+  .mdc-typography--headline6 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--m3-accent);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.2px;
+  }
+  box-shadow: var(--m3-shadow);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+.mdc-card:hover,
+.m3-expressive-surface:hover {
+  box-shadow: 0 8px 32px rgba(103, 80, 164, 0.16);
+}
+
+/* Typography */
+.mdc-typography--headline4 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--m3-primary);
+  /* Botões com animação sutil */
+  .mdc-button {
+    background: var(--m3-primary);
+    color: var(--m3-on-primary);
+    border: none;
+    border-radius: 24px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition:
+      background 0.18s,
+      box-shadow 0.18s,
+      transform 0.18s;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+  margin-bottom: 1rem;
+}
+.mdc-typography--headline5 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--m3-primary);
+  margin-bottom: 1rem;
+}
+.mdc-button.m3-expressive-secondary {
+  background: var(--m3-secondary);
+  color: var(--m3-on-secondary);
+}
+.mdc-button:hover {
+  background: var(--m3-accent);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  transform: scale(1.04);
+}
+.mdc-button:active {
+  background: var(--m3-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(0.98);
+}
+.mdc-typography--headline6 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--m3-primary);
+  margin-bottom: 0.5rem;
+}
+.mdc-typography--body1 {
+  /* Cards de lista de projetos */
+  .mdc-list-item {
+    margin-bottom: 1rem;
+    padding: 1.2rem 1rem;
+    background: var(--m3-surface-variant);
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    border-left: 4px solid var(--m3-primary);
+    transition:
+      box-shadow 0.18s,
+      border-color 0.18s;
+  }
+  .mdc-list-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+    border-left: 4px solid var(--m3-accent);
+  }
+  .mdc-typography--headline4 .material-icons,
+  .mdc-typography--headline5 .material-icons {
+    vertical-align: middle;
+    font-size: 2rem;
+    margin-right: 0.3rem;
+    color: var(--m3-accent);
+  }
+  font-size: 1.1rem;
+  color: #333;
+}
+.mdc-typography--body2 {
+  font-size: 1rem;
+  color: #555;
+}
+.mdc-typography--caption {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Expressive color tokens */
+.m3-expressive-primary {
+  color: var(--m3-primary) !important;
+}
+.m3-expressive-secondary {
+  color: var(--m3-secondary) !important;
+}
+.m3-expressive-surface {
+  background: var(--m3-surface-variant) !important;
+}
+
+/* Top App Bar */
+.mdc-top-app-bar {
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+  box-shadow: var(--m3-shadow);
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 2rem;
+}
+.mdc-top-app-bar__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+.mdc-top-app-bar__section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Buttons */
+.mdc-button {
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+  border: none;
+  border-radius: 24px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.mdc-button.m3-expressive-secondary {
+  background: var(--m3-secondary);
+  color: var(--m3-on-secondary);
+}
+.mdc-button:hover {
+  background: var(--m3-accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+/* Text fields */
+.mdc-text-field__input {
+  padding: 0.7rem;
+  border: 1.5px solid var(--m3-outline);
+  border-radius: 12px;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  background: #fafafa;
+  transition: border-color 0.2s;
+}
+.mdc-text-field__input:focus {
+  border-color: var(--m3-primary);
+  outline: none;
+}
+
+/* Lists */
+.mdc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.mdc-list-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--m3-surface-variant);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Form layout for Material 3 */
+.mdc-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Responsive styles */
+@media (max-width: 900px) {
+  .mdc-layout-grid__inner {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .mdc-top-app-bar__title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .mdc-layout-grid__inner {
+    padding: 0.5rem;
+  }
+  .mdc-typography--headline4 {
+    font-size: 1.3rem;
+  }
+  .mdc-typography--headline5 {
+    font-size: 1.1rem;
+  }
+  .mdc-card,
+  .m3-expressive-surface {
+    padding: 1rem;
+  }
+}

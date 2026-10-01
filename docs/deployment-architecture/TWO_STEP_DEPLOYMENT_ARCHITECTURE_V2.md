@@ -116,9 +116,11 @@ The Two-Step Deployment Architecture v2.0.0 represents a major enhancement to th
 - Timestamp format: `backup_YYYYMMDD_HHMMSS`
 
 **Production Directory Backups**:
-- Location: `/var/www/backups/{production_directory_name}/`
-- Retention: 7-day automatic cleanup
-- Full directory structure preservation
+- Location: `{production_directory}/.backups/` (the deploy user cannot write to `/var/www` itself)
+- Retention: the 3 most recent backups
+- Full directory structure preservation, except `.git` (the staging clone already holds it)
+- Skipped with a warning, deploy continues, if a backup would leave under 1 GiB free
+- Survives the `rsync --delete` because `.backups` is excluded; not served because nginx refuses dot-paths
 
 **Benefits**:
 - **Independent recovery**: Restore public or production independently
@@ -476,7 +478,7 @@ All modes support safety parameters:
 - ✅ **Improved**: Deployment summary with step execution indicators
 - ✅ **Improved**: Help documentation with two-step workflow examples
 
-### v1.0.0 (November 4, 2025)
+### v1.1.8 (November 4, 2025)
 - Initial release with single-step /src to /public synchronization
 - Basic asset management (HTML, CSS, JS, SASS, images, webfonts)
 - Music in Numbers submodule support

@@ -79,7 +79,7 @@ The `src/submodules/` directory exists but is nearly empty, while `public/submod
 src/submodules/          # Nearly empty (only README.md)
 public/submodules/       # Contains 4 deployed sibling projects (761M)
   ├── music_in_numbers/
-  ├── guia_turistico/
+  ├── guia_js/
   ├── monitora_vagas/
   └── busca_vagas/
 ```
@@ -92,7 +92,7 @@ public/submodules/       # Contains 4 deployed sibling projects (761M)
 
 **Source Directories** (outside repository):
 - `../music_in_numbers/` - Music analytics sibling project
-- `../guia_turistico/` - Travel guide sibling project
+- `../guia_js/` - Travel guide sibling project
 - `../monitora_vagas/` - Hotel monitoring sibling project
 - `../busca_vagas/` - Backend API sibling project
 
@@ -795,7 +795,7 @@ Hardcoded test data duplicates production configuration, creating maintenance bu
 ```javascript
 const redirectPages = [
   { file: 'music-in-numbers.html', project: 'music_in_numbers' },
-  { file: 'guia-turistico.html', project: 'guia_turistico' },
+  { file: 'guia-turistico.html', project: 'guia_js' },
   { file: 'monitora-vagas.html', project: 'monitora_vagas' },
   // Hardcoded test data duplicates production config
 ];
@@ -843,9 +843,9 @@ test('should have redirect pages for all projects', () => {
     },
     {
       "name": "Guia Turístico",
-      "slug": "guia_turistico",
+      "slug": "guia_js",
       "redirectPage": "guia-turistico.html",
-      "submodulePath": "submodules/guia_turistico"
+      "submodulePath": "submodules/guia_js"
     }
   ]
 }

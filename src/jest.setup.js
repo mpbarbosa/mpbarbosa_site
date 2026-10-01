@@ -274,6 +274,18 @@ global.IS_TEST_ENV = true;
 global.IS_JSDOM = true;
 
 // ============================================================================
+// DOM Method Mocks (jsdom limitations)
+// ============================================================================
+
+// jsdom does not implement scrollIntoView — mock it to prevent TypeError
+if (typeof Element !== 'undefined') {
+  Element.prototype.scrollIntoView = jest.fn();
+}
+if (typeof window !== 'undefined' && window.HTMLElement) {
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
+}
+
+// ============================================================================
 // LocalStorage Mock (suppress jsdom warnings)
 // ============================================================================
 

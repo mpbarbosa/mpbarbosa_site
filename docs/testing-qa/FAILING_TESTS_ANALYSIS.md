@@ -234,7 +234,7 @@ describe('Required Functions Exist', () => {
   
   const requiredFunctions = [
     'copy_music_in_numbers',
-    'copy_guia_turistico',
+    'copy_guia_js',
     'copy_monitora_vagas',
     'copy_busca_vagas'
   ];
@@ -383,7 +383,7 @@ while ((match = functionPattern.exec(content)) !== null) {
 
 // Then test for expected functions
 expect(functions).toContain('copy_music_in_numbers');
-expect(functions).toContain('copy_guia_turistico');
+expect(functions).toContain('copy_guia_js');
 ```
 
 ---

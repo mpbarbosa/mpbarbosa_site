@@ -27,11 +27,11 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### Workflow Automation
 
-- **[Workflow Automation Version Evolution](workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.0.0 through v2.0.0 with migration guide
+- **[Workflow Automation Version Evolution](workflow-automation/WORKFLOW_AUTOMATION_VERSION_EVOLUTION.md)** - Complete version history v1.1.8 through v2.0.0 with migration guide
 - **[Tests & Documentation Workflow Plan](workflow-automation/TESTS_DOCS_WORKFLOW_AUTOMATION_PLAN.md)** - Comprehensive development plan for automated workflow script (13 steps)
 - **[Workflow Modularization Phase 3 Completion](workflow-automation/WORKFLOW_MODULARIZATION_PHASE3_COMPLETION.md)** - All 25 modules extracted (12 libraries + 13 steps) ⭐ **NEW**
 - **[Workflow Modular Architecture](../shell_scripts/workflow/README.md)** - Complete module documentation (v2.0.0)
-- **[Workflow Automation Phase 2 Completion](workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.0.0 (HISTORICAL)
+- **[Workflow Automation Phase 2 Completion](workflow-automation/WORKFLOW_AUTOMATION_PHASE2_COMPLETION.md)** - Implementation completion report for v1.1.8 (HISTORICAL)
 - **[Workflow Performance Optimization](workflow-automation/WORKFLOW_PERFORMANCE_OPTIMIZATION.md)** - Performance analysis and optimization strategy (v1.4.0 → v1.5.0)
 - **[Workflow Performance Implementation](workflow-automation/WORKFLOW_PERFORMANCE_OPTIMIZATION_IMPLEMENTATION.md)** - Completed git caching implementation (v1.5.0)
 - **[Step 11 Git Finalization Enhancement](workflow-automation/STEP11_GIT_FINALIZATION_ENHANCEMENT.md)** - AI-powered conventional commit message generation best practices
@@ -49,7 +49,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 ### AI Integration & Prompt Engineering
 
-- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library (v1.0.0) ⭐ **NEW**
+- **[AI Prompt Extraction Standard](ai-prompts/AI_PROMPT_EXTRACTION_STANDARD.md)** - Project standard for extracting AI prompts to centralized library (v1.1.8) ⭐ **NEW**
 - **[Copilot Prompt Scoping Guide](ai-prompts/COPILOT_PROMPT_SCOPING_GUIDE.md)** - Best practices for GitHub Copilot prompt design and context management ⭐ **NEW**
 - **[Prompt Extraction Refactoring](ai-prompts/PROMPT_EXTRACTION_REFACTORING.md)** - Refactoring patterns for AI prompt centralization and reusability ⭐ **NEW**
 
@@ -116,7 +116,7 @@ This documentation covers the MP Barbosa personal portfolio website and its asso
 
 #### **Phase 4: AddressDataExtractor Legacy Facade** ✅ **COMPLETED**
 
-- **[CLASS_EXTRACTION_PHASE_4.md](../public/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
+- **[CLASS_EXTRACTION_PHASE_4.md](../public/submodules/guia_js/src/libs/guia_js/CLASS_EXTRACTION_PHASE_4.md)** - Complete Phase 4 documentation
 - **Status**: All 4 phases completed (October 16, 2025)
 - **Achievement**: 11 classes extracted with 100% backward compatibility
 
@@ -135,11 +135,11 @@ Located in public/submodules (deployed via sync_to_public.sh):
 
 #### Core Architecture Documentation
 
-- **[Class Extraction Summary](../public/submodules/guia_turistico/src/libs/guia_js/CLASS_EXTRACTION_SUMMARY.md)** - Overview of all 4 phases
-- **[JavaScript Async-Await Best Practices](../public/submodules/guia_turistico/src/libs/guia_js/docs/javascript-async-await-best-practices.md)** - Async programming patterns
-- **[Low Coupling Guide](../public/submodules/guia_turistico/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
-- **[High Cohesion Guide](../public/submodules/guia_turistico/src/libs/guia_js/.github/HIGH_COHESION_GUIDE.md)** - Single responsibility patterns
-- **[Referential Transparency Guide](../public/submodules/guia_turistico/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
+- **[Class Extraction Summary](../public/submodules/guia_js/src/libs/guia_js/CLASS_EXTRACTION_SUMMARY.md)** - Overview of all 4 phases
+- **[JavaScript Async-Await Best Practices](../public/submodules/guia_js/src/libs/guia_js/docs/javascript-async-await-best-practices.md)** - Async programming patterns
+- **[Low Coupling Guide](../public/submodules/guia_js/src/libs/guia_js/.github/LOW_COUPLING_GUIDE.md)** - Architecture principles applied
+- **[High Cohesion Guide](../public/submodules/guia_js/src/libs/guia_js/.github/HIGH_COHESION_GUIDE.md)** - Single responsibility patterns
+- **[Referential Transparency Guide](../public/submodules/guia_js/src/libs/guia_js/.github/REFERENTIAL_TRANSPARENCY.md)** - Immutability principles
 
 #### Music in Numbers Project Documentation
 
@@ -149,9 +149,9 @@ Located in public/submodules (deployed via sync_to_public.sh):
 
 #### Implementation Documentation
 
-- **[AddressDataExtractor Module](../public/submodules/guia_turistico/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
-- **[Integration Tests](../public/submodules/guia_turistico/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js)** - Comprehensive test coverage
-- **[Refactoring Summary](../public/submodules/guia_turistico/src/libs/guia_js/.github/REFACTORING_SUMMARY.md)** - Complete initiative overview
+- **[AddressDataExtractor Module](../public/submodules/guia_js/src/libs/guia_js/src/data/AddressDataExtractor.js)** - Legacy facade implementation
+- **[Integration Tests](../public/submodules/guia_js/src/libs/guia_js/__tests__/integration/AddressDataExtractor-module.test.js)** - Comprehensive test coverage
+- **[Refactoring Summary](../public/submodules/guia_js/src/libs/guia_js/.github/REFACTORING_SUMMARY.md)** - Complete initiative overview
 
 ## Project Architecture
 
@@ -172,11 +172,11 @@ mpbarbosa_site/                    # Main repository
 │   ├── package.json               # Dependencies and scripts
 │   ├── pages/                     # Project redirect pages
 │   │   ├── music-in-numbers.html  # Music in Numbers redirect (renamed from music_in_numbers.html)
-│   │   ├── guia-turistico.html    # Guia Turístico redirect (renamed from guia_turistico.html)
+│   │   ├── guia-turistico.html    # Guia Turístico redirect (renamed from guia_js.html)
 │   │   └── monitora-vagas.html    # Monitora Vagas redirect (renamed from monitora_vagas.html)
 │   └── submodules/                # Git submodules only (require auth)
 │       ├── music_in_numbers/      # Music analysis project
-│       └── guia_turistico/        # Travel guide with extracted classes
+│       └── guia_js/        # Travel guide with extracted classes
 ├── ../monitora_vagas/             # Job monitoring (sibling project)
 ├── ../busca_vagas/                # Job search platform (sibling project)
 └── .github/                       # GitHub configuration
