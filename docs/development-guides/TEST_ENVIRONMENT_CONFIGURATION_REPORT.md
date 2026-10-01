@@ -96,8 +96,8 @@ expect(item.timestamp).toBeInstanceOf(Date); // ❌ WRONG
 **Solution:** Fixed test assertions to match implementation
 
 **Files Modified:**
-1. `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
-2. `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
+1. `submodules/guia_js/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
+2. `submodules/guia_js/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
 
 **Changes:**
 ```javascript
@@ -147,7 +147,7 @@ expect(item.timestamp).toBeGreaterThan(0);
 ## Remaining Issues (68 failing tests)
 
 ### Category 1: SpeechQueue Constructor Validation (3 tests)
-**Files:** `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
+**Files:** `submodules/guia_js/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
 
 **Issues:**
 1. `undefined` maxSize doesn't throw RangeError (expected to throw)
@@ -188,10 +188,10 @@ expect(item.timestamp).toBeGreaterThan(0);
    - Added `setupFilesAfterEnv`
    - Added `testPathIgnorePatterns`
 
-2. ✅ `submodules/guia_turistico/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
+2. ✅ `submodules/guia_js/src/libs/guia_js/__tests__/unit/SpeechQueue.test.js`
    - Fixed timestamp type assertion
 
-3. ✅ `submodules/guia_turistico/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
+3. ✅ `submodules/guia_js/src/libs/guia_js/__tests__/integration/SpeechQueue.integration.test.js`
    - Fixed timestamp type assertion
 
 ## Benefits Achieved
@@ -214,7 +214,7 @@ expect(item.timestamp).toBeGreaterThan(0);
 ### Phase 1: Fix Remaining SpeechQueue Tests (1 hour)
 ```bash
 # Analyze test expectations vs. implementation
-cd submodules/guia_turistico/src/libs/guia_js
+cd submodules/guia_js/src/libs/guia_js
 # Review constructor validation logic
 # Update tests or implementation to align
 ```

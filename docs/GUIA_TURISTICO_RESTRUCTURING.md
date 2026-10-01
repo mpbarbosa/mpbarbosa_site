@@ -8,14 +8,14 @@
 
 ### What Changed
 
-Moved `public/submodules/guia_turistico/` → `public/guia_turistico/`
+Moved `public/submodules/guia_js/` → `public/guia_js/`
 
 **Rationale**: Continue architecture standardization - move client-side projects out of legacy `submodules/` directory. Only Music in Numbers remains in `submodules/` for backward compatibility.
 
 ### Architecture Clarification
 
 #### Client-Side Projects (Top-Level in public/)
-- **Guia Turístico** - `public/guia_turistico/` ✅ (moved)
+- **Guia Turístico** - `public/guia_js/` ✅ (moved)
 - **Monitora Vagas** - `public/monitora_vagas/` (already moved)
 - **Busca Vagas** - `public/busca_vagas/` (already moved, backend API)
 
@@ -27,14 +27,14 @@ Moved `public/submodules/guia_turistico/` → `public/guia_turistico/`
 #### 1. Directory Structure ✅
 ```bash
 # Before
-public/submodules/guia_turistico/
+public/submodules/guia_js/
 ├── README.md
 ├── index.html
 ├── index.js
 └── ...
 
 # After
-public/guia_turistico/
+public/guia_js/
 ├── README.md
 ├── index.html
 ├── index.js
@@ -46,27 +46,27 @@ public/guia_turistico/
 **src/pages/guia-turistico.html**:
 ```html
 <!-- Before -->
-<meta http-equiv="refresh" content="0; url=../submodules/guia_turistico/src/index.html" />
+<meta http-equiv="refresh" content="0; url=../submodules/guia_js/src/index.html" />
 
 <!-- After -->
-<meta http-equiv="refresh" content="0; url=../guia_turistico/index.html" />
+<meta http-equiv="refresh" content="0; url=../guia_js/index.html" />
 ```
 
 **src/index.html** (line 110):
 ```html
 <!-- Before -->
-<a href="submodules/guia_turistico/" target="_blank" rel="noopener noreferrer">
+<a href="submodules/guia_js/" target="_blank" rel="noopener noreferrer">
 
 <!-- After -->
-<a href="guia_turistico/" target="_blank" rel="noopener noreferrer">
+<a href="guia_js/" target="_blank" rel="noopener noreferrer">
 ```
 
 #### 3. Deployment Scripts ✅
 
 **shell_scripts/sync_to_public.sh**:
-- Line 734: `$PUBLIC_DIR/submodules/guia_turistico` → `$PUBLIC_DIR/guia_turistico`
+- Line 734: `$PUBLIC_DIR/submodules/guia_js` → `$PUBLIC_DIR/guia_js`
 - Line 369: Updated documentation comment
-- Function `copy_guia_turistico_project()` updated
+- Function `copy_guia_js_project()` updated
 
 #### 4. Documentation ✅
 
@@ -77,18 +77,18 @@ public/guia_turistico/
 - Lines 373-376: Updated access method testing paths
 
 #### 5. Tests ✅
-- No test files reference `submodules/guia_turistico`
+- No test files reference `submodules/guia_js`
 - Coverage reports are generated files (will update on next test run)
 - No manual test updates needed
 
 ### URL Structure
 
 #### Before
-- Project: `https://mpbarbosa.com/submodules/guia_turistico/` ❌
+- Project: `https://mpbarbosa.com/submodules/guia_js/` ❌
 - Via redirect: `https://mpbarbosa.com/pages/guia-turistico.html` → old path
 
 #### After
-- Project: `https://mpbarbosa.com/guia_turistico/` ✅
+- Project: `https://mpbarbosa.com/guia_js/` ✅
 - Via redirect: `https://mpbarbosa.com/pages/guia-turistico.html` → new path
 - Direct link from main page works
 
@@ -96,33 +96,33 @@ public/guia_turistico/
 
 1. **Check directory structure**:
 ```bash
-ls -la public/guia_turistico/
+ls -la public/guia_js/
 # Should show: HTML, JS, CSS files
 ```
 
 2. **Test deployment**:
 ```bash
 ./shell_scripts/sync_to_public.sh --step1 --verbose
-# Should copy to public/guia_turistico/
+# Should copy to public/guia_js/
 ```
 
 3. **Test HTML redirect**:
 ```bash
 cd src && npm start
 # Visit: http://localhost:8080/pages/guia-turistico.html
-# Should redirect to: /guia_turistico/
+# Should redirect to: /guia_js/
 ```
 
 4. **Test main page link**:
 ```bash
 # Visit: http://localhost:8080/
 # Click "Guia Turístico" in Projetos (IA) section
-# Should open: /guia_turistico/ in new tab
+# Should open: /guia_js/ in new tab
 ```
 
 ### Migration Checklist
 
-- [x] Move directory from `public/submodules/guia_turistico/` to `public/guia_turistico/`
+- [x] Move directory from `public/submodules/guia_js/` to `public/guia_js/`
 - [x] Update `src/pages/guia-turistico.html` redirect path
 - [x] Update `src/index.html` project link
 - [x] Update `shell_scripts/sync_to_public.sh` deployment path
@@ -135,8 +135,8 @@ cd src && npm start
 ### Breaking Changes
 
 **Minor** - Redirect path changed:
-- Old: `/submodules/guia_turistico/`
-- New: `/guia_turistico/`
+- Old: `/submodules/guia_js/`
+- New: `/guia_js/`
 - Impact: Bookmarks to old URL will break
 - Mitigation: Consider nginx redirect rule (optional)
 
@@ -144,9 +144,9 @@ cd src && npm start
 
 To maintain backward compatibility, add to nginx config:
 ```nginx
-# Redirect old guia_turistico path to new location
-location /submodules/guia_turistico {
-    return 301 /guia_turistico$request_uri;
+# Redirect old guia_js path to new location
+location /submodules/guia_js {
+    return 301 /guia_js$request_uri;
 }
 ```
 
@@ -156,8 +156,8 @@ location /submodules/guia_turistico {
 - `.github/copilot-instructions.md` - Architecture documentation
 - `src/index.html` - Main page project link
 - `src/pages/guia-turistico.html` - Redirect page
-- `public/guia_turistico/` - New location
-- `../guia_turistico/` - Sibling project source (unchanged)
+- `public/guia_js/` - New location
+- `../guia_js/` - Sibling project source (unchanged)
 
 ### Architecture Status
 
@@ -166,7 +166,7 @@ After this change, the directory structure is:
 ```
 public/
 ├── busca_vagas/              # Backend API
-├── guia_turistico/           # Travel guide (moved) ✅
+├── guia_js/           # Travel guide (moved) ✅
 ├── monitora_vagas/           # Hotel monitoring
 └── submodules/               # Legacy directory
     └── music_in_numbers/     # Only remaining project
@@ -176,7 +176,7 @@ public/
 
 ### Notes
 
-- Guia Turístico is deployed from `../guia_turistico/src/*` (copies all files to root of destination)
+- Guia Turístico is deployed from `../guia_js/src/*` (copies all files to root of destination)
 - Project includes: HTML, JavaScript, CSS, and libs/guia_js library
 - This change improves consistency with Monitora Vagas and Busca Vagas locations
 - The `public/submodules/` directory now only contains Music in Numbers

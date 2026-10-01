@@ -70,7 +70,7 @@
    ```plaintext
    // ✅ FIXED: All page files migrated to kebab-case
    ✅ ./pages/music-in-numbers.html (was music_in_numbers.html)
-   ✅ ./pages/guia-turistico.html (was guia_turistico.html)
+   ✅ ./pages/guia-turistico.html (was guia_js.html)
    ✅ ./pages/monitora-vagas.html (was monitora_vagas.html)
 
    // Status: 95% compliance (was 78%)
@@ -431,12 +431,12 @@
 ```bash
 # ✅ All page files migrated to kebab-case
 ✅ ./pages/music-in-numbers.html (was music_in_numbers.html)
-✅ ./pages/guia-turistico.html (was guia_turistico.html)
+✅ ./pages/guia-turistico.html (was guia_js.html)
 ✅ ./pages/monitora-vagas.html (was monitora_vagas.html)
 
 # ✅ Git history preserved with proper renames
 $ git status
-# renamed: src/pages/guia_turistico.html -> src/pages/guia-turistico.html
+# renamed: src/pages/guia_js.html -> src/pages/guia-turistico.html
 # renamed: src/pages/monitora_vagas.html -> src/pages/monitora-vagas.html
 # renamed: src/pages/music_in_numbers.html -> src/pages/music-in-numbers.html
 ```

@@ -75,7 +75,7 @@ sudo ./shell_scripts/deploy_to_webserver.sh
 ```
 Sibling Projects              Public Directory              Production Server
 ../music_in_numbers/    →    public/submodules/    →    /var/www/html
-../guia_turistico/
+../guia_js/
 ../monitora_vagas/
 ../busca_vagas/
 
@@ -109,7 +109,7 @@ mpbarbosa_site/
 │   ├── api/                      # Busca Vagas API proxy
 │   └── submodules/               # Sibling project deployment directory
 │       ├── music_in_numbers/     # Spotify analytics
-│       ├── guia_turistico/       # Travel guide
+│       ├── guia_js/       # Travel guide
 │       ├── monitora_vagas/       # Hotel monitoring
 │       └── busca_vagas/          # Backend API
 │
@@ -233,11 +233,11 @@ ls -la public/
 | Version | Date | Key Changes |
 |---------|------|-------------|
 | v2.0.0 | 2025-12 | Two-step deployment architecture |
-| v1.0.0 | 2025-11 | Initial deployment scripts |
+| v1.1.8 | 2025-11 | Initial deployment scripts |
 
 ### Migration Path
 
-**From v1.0.0 to v2.0.0**:
+**From v1.1.8 to v2.0.0**:
 - Introduced staging directory (`public/`)
 - Parametrized step control
 - Enhanced backup system
@@ -258,7 +258,7 @@ ls -la public/
 ### Sibling Projects
 
 - **Music in Numbers** (`../music_in_numbers`) - Spotify analytics
-- **Guia Turístico** (`../guia_turistico`) - Travel guide
+- **Guia Turístico** (`../guia_js`) - Travel guide
 - **Monitora Vagas** (`../monitora_vagas`) - Hotel monitoring
 - **Busca Vagas** (`../busca_vagas`) - Backend API
 
@@ -291,7 +291,7 @@ ls -la public/
 
 ---
 
-**Version:** 1.0.0  
+**Version:** 1.1.8  
 **Last Updated:** 2025-12-25  
 **Architecture:** v2.0.0 Two-Step Deployment  
 **Maintained By:** MP Barbosa Development Team

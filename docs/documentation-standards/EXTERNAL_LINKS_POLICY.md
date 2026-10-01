@@ -69,7 +69,7 @@ The current implementation uses basic `target="_blank" rel="noopener noreferrer"
 - **Git Submodules**:
   - `src/submodules/music_in_numbers/src/index.html`
   - `src/submodules/music_in_numbers/src/artist.html`
-  - `src/submodules/guia_turistico/src/guia_turistico.html`
+  - `src/submodules/guia_js/src/guia_js.html`
 - **Sibling Projects**:
   - `../monitora_vagas/src/index.html`
   - `../busca_vagas/client/public/index.html`

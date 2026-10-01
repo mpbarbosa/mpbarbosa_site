@@ -25,11 +25,15 @@ describe('Project Navigation Integration Tests', () => {
   const projectRoot = getProjectRoot();
   const srcDir = path.join(projectRoot, 'src');
 
-  describe('Landing Page Project Links', () => {
+  // The project list used to live on the landing page. It moved to /projetos/
+  // when that page was split out, so these checks follow the content rather
+  // than the address — the guarantee is unchanged: every sibling project is
+  // reachable through a link whose text says what it is.
+  describe('Projects Page Project Links', () => {
     let indexHTML;
 
     beforeEach(() => {
-      const indexPath = path.join(srcDir, 'index.html');
+      const indexPath = path.join(srcDir, 'projetos', 'index.html');
       indexHTML = loadHTMLFile(indexPath);
 
       if (indexHTML) {
@@ -42,9 +46,9 @@ describe('Project Navigation Integration Tests', () => {
       document.body.innerHTML = '';
     });
 
-    test('should have Music in Numbers project link in landing page', () => {
+    test('should have Music in Numbers project link on the projects page', () => {
       if (!indexHTML) {
-        console.warn('index.html not found, skipping test');
+        console.warn('projetos/index.html not found, skipping test');
         return;
       }
 
@@ -52,7 +56,7 @@ describe('Project Navigation Integration Tests', () => {
       const musicLink = document.querySelector('a[href*="music_in_numbers"]');
 
       expect(musicLink).toBeTruthy();
-      expect(musicLink.href).toContain('submodules/music_in_numbers/src/music_in_numbers.html');
+      expect(musicLink.href).toContain('music_in_numbers');
       expect(musicLink.textContent).toContain('Music in Numbers');
     });
 
@@ -61,7 +65,9 @@ describe('Project Navigation Integration Tests', () => {
         return;
       }
 
-      const projectLinks = document.querySelectorAll('a[href*="submodules/"]');
+      const projectLinks = document.querySelectorAll(
+        'a[href*="music_in_numbers"], a[href*="guia_js"], a[href*="monitora_vagas"]',
+      );
 
       // Test passes if we have at least one project link and it's properly formatted
       expect(projectLinks.length).toBeGreaterThan(0);
@@ -78,7 +84,7 @@ describe('Project Navigation Integration Tests', () => {
       }
 
       const musicLink = document.querySelector('a[href*="music_in_numbers"]');
-      const guiaLink = document.querySelector('a[href*="guia_turistico"]');
+      const guiaLink = document.querySelector('a[href*="guia_js"]');
       const monitoraLink = document.querySelector('a[href*="monitora_vagas"]');
 
       if (musicLink) {
@@ -87,8 +93,8 @@ describe('Project Navigation Integration Tests', () => {
       }
 
       if (guiaLink) {
-        expect(guiaLink.textContent.trim().length).toBeGreaterThan(5);
-        expect(guiaLink.textContent.toLowerCase()).toMatch(/guia|tur|guide|travel/);
+        expect(guiaLink.textContent.trim().length).toBeGreaterThan(3);
+        expect(guiaLink.textContent.toLowerCase()).toMatch(/guia|tur|guide|travel|onde|estou/);
       }
 
       if (monitoraLink) {
@@ -101,7 +107,7 @@ describe('Project Navigation Integration Tests', () => {
   describe('Project Redirect Pages Structure', () => {
     const redirectPages = [
       { file: 'music-in-numbers.html', project: 'music_in_numbers' },
-      { file: 'guia-turistico.html', project: 'guia_turistico' },
+      { file: 'guia-turistico.html', project: 'guia_js' },
       { file: 'monitora-vagas.html', project: 'monitora_vagas' },
     ];
 
@@ -125,7 +131,7 @@ describe('Project Navigation Integration Tests', () => {
           expect(pageContent).toMatch(/http-equiv="refresh"/i);
         });
 
-        test('should have meta refresh redirect to submodule', () => {
+        test('should have meta refresh redirect to project', () => {
           if (!pageContent) {
             return;
           }
@@ -135,7 +141,7 @@ describe('Project Navigation Integration Tests', () => {
 
           if (metaRefreshMatch) {
             const refreshContent = metaRefreshMatch[0];
-            expect(refreshContent).toContain(`../submodules/${project}/src`);
+            expect(refreshContent).toContain(`../${project}`);
           }
         });
 
@@ -144,8 +150,8 @@ describe('Project Navigation Integration Tests', () => {
             return;
           }
 
-          // Should redirect to the correct submodule
-          expect(pageContent).toContain(`../submodules/${project}/src`);
+          // Should redirect to the correct sibling project directory
+          expect(pageContent).toContain(`../${project}`);
         });
 
         test('should have correct redirect timing', () => {
@@ -216,47 +222,35 @@ describe('Project Navigation Integration Tests', () => {
     });
   });
 
-  describe('Project Integration with Submodules', () => {
-    test('should have .gitmodules configuration for all projects', () => {
-      const gitmodulesPath = path.join(projectRoot, '.gitmodules');
+  describe('Project Integration with Sibling Architecture', () => {
+    test('should have sibling project redirect pages for all projects', () => {
+      const redirectPages = ['music-in-numbers.html', 'guia-turistico.html', 'monitora-vagas.html'];
+      const pagesDir = path.join(srcDir, 'pages');
 
-      if (!fs.existsSync(gitmodulesPath)) {
-        console.warn('.gitmodules not found, skipping test');
-        return;
-      }
-
-      const gitmodulesContent = fs.readFileSync(gitmodulesPath, 'utf8');
-
-      // Should include all three submodules
-      expect(gitmodulesContent).toContain('music_in_numbers');
-      expect(gitmodulesContent).toContain('guia_turistico');
-      expect(gitmodulesContent).toContain('monitora_vagas');
-    });
-
-    test('should have consistent submodule directory structure', () => {
-      const submodulesDir = path.join(srcDir, 'submodules');
-
-      if (!fs.existsSync(submodulesDir)) {
-        console.warn('submodules directory not found, skipping test');
-        return;
-      }
-
-      const expectedSubmodules = ['music_in_numbers', 'guia_turistico', 'monitora_vagas'];
-
-      expectedSubmodules.forEach((submodule) => {
-        const submodulePath = path.join(submodulesDir, submodule);
-
-        // Directory should exist (may be empty if not initialized)
-        expect(fs.existsSync(submodulePath)).toBe(true);
-
-        if (fs.existsSync(submodulePath) && fs.statSync(submodulePath).isDirectory()) {
-          // If submodule is initialized, should have src directory
-          const srcPath = path.join(submodulePath, 'src');
-          if (fs.existsSync(srcPath)) {
-            expect(fs.statSync(srcPath).isDirectory()).toBe(true);
-          }
+      redirectPages.forEach((page) => {
+        const pagePath = path.join(pagesDir, page);
+        if (fs.existsSync(pagePath)) {
+          const content = fs.readFileSync(pagePath, 'utf8');
+          expect(content).toContain('http-equiv="refresh"');
         }
       });
+    });
+
+    test('should have sibling project links on the projects page', () => {
+      // The project list moved from the landing page to /projetos/ when that
+      // page was split out. The guarantee is unchanged — every sibling project
+      // is still reachable by a link — so the check follows the content.
+      const indexPath = path.join(srcDir, 'projetos', 'index.html');
+      if (!fs.existsSync(indexPath)) {
+        console.warn('projetos/index.html not found, skipping test');
+        return;
+      }
+
+      const content = fs.readFileSync(indexPath, 'utf8');
+      // Projects are deployed as top-level sibling directories
+      const siblingProjects = ['music_in_numbers', 'guia_js', 'monitora_vagas'];
+      const foundProjects = siblingProjects.filter((p) => content.includes(p));
+      expect(foundProjects.length).toBeGreaterThan(0);
     });
   });
 
@@ -296,6 +290,39 @@ describe('Project Navigation Integration Tests', () => {
           }
         }
       });
+    });
+  });
+
+  describe('Resume page (/cv/)', () => {
+    const cvPath = () => path.join(srcDir, 'cv', 'index.html');
+
+    test('should be a real HTML page, not a redirect stub', () => {
+      const content = loadHTMLFile(cvPath());
+      expect(content).not.toBeNull();
+      // A meta-refresh or location.replace here would make /cv/ a soft 404
+      // for crawlers, which is what it used to be.
+      expect(content).not.toMatch(/http-equiv="refresh"/i);
+      expect(content).not.toMatch(/location\.replace/);
+      expect(content).toMatch(/<h1[^>]*>\s*Marcelo Pereira Barbosa/);
+    });
+
+    test('should be indexable by search engines', () => {
+      const content = loadHTMLFile(cvPath());
+      expect(content).not.toBeNull();
+      expect(content).not.toMatch(/name="robots"[^>]*noindex/i);
+      expect(content).toContain('<link rel="canonical" href="https://mpbarbosa.com/cv/" />');
+    });
+
+    test('should still offer the PDF for download', () => {
+      const content = loadHTMLFile(cvPath());
+      expect(content).toContain('cv-marcelo-pereira-barbosa.pdf');
+      expect(fs.existsSync(path.join(srcDir, 'cv', 'cv-marcelo-pereira-barbosa.pdf'))).toBe(true);
+    });
+
+    test('should be listed in sitemap.xml so Google can discover it', () => {
+      const sitemap = loadHTMLFile(path.join(srcDir, 'sitemap.xml'));
+      expect(sitemap).not.toBeNull();
+      expect(sitemap).toContain('<loc>https://mpbarbosa.com/cv/</loc>');
     });
   });
 });

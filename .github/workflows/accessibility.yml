@@ -28,7 +28,12 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./src
-      run: npm ci --legacy-peer-deps
+      # No --legacy-peer-deps: it was a workaround for jest-watch-typeahead@2.x
+      # pinning jest <=29, now fixed by the bump to v3. The flag actively breaks
+      # this job, because it skips peer dependencies and the top-level puppeteer
+      # is installed to satisfy axe-puppeteer's peer range -- without it
+      # accessibility.test.mjs fails to import puppeteer at all.
+      run: npm ci
       
     - name: Start development server
       working-directory: ./src

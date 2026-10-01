@@ -161,7 +161,7 @@ Primary Issues:
 ### ✅ 1. ESLint Executes Without Script Errors
 ```bash
 $ npm run lint
-> mpbarbosa-landing-page@1.0.0 lint
+> mpbarbosa-landing-page@1.1.8 lint
 > eslint . --ext .js,.mjs --ignore-pattern 'assets/js/*'
 
 ✖ 647 problems (645 errors, 2 warnings)
@@ -190,7 +190,7 @@ $ npm run lint
    cd submodules/music_in_numbers/src
    npx eslint . --ext .js,.mjs --fix
    
-   cd ../guia_turistico/src
+   cd ../guia_js/src
    npx eslint . --ext .js,.mjs --fix
    ```
 

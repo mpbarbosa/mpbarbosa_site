@@ -31,7 +31,16 @@ set -u  # Exit on undefined variables
 # Source and destination paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SOURCE_DIR="$(cd "$PROJECT_ROOT/../mpbarbosa.com" && pwd)"  # v3.0.0: Deploy from staging repository
+# v3.0.0: Deploy from staging repository. Resolve to an absolute path when the
+# staging repo is present, but fall back to the unresolved path when it is not:
+# with `set -e`, a bare `cd` here aborted the script before argument parsing, so
+# even --help and --dry-run died on machines without the sibling checkout.
+# validate_environment() already rejects a missing SOURCE_DIR with a clear error.
+if [[ -d "$PROJECT_ROOT/../mpbarbosa.com" ]]; then
+    SOURCE_DIR="$(cd "$PROJECT_ROOT/../mpbarbosa.com" && pwd)"
+else
+    SOURCE_DIR="$PROJECT_ROOT/../mpbarbosa.com"
+fi
 DEST_DIR="/var/www/mpbarbosa.com"
 BACKUP_DIR="/var/www/backups/mpbarbosa.com"
 
@@ -311,8 +320,8 @@ set_permissions() {
     find "$DEST_DIR" -type f -exec chmod 644 {} \;
     
     # Make specific files executable if needed
-    if [[ -f "$DEST_DIR/submodules/guia_turistico/src/andarilho.js" ]]; then
-        chmod 755 "$DEST_DIR/submodules/guia_turistico/src/andarilho.js"
+    if [[ -f "$DEST_DIR/submodules/guia_js/src/andarilho.js" ]]; then
+        chmod 755 "$DEST_DIR/submodules/guia_js/src/andarilho.js"
     fi
     
     print_success "Permissions set successfully"
@@ -333,8 +342,8 @@ validate_deployment() {
     # Check if main files exist
     local required_files=(
         "$DEST_DIR/index.html"
-        "$DEST_DIR/assets/css/main.css"
-        "$DEST_DIR/assets/js/main.js"
+        "$DEST_DIR/styles/v2.css"
+        "$DEST_DIR/scripts/v2.js"
     )
     
     for file in "${required_files[@]}"; do
@@ -350,7 +359,7 @@ validate_deployment() {
         print_success "Music in Numbers submodule deployed"
     fi
     
-    if [[ -d "$DEST_DIR/submodules/guia_turistico" ]]; then
+    if [[ -d "$DEST_DIR/submodules/guia_js" ]]; then
         print_success "Guia Turístico submodule deployed"
     fi
     

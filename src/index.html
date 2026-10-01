@@ -1,554 +1,604 @@
 <!doctype html>
-<!--
-	Dimension by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html lang="pt-BR">
   <head>
-    <title>mpbarbosa.com</title>
+    <title>
+      Marcelo Pereira Barbosa — Consultor e Engenheiro de Soluções | Billing, Oracle/PL-SQL e
+      software com agentes de IA
+    </title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1220" />
+    <meta
+      name="description"
+      content="Consultor e Engenheiro de Soluções com 25 anos em billing de telecom: conciliação fiscal, contábil e financeira, revenue assurance, Oracle e PL/SQL. No último ano, dois produtos em produção construídos dirigindo agentes de código. Disponível para posições sênior em São Paulo."
+    />
+    <meta
+      name="keywords"
+      content="billing, faturamento, conciliação fiscal, conciliação contábil, conciliação financeira, revenue assurance, Oracle, PL/SQL, SQL, migração de dados, telecom, meios de pagamento, setores regulados, BigQuery, agentes de código, desenvolvimento assistido por IA, React, TypeScript, Node.js"
+    />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://mpbarbosa.com/" />
+    <meta
+      property="og:title"
+      content="Marcelo Pereira Barbosa — Consultor e Engenheiro de Soluções"
+    />
+    <meta
+      property="og:description"
+      content="25 anos em billing de telecom: conciliação fiscal, contábil e financeira, Oracle e PL/SQL. Dois produtos em produção no último ano, construídos dirigindo agentes de código. Disponível para posições sênior."
+    />
+    <meta property="og:image" content="https://mpbarbosa.com/images/og-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Marcelo Pereira Barbosa — Consultor e Engenheiro de Soluções"
+    />
+    <meta property="og:site_name" content="mpbarbosa.com" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://mpbarbosa.com/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://mpbarbosa.com/" />
+    <link rel="alternate" hreflang="en" href="https://mpbarbosa.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://mpbarbosa.com/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+    <!-- schema.org Person -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Marcelo Pereira Barbosa",
+        "alternateName": "mpb",
+        "jobTitle": "Consultor e Engenheiro de Soluções",
+        "email": "mailto:mpbarbosa@gmail.com",
+        "url": "https://mpbarbosa.com/",
+        "image": "https://mpbarbosa.com/images/pic03.jpg",
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Universidade Presbiteriana Mackenzie"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "São Paulo",
+          "addressRegion": "SP",
+          "addressCountry": "BR"
+        },
+        "knowsAbout": [
+          "Billing de telecom",
+          "Faturamento",
+          "Conciliação fiscal",
+          "Conciliação contábil",
+          "Conciliação financeira",
+          "Revenue assurance",
+          "Meios de pagamento",
+          "Setores regulados",
+          "Oracle",
+          "PL/SQL",
+          "SQL",
+          "Data Warehouse",
+          "Migração de dados",
+          "BigQuery",
+          "Java",
+          "Smalltalk",
+          "Desenvolvimento assistido por IA",
+          "Agentes de código",
+          "Claude Code",
+          "GitHub Copilot",
+          "Model Context Protocol",
+          "React",
+          "TypeScript",
+          "Node.js"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/mpbarbosa/",
+          "https://github.com/mpbarbosa",
+          "https://x.com/mpb_sp",
+          "https://mpbarbosa.com/"
+        ],
+        "seeks": {
+          "@type": "Demand",
+          "name": "Posições sênior em engenharia de software, dados e billing"
+        }
+      }
+    </script>
+
+    <!-- Google Fonts: Inter + Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome (social icons) -->
+    <link
+      rel="stylesheet"
+      href="assets/css/fontawesome-all.min.css"
+      media="print"
+      onload="
+        this.media = 'all';
+        this.onload = null;
+      "
+    />
+    <noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css" /></noscript>
+
+    <!-- v2 styles -->
+    <link rel="stylesheet" href="styles/v2.css" />
   </head>
-  <body class="is-preload">
-    <!-- Wrapper -->
+  <body>
+    <!-- Background -->
+    <div id="bg" role="presentation" aria-hidden="true"></div>
+
     <div id="wrapper">
-      <!-- Header -->
-      <header id="header">
-        <div class="logo">
-          <span class="icon fa-gem"></span>
-        </div>
-        <div class="content">
-          <div class="inner">
-            <h1>Marcelo Pereira Barbosa (mpb)</h1>
-            <p>
-              Bem-vindo ao meu site pessoal! Aqui você encontrará informações sobre meus projetos,
-              experiências e interesses profissionais.
-            </p>
-            <p>
-              A fully responsive site template designed by
-              <a href="https://html5up.net" target="_blank" rel="noopener noreferrer">HTML5 UP</a>
-              and released<br />
-              for free under the
-              <a href="https://html5up.net/license" target="_blank" rel="noopener noreferrer"
-                >Creative Commons</a
-              >
-              license.
-            </p>
-          </div>
-        </div>
-        <nav role="navigation" aria-label="Main navigation">
-          <ul>
-            <li><a href="#intro">Intro</a></li>
-            <li><a href="#projetos">Projetos (IA)</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li>
-              <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
-                >Repositórios no GitHub</a
-              >
-            </li>
-            <!--<li><a href="#elements">Elements</a></li>-->
-          </ul>
+      <!-- Top App Bar -->
+      <header id="top-bar" role="banner">
+        <span class="logo brand">
+          <svg class="diamond-emblem" viewBox="0 0 20 20" aria-hidden="true">
+            <polygon points="10,1 19,10 10,19 1,10" />
+          </svg>
+          mpb
+        </span>
+        <nav role="navigation" aria-label="Navegação principal">
+          <a href="#intro">Intro</a>
+          <a href="#experiencia">Experiência</a>
+          <a href="#projetos">Projetos</a>
+          <a href="#about">Sobre</a>
+          <a href="#contact">Contato</a>
+          <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <a
+            href="en/"
+            style="font-size: 0.85rem; opacity: 0.75"
+            aria-label="Switch to English version"
+            >🇬🇧 EN</a
+          >
         </nav>
       </header>
 
       <!-- Main -->
       <main id="main" role="main">
+        <!-- Hero -->
+        <section class="hero" aria-labelledby="hero-name">
+          <h1 class="hero-name" id="hero-name">Marcelo Pereira Barbosa</h1>
+          <p class="hero-role">Consultor e Engenheiro de Soluções</p>
+          <p class="hero-pitch">
+            25 anos em billing de telecom: conciliação fiscal, contábil e financeira, Oracle e
+            PL/SQL. No último ano, dois produtos em produção construídos dirigindo agentes de
+            código.
+          </p>
+          <p class="hero-availability">
+            Disponível para posições sênior em São Paulo — presencial, híbrido ou remoto
+          </p>
+          <ul class="hero-shipped" role="list">
+            <li>
+              <a href="https://brasileirao.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Portal Brasileirão</a
+              >
+              <span
+                >Companion do Campeonato Brasileiro Série A — React 19, TypeScript, Express 5,
+                Tailwind 4, AWS.</span
+              >
+            </li>
+            <li>
+              <a href="https://copa2026.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Agora na Copa 2026</a
+              >
+              <span
+                >Companion da Copa do Mundo FIFA 2026 — React 19, TypeScript, Express, AWS.</span
+              >
+            </li>
+          </ul>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Falar comigo</a>
+            <a class="btn btn-outlined" href="cv/">Currículo</a>
+          </div>
+        </section>
+
+        <div class="connector" aria-hidden="true"></div>
+
         <!-- Intro -->
-        <article id="intro">
-          <h2 class="major">Intro</h2>
-          <span class="image main"
-            ><img src="images/pic01.jpg" alt="Technology and software development illustration"
-          /></span>
+        <article class="section-card" id="intro" aria-labelledby="intro-heading">
+          <h2 id="intro-heading">Intro</h2>
+          <img
+            src="images/pic01.webp"
+            width="960"
+            height="320"
+            loading="lazy"
+            decoding="async"
+            alt=""
+            role="presentation"
+            class="section-img"
+          />
           <p>
-            Depois de 25 anos de experiência em desenvolvimento de software e estando com algum
-            tempo livre, decidi criar este site para compartilhar meus projetos e interesses. By the
-            way, check out my <a href="#projetos">awesome work</a>.
+            Passei 25 anos construindo e sustentando sistemas de billing de telecom — faturamento,
+            conciliação fiscal, contábil e financeira, e migração de bases de assinantes. É um
+            domínio em que o software responde por dinheiro que já foi cobrado e por obrigações que
+            já foram declaradas: a correção não é um detalhe de qualidade, é o produto.
           </p>
           <p>
-            Nesse momento, estou explorando o desenvolvimento assistido por IA com o GitHub Copilot,
-            descobrindo utilidades e possibilidades dessa tecnologia. Desde desenvolver em ambientes
-            que domino a me arriscar a escrever prompts em tecnologias que não conheço, estou me
-            desafiando a aprender mais e a me adaptar a novas ferramentas.
+            No último ano levei essa disciplina para o desenvolvimento com agentes de código. Uso
+            Claude Code, GitHub Copilot e Cursor para escrever a maior parte do código; o meu
+            trabalho é decidir a arquitetura, definir o que precisa ser verdadeiro e verificar cada
+            entrega antes que ela chegue à produção. Os dois produtos no ar foram construídos assim
+            — com testes unitários, specs Playwright de ponta a ponta e pipelines de deploy com
+            rollback ensaiado.
           </p>
           <p>
-            Aliás, este texto foi escrito com a ajuda do GitHub Copilot. Algo que, antes de começar
-            a escrevê-lo, eu nunca imaginei que faria, já que tenho imenso prazer em fazer meus
-            prórpios textos.
+            O trabalho de fundo não mudou: continua sendo supervisão de engenharia. Mudou a
+            velocidade com que o código aparece, não a responsabilidade por ele.
           </p>
         </article>
 
-        <!-- Projetos (IA) -->
-        <article id="projetos">
-          <h2 class="major">Projetos (IA)</h2>
-          <span class="image main"
-            ><img src="images/pic02.jpg" alt="AI-assisted projects showcase"
-          /></span>
-          <p>Projetos desenvolvidos com o auxílio de IA.</p>
-          <ul>
+        <div class="connector" aria-hidden="true"></div>
+
+        <!-- Experiência -->
+        <article class="section-card" id="experiencia" aria-labelledby="experiencia-heading">
+          <h2 id="experiencia-heading">Experiência</h2>
+
+          <div class="exp-entry">
+            <h3>Objective Solutions</h3>
+            <p class="exp-meta">
+              mar/1999 – dez/2023 · 15 anos como Desenvolvedor Sênior, cerca de 10 como Consultor
+            </p>
+            <p>
+              Billing de telecom em Smalltalk, Java e PL/SQL sobre Oracle — o produto Diginet e sua
+              evolução, o Objective NG. Data Warehouses de faturamento e fiscal, conciliação fiscal,
+              contábil e financeira, e quatro migrações de dados ponta a ponta. Clientes como Sky,
+              Telefônica/Vivo, HughesNet e PreventSenior.
+            </p>
+          </div>
+
+          <div class="exp-entry">
+            <h3>Eleflow</h3>
+            <p class="exp-meta">2024 – 2025 · Analista de Dados Sênior</p>
+            <p>Migração de dados de Oracle para BigQuery.</p>
+          </div>
+
+          <div class="exp-entry">
+            <h3>Formação</h3>
+            <p class="exp-meta">Universidade Presbiteriana Mackenzie</p>
+          </div>
+
+          <p class="section-more">
+            <a href="experiencia/">Ver a experiência completa &rarr;</a>
+          </p>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <!-- Projetos -->
+        <article class="section-card" id="projetos" aria-labelledby="projetos-heading">
+          <h2 id="projetos-heading">Projetos</h2>
+          <svg class="card-decoration" viewBox="0 0 300 60" aria-hidden="true" focusable="false">
+            <!-- Latent space / kernel map abstract visualization -->
+            <circle cx="20" cy="30" r="2" opacity="0.3" />
+            <circle cx="55" cy="15" r="1.5" opacity="0.25" />
+            <circle cx="90" cy="40" r="2.5" opacity="0.2" />
+            <circle cx="130" cy="22" r="1.5" opacity="0.3" />
+            <circle cx="160" cy="45" r="2" opacity="0.2" />
+            <circle cx="200" cy="18" r="3" opacity="0.15" />
+            <circle cx="240" cy="35" r="1.5" opacity="0.25" />
+            <circle cx="275" cy="20" r="2" opacity="0.2" />
+            <line
+              x1="20"
+              y1="30"
+              x2="55"
+              y2="15"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="55"
+              y1="15"
+              x2="90"
+              y2="40"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="90"
+              y1="40"
+              x2="130"
+              y2="22"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.1"
+            />
+            <line
+              x1="130"
+              y1="22"
+              x2="160"
+              y2="45"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="160"
+              y1="45"
+              x2="200"
+              y2="18"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.1"
+            />
+            <line
+              x1="200"
+              y1="18"
+              x2="240"
+              y2="35"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.15"
+            />
+            <line
+              x1="240"
+              y1="35"
+              x2="275"
+              y2="20"
+              stroke="currentColor"
+              stroke-width="0.5"
+              opacity="0.1"
+            />
+          </svg>
+          <img
+            src="images/pic02.webp"
+            width="960"
+            height="320"
+            loading="lazy"
+            decoding="async"
+            alt=""
+            role="presentation"
+            class="section-img"
+          />
+          <p>
+            Software construído dirigindo agentes de código — Claude Code, GitHub Copilot e Cursor.
+            A arquitetura, os critérios de aceite e a verificação antes da produção são meus.
+          </p>
+
+          <h3 class="project-group-title">Em produção</h3>
+          <ul class="project-list" role="list">
             <li>
-              <a
-                href="https://github.com/mpbarbosa/mpb_scripts"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Scripts de automação</a
+              <a href="https://brasileirao.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Portal Brasileirão</a
               >
+              — Companion do Campeonato Brasileiro Série A
+              <p class="project-desc">
+                Tabela, jogos e estatísticas da Série A, com login OAuth e fallback para um snapshot
+                congelado quando não há token da API disponível.
+                <span class="project-meta"
+                  >React 19 · TypeScript · Express 5 · Tailwind 4 · AWS · 84 testes unitários e 46
+                  specs Playwright ponta a ponta · 1.597 commits em cinco semanas</span
+                >
+              </p>
             </li>
             <li>
-              <a
-                href="music_in_numbers/src/music_in_numbers.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Music in Numbers - Análise de dados Spotify</a
+              <a href="https://copa2026.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Agora na Copa 2026</a
               >
-            </li>
-            <li>
-              <a href="monitora_vagas/public/" target="_blank" rel="noopener noreferrer"
-                >Monitora Vagas</a
-              >
-            </li>
-            <li>
-              <a href="guia_turistico/" target="_blank" rel="noopener noreferrer">Guia Turístico</a>
+              — Companion da Copa do Mundo FIFA 2026
+              <p class="project-desc">
+                Simulador de Monte Carlo das chances de classificação, com modelo Dixon-Coles e os
+                critérios de desempate do Art. 13 do regulamento da FIFA.
+                <span class="project-meta"
+                  >React 19 · TypeScript · Express · AWS · 34 testes unitários e 37 specs Playwright
+                  ponta a ponta · 1.279 commits</span
+                >
+              </p>
             </li>
           </ul>
+
+          <p>
+            Fora da produção há experimentos e ferramentas — ai_workflow, gitx, bibliotecas
+            publicadas no npm — e o
+            <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
+              >portfólio público no GitHub</a
+            >, com mais de 50 repositórios não-fork.
+          </p>
+
+          <p class="section-more">
+            <a href="projetos/">Ver todos os projetos &rarr;</a>
+          </p>
         </article>
+
+        <div class="connector" aria-hidden="true"></div>
 
         <!-- About -->
-        <article id="about">
-          <h2 class="major">About</h2>
-          <span class="image main"
-            ><img src="images/pic03.jpg" alt="MP Barbosa profile and background"
-          /></span>
+        <article class="section-card" id="about" aria-labelledby="about-heading">
+          <h2 id="about-heading">Sobre</h2>
+          <div class="photo-strip">
+            <figure class="photo-figure">
+              <img
+                src="images/pic03.webp"
+                width="640"
+                height="853"
+                loading="lazy"
+                decoding="async"
+                alt="Foto de Marcelo Pereira Barbosa"
+                class="section-img"
+              />
+              <figcaption>Problema original</figcaption>
+            </figure>
+            <figure class="photo-figure">
+              <img
+                src="images/pic04.webp"
+                width="640"
+                height="656"
+                loading="lazy"
+                decoding="async"
+                alt="Foto de Marcelo Pereira Barbosa"
+                class="section-img"
+              />
+              <figcaption>IA com um pouco de drift... meus olhos ficaram azuis</figcaption>
+            </figure>
+            <figure class="photo-figure">
+              <img
+                src="images/pic05.webp"
+                width="384"
+                height="512"
+                loading="lazy"
+                decoding="async"
+                alt="Foto de Marcelo Pereira Barbosa"
+                class="section-img"
+              />
+              <figcaption>IA com muito drift. Não entendeu nada.</figcaption>
+            </figure>
+          </div>
           <p>
-            Lorem ipsum dolor sit amet, consectetur et adipiscing elit. Praesent eleifend dignissim
-            arcu, at eleifend sapien imperdiet ac. Aliquam erat volutpat. Praesent urna nisi,
-            fringila lorem et vehicula lacinia quam. Integer sollicitudin mauris nec lorem luctus
-            ultrices. Aliquam libero et malesuada fames ac ante ipsum primis in faucibus. Cras
-            viverra ligula sit amet ex mollis mattis lorem ipsum dolor sit amet.
+            Quem entende regra fiscal, faturamento e conciliação normalmente não constrói software
+            moderno. Quem constrói software moderno raramente conciliou um sistema de cartão de
+            crédito. Passei 25 anos do primeiro lado e o último ano entregando produtos em produção
+            do segundo.
+          </p>
+          <p>
+            Na prática, isso significa conseguir dizer por que um número está errado antes de abrir
+            o código — e consertar o código depois. É a combinação que serve para billing,
+            conciliação, revenue assurance, migração de dados e sistemas de setores regulados, onde
+            o custo de errar não é uma tela feia: é uma cobrança indevida ou uma declaração errada.
+          </p>
+          <p>
+            Fora do código, me interesso por música — tenho um projeto para compor usando o Strudel.
           </p>
         </article>
 
+        <div class="connector" aria-hidden="true"></div>
+
         <!-- Contact -->
-        <article id="contact">
-          <h2 class="major">Contact</h2>
-          <form method="post" action="#">
-            <div class="fields">
-              <div class="field half">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" />
+        <article class="section-card" id="contact" aria-labelledby="contact-heading">
+          <h2 id="contact-heading">Contato</h2>
+          <div data-fs-success>
+            <p style="text-align: center; font-weight: 500; padding: 2rem 0">
+              Obrigado pela mensagem! Entrarei em contato em breve.
+            </p>
+          </div>
+          <form
+            id="contact-form"
+            class="contact-form"
+            action="https://formspree.io/f/xrevgvda"
+            method="POST"
+            novalidate
+          >
+            <div class="form-row">
+              <div class="form-field">
+                <label for="contact-name">Nome</label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="name"
+                  autocomplete="name"
+                  required
+                  data-fs-field
+                />
+                <span class="form-error" data-fs-error="name"></span>
               </div>
-              <div class="field half">
-                <label for="email">Email</label>
-                <input type="text" name="email" id="email" />
-              </div>
-              <div class="field">
-                <label for="message">Message</label>
-                <textarea name="message" id="message" rows="4"></textarea>
+              <div class="form-field">
+                <label for="contact-email">E-mail</label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                  data-fs-field
+                />
+                <span class="form-error" data-fs-error="email"></span>
               </div>
             </div>
-            <ul class="actions">
-              <li><input type="submit" value="Send Message" class="primary" /></li>
-              <li><input type="reset" value="Reset" /></li>
-            </ul>
+            <div class="form-field">
+              <label for="contact-message">Mensagem</label>
+              <textarea
+                id="contact-message"
+                name="message"
+                rows="5"
+                required
+                data-fs-field
+              ></textarea>
+              <span class="form-error" data-fs-error="message"></span>
+            </div>
+            <p class="form-error" data-fs-error></p>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" data-fs-submit-btn>
+                Enviar mensagem
+              </button>
+              <button type="reset" class="btn btn-outlined">Limpar</button>
+            </div>
           </form>
-          <ul class="icons">
+
+          <ul class="social-icons" aria-label="Redes sociais">
             <li>
-              <a href="#" class="icon brands fa-twitter" aria-label="Twitter profile"
-                ><span class="label">Twitter</span></a
-              >
+              <a
+                href="https://x.com/mpb_sp"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Perfil no Twitter / X"
+                ><i class="fab fa-twitter" aria-hidden="true"></i
+              ></a>
             </li>
             <li>
-              <a href="#" class="icon brands fa-facebook-f" aria-label="Facebook profile"
-                ><span class="label">Facebook</span></a
-              >
+              <a
+                href="https://www.facebook.com/mpbarbosa"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Perfil no Facebook"
+                ><i class="fab fa-facebook-f" aria-hidden="true"></i
+              ></a>
             </li>
             <li>
-              <a href="#" class="icon brands fa-instagram" aria-label="Instagram profile"
-                ><span class="label">Instagram</span></a
-              >
+              <a
+                href="https://www.instagram.com/mpbarbosa1971/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Perfil no Instagram"
+                ><i class="fab fa-instagram" aria-hidden="true"></i
+              ></a>
             </li>
             <li>
-              <a href="#" class="icon brands fa-github" aria-label="GitHub profile"
-                ><span class="label">GitHub</span></a
-              >
+              <a
+                href="https://www.linkedin.com/in/mpbarbosa/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Perfil no LinkedIn"
+                ><i class="fab fa-linkedin" aria-hidden="true"></i
+              ></a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Perfil no GitHub"
+                ><i class="fab fa-github" aria-hidden="true"></i
+              ></a>
             </li>
           </ul>
-        </article>
-
-        <!-- Elements -->
-        <article id="elements">
-          <h2 class="major">Elements</h2>
-
-          <section>
-            <h3 class="major">Text</h3>
-            <p>
-              This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and
-              this is <em>emphasized</em>. This is <sup>superscript</sup> text and this is
-              <sub>subscript</sub> text. This is <u>underlined</u> and this is code:
-              <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.
-            </p>
-            <hr />
-            <h2>Heading Level 2</h2>
-            <h3>Heading Level 3</h3>
-            <h4>Heading Level 4</h4>
-            <h5>Heading Level 5</h5>
-            <h6>Heading Level 6</h6>
-            <hr />
-            <h4>Blockquote</h4>
-            <blockquote>
-              Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget
-              tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit
-              adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante
-              ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.
-            </blockquote>
-            <h4>Preformatted</h4>
-            <pre><code>i = 0;
-
-while (!deck.isInOrder()) {
-    print 'Iteration ' + i;
-    deck.shuffle();
-    i++;
-}
-
-print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
-          </section>
-
-          <section>
-            <h3 class="major">Lists</h3>
-
-            <h4>Unordered</h4>
-            <ul>
-              <li>Dolor pulvinar etiam.</li>
-              <li>Sagittis adipiscing.</li>
-              <li>Felis enim feugiat.</li>
-            </ul>
-
-            <h4>Alternate</h4>
-            <ul class="alt">
-              <li>Dolor pulvinar etiam.</li>
-              <li>Sagittis adipiscing.</li>
-              <li>Felis enim feugiat.</li>
-            </ul>
-
-            <h4>Ordered</h4>
-            <ol>
-              <li>Dolor pulvinar etiam.</li>
-              <li>Etiam vel felis viverra.</li>
-              <li>Felis enim feugiat.</li>
-              <li>Dolor pulvinar etiam.</li>
-              <li>Etiam vel felis lorem.</li>
-              <li>Felis enim et feugiat.</li>
-            </ol>
-            <h4>Icons</h4>
-            <ul class="icons">
-              <li>
-                <a href="#" class="icon brands fa-twitter" aria-label="Twitter profile"
-                  ><span class="label">Twitter</span></a
-                >
-              </li>
-              <li>
-                <a href="#" class="icon brands fa-facebook-f" aria-label="Facebook profile"
-                  ><span class="label">Facebook</span></a
-                >
-              </li>
-              <li>
-                <a href="#" class="icon brands fa-instagram" aria-label="Instagram profile"
-                  ><span class="label">Instagram</span></a
-                >
-              </li>
-              <li>
-                <a href="#" class="icon brands fa-github" aria-label="GitHub profile"
-                  ><span class="label">Github</span></a
-                >
-              </li>
-            </ul>
-
-            <h4>Actions</h4>
-            <ul class="actions">
-              <li><a href="#" class="button primary">Default</a></li>
-              <li><a href="#" class="button">Default</a></li>
-            </ul>
-            <ul class="actions stacked">
-              <li><a href="#" class="button primary">Default</a></li>
-              <li><a href="#" class="button">Default</a></li>
-            </ul>
-          </section>
-
-          <section>
-            <h3 class="major">Table</h3>
-            <h4>Default</h4>
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Item One</td>
-                    <td>Ante turpis integer aliquet porttitor.</td>
-                    <td>29.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Two</td>
-                    <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                    <td>19.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Three</td>
-                    <td>Morbi faucibus arcu accumsan lorem.</td>
-                    <td>29.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Four</td>
-                    <td>Vitae integer tempus condimentum.</td>
-                    <td>19.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Five</td>
-                    <td>Ante turpis integer aliquet porttitor.</td>
-                    <td>29.99</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colspan="2"></td>
-                    <td>100.00</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-
-            <h4>Alternate</h4>
-            <div class="table-wrapper">
-              <table class="alt">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Item One</td>
-                    <td>Ante turpis integer aliquet porttitor.</td>
-                    <td>29.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Two</td>
-                    <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                    <td>19.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Three</td>
-                    <td>Morbi faucibus arcu accumsan lorem.</td>
-                    <td>29.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Four</td>
-                    <td>Vitae integer tempus condimentum.</td>
-                    <td>19.99</td>
-                  </tr>
-                  <tr>
-                    <td>Item Five</td>
-                    <td>Ante turpis integer aliquet porttitor.</td>
-                    <td>29.99</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colspan="2"></td>
-                    <td>100.00</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </section>
-
-          <section>
-            <h3 class="major">Buttons</h3>
-            <ul class="actions">
-              <li><a href="#" class="button primary">Primary</a></li>
-              <li><a href="#" class="button">Default</a></li>
-            </ul>
-            <ul class="actions">
-              <li><a href="#" class="button">Default</a></li>
-              <li><a href="#" class="button small">Small</a></li>
-            </ul>
-            <ul class="actions">
-              <li><a href="#" class="button primary icon solid fa-download">Icon</a></li>
-              <li><a href="#" class="button icon solid fa-download">Icon</a></li>
-            </ul>
-            <ul class="actions">
-              <li><span class="button primary disabled">Disabled</span></li>
-              <li><span class="button disabled">Disabled</span></li>
-            </ul>
-          </section>
-
-          <section>
-            <h3 class="major">Form</h3>
-            <form method="post" action="#">
-              <div class="fields">
-                <div class="field half">
-                  <label for="demo-name">Name</label>
-                  <input
-                    type="text"
-                    name="demo-name"
-                    id="demo-name"
-                    value=""
-                    placeholder="Jane Doe"
-                  />
-                </div>
-                <div class="field half">
-                  <label for="demo-email">Email</label>
-                  <input
-                    type="email"
-                    name="demo-email"
-                    id="demo-email"
-                    value=""
-                    placeholder="jane@untitled.tld"
-                  />
-                </div>
-                <div class="field">
-                  <label for="demo-category">Category</label>
-                  <select name="demo-category" id="demo-category">
-                    <option value="">-</option>
-                    <option value="1">Manufacturing</option>
-                    <option value="1">Shipping</option>
-                    <option value="1">Administration</option>
-                    <option value="1">Human Resources</option>
-                  </select>
-                </div>
-                <div class="field half">
-                  <input type="radio" id="demo-priority-low" name="demo-priority" checked />
-                  <label for="demo-priority-low">Low</label>
-                </div>
-                <div class="field half">
-                  <input type="radio" id="demo-priority-high" name="demo-priority" />
-                  <label for="demo-priority-high">High</label>
-                </div>
-                <div class="field half">
-                  <input type="checkbox" id="demo-copy" name="demo-copy" />
-                  <label for="demo-copy">Email me a copy</label>
-                </div>
-                <div class="field half">
-                  <input type="checkbox" id="demo-human" name="demo-human" checked />
-                  <label for="demo-human">Not a robot</label>
-                </div>
-                <div class="field">
-                  <label for="demo-message">Message</label>
-                  <textarea
-                    name="demo-message"
-                    id="demo-message"
-                    placeholder="Enter your message"
-                    rows="6"
-                  ></textarea>
-                </div>
-              </div>
-              <ul class="actions">
-                <li><input type="submit" value="Send Message" class="primary" /></li>
-                <li><input type="reset" value="Reset" /></li>
-              </ul>
-            </form>
-          </section>
         </article>
       </main>
 
       <!-- Footer -->
       <footer id="footer" role="contentinfo">
-        <p class="copyright">
-          &copy; Untitled. Design:
-          <a href="https://html5up.net" target="_blank" rel="noopener noreferrer">HTML5 UP</a>.
+        <p>
+          &copy; Marcelo Pereira Barbosa &mdash;
+          <a href="v1/" rel="nofollow">Versão anterior (v1)</a>
+          &mdash; v1.1.26
         </p>
       </footer>
     </div>
 
-    <!-- BG -->
-    <div id="bg"></div>
-
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
+    <!-- v2 script (no jQuery) -->
+    <script type="module" src="scripts/v2.js"></script>
+    <!-- Formspree AJAX -->
     <script>
-      // Random background image selector
-      (function () {
-        const backgroundImages = [
-          'bg.jpg',
-          'IMG_20241013_153839.jpg',
-          'IMG_20241013_161000.jpg',
-          'IMG_20241208_191404.jpg',
-          'IMG_20250222_182439.jpg',
-          'IMG_20250222_182628.jpg',
-          'IMG_20250301_190856~2.jpg',
-          'IMG_20250303_165100.jpg',
-          'IMG_20250421_145915.jpg',
-          'IMG_20250709_114400.jpg',
-          'IMG_20250709_165455.jpg',
-          'IMG_20250709_165515.jpg',
-          'IMG_20250709_165645.jpg',
-          'IMG_20250709_165903.jpg',
-          'pic01.jpg',
-          'pic02.jpg',
-          'pic03.jpg',
-        ];
-
-        const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-        const selectedImage = backgroundImages[randomIndex];
-        console.log('Selected background:', selectedImage, '(index:', randomIndex + ')');
-
-        // Inject CSS to override #bg:after background-image and improve text contrast
-        const style = document.createElement('style');
-        style.textContent = `
-						#bg:after {
-							background-image: url("images/${selectedImage}") !important;
-						}
-						
-						/* Improve text contrast with shadow and background overlay */
-						#header .content .inner h1,
-						#header .content .inner p {
-							text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
-										 0px 0px 8px rgba(0, 0, 0, 0.6),
-										 -1px -1px 2px rgba(0, 0, 0, 0.4) !important;
-						}
-						
-						/* Add a subtle semi-transparent background to the content area */
-						#header .content .inner {
-							background: rgba(0, 0, 0, 0.3) !important;
-							border-radius: 8px !important;
-							padding: 2em !important;
-							backdrop-filter: blur(2px) !important;
-						}
-						
-						/* Ensure white text color is maintained */
-						#header .content .inner h1,
-						#header .content .inner p,
-						#header .content .inner p a {
-							color: #ffffff !important;
-						}
-						
-						/* Improve link visibility */
-						#header .content .inner p a {
-							text-decoration: underline !important;
-							text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9) !important;
-						}
-						
-						#header .content .inner p a:hover {
-							color: #f2f2f2 !important;
-							text-shadow: 2px 2px 4px rgba(0, 0, 0, 1) !important;
-						}
-					`;
-        document.head.appendChild(style);
-      })();
+      window.formspree =
+        window.formspree ||
+        function () {
+          (formspree.q = formspree.q || []).push(arguments);
+        };
+      formspree('initForm', { formElement: '#contact-form', formId: 'xrevgvda' });
     </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
   </body>
 </html>

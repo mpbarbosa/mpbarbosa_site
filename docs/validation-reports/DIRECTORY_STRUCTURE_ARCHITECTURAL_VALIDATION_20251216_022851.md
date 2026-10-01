@@ -89,8 +89,8 @@ The following directories are **accurately documented** in README.md and copilot
    - **Recommendation**: Add note about library documentation files in workflow README
 
 3. **Submodule Directory Structure** (Priority: LOW)
-   - **Documented**: `src/submodules/music_in_numbers/`, `src/submodules/guia_turistico/`
-   - **Actual**: Only `music_in_numbers/` exists in `src/submodules/`, `guia_turistico/` may not be initialized
+   - **Documented**: `src/submodules/music_in_numbers/`, `src/submodules/guia_js/`
+   - **Actual**: Only `music_in_numbers/` exists in `src/submodules/`, `guia_js/` may not be initialized
    - **Reason**: Submodules require authentication (documented behavior)
    - **Impact**: None - expected behavior
    - **Status**: ✅ Correctly documented with warning
@@ -227,19 +227,19 @@ public/assets/  ✅ Mirror of src/assets/ (deployment-ready)
 ```
 src/submodules/
 ├── music_in_numbers/  ✅ Spotify analytics
-└── guia_turistico/    ✅ Travel guide (may not be initialized)
+└── guia_js/    ✅ Travel guide (may not be initialized)
 ```
 
 **Deployment Synchronization**:
 ```
 public/submodules/
 ├── music_in_numbers/  ✅ Deployed content (git submodule)
-├── guia_turistico/    ✅ Deployed content (git submodule)
+├── guia_js/    ✅ Deployed content (git submodule)
 ├── monitora_vagas/    ✅ Sibling project deployment (NOT a submodule)
 └── busca_vagas/       ✅ Backend API deployment (sibling project)
 ```
 
-**Note**: Only `music_in_numbers/` and `guia_turistico/` are git submodules. The `monitora_vagas/` and `busca_vagas/` directories in `public/submodules/` contain deployed content from sibling projects located at `../monitora_vagas` and `../busca_vagas` respectively.
+**Note**: Only `music_in_numbers/` and `guia_js/` are git submodules. The `monitora_vagas/` and `busca_vagas/` directories in `public/submodules/` contain deployed content from sibling projects located at `../monitora_vagas` and `../busca_vagas` respectively.
 
 **Best Practice Compliance**: ✅ Professional submodule management with clear documentation
 
@@ -293,7 +293,7 @@ public/submodules/
    - Asset subdirectories
 
 2. **snake_case** (legacy/submodules): ✅ Consistent within scope
-   - Submodule directories: `music_in_numbers`, `guia_turistico`
+   - Submodule directories: `music_in_numbers`, `guia_js`
    - Workflow directories: `workflow_YYYYMMDD_HHMMSS`
 
 3. **lowercase** (standard): ✅ Consistent
@@ -1300,7 +1300,7 @@ mpbarbosa_site/
 │   ├── media/
 │   └── submodules/
 │       ├── busca_vagas/       (sibling project deployment)
-│       ├── guia_turistico/    (git submodule)
+│       ├── guia_js/    (git submodule)
 │       ├── monitora_vagas/    (sibling project deployment - NOT a submodule)
 │       └── music_in_numbers/  (git submodule)
 ├── shell_scripts/
