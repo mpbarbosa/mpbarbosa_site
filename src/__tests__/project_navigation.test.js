@@ -25,11 +25,15 @@ describe('Project Navigation Integration Tests', () => {
   const projectRoot = getProjectRoot();
   const srcDir = path.join(projectRoot, 'src');
 
-  describe('Landing Page Project Links', () => {
+  // The project list used to live on the landing page. It moved to /projetos/
+  // when that page was split out, so these checks follow the content rather
+  // than the address — the guarantee is unchanged: every sibling project is
+  // reachable through a link whose text says what it is.
+  describe('Projects Page Project Links', () => {
     let indexHTML;
 
     beforeEach(() => {
-      const indexPath = path.join(srcDir, 'index.html');
+      const indexPath = path.join(srcDir, 'projetos', 'index.html');
       indexHTML = loadHTMLFile(indexPath);
 
       if (indexHTML) {
@@ -42,9 +46,9 @@ describe('Project Navigation Integration Tests', () => {
       document.body.innerHTML = '';
     });
 
-    test('should have Music in Numbers project link in landing page', () => {
+    test('should have Music in Numbers project link on the projects page', () => {
       if (!indexHTML) {
-        console.warn('index.html not found, skipping test');
+        console.warn('projetos/index.html not found, skipping test');
         return;
       }
 
@@ -232,10 +236,13 @@ describe('Project Navigation Integration Tests', () => {
       });
     });
 
-    test('should have sibling project links in index.html', () => {
-      const indexPath = path.join(srcDir, 'index.html');
+    test('should have sibling project links on the projects page', () => {
+      // The project list moved from the landing page to /projetos/ when that
+      // page was split out. The guarantee is unchanged — every sibling project
+      // is still reachable by a link — so the check follows the content.
+      const indexPath = path.join(srcDir, 'projetos', 'index.html');
       if (!fs.existsSync(indexPath)) {
-        console.warn('index.html not found, skipping test');
+        console.warn('projetos/index.html not found, skipping test');
         return;
       }
 

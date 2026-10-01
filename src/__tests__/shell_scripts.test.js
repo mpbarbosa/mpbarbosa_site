@@ -612,10 +612,12 @@ describe('Project Navigation Integration', () => {
     });
   });
 
-  describe('Main Landing Page Integration', () => {
-    const indexPath = path.join(srcDir, 'index.html');
+  describe('Projects Page Integration', () => {
+    // Was the landing page until /projetos/ was split out; the project links
+    // live there now, so the same assertions follow them.
+    const indexPath = path.join(srcDir, 'projetos', 'index.html');
 
-    test('should have project links in landing page', () => {
+    test('should have project links on the projects page', () => {
       if (!fs.existsSync(indexPath)) {
         return;
       }

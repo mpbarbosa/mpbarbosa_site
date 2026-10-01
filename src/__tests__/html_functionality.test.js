@@ -202,7 +202,10 @@ describe('HTML5 UP Dimension Template', () => {
     });
 
     test('should have links to sibling projects', () => {
-      const html = fs.readFileSync(INDEX_PATH, 'utf8');
+      // The project list moved from the landing page to /projetos/ when that
+      // page was split out. The guarantee is unchanged — every sibling project
+      // is still reachable by a link — so the check follows the content.
+      const html = fs.readFileSync(path.join(SRC_DIR, 'projetos', 'index.html'), 'utf8');
 
       // Check for project references
       const expectedProjects = ['music_in_numbers', 'guia_js', 'monitora_vagas'];
