@@ -117,7 +117,7 @@ describeStaging('Staging content — production readiness', () => {
       if (!stagingInSync) return;
       const content = readStaging('index.html');
       expect(content).toContain('Consultor e Engenheiro de Soluções');
-      expect(content).toContain('26 anos');
+      expect(content).toContain('25 anos');
       expect(content).toMatch(/billing/i);
       expect(content).toContain('PL/SQL');
       expect(content).toMatch(/conciliação/i);
@@ -149,7 +149,11 @@ describeStaging('Staging content — production readiness', () => {
       const content = readStaging('index.html');
       expect(content).not.toMatch(/prompts de IA/i);
       expect(content).not.toMatch(/estudando inglês/i);
-      expect(content).not.toMatch(/25 anos/i);
+      // "25 anos" on its own is now the correct figure — Objective Solutions ran
+      // mar/1999–dez/2023, which is 24y9m, and the 15 + ~10 split sums to 25.
+      // What must stay out is the old framing of the whole career as development
+      // years, which is what the rule was always guarding against.
+      expect(content).not.toMatch(/2[0-9] anos de (experiência em )?desenvolvimento/i);
     });
 
     test('index.html should carry schema.org Person structured data', () => {
@@ -223,7 +227,7 @@ describeStaging('Staging content — production readiness', () => {
       if (!stagingInSync) return;
       const content = readStaging('en/index.html');
       expect(content).toContain('Solutions Consultant');
-      expect(content).toContain('26 years');
+      expect(content).toContain('25 years');
       expect(content).toMatch(/telecom billing/i);
       expect(content).toContain('PL/SQL');
       expect(content).toMatch(/reconciliation/i);
@@ -298,7 +302,7 @@ describeStaging('Staging content — production readiness', () => {
       if (!stagingInSync) return;
       const content = readStaging('llms.txt');
       expect(content).toContain('Solutions Consultant');
-      expect(content).toContain('26 years');
+      expect(content).toContain('25 years');
       expect(content).toMatch(/telecom billing/i);
       expect(content).toContain('Available for senior positions');
       expect(content).toContain('https://mpbarbosa.com/cv/');

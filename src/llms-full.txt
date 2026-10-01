@@ -6,7 +6,7 @@
 **Handle**: mpbarbosa / mpb
 **Role**: Solutions Consultant and Engineer
 **Location**: São Paulo, Brazil
-**Experience**: 26 years — 15 as Senior Developer, around 10 as Consultant
+**Experience**: 25 years — 15 as Senior Developer, around 10 as Consultant
 **Education**: Universidade Presbiteriana Mackenzie
 **Languages**: Portuguese (native), English
 **GitHub**: https://github.com/mpbarbosa
@@ -28,7 +28,7 @@ assurance. Based in São Paulo, Brazil — on-site, hybrid or remote.
 
 Two skill sets that rarely appear in the same person:
 
-1. **Domain depth in billing and reconciliation.** 26 years on telecom billing systems, where
+1. **Domain depth in billing and reconciliation.** 25 years on telecom billing systems, where
    correctness is the product — an error is an incorrect charge or an incorrect tax filing, not
    a cosmetic defect.
 2. **Current delivery capability.** Two products shipped to production over the past year,
@@ -56,7 +56,7 @@ Two skill sets that rarely appear in the same person:
 
 ### Objective Solutions — March 1999 to December 2023
 
-26 years: 15 as Senior Developer (Smalltalk, Java, PL/SQL on Oracle) and around 10 as Consultant.
+25 years: 15 as Senior Developer (Smalltalk, Java, PL/SQL on Oracle) and around 10 as Consultant.
 
 - **Telecom billing**: development and maintenance of the Diginet product and its successor,
   Objective NG.
