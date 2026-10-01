@@ -381,6 +381,7 @@ FILES TO SYNC:
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
     - cv/ (resume PDF served at the stable /cv/ URL)
+    - experiencia/ and projetos/ (pt-BR topic pages; the en/ ones ride with en/)
     - music_in_numbers/src/ (Music in Numbers sibling project)
     - guia_js/ (Guia JS sibling project)
     - monitora_vagas/src/ (Monitora Vagas legacy implementation)
@@ -537,6 +538,14 @@ copy_llms_files() {
 copy_pages_folder() {
     print_step "Copying pages/ redirect stubs"
     copy_directory "$SOURCE_DIR/pages" "$STAGING_DIR/pages" "Pages redirect stubs" "*.html" "false"
+}
+
+# Copy experiencia/ and projetos/ (the pt-BR topic pages; their English
+# counterparts live under en/ and ride along with copy_en_page's recursive copy)
+copy_topic_pages() {
+    print_step "Copying topic pages (experiencia/, projetos/)"
+    copy_directory "$SOURCE_DIR/experiencia" "$STAGING_DIR/experiencia" "Experiencia page" "*.html" "false"
+    copy_directory "$SOURCE_DIR/projetos" "$STAGING_DIR/projetos" "Projetos page" "*.html" "false"
 }
 
 # Copy cv/ (stable /cv/ URL serving the resume PDF)
@@ -1159,6 +1168,8 @@ validate_sync() {
         "$STAGING_DIR/index.html|index.html||true"
         "$STAGING_DIR/robots.txt|robots.txt||false"
         "$STAGING_DIR/sitemap.xml|sitemap.xml||false"
+        "$STAGING_DIR/experiencia|Experiencia page|*.html|false"
+        "$STAGING_DIR/projetos|Projetos page|*.html|false"
         "$STAGING_DIR/humans.txt|humans.txt||false"
         "$STAGING_DIR/assets/css|CSS assets directory|*.css|false"
         "$STAGING_DIR/assets/js|JavaScript assets directory|*.js|false"
@@ -1672,6 +1683,7 @@ execute_step_1() {
     copy_scripts
     copy_favicon
     copy_en_page
+    copy_topic_pages
     copy_llms_files
     copy_pages_folder
     copy_cv_folder

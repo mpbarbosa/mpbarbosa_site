@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <title>
+      Projetos — dois produtos em produção construídos dirigindo agentes de código | Marcelo Pereira
+      Barbosa
+    </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1220" />
+    <meta
+      name="description"
+      content="Portal Brasileirão e Agora na Copa 2026: React 19, TypeScript, Express e AWS, com testes Playwright ponta a ponta, deploy keyless via OIDC e rollback com drill documentado. Mais experimentos e ferramentas — ai_workflow, gitx, bibliotecas publicadas no npm."
+    />
+    <meta
+      name="keywords"
+      content="projetos, portfólio, agentes de código, desenvolvimento assistido por IA, Claude Code, GitHub Copilot, React, TypeScript, Express, AWS, Playwright, OIDC, Model Context Protocol, npm"
+    />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://mpbarbosa.com/projetos/" />
+    <meta property="og:title" content="Projetos — Marcelo Pereira Barbosa" />
+    <meta
+      property="og:description"
+      content="Dois produtos em produção construídos dirigindo agentes de código — React 19, TypeScript, Express, AWS, testes ponta a ponta e deploy keyless via OIDC."
+    />
+    <meta property="og:image" content="https://mpbarbosa.com/images/og-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Marcelo Pereira Barbosa — Projetos" />
+    <meta property="og:site_name" content="mpbarbosa.com" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://mpbarbosa.com/projetos/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://mpbarbosa.com/projetos/" />
+    <link rel="alternate" hreflang="en" href="https://mpbarbosa.com/en/projects/" />
+    <link rel="alternate" hreflang="x-default" href="https://mpbarbosa.com/projetos/" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+
+    <!-- schema.org: the breadcrumb plus the two products this page is really about -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Início",
+                "item": "https://mpbarbosa.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projetos",
+                "item": "https://mpbarbosa.com/projetos/"
+              }
+            ]
+          },
+          {
+            "@type": "CollectionPage",
+            "url": "https://mpbarbosa.com/projetos/",
+            "name": "Projetos — Marcelo Pereira Barbosa",
+            "inLanguage": "pt-BR",
+            "author": {
+              "@type": "Person",
+              "name": "Marcelo Pereira Barbosa",
+              "url": "https://mpbarbosa.com/"
+            },
+            "mainEntity": {
+              "@type": "ItemList",
+              "name": "Produtos em produção",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "item": {
+                    "@type": "WebApplication",
+                    "name": "Portal Brasileirão",
+                    "url": "https://brasileirao.mpbarbosa.com",
+                    "applicationCategory": "SportsApplication",
+                    "operatingSystem": "Web",
+                    "description": "Companion do Campeonato Brasileiro Série A: tabela, jogos e estatísticas, com login OAuth e fallback para snapshot congelado quando não há token da API."
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "item": {
+                    "@type": "WebApplication",
+                    "name": "Agora na Copa 2026",
+                    "url": "https://copa2026.mpbarbosa.com",
+                    "applicationCategory": "SportsApplication",
+                    "operatingSystem": "Web",
+                    "description": "Companion da Copa do Mundo FIFA 2026, com simulador de Monte Carlo das chances de classificação usando modelo Dixon-Coles."
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Google Fonts: Inter + Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Montserrat:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome (social icons), loaded without blocking the render -->
+    <link
+      rel="stylesheet"
+      href="../assets/css/fontawesome-all.min.css"
+      media="print"
+      onload="
+        this.media = 'all';
+        this.onload = null;
+      "
+    />
+    <noscript><link rel="stylesheet" href="../assets/css/fontawesome-all.min.css" /></noscript>
+
+    <!-- v2 styles -->
+    <link rel="stylesheet" href="../styles/v2.css" />
+  </head>
+  <body>
+    <!-- Background -->
+    <div id="bg" role="presentation" aria-hidden="true"></div>
+
+    <div id="wrapper">
+      <!-- Top App Bar -->
+      <header id="top-bar" role="banner">
+        <a class="logo brand" href="../" aria-label="Início">
+          <svg class="diamond-emblem" viewBox="0 0 20 20" aria-hidden="true">
+            <polygon points="10,1 19,10 10,19 1,10" />
+          </svg>
+          mpb
+        </a>
+        <nav role="navigation" aria-label="Navegação principal">
+          <a href="../#intro">Intro</a>
+          <a href="../experiencia/">Experiência</a>
+          <a href="./" aria-current="page">Projetos</a>
+          <a href="../#about">Sobre</a>
+          <a href="../#contact">Contato</a>
+          <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <a
+            href="../en/projects/"
+            style="font-size: 0.85rem; opacity: 0.75"
+            aria-label="Switch to English version"
+            >🇬🇧 EN</a
+          >
+        </nav>
+      </header>
+
+      <!-- Main -->
+      <main id="main" role="main">
+        <nav class="breadcrumb" aria-label="Trilha de navegação">
+          <a href="../">Início</a> <span aria-hidden="true">›</span>
+          <span aria-current="page">Projetos</span>
+        </nav>
+
+        <section class="hero" aria-labelledby="page-title">
+          <h1 class="hero-name" id="page-title">Projetos</h1>
+          <p class="hero-role">Software construído dirigindo agentes de código</p>
+          <p class="hero-pitch">
+            Claude Code, GitHub Copilot e Cursor fazem a digitação. A arquitetura, os critérios de
+            aceite e a verificação antes da produção são meus — e é isso que separa um protótipo de
+            algo que fica no ar.
+          </p>
+        </section>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <article class="section-card" aria-labelledby="producao-heading">
+          <h2 id="producao-heading">Em produção</h2>
+          <ul class="project-list" role="list">
+            <li>
+              <a href="https://brasileirao.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Portal Brasileirão</a
+              >
+              — Companion do Campeonato Brasileiro Série A
+              <p class="project-desc">
+                Acompanhamento de tabela, jogos e estatísticas da Série A. Login OAuth, tokens
+                Material Design 3 e endpoint <code>/api/health</code> no ar. Sete workflows de
+                GitHub Actions, incluindo rollback, com um drill de flip-back documentado, e deploy
+                keyless via OIDC. Quando não há token da API disponível, o app cai para um snapshot
+                congelado em vez de quebrar.
+                <span class="project-meta"
+                  >React 19 · TypeScript · Express 5 · Tailwind 4 · AWS · 84 testes unitários e 46
+                  specs Playwright ponta a ponta · 1.597 commits em cinco semanas (23 de agosto a 29
+                  de setembro de 2026)</span
+                >
+              </p>
+            </li>
+            <li>
+              <a href="https://copa2026.mpbarbosa.com" target="_blank" rel="noopener noreferrer"
+                >Agora na Copa 2026</a
+              >
+              — Companion da Copa do Mundo FIFA 2026
+              <p class="project-desc">
+                Simulador de Monte Carlo das chances de classificação, com modelo Dixon-Coles e os
+                critérios de desempate do Art. 13 do regulamento da FIFA implementados na ordem
+                correta. Integrações externas (FIFA API, Open-Meteo, Google Trends) têm fallback
+                próprio. Servido por nginx e systemd.
+                <span class="project-meta"
+                  >React 19 · TypeScript · Express · AWS · 34 testes unitários e 37 specs Playwright
+                  ponta a ponta · 1.279 commits</span
+                >
+              </p>
+            </li>
+          </ul>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <article class="section-card" aria-labelledby="experimentos-heading">
+          <h2 id="experimentos-heading">Experimentos e ferramentas</h2>
+          <ul class="project-list" role="list">
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/ai_workflow"
+                target="_blank"
+                rel="noopener noreferrer"
+                >ai_workflow</a
+              >
+              — Pipeline de verificação para desenvolvimento assistido por IA
+              <p class="project-desc">
+                Automatiza a etapa que costuma ficar de fora: tornar verificável o que um agente de
+                código gerou, antes de ir para produção — revisão, documentação e testes.
+              </p>
+            </li>
+            <li>
+              <a href="https://github.com/mpbarbosa/gitx" target="_blank" rel="noopener noreferrer"
+                >gitx</a
+              >
+              — TUI de Git integrada via MCP
+              <p class="project-desc">
+                Interface de terminal para comandos Git, integrada a assistentes por Model Context
+                Protocol (MCP).
+              </p>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/olinda_copilot_sdk.ts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >olinda_copilot_sdk.ts</a
+              >
+              — Wrapper TypeScript do GitHub Copilot SDK
+              <p class="project-desc">
+                Camada em TypeScript sobre o SDK do GitHub Copilot para uso programático em
+                ferramentas próprias.
+              </p>
+            </li>
+            <li>
+              <a href="../guia_js/" target="_blank" rel="noopener noreferrer">Onde Estou?</a>
+              — Geolocalização em tempo real
+              <p class="project-desc">
+                Mostra sua posição atual no mapa usando a API de Geolocalização do navegador, sem
+                instalação.
+              </p>
+            </li>
+            <li>
+              <a href="../mapasp/" target="_blank" rel="noopener noreferrer">MapaSP</a>
+              — Mapa interativo de São Paulo
+              <p class="project-desc">
+                Mapa interativo da cidade de São Paulo com pontos de interesse e navegação por
+                bairros.
+              </p>
+            </li>
+            <li>
+              <a
+                href="../music_in_numbers/src/music_in_numbers.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Music in Numbers</a
+              >
+              — Análise de dados Spotify
+              <p class="project-desc">
+                Visualiza e analisa seu histórico de streaming do Spotify com gráficos e
+                estatísticas.
+              </p>
+            </li>
+            <li>
+              <a href="../monitora_vagas/public/" target="_blank" rel="noopener noreferrer"
+                >Monitora Vagas</a
+              >
+              — Monitoramento de vagas hoteleiras
+              <p class="project-desc">
+                Monitora a disponibilidade de vagas hoteleiras e notifica quando surgem aberturas.
+              </p>
+            </li>
+            <li>
+              Bibliotecas publicadas no npm —
+              <a
+                href="https://github.com/mpbarbosa/bessa_patterns.ts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >bessa_patterns.ts</a
+              >,
+              <a
+                href="https://github.com/mpbarbosa/ibira.js"
+                target="_blank"
+                rel="noopener noreferrer"
+                >ibira.js</a
+              >
+              e
+              <a
+                href="https://github.com/mpbarbosa/paraty_geocore.js"
+                target="_blank"
+                rel="noopener noreferrer"
+                >paraty_geocore.js</a
+              >
+              <p class="project-desc">
+                Três pacotes publicados no registro do npm, ainda em versões iniciais.
+              </p>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/mpb_scripts"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Scripts de automação</a
+              >
+              — Scripts utilitários no GitHub
+              <p class="project-desc">
+                Coleção de scripts utilitários para tarefas do dia a dia de desenvolvimento,
+                disponíveis no GitHub.
+              </p>
+            </li>
+          </ul>
+
+          <p>
+            O
+            <a href="https://github.com/mpbarbosa" target="_blank" rel="noopener noreferrer"
+              >portfólio público no GitHub</a
+            >
+            reúne mais de 50 repositórios não-fork.
+          </p>
+        </article>
+
+        <div class="connector" aria-hidden="true"></div>
+
+        <article class="section-card" aria-labelledby="contexto-heading">
+          <h2 id="contexto-heading">De onde isso vem</h2>
+          <p>
+            Vinte e seis anos em billing de telecom, conciliação fiscal e Oracle antecedem estes
+            projetos — e explicam por que a verificação vem antes do deploy.
+          </p>
+          <p>
+            <a href="../experiencia/">Ver a experiência completa</a> ·
+            <a href="../#contact">Falar comigo</a> ·
+            <a href="../cv/">Currículo em PDF</a>
+          </p>
+        </article>
+      </main>
+
+      <!-- Footer -->
+      <footer id="footer" role="contentinfo">
+        <p>
+          &copy; Marcelo Pereira Barbosa &mdash;
+          <a href="../">Início</a>
+          &mdash;
+          <a href="../en/projects/">English</a>
+        </p>
+      </footer>
+    </div>
+
+    <!-- v2 script (no jQuery) -->
+    <script type="module" src="../scripts/v2.js"></script>
+  </body>
+</html>

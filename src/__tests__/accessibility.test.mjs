@@ -25,7 +25,11 @@ const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 const PAGES = [
   { name: 'homepage (/)', path: '/', lang: 'pt-BR' },
   { name: 'resume (/cv/)', path: '/cv/', lang: 'pt-BR' },
+  { name: 'experience (/experiencia/)', path: '/experiencia/', lang: 'pt-BR' },
+  { name: 'projects (/projetos/)', path: '/projetos/', lang: 'pt-BR' },
   { name: 'English portfolio (/en/)', path: '/en/', lang: 'en' },
+  { name: 'English experience (/en/experience/)', path: '/en/experience/', lang: 'en' },
+  { name: 'English projects (/en/projects/)', path: '/en/projects/', lang: 'en' },
   { name: 'Singularity (/en/singularity/)', path: '/en/singularity/', lang: 'en' },
 ];
 
