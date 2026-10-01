@@ -14,7 +14,7 @@
     />
     <meta
       name="keywords"
-      content="currículo, CV, billing, faturamento, conciliação fiscal, conciliação contábil, conciliação financeira, revenue assurance, especificação funcional, levantamento de requisitos, Scrum, Oracle, PL/SQL, SQL, migração de dados, telecom, meios de pagamento, setores regulados, BigQuery, Informatica, agentes de código, desenvolvimento assistido por IA, React, TypeScript, Node.js"
+      content="currículo, CV, billing, faturamento, conciliação fiscal, conciliação contábil, conciliação financeira, revenue assurance, especificação funcional, levantamento de requisitos, Scrum, Oracle, PL/SQL, SQL, migração de dados, telecom, meios de pagamento, setores regulados, BigQuery, Informatica, agentes de código, desenvolvimento assistido por IA, RAG, busca semântica, n8n, apuração de ICMS, Convênio ICMS 115/03, React, TypeScript, Node.js"
     />
     <meta property="og:type" content="profile" />
     <meta property="og:url" content="https://mpbarbosa.com/cv/" />
@@ -108,6 +108,13 @@
             "Claude Code",
             "GitHub Copilot",
             "Model Context Protocol",
+            "RAG",
+            "Retrieval-Augmented Generation",
+            "Busca semântica",
+            "n8n",
+            "Python",
+            "Apuração de ICMS",
+            "Convênio ICMS 115/03",
             "React",
             "TypeScript",
             "Node.js"
@@ -300,7 +307,8 @@
           <p>
             Experiência recente em migração de dados de Oracle para BigQuery e, no último ano,
             dedicação integral ao desenvolvimento dirigindo agentes de código — dois produtos
-            full-stack publicados em produção na AWS. A arquitetura, os critérios de aceite e a
+            full-stack publicados em produção na AWS, um fluxo de decisão automatizada com IA e um
+            sistema de RAG com avaliação própria. A arquitetura, os critérios de aceite e a
             verificação antes da produção continuam sendo trabalho de engenharia.
           </p>
           <p>
@@ -328,14 +336,30 @@
                 <strong>Agora na Copa 2026</strong> — companion da Copa do Mundo FIFA 2026, com
                 simulador de Monte Carlo (modelo Dixon-Coles) que reproduz os critérios de desempate
                 do Art. 13 do regulamento da FIFA sobre módulos core puros e testados. React 19 ·
-                TypeScript · Express · 34 testes unitários e 37 specs Playwright.
+                TypeScript · Express · 34 testes unitários e 37 specs Playwright · 1.279 commits.
               </li>
               <li>
                 <strong>Portal Brasileirão</strong> — companion do Campeonato Brasileiro Série A,
                 com login OAuth, sete workflows de GitHub Actions incluindo rollback com drill de
                 flip-back documentado e deploy keyless via OIDC. React 19 · TypeScript · Express 5 ·
-                Tailwind 4 · 84 testes unitários e 46 specs Playwright · 1.568 commits em menos de
-                um mês (23 de agosto a 18 de setembro de 2026).
+                Tailwind 4 · 84 testes unitários e 46 specs Playwright · 1.597 commits em cinco
+                semanas (23 de agosto a 29 de setembro de 2026).
+              </li>
+              <li>
+                <strong>Decisão automatizada com IA, medida como software</strong> — fluxo em n8n
+                com a API da Anthropic que triou 686 vagas contra um perfil e um conjunto de regras
+                de descarte: cerca de 10 s e US$ 0,03 por vaga, 20 divergências acumuladas em
+                relação ao veredito humano. O prompt de sistema é versionado no git e avaliado em
+                conjuntos de treino e teste disjuntos — a versão em produção concorda com o humano
+                em 28 dos 30 casos de teste.
+              </li>
+              <li>
+                <strong>Sistema de RAG local, com avaliação própria</strong> — recuperação e geração
+                fundamentada sobre um corpus de 2.083 poemas: encoder multilingual-e5-base, índice
+                denso com manifesto de integridade, BM25 como linha de base lexical e avaliação por
+                nDCG@5 com relevância graduada (0,719 denso contra 0,488 lexical). Guard de plágio
+                calibrado em respostas reais e camada de geração plugável (Ollama · qwen2.5-7b).
+                Python · 121 testes.
               </li>
               <li>
                 <strong>Resiliência de integrações</strong> — fontes externas (FIFA API, Open-Meteo,
@@ -381,10 +405,13 @@
                 homologação, deploy e suporte em produção.
               </li>
               <li>
-                <strong>Data Warehouses de Faturamento e Fiscal</strong> — construídos em PL/SQL,
-                junto de uma base detalhada de conciliação contábil e financeira (HughesNet e
-                Netserv). O DW de Faturamento, sobre a base viva do Objective NG, alimentava os
-                relatórios de KPIs: churn, ARPU, inadimplência e aging.
+                <strong>Data Warehouses Financeiro e Fiscal</strong> — construídos em PL/SQL: o
+                Financeiro (faturamento, arrecadação e cobrança) e o Fiscal (apuração de ICMS por
+                UF, com crédito e débito, e Convênio ICMS 115/03), junto de uma base detalhada de
+                conciliação contábil e financeira (HughesNet e Netserv). O Financeiro, sobre a base
+                viva do Objective NG, alimentava os relatórios de KPIs: churn, ARPU, inadimplência e
+                aging. Os dois seguem em produção na HughesNet até hoje, evoluídos por um time da
+                Objective.
               </li>
               <li>
                 <strong>Conciliação fiscal, contábil e financeira</strong> — consultoria alocada
@@ -454,7 +481,8 @@
             <li>
               <strong>IA</strong>
               Desenvolvimento assistido por IA · agentes de código (Claude Code, GitHub Copilot,
-              Cursor) · Model Context Protocol (MCP) · engenharia de prompt
+              Cursor) · Model Context Protocol (MCP) · engenharia de prompt · RAG e busca semântica
+              · avaliação de LLM (concordância, nDCG) · n8n
             </li>
             <li>
               <strong>Linguagens e full-stack</strong>
@@ -485,6 +513,7 @@
           <p class="cv-updated">
             Versão em PDF:
             <a href="cv-marcelo-pereira-barbosa.pdf" download>cv-marcelo-pereira-barbosa.pdf</a>
+            <span class="cv-sep">·</span> atualizado em 1º de outubro de 2026
           </p>
         </article>
       </main>
@@ -496,7 +525,7 @@
           <a href="../">Portfólio</a>
           &mdash;
           <a href="../en/">🇬🇧 English</a>
-          &mdash; v1.1.20
+          &mdash; v1.1.21
         </p>
       </footer>
     </div>
