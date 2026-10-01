@@ -100,7 +100,7 @@ AWS_PROFILE=mpb ./shell_scripts/run_on_prod_via_ssm.sh shell_scripts/check_prod_
 Four properties of that cron matter when a deploy misbehaves:
 
 - **It walks the checkouts alphabetically**, and `mpbarbosa.com` sorts before `mpbarbosa_site`. A staging push and a change to `sync_to_staging.sh` landing in the same 10-minute window therefore deploy with the **old** script; the new one takes effect a run later.
-- **It skips any repo whose tracked files have local changes.** A dirty staging clone on the host stops deploys with nothing failing loudly; `check_prod_deploy.sh` reports it.
+- **It skips any repo whose tracked files have local changes.** A dirty staging clone on the host stops deploys with nothing failing loudly; `check_prod_deploy.sh` reports it, and `unblock_cron_repos.sh` clears it — it backs the file up outside the repo and stashes it, rather than discarding. An untracked backup left *inside* the repo would itself count as a local change and keep the repo skipped, which is why the copy goes to `/tmp`.
 - **Its log, `~ubuntu/.local/log/git_sync.log`, rotates at 500 KB** keeping one old copy, so it reaches back about a day — diagnose while it is fresh.
 - **Never run `sync_to_staging.sh --step2` on the host as root**, and every SSM session is root. The cron runs it as ubuntu; as root it also restarts nginx and the unrelated `busca_vagas_node_app`, and git as root in these ubuntu-owned checkouts leaves root-owned files in `.git` that ubuntu's own pulls can no longer write.
 
