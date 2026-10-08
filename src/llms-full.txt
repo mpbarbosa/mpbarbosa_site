@@ -90,8 +90,8 @@ Senior Data Analyst. Oracle to BigQuery data migration, in a Scrum team.
 Companion app for the Brazilian Série A championship.
 
 - Stack: React 19, TypeScript, Express 5, Tailwind 4, AWS
-- 84 unit tests, 46 end-to-end Playwright specs
-- 1,597 commits in five weeks (23 August–29 September 2026)
+- 1,523 unit tests, 46 end-to-end Playwright specs
+- 906 commits in five weeks (23 August–29 September 2026)
 - 7 GitHub Actions workflows including rollback, with a documented flip-back drill
 - Keyless deploys over OIDC; OAuth login; Material Design 3 tokens
 - Live `/api/health` endpoint
@@ -104,8 +104,8 @@ Companion app for the Brazilian Série A championship.
 Companion app for the FIFA World Cup 2026.
 
 - Stack: React 19, TypeScript, Express, AWS
-- 34 unit tests, 37 end-to-end Playwright specs
-- 1,279 commits
+- 267 unit tests, 37 end-to-end Playwright specs
+- 1,203 commits
 - Monte Carlo qualification simulator using a Dixon-Coles model, applying the Article 13 FIFA
   tie-breaking criteria in the correct order
 - External integrations with per-integration fallbacks: FIFA API, Open-Meteo, Google Trends
