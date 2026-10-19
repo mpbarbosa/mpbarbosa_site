@@ -49,6 +49,8 @@ Two skill sets that rarely appear in the same person:
 - AI-assisted development and AI coding agents (Claude Code, GitHub Copilot, Cursor)
 - Model Context Protocol (MCP)
 - React, TypeScript, Node.js
+- Python (strictly typed, domain-driven design), FastAPI
+- Retrieval-augmented generation (RAG) and retrieval evaluation
 
 ---
 
@@ -104,8 +106,8 @@ Companion app for the Brazilian Série A championship.
 Companion app for the FIFA World Cup 2026.
 
 - Stack: React 19, TypeScript, Express, AWS
-- 267 unit tests, 37 end-to-end Playwright specs
-- 1,203 commits
+- 283 unit tests, 37 end-to-end Playwright specs
+- 1,204 commits
 - Monte Carlo qualification simulator using a Dixon-Coles model, applying the Article 13 FIFA
   tie-breaking criteria in the correct order
 - External integrations with per-integration fallbacks: FIFA API, Open-Meteo, Google Trends
@@ -127,6 +129,45 @@ ships. Supports GitHub Copilot, Cursor, Claude and other AI coding tools.
 
 The mission is separately seeking public investment on Singularity; that content lives at
 https://mpbarbosa.com/en/singularity/ and is deliberately kept off the hiring pages.
+
+### conversando_com_pessoa
+
+**Repo**: https://github.com/mpbarbosa/conversando_com_pessoa
+**Languages**: Python
+**Status**: Public since October 2026. Runs locally; not deployed.
+
+Local RAG system. Dense retrieval (multilingual-e5-base) combined with BM25, over an index whose
+integrity manifest refuses to load an inconsistent index, plus a plagiarism guard calibrated on
+real answers, pluggable generation and a FastAPI web layer. Orchestration is decided by rules,
+never by the model.
+
+Retrieval quality, on the gold set published in the repo README — 40 questions, 176 candidates
+graded by TREC pooling of both retrievers' top 5: dense nDCG@5 0.719 and apt@3 95%, against BM25
+0.488 and 65%. A second, deeper gold set in docs/CONTROLO.md (433 judgments, closed to the top 20)
+reports dense 0.606, and 0.696 with reranking. These are two different measurements, not two
+versions of the same one, so the gold set has to be named alongside any of these numbers.
+
+292 tests passing, 1 skipped.
+
+### trilhas_estudos
+
+**Repo**: https://github.com/mpbarbosa/trilhas_estudos
+**Languages**: Python
+**Status**: Public. Runs locally; not deployed.
+
+Study-track control and suggestion system. The domain is modelled in frozen dataclasses with
+`mypy --strict` over all of `src/`, and the suggestion engine is rules — there is no model in this
+repo.
+
+Two design decisions carry the project. The progress log is event-sourced with UPDATE and DELETE
+forbidden by SQLite trigger, so correcting a fact means appending another event and the audit
+trail does not depend on the writer's discipline. And the suggestion engine is explainable by
+construction: no suggestion exists without the factors that produced it, and the explanation never
+cites a factor that is absent from them.
+
+294 tests over 6,772 lines of Python, 16 ADRs, and five CI gates on every push and pull request —
+compiled-catalogue check, pytest, ruff check, ruff format and mypy — each across a 3.12/3.14
+matrix.
 
 ### gitx
 
