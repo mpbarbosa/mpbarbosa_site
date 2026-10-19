@@ -23,6 +23,8 @@
 ## Projects and tooling
 
 - [ai_workflow](https://github.com/mpbarbosa/ai_workflow): Automation layer that makes AI-assisted development verifiable — so teams can trust what any AI coding tool generates before it ships.
+- [conversando_com_pessoa](https://github.com/mpbarbosa/conversando_com_pessoa): Local RAG system in Python. Dense retrieval (multilingual-e5-base) combined with BM25, an index whose integrity manifest refuses to load an inconsistent index, a plagiarism guard calibrated on real answers, pluggable generation and a FastAPI web layer; orchestration is decided by rules, never by the model. On the gold set published in the repo README — 40 questions, 176 candidates graded by TREC pooling — dense retrieval reaches nDCG@5 0.719 against BM25's 0.488. 292 tests passing, 1 skipped. Runs locally; not deployed.
+- [trilhas_estudos](https://github.com/mpbarbosa/trilhas_estudos): Study-track control and suggestion system in Python. Domain in frozen dataclasses with mypy --strict over all of src/; progress log event-sourced with UPDATE and DELETE forbidden by SQLite trigger, so correcting a fact means appending another event; suggestion engine of rules, explainable by construction — no suggestion without the factors that produced it. 294 tests over 6,772 lines, 16 ADRs, five CI gates per push and pull request on a 3.12/3.14 matrix. Runs locally; not deployed.
 - [gitx](https://github.com/mpbarbosa/gitx): Git TUI integrated with assistants over the Model Context Protocol (MCP).
 - [olinda_copilot_sdk.ts](https://github.com/mpbarbosa/olinda_copilot_sdk.ts): TypeScript wrapper for the GitHub Copilot SDK.
 - [Onde Estou?](https://mpbarbosa.com/guia_js/): Real-time geolocation app
@@ -35,7 +37,7 @@
 
 ## Areas
 
-Telecom billing · invoicing · tax, accounting and financial reconciliation · revenue assurance · payments and card acquiring · regulated industries · Oracle · PL/SQL · SQL · data warehousing · data migration · BigQuery · Java · Smalltalk · AI-assisted development · AI coding agents · Claude Code · GitHub Copilot · MCP · React · TypeScript · Node.js
+Telecom billing · invoicing · tax, accounting and financial reconciliation · revenue assurance · payments and card acquiring · regulated industries · Oracle · PL/SQL · SQL · data warehousing · data migration · BigQuery · Java · Smalltalk · AI-assisted development · AI coding agents · Claude Code · GitHub Copilot · MCP · React · TypeScript · Node.js · Python · FastAPI · retrieval-augmented generation (RAG)
 
 ## About
 
