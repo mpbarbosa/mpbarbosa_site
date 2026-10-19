@@ -117,7 +117,7 @@ describeStaging('Staging content — production readiness', () => {
       if (!stagingInSync) return;
       const content = readStaging('index.html');
       expect(content).toContain('Consultor e Engenheiro de Soluções');
-      expect(content).toContain('25 anos');
+      expect(content).toContain('26 anos');
       expect(content).toMatch(/billing/i);
       expect(content).toContain('PL/SQL');
       expect(content).toMatch(/conciliação/i);
@@ -149,10 +149,13 @@ describeStaging('Staging content — production readiness', () => {
       const content = readStaging('index.html');
       expect(content).not.toMatch(/prompts de IA/i);
       expect(content).not.toMatch(/estudando inglês/i);
-      // "25 anos" on its own is now the correct figure — Objective Solutions ran
-      // mar/1999–dez/2023, which is 24y9m, and the 15 + ~10 split sums to 25.
-      // What must stay out is the old framing of the whole career as development
-      // years, which is what the rule was always guarding against.
+      // The figure is "26 anos" as of 2026-10-19, by his decision, and it is
+      // anchored to the CAREER: mar/1999 → jul/2025 is 26y4m. Objective Solutions
+      // alone ran mar/1999–dez/2023 = 24y9m, so "26 anos em billing" would
+      // overstate by ~15 months — the copy says "26 anos de carreira" for that
+      // reason, and the 15 + ~10 split only reaches 26 once Eleflow is named.
+      // What must stay out, unchanged by that decision, is the old framing of the
+      // whole career as development years — the regex below still catches 26.
       expect(content).not.toMatch(/2[0-9] anos de (experiência em )?desenvolvimento/i);
     });
 
@@ -227,7 +230,9 @@ describeStaging('Staging content — production readiness', () => {
       if (!stagingInSync) return;
       const content = readStaging('en/index.html');
       expect(content).toContain('Solutions Consultant');
-      expect(content).toContain('25 years');
+      // "26 years" and "a 26-year career" are both in use — assert the figure,
+      // not one phrasing of it.
+      expect(content).toMatch(/\b26[- ]years?\b/i);
       expect(content).toMatch(/telecom billing/i);
       expect(content).toContain('PL/SQL');
       expect(content).toMatch(/reconciliation/i);
@@ -302,7 +307,9 @@ describeStaging('Staging content — production readiness', () => {
       if (!stagingInSync) return;
       const content = readStaging('llms.txt');
       expect(content).toContain('Solutions Consultant');
-      expect(content).toContain('25 years');
+      // llms.txt carries "A 26-year career", with no "26 years" anywhere — the
+      // reason this assertion is a regex and not toContain('26 years').
+      expect(content).toMatch(/\b26[- ]years?\b/i);
       expect(content).toMatch(/telecom billing/i);
       expect(content).toContain('Available for senior positions');
       expect(content).toContain('https://mpbarbosa.com/cv/');
