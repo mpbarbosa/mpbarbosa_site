@@ -106,8 +106,8 @@ Companion app for the Brazilian Série A championship.
 Companion app for the FIFA World Cup 2026.
 
 - Stack: React 19, TypeScript, Express, AWS
-- 267 unit tests, 37 end-to-end Playwright specs
-- 1,203 commits
+- 283 unit tests, 37 end-to-end Playwright specs
+- 1,204 commits
 - Monte Carlo qualification simulator using a Dixon-Coles model, applying the Article 13 FIFA
   tie-breaking criteria in the correct order
 - External integrations with per-integration fallbacks: FIFA API, Open-Meteo, Google Trends
