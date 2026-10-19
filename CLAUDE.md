@@ -40,7 +40,7 @@ The pre-commit hook (`.husky/pre-commit`) runs `cd src && npx lint-staged` — i
 
 ### Site structure
 
-The site is a **static HTML5 personal portfolio** (`src/index.html`) with no build step. The current live version is `v2` — a custom vanilla-JS design (`src/scripts/v2.js`, `src/styles/v2.css`). The old HTML5 UP Dimension template lives in `src/v1/` as an archived fallback linked in the footer.
+The site is a **static HTML5 personal portfolio** (`src/index.html`) with no build step. The current live version is `v2` — a custom vanilla-JS design (`src/scripts/v2.js`, `src/styles/v2.css`). The old HTML5 UP Dimension template lives in `src/v1/` (51 MB) as a **source-only archive**: since 2026-10-19 it is neither linked from the footer nor published. `sync_to_staging.sh` no longer copies it, and it was deleted from the `mpbarbosa.com` staging repo, so `/v1/` returns 404. The reason was content, not housekeeping — it read *"desenvolvedor de software há mais de 25 anos"*, the framing rule 3 of `../linkedin/prompts/site-p0.md` forbids, and *"apaixonado por tecnologia"*, which the P0 batch removed from the live site. ⚠️ **Re-publishing it would re-publish that copy**; fix the text first if it ever goes back.
 
 There are two language versions, both loading the same `scripts/v2.js` + `styles/v2.css`:
 - `src/index.html` — **primary**, Portuguese (pt-BR); the canonical portfolio.
