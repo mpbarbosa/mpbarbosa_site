@@ -236,6 +236,42 @@
               </p>
             </li>
             <li>
+              <a
+                href="https://github.com/mpbarbosa/conversando_com_pessoa"
+                target="_blank"
+                rel="noopener noreferrer"
+                >conversando_com_pessoa</a
+              >
+              — Local RAG system, in Python
+              <p class="project-desc">
+                Dense retrieval (multilingual-e5-base) combined with BM25, over an index whose
+                integrity manifest refuses to load an inconsistent index, plus a plagiarism guard
+                calibrated on real answers. Orchestration is decided by rules, never by the model.
+                On the README gold set — 40 questions and 176 candidates graded by TREC pooling —
+                dense retrieval reaches an nDCG@5 of 0.719 against BM25's 0.488. Pluggable
+                generation, a FastAPI web layer and 292 tests passing.
+              </p>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mpbarbosa/trilhas_estudos"
+                target="_blank"
+                rel="noopener noreferrer"
+                >trilhas_estudos</a
+              >
+              — Study-track control and suggestion, in Python
+              <p class="project-desc">
+                Domain in frozen dataclasses, with <code>mypy --strict</code> over all of
+                <code>src/</code>. History is event-sourced with UPDATE and DELETE forbidden by
+                SQLite trigger — correcting a fact means appending another event, never rewriting
+                the previous one. The suggestion engine is rules, not a model, and explainable by
+                construction: no suggestion comes out without the factors that produced it. 294
+                tests over 6,772 lines, 16 ADRs and five CI gates on every push and pull request —
+                compiled catalogue, pytest, ruff check, ruff format and mypy — each on a 3.12/3.14
+                matrix. Runs locally; not in production.
+              </p>
+            </li>
+            <li>
               <a href="https://github.com/mpbarbosa/gitx" target="_blank" rel="noopener noreferrer"
                 >gitx</a
               >
