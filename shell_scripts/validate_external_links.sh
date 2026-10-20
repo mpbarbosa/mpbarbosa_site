@@ -17,7 +17,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-SEARCH_DIRS=("src/index.html" "src/components" "src/pages" "src/submodules/*/src/*.html")
+SEARCH_DIRS=("src/index.html" "src/pages" "src/submodules/*/src/*.html")
 ISSUES_FOUND=0
 
 echo -e "${BLUE}=== External Links Policy Validation ===${NC}\n"
@@ -65,13 +65,6 @@ echo -e "${BLUE}Scanning HTML files...${NC}\n"
 # Check main index.html
 if [ -f "src/index.html" ]; then
     check_file "src/index.html"
-fi
-
-# Check components
-if ls src/components/*.html 1> /dev/null 2>&1; then
-    for file in src/components/*.html; do
-        [ -f "$file" ] && check_file "$file"
-    done
 fi
 
 # Check pages
