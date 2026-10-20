@@ -557,7 +557,7 @@ copy_cv_folder() {
 # NOTE: o /v1/ (template legado HTML5 UP) NAO e mais publicado desde 2026-10-19.
 # A copia foi removida de proposito: o texto dele dizia "desenvolvedor de software
 # ha mais de 25 anos", o enquadramento que a regra 3 do site-p0.md proibe. Os
-# arquivos continuam em src/v1/ como arquivo historico; so deixaram de ir ao ar.
+# arquivos foram apagados do repo em seguida; vivem so no historico do git.
 
 # Copy SASS assets folder (with enhanced verbose output for SASS structure)
 copy_sass_assets() {

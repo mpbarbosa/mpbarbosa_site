@@ -62,7 +62,6 @@ Fetch each of these URLs and record the raw content:
 | `https://www.mpbarbosa.com/en/` | EN portfolio + Singularity section |
 | `https://www.mpbarbosa.com/llms.txt` | LLM-readable domain file |
 | `https://www.mpbarbosa.com/llms-full.txt` | Full LLM context |
-| `https://www.mpbarbosa.com/v1/` | Legacy archive (check it loads) |
 
 Ask the fetch tool for exact string presence for each marker. Do not rely on
 model interpretation — ask for raw found/not-found for specific substrings.
@@ -114,7 +113,6 @@ src/  →  (sync_to_staging.sh --step1)  →  ../mpbarbosa.com/  →  (prod_depl
 | `src/en/index.html` | `https://www.mpbarbosa.com/en/` |
 | `src/llms.txt` | `https://www.mpbarbosa.com/llms.txt` |
 | `src/llms-full.txt` | `https://www.mpbarbosa.com/llms-full.txt` |
-| `src/v1/` | `https://www.mpbarbosa.com/v1/` |
 | `src/styles/v2.css` | `https://www.mpbarbosa.com/styles/v2.css` |
 | `src/scripts/v2.js` | `https://www.mpbarbosa.com/scripts/v2.js` |
 
