@@ -13,10 +13,8 @@ mpbarbosa_site/src/
 ├── index.html              # Main landing page with Material Design
 ├── package.json            # npm configuration with live-server
 ├── styles/
-│   └── main.css           # Material Design styling and theming
 ├── scripts/
 │   └── main.js            # Contact form and smooth scrolling
-├── components/             # Individual HTML components
 │   ├── header.html        # Standalone header component
 │   ├── about.html         # About section component
 │   ├── projects.html      # Projects section component
@@ -121,10 +119,8 @@ mpbarbosa_site/src/
 ├── index.html              # Main landing page with Material Design
 ├── package.json            # npm configuration with live-server
 ├── styles/
-│   └── main.css           # Material Design styling and theming
 ├── scripts/
 │   └── main.js            # Contact form and smooth scrolling
-├── components/             # Individual HTML components
 │   ├── header.html        # Standalone header component
 │   ├── about.html         # About section component
 │   ├── projects.html      # Projects section component
