@@ -1603,7 +1603,60 @@ execute_step_1() {
         validate_sync
     fi
     
+    write_build_stamp
     print_success "Step 1 completed: Files copied from source to public folder"
+}
+
+# Carimba o commit da FONTE num arquivo servido, para que um deploy se verifique
+# pelo HASH em vez do numero de versao do rodape. O numero e escrito a mao e
+# portanto colide: em 2026-10-20 duas mudancas diferentes levaram v1.1.35 e o git
+# mesclou sem conflito, porque os dois lados gravaram a mesma string.
+#
+# Portado do portal_brasileirao (scripts/build.sh + /api/health), com as mesmas
+# regras de sha: rev-parse --short, fallback GITHUB_SHA, "unknown" sem git, e
+# sufixo "-dirty" sobre arvore suja -- um build com trabalho nao commitado nao e
+# o commit que diz ser, e a diferenca importa exatamente quando se depura o que
+# esta no ar.
+#
+# Duas divergencias deliberadas, as duas por aquele repo ter servidor e este nao:
+#   - La o sha sai em /api/health, uma rota Express. Aqui nao ha processo: nginx
+#     serve estatico, entao o equivalente e um arquivo.
+#   - La o sha do cliente vai num <meta name="app-version"> do shell e nao no
+#     bundle, porque entraria no content hash e todo leitor rebaixaria o bundle a
+#     cada release. Aqui nao ha bundle, entao essa razao nao se aplica -- e um
+#     meta por pagina sujaria o diff de todo HTML a cada deploy, num staging que
+#     e commitado.
+#
+# O .git do web root nao serve: o rsync do step 2 o copia para la, mas o
+# setup_deny_dotfiles.sh faz o nginx responder 403 em dot-paths (conferido).
+write_build_stamp() {
+    print_step "Writing build stamp"
+
+    local sha
+    sha="$(git -C "$PROJECT_ROOT" rev-parse --short HEAD 2>/dev/null || true)"
+    if [[ -z "$sha" && -n "${GITHUB_SHA:-}" ]]; then
+        sha="${GITHUB_SHA:0:7}"
+    fi
+    sha="${sha:-unknown}"
+
+    if git -C "$PROJECT_ROOT" diff --quiet HEAD 2>/dev/null; then
+        :
+    else
+        sha="${sha}-dirty"
+    fi
+
+    local built_at
+    built_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    local stamp_file="$STAGING_DIR/build.json"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        print_info "[DRY RUN] Would write: $stamp_file ($sha)"
+        return 0
+    fi
+
+    printf '{\n  "sha": "%s",\n  "builtAt": "%s",\n  "source": "mpbarbosa_site"\n}\n' \
+        "$sha" "$built_at" > "$stamp_file"
+    print_success "Build stamp: $sha at $built_at"
 }
 
 # Execute Step 2: Public to Production
