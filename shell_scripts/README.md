@@ -789,7 +789,9 @@ sudo ./shell_scripts/deploy_to_webserver.sh             # Full deployment
 3. Create backup of existing deployment to `/var/www/backups/mpbarbosa.com`
 4. Copy all files from `/public` to `/var/www/mpbarbosa.com` using rsync
 5. Set proper web server permissions (www-data:www-data, 755/644)
-6. Validate deployment structure (checks `index.html`, `assets/css/main.css`, `assets/js/main.js`)
+6. Validate deployment structure (checks `index.html`, `styles/v2.css`, `scripts/v2.js` — see
+   `deploy_to_webserver.sh:343`; this line used to name `assets/css/main.css` and
+   `assets/js/main.js`, which the script has not checked for some time)
 7. Check nginx configuration
 
 **Modern Alternative**: Use `sync_to_staging.sh --both-steps` for the complete two-step deployment workflow with production directory configuration support.

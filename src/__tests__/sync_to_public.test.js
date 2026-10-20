@@ -263,13 +263,9 @@ describe('sync_to_staging.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      const assetFunctions = [
-        'copy_css_assets()',
-        'copy_js_assets()',
-        'copy_sass_assets()',
-        'copy_webfonts()',
-        'copy_images()',
-      ];
+      // copy_js_assets() e copy_sass_assets() foram removidas em 2026-10-20
+      // junto com src/assets/{js,sass}, que eram do template v1. Ver CLAUDE.md.
+      const assetFunctions = ['copy_css_assets()', 'copy_webfonts()', 'copy_images()'];
 
       assetFunctions.forEach((func) => {
         expect(scriptContent).toContain(func);
@@ -396,7 +392,8 @@ describe('sync_to_staging.sh - Comprehensive Test Suite', () => {
         return;
       }
 
-      const codeExtensions = ['.js', '.mjs', '.css', '.scss'];
+      // '.scss' saiu com assets/sass; o glob '*.js' saiu com assets/js.
+      const codeExtensions = ['.mjs', '.css'];
       codeExtensions.forEach((ext) => {
         expect(scriptContent).toContain(`*${ext}`);
       });
@@ -685,7 +682,6 @@ describe('sync_to_staging.sh - Comprehensive Test Suite', () => {
       }
 
       expect(scriptContent).toContain('($css_count files)');
-      expect(scriptContent).toContain('($js_count files)');
       expect(scriptContent).toContain('($font_count files)');
       expect(scriptContent).toContain('($image_count files)');
     });
