@@ -554,36 +554,10 @@ copy_cv_folder() {
     copy_directory "$SOURCE_DIR/cv" "$STAGING_DIR/cv" "CV directory (cv/)" "*" "false"
 }
 
-# Copy v1/ legacy archived site
-copy_v1_folder() {
-    print_step "Copying v1/ legacy archive"
-
-    local source_dir="$SOURCE_DIR/v1"
-    local dest_dir="$STAGING_DIR/v1"
-
-    if [[ ! -d "$source_dir" ]]; then
-        print_warning "v1/ directory not found in source"
-        print_info "  Expected: $source_dir"
-        return 0
-    fi
-
-    local file_count
-    file_count=$(find "$source_dir" -type f | wc -l)
-
-    if [[ "$DRY_RUN" == "false" ]]; then
-        mkdir -p "$dest_dir"
-        cp -r "$source_dir"/. "$dest_dir/"
-        print_success "Copied: v1/ legacy archive ($file_count files)"
-
-        if [[ "$VERBOSE" == "true" ]]; then
-            print_info "  Source: $source_dir"
-            print_info "  Destination: $dest_dir"
-            print_info "  Files copied: $file_count"
-        fi
-    else
-        print_info "[DRY RUN] Would copy: $source_dir → $dest_dir ($file_count files)"
-    fi
-}
+# NOTE: o /v1/ (template legado HTML5 UP) NAO e mais publicado desde 2026-10-19.
+# A copia foi removida de proposito: o texto dele dizia "desenvolvedor de software
+# ha mais de 25 anos", o enquadramento que a regra 3 do site-p0.md proibe. Os
+# arquivos continuam em src/v1/ como arquivo historico; so deixaram de ir ao ar.
 
 # Copy SASS assets folder (with enhanced verbose output for SASS structure)
 copy_sass_assets() {
@@ -1687,7 +1661,6 @@ execute_step_1() {
     copy_llms_files
     copy_pages_folder
     copy_cv_folder
-    copy_v1_folder
     copy_sass_assets
     copy_webfonts
     copy_images

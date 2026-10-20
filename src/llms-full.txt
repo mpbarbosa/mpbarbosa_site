@@ -232,7 +232,6 @@ olinda_utils.js, olinda_shell_interface.js, olinda_orchestrator and pajussara_tu
 | `/cv/` | Resume PDF at a stable URL |
 | `/llms.txt` | Concise LLM-readable site summary (this domain's llmstxt.org entry) |
 | `/llms-full.txt` | Complete structured context for AI agents |
-| `/v1/` | Archived previous site version (HTML5 UP Dimension template) |
 | `/pages/` | HTML redirect stubs to sibling project directories |
 
 ---
