@@ -42,7 +42,9 @@ The pre-commit hook (`.husky/pre-commit`) runs `cd src && npx lint-staged` — i
 
 The site is a **static HTML5 personal portfolio** (`src/index.html`) with no build step. The current live version is `v2` — a custom vanilla-JS design (`src/scripts/v2.js`, `src/styles/v2.css`). The old HTML5 UP Dimension template (`src/v1/`, 51 MB) is **gone** as of 2026-10-19/20, in three steps: unlinked from the footer (v1.1.31), unpublished (v1.1.32 — `/v1/` now returns **404**), and then deleted from this repo. The reason was content, not housekeeping — it read *"desenvolvedor de software há mais de 25 anos"*, the framing rule 3 of `../linkedin/prompts/site-p0.md` forbids, and *"apaixonado por tecnologia"*, which the P0 batch removed from the live site. It survives only in git history (`git show ff6602a:src/v1/index.html`); **restoring it would restore that copy**, so fix the text first if it ever comes back.
 
-⚠️ **Two leftovers it did not take with it:** `src/assets/sass` (132 KB) and `src/assets/js` (120 KB, jQuery) were v1-only — measured zero references outside `src/v1/` — and are **still copied to staging and published**. `src/assets/webfonts` (2.9 MB) is NOT a leftover: `assets/css/fontawesome-all.min.css`, which v2 does load, references `../webfonts/fa-{brands,regular,solid}`.
+Its leftovers went with it on 2026-10-20: `src/assets/sass` (132 KB) and `src/assets/js` (120 KB — `jquery.min.js`, `util.js` and a `main.js` whose header reads *"Dimension by HTML5 UP"*) were deleted, and `sync_to_staging.sh` lost the nine places that copied, verified or counted them.
+
+⚠️ **`src/assets/webfonts` (2.9 MB) is NOT a leftover**, however much it looks like one: `assets/css/fontawesome-all.min.css`, which v2 does load, references `../webfonts/fa-{brands,regular,solid}`. Deleting it breaks every icon on the site. 📌 **The only thing v2 loads out of `assets/` is that one FontAwesome stylesheet** — 16 references, measured. So `assets/css/main.css` and `assets/css/noscript.css` are themselves unreferenced v1 leftovers, still published; they were left in place deliberately, not missed.
 
 There are two language versions, both loading the same `scripts/v2.js` + `styles/v2.css`:
 - `src/index.html` — **primary**, Portuguese (pt-BR); the canonical portfolio.
@@ -54,7 +56,7 @@ Key source layers under `src/`:
 - `scripts/main.mjs` — modular smooth-scroll + contact-form helpers, exercised by `main.test.js`; not currently referenced by either HTML page (kept for testing/backward compatibility).
 - `scripts/initialization/InitializationUtilities.js` — utility helpers tested by `InitializationUtilities.test.js`
 - `styles/v2.css` — custom CSS for v2 layout
-- `assets/` — FontAwesome fonts/CSS, legacy SASS sources (used by v1), and legacy jQuery-based JS (used by v1)
+- `assets/` — FontAwesome CSS (`css/fontawesome-all.min.css`, the one asset v2 loads) and its `webfonts/`. The SASS sources and jQuery JS were deleted with v1; `css/main.css` and `css/noscript.css` remain and are unreferenced.
 - `pages/` — HTML redirect stubs (`music-in-numbers.html`, `guia-turistico.html`, `monitora-vagas.html`) that forward visitors into sibling project directories via `<meta http-equiv="refresh">` or `window.location`
 - `components/` — reusable HTML components (if any)
 - `images/` — static images (bg.jpg + personal photos rotated as background)

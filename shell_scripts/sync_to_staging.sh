@@ -376,8 +376,6 @@ FILES TO SYNC:
     - scripts/ (v2 JS modules: v2.js)
     - favicon.svg
     - assets/css/ (CSS stylesheets and FontAwesome)
-    - assets/js/ (JavaScript libraries and utilities)
-    - assets/sass/ (SASS source files and partials)
     - assets/webfonts/ (FontAwesome web fonts)
     - images/ (Website images and graphics)
     - cv/ (resume PDF served at the stable /cv/ URL)
@@ -498,11 +496,6 @@ copy_css_assets() {
 }
 
 # Copy JavaScript assets folder
-copy_js_assets() {
-    print_step "Copying JavaScript assets"
-    copy_directory "$SOURCE_DIR/assets/js" "$STAGING_DIR/assets/js" "JavaScript assets directory" "*.js" "false"
-}
-
 # Copy v2 styles folder (v2.css and any other stylesheets)
 copy_styles() {
     print_step "Copying styles folder"
@@ -558,50 +551,6 @@ copy_cv_folder() {
 # A copia foi removida de proposito: o texto dele dizia "desenvolvedor de software
 # ha mais de 25 anos", o enquadramento que a regra 3 do site-p0.md proibe. Os
 # arquivos foram apagados do repo em seguida; vivem so no historico do git.
-
-# Copy SASS assets folder (with enhanced verbose output for SASS structure)
-copy_sass_assets() {
-    print_step "Copying SASS assets"
-    
-    local source_dir="$SOURCE_DIR/assets/sass"
-    local dest_dir="$STAGING_DIR/assets/sass"
-    
-    # Use the generic copy_directory function
-    copy_directory "$source_dir" "$dest_dir" "SASS assets directory" "*.scss" "false"
-    
-    # Add SASS-specific verbose information if directory exists and verbose is enabled
-    if [[ "$VERBOSE" == "true" && -d "$dest_dir" && "$DRY_RUN" == "false" ]]; then
-        local partial_count=$(find "$dest_dir" -name "_*.scss" | wc -l)
-        local main_sass_files=$(find "$dest_dir" -maxdepth 1 -name "*.scss" ! -name "_*")
-        local subdirs=$(find "$dest_dir" -maxdepth 1 -type d ! -path "$dest_dir")
-        
-        if [[ $partial_count -gt 0 ]]; then
-            print_info "  Partial files: $partial_count"
-        fi
-        
-        if [[ -n "$main_sass_files" ]]; then
-            print_info "  Main SASS files:"
-            echo "$main_sass_files" | while read -r file; do
-                if [[ -f "$file" ]]; then
-                    local file_name=$(basename "$file")
-                    local file_size=$(du -h "$file" | cut -f1)
-                    print_info "    - $file_name ($file_size)"
-                fi
-            done
-        fi
-        
-        if [[ -n "$subdirs" ]]; then
-            print_info "  SASS subdirectories:"
-            echo "$subdirs" | while read -r dir; do
-                if [[ -d "$dir" ]]; then
-                    local dir_name=$(basename "$dir")
-                    local dir_files=$(find "$dir" -name "*.scss" | wc -l)
-                    print_info "    - $dir_name/ ($dir_files files)"
-                fi
-            done
-        fi
-    fi
-}
 
 # Copy webfonts folder
 copy_webfonts() {
@@ -1146,8 +1095,6 @@ validate_sync() {
         "$STAGING_DIR/projetos|Projetos page|*.html|false"
         "$STAGING_DIR/humans.txt|humans.txt||false"
         "$STAGING_DIR/assets/css|CSS assets directory|*.css|false"
-        "$STAGING_DIR/assets/js|JavaScript assets directory|*.js|false"
-        "$STAGING_DIR/assets/sass|SASS assets directory|*.scss|false"
         "$STAGING_DIR/assets/webfonts|Webfonts directory|font_files|false"
         "$STAGING_DIR/images|Images directory|image_files|false"
         "$STAGING_DIR/music_in_numbers/src|Music in Numbers sibling project|*.html|false"
@@ -1165,14 +1112,6 @@ validate_sync() {
             fi
         fi
     done
-    
-    # Add specific verbose information for SASS partials if needed
-    if [[ "$VERBOSE" == "true" && -d "$STAGING_DIR/assets/sass" ]]; then
-        local partial_count=$(find "$STAGING_DIR/assets/sass" -name "_*.scss" | wc -l)
-        if [[ $partial_count -gt 0 ]]; then
-            print_info "  SASS partial files: $partial_count"
-        fi
-    fi
     
     # Add specific verbose information for Music in Numbers files if needed
     if [[ "$VERBOSE" == "true" && -d "$STAGING_DIR/music_in_numbers/src" ]]; then
@@ -1246,14 +1185,6 @@ show_summary() {
             if [[ -d "$STAGING_DIR/assets/css" ]]; then
                 local css_count=$(find "$STAGING_DIR/assets/css" -name "*.css" | wc -l)
                 echo -e "  ✓ CSS assets ($css_count files)"
-            fi
-            if [[ -d "$STAGING_DIR/assets/js" ]]; then
-                local js_count=$(find "$STAGING_DIR/assets/js" -name "*.js" | wc -l)
-                echo -e "  ✓ JavaScript assets ($js_count files)"
-            fi
-            if [[ -d "$STAGING_DIR/assets/sass" ]]; then
-                local sass_count=$(find "$STAGING_DIR/assets/sass" -name "*.scss" | wc -l)
-                echo -e "  ✓ SASS assets ($sass_count files)"
             fi
             if [[ -d "$STAGING_DIR/assets/webfonts" ]]; then
                 local font_count=$(find "$STAGING_DIR/assets/webfonts" -type f \( -name "*.eot" -o -name "*.svg" -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.otf" \) | wc -l)
@@ -1652,7 +1583,6 @@ execute_step_1() {
     copy_ads_txt
     copy_humans_txt
     copy_css_assets
-    copy_js_assets
     copy_styles
     copy_scripts
     copy_favicon
@@ -1661,7 +1591,6 @@ execute_step_1() {
     copy_llms_files
     copy_pages_folder
     copy_cv_folder
-    copy_sass_assets
     copy_webfonts
     copy_images
     copy_music_in_numbers_project

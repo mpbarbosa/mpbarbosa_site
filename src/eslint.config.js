@@ -28,7 +28,6 @@ export default [
   prettierConfig,
   {
     ignores: [
-      'assets/js/*',
       'node_modules/**',
       'coverage/**',
       '**/*.min.js',
