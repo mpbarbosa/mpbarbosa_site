@@ -65,7 +65,7 @@ jobs:
         continue-on-error: true  # Don't fail workflow if coverage is disabled
       
       - name: Upload coverage to artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: success()
         with:
           name: coverage-report
